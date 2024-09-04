@@ -1,0 +1,51 @@
+{
+  "name": "generate_character",
+  "description": "generate a character for the narrative.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string",
+        "description": "The name of the character."
+      },
+      "description": {
+        "type": "string",
+        "description": "Any physical description pieces belong here, as attributes separated by + symbols, e.g. tall + ethnic European + red hair + carries a 1h Sword"
+      },
+      "personality": {
+        "type": "string",
+        "description": "The traits of the character's personality, also broken down into attributes separated by + symbols, e.g. brave + stoic + disillusioned + humble + compassionate + righteous + loyal + inclusive + earnest + straightforward + grounded + protective"
+      },
+      "profile": {
+        "type": "string",
+        "description": "The character's bio, following the instructions about the bio requirements."
+      },
+      "likes": {
+        "type": "string",
+        "description": "The character's likes."
+      },
+      "dislikes": {
+        "type": "string",
+        "description": "The character's dislikes."
+      },
+      "first message": {
+        "type": "string",
+        "description": "A single speech pattern example demonstrating how the character would greet someone they have never met before, a stranger, who may have greeted them with a simple \"Hello.\" Their response should be inconsequential, small talk (but not about the weather or the time of day, and absolutely not including any variation on \"What brings you here...\" because every character says that and it's boring AF."
+      },
+      "speech patterns": {
+        "type": "string",
+        "description": "Four or five quotes in the character's voice, following the instructions about speech patterns."
+      }
+    },
+    "required": [
+      "name",
+      "description",
+      "personality",
+      "profile",
+      "likes",
+      "dislikes",
+      "first message",
+      "speech patterns"
+    ]
+  }
+}
