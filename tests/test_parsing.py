@@ -1,5 +1,7 @@
 # Assuming parse_tool_response is defined as given in the question
-from src.parsing import parse_tool_response, extract_character_from_tool_response
+from src.prompting.factories.character_tool_response_data_extraction_factory import \
+    CharacterToolResponseDataExtractionFactory
+from src.prompting.factories.concrete_tool_response_parsing_factory import ConcreteToolResponseParsingFactory
 
 
 def test_parse_tool_response():
@@ -34,10 +36,12 @@ def test_parse_tool_response():
     }
 
     # Actual result from parse_tool_response
-    actual_result = parse_tool_response(response)
+    actual_result = ConcreteToolResponseParsingFactory(response).parse_tool_response()
+
+    assert actual_result.is_valid()
 
     # Assert that the actual result matches the expected output
-    assert actual_result == expected_output
+    assert actual_result.get() == expected_output
 
 
 def test_extract_character_from_tool_response():
@@ -68,7 +72,7 @@ def test_extract_character_from_tool_response():
     }
 
     # Call the function to parse the character data from the tool's response
-    parsed_json = extract_character_from_tool_response(parsed_tool_response)
+    parsed_json = CharacterToolResponseDataExtractionFactory(parsed_tool_response).extract_data().get()
 
     # Compare the parsed JSON with the expected JSON
     assert parsed_json == expected_json, f"Parsed JSON does not match expected output. Got: {parsed_json}"

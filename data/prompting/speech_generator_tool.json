@@ -1,0 +1,29 @@
+{
+  "type": "function",
+  "function": {
+    "name": "generate_speech",
+    "description": "generate {name}'s speech.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the character who is speaking. In this case, {name}. Write ONLY as {name}, based on the bio above."
+        },
+        "narration_text": {
+          "type": "string",
+          "description": "Narration text describing the character's thoughts and/or actions the character's speech. Here is an example: {name} sits up and faces the interlocutor."
+        },
+        "speech": {
+          "type": "string",
+          "description": "{name}'s speech. Base {name}'s speech pattern on the bio above."
+        }
+      },
+      "required": [
+        "name",
+        "speech",
+        "narration_text"
+      ]
+    }
+  }
+}
