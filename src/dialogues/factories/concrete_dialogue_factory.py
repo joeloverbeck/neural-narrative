@@ -4,23 +4,29 @@ from src.abstracts.observer import Observer
 from src.abstracts.subject import Subject
 from src.dialogues.abstracts.abstract_factories import DialogueFactory
 from src.dialogues.abstracts.factory_products import DialogueProduct
-from src.dialogues.commands.create_player_speech_data_command import CreatePlayerSpeechDataCommand
-from src.dialogues.factories.concrete_player_input_factory import ConcretePlayerInputFactory
+from src.dialogues.abstracts.strategies import InvolvePlayerInDialogueStrategy
+from src.dialogues.commands.produce_messages_to_prompt_llm_command import ProduceMessagesToPromptLlmCommand
 from src.dialogues.factories.llm_speech_data_factory import LlmSpeechDataFactory
 from src.dialogues.products.concrete_dialogue_product import ConcreteDialogueProduct
-from src.prompting.factories.speech_turn_tool_response_factory import SpeechTurnToolResponseFactory
+from src.dialogues.strategies.concrete_determine_system_message_for_speech_turn_strategy import \
+    ConcreteDetermineSystemMessageForSpeechTurnStrategy
+from src.dialogues.strategies.concrete_determine_user_messages_for_speech_turn_strategy import \
+    ConcreteDetermineUserMessagesForSpeechTurnStrategy
 
 
 class ConcreteDialogueFactory(DialogueFactory, Subject):
-    def __init__(self, client, playthrough_name: str, participants: List[int], player_identifier: Optional[int] = None):
+    def __init__(self, client, playthrough_name: str, participants: List[int], player_identifier: Optional[int],
+                 involve_player_in_dialogue_strategy: InvolvePlayerInDialogueStrategy):
         assert client
         assert playthrough_name
         assert len(participants) >= 2
+        assert involve_player_in_dialogue_strategy
 
         self._client = client
         self._playthrough_name = playthrough_name
         self._participants = participants
         self._player_identifier = player_identifier
+        self._involve_player_in_dialogue_strategy = involve_player_in_dialogue_strategy
 
         self._observers: List[Observer] = []
 
@@ -43,47 +49,21 @@ class ConcreteDialogueFactory(DialogueFactory, Subject):
         dialogue: List[dict[Any, str]] = []
 
         while True:
-            player_input_product = ConcretePlayerInputFactory(
-                "\nYour input [options: goodbye, silent]: ").create_player_input()
+            player_input_product = self._involve_player_in_dialogue_strategy.do_algorithm(previous_messages, dialogue)
 
             if player_input_product.is_goodbye():
                 break
 
-            create_player_speech_data_command = CreatePlayerSpeechDataCommand(self._playthrough_name,
-                                                                              self._player_identifier,
-                                                                              player_input_product,
-                                                                              previous_messages, dialogue)
+            ProduceMessagesToPromptLlmCommand(self._client, self._playthrough_name, self._player_identifier,
+                                              self._participants, dialogue,
+                                              ConcreteDetermineSystemMessageForSpeechTurnStrategy(
+                                                  self._playthrough_name, self._participants, previous_messages),
+                                              ConcreteDetermineUserMessagesForSpeechTurnStrategy(self._playthrough_name,
+                                                                                                 self._player_identifier,
+                                                                                                 player_input_product,
+                                                                                                 previous_messages)).execute()
 
-            for observer in self._observers:
-                create_player_speech_data_command.attach(observer)
-
-            create_player_speech_data_command.execute()
-
-            # We'll only do the prompting for the initial prompting messages for a dialogue when we know what character other than the player will be the next to speak.
-            # Note: a couple of things could happen here: the player has spoken, or the player hasn't spoken.
-            # Independently of those, we need to know what character other than the player will speak next.
-            speech_turn_tool_response_product = SpeechTurnToolResponseFactory(self._client, self._playthrough_name,
-                                                                              self._player_identifier,
-                                                                              self._participants,
-                                                                              dialogue).create_llm_response()
-
-            if not speech_turn_tool_response_product.is_valid():
-                print(speech_turn_tool_response_product.get_error())
-                break
-
-            print(f"Speech turn: {speech_turn_tool_response_product.get()}")
-
-            llm_speech_data_factory = LlmSpeechDataFactory(self._client, self._playthrough_name,
-                                                           self._player_identifier, self._participants,
-                                                           player_input_product,
-                                                           previous_messages,
-                                                           speech_turn_tool_response_product.get(),
-                                                           dialogue)
-
-            for observer in self._observers:
-                llm_speech_data_factory.attach(observer)
-
-            speech_data_product = llm_speech_data_factory.create_speech_data()
+            speech_data_product = LlmSpeechDataFactory(self._client, previous_messages).create_speech_data()
 
             if not speech_data_product.is_valid():
                 print(f"Failed to produce speech data: {speech_data_product.get_error()}")

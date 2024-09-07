@@ -5,12 +5,13 @@ from src.files import read_file, read_json_file
 from src.tools import generate_tool_prompt
 
 
-def does_response_contain_message(completion):
-    return completion.choices and completion.choices[0] and completion.choices[0].message
+def does_response_contain_content(completion):
+    return completion.choices[0].message.content
 
 
 def is_valid_response(completion):
-    return does_response_contain_message(completion) and completion.choices[0].message.content
+    return completion.choices and completion.choices[0] and completion.choices[0].message and completion.choices[
+        0].message.content
 
 
 def prompt_for_character_identifier(prompt_text: str) -> Optional[int]:

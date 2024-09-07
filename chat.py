@@ -7,6 +7,8 @@ from src.dialogues.commands.store_dialogues_command import StoreDialoguesCommand
 from src.dialogues.dialogues import summarize_dialogue
 from src.dialogues.factories.concrete_dialogue_factory import ConcreteDialogueFactory
 from src.dialogues.observers.console_dialogue_observer import ConsoleDialogueObserver
+from src.dialogues.strategies.concrete_involve_player_in_dialogue_strategy import \
+    ConcreteInvolvePlayerInDialogueStrategy
 from src.files import load_secret_key
 from src.prompting.prompting import prompt_for_input, prompt_for_character_identifier, prompt_for_multiple_identifiers
 
@@ -32,9 +34,18 @@ def main():
         api_key=load_secret_key(),
     )
 
-    concrete_dialogue_factory = ConcreteDialogueFactory(client, playthrough_name, participants, player_identifier)
+    concrete_involve_player_in_dialogue_strategy = ConcreteInvolvePlayerInDialogueStrategy(client, playthrough_name,
+                                                                                           participants,
+                                                                                           player_identifier)
 
-    concrete_dialogue_factory.attach(ConsoleDialogueObserver())
+    console_dialogue_observer = ConsoleDialogueObserver()
+
+    concrete_involve_player_in_dialogue_strategy.attach(console_dialogue_observer)
+
+    concrete_dialogue_factory = ConcreteDialogueFactory(client, playthrough_name, participants, player_identifier,
+                                                        concrete_involve_player_in_dialogue_strategy)
+
+    concrete_dialogue_factory.attach(console_dialogue_observer)
 
     dialogue_product = concrete_dialogue_factory.create_dialogue()
 
