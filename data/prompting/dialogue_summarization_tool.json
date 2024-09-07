@@ -1,0 +1,19 @@
+{
+  "type": "function",
+  "function": {
+    "name": "summarize_dialogue",
+    "description": "summarize a dialogue between two or more people.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "summary": {
+          "type": "string",
+          "description": "The summary of the provided dialogue. To create the summary, follow the instructions."
+        }
+      },
+      "required": [
+        "summary"
+      ]
+    }
+  }
+}

@@ -1,34 +1,9 @@
 import json
 
 
-def generate_tool_prompt(tool):
-    return f"""
-    # Tool Instructions
-    - Always execute python code in messages that you share.
-    - When looking for real time information use relevant functions if available else fallback to brave_search
+def generate_tool_prompt(tool: dict, tool_instructions_template: str):
+    assert tool
 
-    You have access to the following functions:
-
-    Use the function '{tool["name"]}' to '{tool["description"]}':
-    {json.dumps(tool)}
-
-    If a you choose to call a function ONLY reply in the following format:
-    <{{start_tag}}={{function_name}}>{{parameters}}{{end_tag}}
-    where
-    
-    start_tag => `<function`
-    parameters => a JSON dict with the function argument name as key and function argument value as value.
-    end_tag => `</function>`
-    
-    Here is an example,
-    <function=example_function_name>{{"example_name": "example_value"}}/function>
-    
-    Reminder:
-    - Function calls MUST follow the specified format
-    - Required parameters MUST be specified
-    - Only call one function at a time
-    - Put the entire function call reply on one line
-    - Always add your sources when using search results to answer the user query
-    
-    You are a helpful assistant.
-    """
+    return tool_instructions_template.format(tool_name=tool["function"]["name"],
+                                             tool_description=tool["function"]["description"],
+                                             tool=json.dumps(tool["function"]))

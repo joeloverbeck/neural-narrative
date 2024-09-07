@@ -1,0 +1,24 @@
+{
+  "type": "function",
+  "function": {
+    "name": "choose_speech_turn",
+    "description": "chooses who among the possible participants will speak the next line of dialogue in the ongoing conversation.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "identifier": {
+          "type": "integer",
+          "description": "The numeric identifier of the participant who will speak the next line of dialogue."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the participant who will speak the next line of dialogue."
+        }
+      },
+      "required": [
+        "identifier",
+        "name"
+      ]
+    }
+  }
+}

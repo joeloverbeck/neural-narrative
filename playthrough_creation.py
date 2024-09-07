@@ -1,12 +1,13 @@
 import sys
 
 from src.playthroughs import create_playthrough
+from src.prompting.prompting import prompt_for_input
 
 
 def main():
     try:
         # Ask the user for the name of the playthrough
-        playthrough_name = input("Enter the name of your playthrough: ")
+        playthrough_name = prompt_for_input("Enter the name of your playthrough: ")
 
         # Call the create_playthrough function
         playthrough_path = create_playthrough(playthrough_name)

@@ -1,0 +1,10 @@
+A conversation is ongoing, that features the following active participants:
+{all_participants}
+
+Here's the dialogue so far:
+{dialogue}
+
+You are tasked with determining, according to the natural flow of dialogue, who will say the next line of dialogue, among the following participants:
+{participants_without_player}
+
+Ensure that multiple NPCs take turns talking back-and-forth. The dialogue should flow smoothly, creating a realistic and engaging conversation.
