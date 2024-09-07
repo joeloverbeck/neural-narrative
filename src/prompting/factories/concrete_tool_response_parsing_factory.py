@@ -12,8 +12,27 @@ class ConcreteToolResponseParsingFactory(ToolResponseParsingFactory):
 
         self._response = response
 
+    def _fix_tool_call(self):
+        # Step 1: Remove leading/trailing spaces and newlines
+        self._response = self._response.strip()
+
+        # Step 2: Remove all line breaks within the string
+        self._response = self._response.replace("\n", "").replace("\r", "")
+
+        # Step 3: Optionally, remove extra spaces between the tags if needed
+        self._response = re.sub(r"\s*<function", "<function", self._response)
+        self._response = re.sub(r"</function>\s*", "</function>", self._response)
+
+        # Check if the tool call ends with the incorrect ending
+        if self._response.endswith('"}}<function>'):
+            # Replace with the correct ending
+            self._response = self._response.replace('"}}<function>', '}</function>')
+
     def parse_tool_response(self) -> ToolResponseParsingProduct:
-        # "response" shouldn't be empty or None at this point
+
+        # it could be that the response is almost correct, but the AI has hallucinated something. In that case, the
+        # response should be corrected:
+        self._fix_tool_call()
 
         function_regex = r"<function=(\w+)>(.*?)</function>"
         match = re.search(function_regex, self._response)

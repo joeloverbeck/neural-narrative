@@ -12,8 +12,13 @@ class StoreCharacterMemory(Command):
     def execute(self) -> None:
         character_data = load_character_data(self._playthrough_name, self._character_identifier)
 
+        file_path = get_file_path_to_character_memories(self._playthrough_name, self._character_identifier,
+                                                        character_data)
+
         # Open the file in append mode and write the memory
         with open(
-                get_file_path_to_character_memories(self._playthrough_name, self._character_identifier, character_data),
+                file_path,
                 'a') as f:
             f.write(self._memory + '\n')
+
+        print(f"Saved memory at '{file_path}'.")

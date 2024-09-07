@@ -7,7 +7,7 @@ You have access to the following functions:
 Use the function '{tool_name}' to '{tool_description}':
 {tool}
 
-If a you choose to call a function ONLY reply in the following format:
+If you choose to call a function ONLY reply in the following format:
 <{{start_tag}}={{function_name}}>{{parameters}}{{end_tag}}
 where
 

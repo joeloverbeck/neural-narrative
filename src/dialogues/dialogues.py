@@ -40,9 +40,9 @@ def summarize_dialogue(playthrough_name, client, participants: List[int], dialog
     assert len(participants) >= 2
 
     # Once the chat is over, the LLM should be prompted to create a memory out of it for all participants.
-    if not dialogue:
+    if not dialogue or len(dialogue) <= 4:
         # Perhaps the dialogue is empty. In that case, no summary needs to be done.
-        print("Won't create memories out of an empty dialogue.")
+        print("Won't create memories out of an empty dialogue or insufficient dialogue.")
         return
 
     system_content = read_file(
