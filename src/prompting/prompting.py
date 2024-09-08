@@ -1,18 +1,5 @@
 from typing import List, Optional
 
-from src.constants import TOOL_INSTRUCTIONS_FILE
-from src.files import read_file, read_json_file
-from src.tools import generate_tool_prompt
-
-
-def does_response_contain_content(completion):
-    return completion.choices[0].message.content
-
-
-def is_valid_response(completion):
-    return completion.choices and completion.choices[0] and completion.choices[0].message and completion.choices[
-        0].message.content
-
 
 def prompt_for_character_identifier(prompt_text: str) -> Optional[int]:
     """Prompt user for a character identifier, allow empty input."""
@@ -50,41 +37,3 @@ def prompt_for_input(prompt_text: str) -> str:
             return user_input
         else:
             print(f"{prompt_text} cannot be empty. Please try again.")
-
-
-def create_system_content_for_dialogue_prompt(participants: List[dict], character_data: dict, memories: str,
-                                              prompt_file: str,
-                                              tool_file: str) -> str:
-    """Format system content using character data and memories."""
-    prompt_template = read_file(prompt_file)
-    tool_data = read_json_file(tool_file)
-
-    # It's necessary to format some of the values in tool_data with actual values.
-    replacements = {
-        "name": character_data["name"]
-    }
-
-    tool_data['function']['description'] = tool_data['function']['description'].format(**replacements)
-    tool_data['function']['parameters']['properties']['narration_text']['description'] = \
-        tool_data['function']['parameters']['properties']['narration_text']['description'].format(**replacements)
-    tool_data['function']['parameters']['properties']['name']['description'] = \
-        tool_data['function']['parameters']['properties']['name']['description'].format(**replacements)
-    tool_data['function']['parameters']['properties']['speech']['description'] = \
-        tool_data['function']['parameters']['properties']['speech']['description'].format(**replacements)
-
-    participant_details = "\n".join(
-        [f'{participant["name"]}: {participant["description"]}' for participant in participants if
-         participant["name"] != character_data["name"]])
-
-    return prompt_template.format(
-        name=character_data["name"],
-        participant_details=participant_details,
-        description=character_data["description"],
-        personality=character_data["personality"],
-        profile=character_data["profile"],
-        likes=character_data["likes"],
-        dislikes=character_data["dislikes"],
-        first_message=character_data["first message"],
-        speech_patterns=character_data["speech patterns"],
-        memories=memories
-    ) + "\n\n" + generate_tool_prompt(tool_data, read_file(TOOL_INSTRUCTIONS_FILE))

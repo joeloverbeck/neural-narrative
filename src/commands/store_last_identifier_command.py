@@ -1,9 +1,6 @@
-import os
-
 from src.abstracts.command import Command
-from src.constants import PLAYTHROUGHS_FOLDER, LAST_IDENTIFIERS_FILE
 from src.enums import IdentifierType
-from src.files import save_json_file, load_existing_or_new_json_file
+from src.filesystem.filesystem_manager import FilesystemManager
 
 
 class StoreLastIdentifierCommand(Command):
@@ -14,16 +11,18 @@ class StoreLastIdentifierCommand(Command):
 
     def execute(self) -> None:
         # Define the file path
-        file_path = os.path.join(PLAYTHROUGHS_FOLDER, self._playthrough_name, LAST_IDENTIFIERS_FILE)
+        filesystem_manager = FilesystemManager()
+
+        file_path = filesystem_manager.get_file_path_to_playthrough_metadata(self._playthrough_name)
 
         # Load the existing JSON data
-        json_data = load_existing_or_new_json_file(file_path)
+        json_data = filesystem_manager.load_existing_or_new_json_file(file_path)
 
         # Update the identifier based on the identifier type
         if self._identifier_type == IdentifierType.CHARACTERS:
-            json_data["characters"] = str(self._new_id)
+            json_data["last_identifiers"]["characters"] = str(self._new_id)
         elif self._identifier_type == IdentifierType.PLACES:
-            json_data["places"] = str(self._new_id)
+            json_data["last_identifiers"]["places"] = str(self._new_id)
 
         # Save the updated JSON data back to the file
-        save_json_file(json_data, file_path)
+        filesystem_manager.save_json_file(json_data, file_path)

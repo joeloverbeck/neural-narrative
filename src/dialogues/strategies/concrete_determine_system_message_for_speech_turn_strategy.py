@@ -18,13 +18,20 @@ class ConcreteDetermineSystemMessageForSpeechTurnStrategy(DetermineSystemMessage
 
     def do_algorithm(self, speech_turn_tool_response_product: LlmToolResponseProduct):
         # The next AI character should get its own system message (that includes peculiarities for that character).
-        dialogue_initial_prompting_messages_product = DialogueInitialPromptingMessagesFactory(
-            gather_participant_data(self._playthrough_name, self._participants),
-            character_data=load_character_data(self._playthrough_name,
-                                               int(speech_turn_tool_response_product.get()["identifier"])),
-            memories=load_character_memories(self._playthrough_name,
-                                             int(speech_turn_tool_response_product.get()[
-                                                     "identifier"]))).create_initial_prompting_messages()
+        dialogue_initial_prompting_messages_product = DialogueInitialPromptingMessagesFactory(self._playthrough_name,
+                                                                                              gather_participant_data(
+                                                                                                  self._playthrough_name,
+                                                                                                  self._participants),
+                                                                                              character_data=load_character_data(
+                                                                                                  self._playthrough_name,
+                                                                                                  int(
+                                                                                                      speech_turn_tool_response_product.get()[
+                                                                                                          "identifier"])),
+                                                                                              memories=load_character_memories(
+                                                                                                  self._playthrough_name,
+                                                                                                  int(
+                                                                                                      speech_turn_tool_response_product.get()[
+                                                                                                          "identifier"]))).create_initial_prompting_messages()
 
         if self._previous_messages:
             self._previous_messages.pop(0)

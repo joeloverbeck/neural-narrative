@@ -23,10 +23,15 @@ class ConcreteToolResponseParsingFactory(ToolResponseParsingFactory):
         self._response = re.sub(r"\s*<function", "<function", self._response)
         self._response = re.sub(r"</function>\s*", "</function>", self._response)
 
-        # Check if the tool call ends with the incorrect ending
+        # Step 4: Fix the case where the tool call ends with '}}<function>' instead of '}</function>'
         if self._response.endswith('"}}<function>'):
             # Replace with the correct ending
             self._response = self._response.replace('"}}<function>', '}</function>')
+
+        # Step 5: Ensure that the closing tag starts with '<'
+        if self._response.endswith('/function>') and not self._response.endswith('</function>'):
+            # Add the missing '<' to the closing tag
+            self._response = self._response[:-10] + '</function>'
 
     def parse_tool_response(self) -> ToolResponseParsingProduct:
 
@@ -46,7 +51,7 @@ class ConcreteToolResponseParsingFactory(ToolResponseParsingFactory):
                                                           error=None)
             except json.JSONDecodeError as error:
                 return ConcreteToolResponseParsingProduct(function_json=None, is_valid=False,
-                                                          error=f"Error parsing function arguments: {error}")
+                                                          error=f"Error parsing function arguments: {error}. Text: {self._response}")
 
         return ConcreteToolResponseParsingProduct(function_json=None, is_valid=False,
                                                   error=f"Expected a function call from the response, but it was: {self._response}")

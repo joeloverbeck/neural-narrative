@@ -1,7 +1,7 @@
 from src.abstracts.command import Command
 from src.commands.store_last_identifier_command import StoreLastIdentifierCommand
 from src.enums import IdentifierType
-from src.files import load_existing_or_new_json_file, save_json_file, get_file_path_to_characters_file
+from src.filesystem.filesystem_manager import FilesystemManager
 from src.identifiers import determine_next_identifier
 
 
@@ -16,9 +16,11 @@ class StoreGeneratedCharacterCommand(Command):
 
     def execute(self) -> None:
         # Build the path to the characters.json file
-        characters_file = get_file_path_to_characters_file(self._playthrough_name)
+        filesystem_manager = FilesystemManager()
 
-        characters = load_existing_or_new_json_file(characters_file)
+        characters_file = filesystem_manager.get_file_path_to_characters_file(self._playthrough_name)
+
+        characters = filesystem_manager.load_existing_or_new_json_file(characters_file)
 
         new_id = determine_next_identifier(self._playthrough_name, IdentifierType.CHARACTERS)
 
@@ -29,4 +31,4 @@ class StoreGeneratedCharacterCommand(Command):
         # Add the new character entry
         characters[new_id] = self._character_data
 
-        save_json_file(characters, characters_file)
+        filesystem_manager.save_json_file(characters, characters_file)

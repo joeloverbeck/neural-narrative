@@ -2,7 +2,7 @@
   "type": "function",
   "function": {
     "name": "choose_speech_turn",
-    "description": "choose who among the possible participants will speak the next line of dialogue in the ongoing conversation.",
+    "description": "choose among the allowed participants (and only those) who will speak the next line of dialogue in the ongoing conversation.",
     "parameters": {
       "type": "object",
       "properties": {

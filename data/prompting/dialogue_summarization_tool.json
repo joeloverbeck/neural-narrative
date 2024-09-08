@@ -8,7 +8,7 @@
       "properties": {
         "summary": {
           "type": "string",
-          "description": "The summary of the provided dialogue. To create the summary, follow the instructions."
+          "description": "The summary of the provided dialogue. To create the summary, follow the instructions. The summary must be written in the past tense."
         }
       },
       "required": [

@@ -29,9 +29,11 @@ class CharacterChoiceDialogueSystemContentForPromptFactory(SystemContentForPromp
 
         if self._player_identifier:
             participants_without_player = "\n".join(
-                [f"Identifier: {participant['identifier']} / Name: {participant['name']}" for participant in
-                 self._participants if
-                 int(participant['identifier']) != self._player_identifier])
+                [
+                    f"Identifier: {participant['identifier']} / Name: {participant['name']} / Personality: {participant['personality']}"
+                    for participant in
+                    self._participants if
+                    int(participant['identifier']) != self._player_identifier])
         else:
             participants_without_player = all_participants
 
