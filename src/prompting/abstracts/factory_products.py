@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 
+from src.enums import AiCompletionErrorType
+
 
 class ToolResponseParsingProduct(ABC):
     @abstractmethod
@@ -40,6 +42,20 @@ class ExtractedDataProduct(ABC):
 
     @abstractmethod
     def get(self):
+        pass
+
+
+class AiCompletionProduct(ABC):
+    @abstractmethod
+    def get(self) -> str:
+        pass
+
+    @abstractmethod
+    def is_valid(self) -> bool:
+        pass
+
+    @abstractmethod
+    def get_error(self) -> AiCompletionErrorType:
         pass
 
 

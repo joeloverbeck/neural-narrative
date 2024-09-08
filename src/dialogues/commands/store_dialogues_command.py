@@ -2,7 +2,7 @@ from typing import List, Any
 
 from src.abstracts.command import Command
 from src.characters.characters import load_character_data
-from src.files import get_file_path_to_character_dialogues, write_file
+from src.filesystem.filesystem_manager import FilesystemManager
 
 
 class StoreDialoguesCommand(Command):
@@ -28,12 +28,14 @@ class StoreDialoguesCommand(Command):
 
         prettified_dialogue += "\n"
 
-        for participant in self._participants:
-            character_dialogues_path = get_file_path_to_character_dialogues(self._playthrough_name,
-                                                                            character_identifier=participant,
-                                                                            character_data=load_character_data(
-                                                                                self._playthrough_name,
-                                                                                participant))
+        filesystem_manager = FilesystemManager()
 
-            write_file(character_dialogues_path, prettified_dialogue)
+        for participant in self._participants:
+            character_dialogues_path = filesystem_manager.get_file_path_to_character_dialogues(self._playthrough_name,
+                                                                                               character_identifier=participant,
+                                                                                               character_data=load_character_data(
+                                                                                                   self._playthrough_name,
+                                                                                                   participant))
+
+            filesystem_manager.write_file(character_dialogues_path, prettified_dialogue)
             print(f"Saved dialogue at '{character_dialogues_path}'.")

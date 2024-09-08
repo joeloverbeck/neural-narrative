@@ -1,6 +1,6 @@
 from src.abstracts.command import Command
 from src.characters.characters import load_character_data
-from src.files import get_file_path_to_character_memories
+from src.filesystem.filesystem_manager import FilesystemManager
 
 
 class StoreCharacterMemory(Command):
@@ -12,8 +12,11 @@ class StoreCharacterMemory(Command):
     def execute(self) -> None:
         character_data = load_character_data(self._playthrough_name, self._character_identifier)
 
-        file_path = get_file_path_to_character_memories(self._playthrough_name, self._character_identifier,
-                                                        character_data)
+        filesystem_manager = FilesystemManager()
+
+        file_path = filesystem_manager.get_file_path_to_character_memories(self._playthrough_name,
+                                                                           self._character_identifier,
+                                                                           character_data)
 
         # Open the file in append mode and write the memory
         with open(

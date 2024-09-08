@@ -9,8 +9,11 @@ def main():
         # Ask the user for the name of the playthrough
         playthrough_name = prompt_for_input("Enter the name of your playthrough: ")
 
+        # Ask the user for the name of the world template
+        world_template = prompt_for_input("Enter the name of the world (from those in the template): ")
+
         # Call the create_playthrough function
-        playthrough_path = create_playthrough(playthrough_name)
+        playthrough_path = create_playthrough(playthrough_name, world_template)
 
         # Confirm that the playthrough has been successfully created
         print(f"Playthrough '{playthrough_name}' created successfully at {playthrough_path}.")

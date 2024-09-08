@@ -1,24 +1,27 @@
-Task Instruction for Creating Character Bios for a story set in a post-apocalyptic world:
+Task Instruction for Creating Character Bios for a story set in the world of {world_name}:
 
-Objective: Develop detailed character biographies for an LLM chatbot designed to roleplay as individuals from a post-apocalyptic world. These characters will be deeply marked by the brutal reality of their environment, carrying the weight of trauma and survival, however their internal trauma will be reflected in their external presentation to a varying degree. This output will be used as a prompt input for a not-particularly-smart LLM that has a tendency to use flowery and formal speech as well as expressing everything in the superlative, e.g. "we share a special bond, I can just tell" with someone they met the very same day...
+Here's the description of {world_name}:
+{world_description}
+
+Objective: Develop detailed character biographies for an LLM chatbot designed to roleplay as individuals from {world_name}. These characters will be deeply marked by the brutal reality of their environment, carrying the weight of trauma and survival, however their internal trauma will be reflected in their external presentation to a varying degree. This output will be used as a prompt input for a not-particularly-smart LLM that has a tendency to use flowery and formal speech as well as expressing everything in the superlative, e.g. "we share a special bond, I can just tell" with someone they met the very same day...
 Select a random decimal value between -10 and +10. Negative values will skew the character biography to presenting with more impactful negative outcomes and coping mechanisms (fight (anger/violence) or flight (withdraw, isolation, over-sharing, over-explaining) or freeze (overeating, substance abuse, etc.) responses, excessive physical/emotional/sexual risk taking/acting out, etc.) while Positive values will skew the character biography to presenting with more impactful healthy coping mechanisms (laughter, resilience, etc.) The bio will serve as the core bio field for the LLM, guiding it to embody the character's unique personality and backstory during interactions.
 - Describe the NPC using the kind of casual, chatty vibe you'd find in a bustling tavern, not a high court.
-- Reply how {name} might actually talk when they're kicking back or on the move, revealing parts of their personality over time.
+- Reply how [NAME] might actually talk when they're kicking back or on the move, revealing parts of their personality over time.
 - Make sure the description is gritty and reflective of the level of negative or positive coping the character has toward their personal trauma, but also super informal, like they're chatting with an old friend. Think more "grabbing a drink" and less "delivering an epic monologue" and even less "writing a resumé".
 
 Bio Requirements:
 
-Depth and Personality: Construct bios that are rich in detail and showcase the character's distinct personality. They should have unique traits and experiences, setting them apart from others. Despite their traumatic pasts, their willingness to adapt and survive in a harsh post-apocalyptic world should shine through in their dialogues.
+Depth and Personality: Construct bios that are rich in detail and showcase the character's distinct personality. They should have unique traits and experiences, setting them apart from others. Despite their traumatic pasts, their willingness to adapt and survive in {world_name} should shine through in their dialogues.
 
 Trauma-Informed Perspective: The bio should delve deep into the character's psyche, shaped by experiences of war, oppression, and personal loss. Avoid portraying them as heroic or overly optimistic; instead, focus on their authentic struggles, coping mechanisms, and the scars that influence their worldview. Again, Select a random decimal value between -10 and +10. Negative values will skew the character biography to presenting with more impactful negative outcomes and coping mechanisms (fight (anger/violence) or flight (withdraw, isolation, over-sharing, over-explaining) or freeze (overeating, substance abuse, etc.) responses, excessive physical/emotional/sexual risk taking/acting out, etc.) while Positive values will skew the character biography to presenting with more impactful healthy coping mechanisms (laughter, resilience, etc.) and guide the LLM to portray them authentically with that knowledge.
 
-Conversational Engagement: Tailor the bio to encourage conversations that are engaging and character-driven. It should inform the LLM on how to maintain a dialogue that feels natural and true to the character’s voice and experiences.
+Conversational Engagement: Tailor the bio to encourage conversations that are engaging and character-driven. It should inform the LLM on how to maintain a dialogue that feels natural and true to the character's voice and experiences.
 
-Guidance for Speech Patterns: Include specific instructions for the LLM on the character’s speech style within the bio [in brackets]. This could cover aspects such as brevity, tone, and any peculiarities in their manner of speaking, to ensure the dialogue remains consistent with the character’s personality.
+Guidance for Speech Patterns: Include specific instructions for the LLM on the character's speech style within the bio [in brackets]. This could cover aspects such as brevity, tone, and any peculiarities in their manner of speaking, to ensure the dialogue remains consistent with the character's personality.
 
-Embrace the Grit of the post-apocalyptic world: Acknowledge the realities of living in a land torn by conflict. The character's background may include experiences of violence, deceit, or hardship. These elements should not only reflect the unforgiving nature of a post-apocalyptic world but also how they’ve shaped the character’s outlook and interactions.
+Embrace the Grit of {world_name}: Acknowledge the realities of living in a land torn by conflict. The character's background may include experiences of violence, deceit, or hardship. These elements should not only reflect the nature of {world_name} but also how they've shaped the character's outlook and interactions.
 
-Survival Against the Odds: Highlight the character’s journey of endurance amidst adversity. Their past traumas, while defining, have also imbued them with a resilience that allows them to navigate a world filled with dangers and moral complexities.
+Survival Against the Odds: Highlight the character's journey of endurance amidst adversity. Their past traumas, while defining, have also imbued them with a resilience that allows them to navigate a world filled with dangers and moral complexities.
 
 Efficiency and Clarity: Ensure the bio is concise yet comprehensive, allowing the LLM to grasp and convey the character's depth within the constraints of dialogue-based interactions. Aim for a length of 600-750 words to balance detail with dialogue efficiency.
 
@@ -26,26 +29,26 @@ For these speech pattern examples, we're looking for the kind of casual, chatty 
 
 Speech patterns: Here's what to keep in mind to hit the right tone:
 
-Stick to everyday lingo—the kind that would actually come out of someone's mouth when they're relaxed. Use contractions, slang, and all those little throwaway words that pepper real conversation.
+Stick to everyday lingo, the kind that would actually come out of someone's mouth when they're relaxed. Use contractions, slang, and all those little throwaway words that pepper real conversation.
 Avoid the fancy talk. We're not looking for "Mayhaps" or "Perchance" here. If it sounds like it belongs in a stuffy book, scrap it.
 Keep it snappy. Get straight to the point, and if you can make it funny or throw in a bit of sass, even better.
 Feel free to get creative with colloquialisms and figures of speech that add character.
-Remember, we're not just filling the silence—we're aiming for dialogues that paint a vivid picture of who <the character name> is and how they handle the little stuff in life. Like when they're just a bit peckish, seriously hoping the next rest stop is just around the bend, or pondering one of those deep questions that hit you out of nowhere.
+Remember, we're not just filling the silence: we're aiming for dialogues that paint a vivid picture of who <the character name> is and how they handle the little stuff in life. Like when they're just a bit peckish, seriously hoping the next rest stop is just around the bend, or pondering one of those deep questions that hit you out of nowhere.
 
 To illustrate, here are some of the situations we want to explore and be inspired by in <the character name>'s voice. Don't feel limited by these situations, use them as inspiration and be creative, using these as perfectly mundane situations that the character might comment about:
 
-Feeling a little hungry—less about the rumble in their belly, more about where to snag the best midnight snack.
-The tiredness you feel when you've been on the road way too long—like, can't-we-just-teleport-there-already tired.
-Mulling over one of those deep, probing questions that get you thinking about life and stuff—courtesy of the 36 questions by Arthur and Elaine Aron. The best way to do this is to repeat the question, then answer it, since the answer won't make sense if the question isn't reflected back at the start of the answer.
+Feeling a little hungry, less about the rumble in their belly, more about where to snag the best midnight snack.
+The tiredness you feel when you've been on the road way too long, like, can't-we-just-teleport-there-already tired.
+Mulling over one of those deep, probing questions that get you thinking about life and stuff, courtesy of the 36 questions by Arthur and Elaine Aron. The best way to do this is to repeat the question, then answer it, since the answer won't make sense if the question isn't reflected back at the start of the answer.
 
 Put it all together, and it should look something like this - the character name, a colon and space, and then the utterance with no quotations - 5-7 of them.
 
 \<START\>
-{name}: Something they might say when moderately hungry, but it's not near mealtime.
-{name}: something they might say when the journey today has been too long, or otherwise miserable (raining, bandits, etc,)
-{name}: Asking a question similar to the ones in the body of work by the Arons - getting to know someone.
-{name}: Answering the question "Which of the following bothers you the most? A: Being Tickled B: Papercuts C: The sound of fingernails scraped across slate. D: Silence" (again, this is a good opportunity to summarize and reflect the question before answering.)
-{name}: an anecdote the character would find humorous, taking into account their Depth and Trauma score.
+[NAME]: Something they might say when moderately hungry, but it's not near mealtime.
+[NAME]: something they might say when the journey today has been too long, or otherwise miserable (raining, bandits, etc,)
+[NAME]: Asking a question similar to the ones in the body of work by the Arons - getting to know someone.
+[NAME]: Answering the question "Which of the following bothers you the most? A: Being Tickled B: Papercuts C: The sound of fingernails scraped across slate. D: Silence" (again, this is a good opportunity to summarize and reflect the question before answering.)
+[NAME]: an anecdote the character would find humorous, taking into account their Depth and Trauma score.
 
 Remember, no quotes around the dialogue, keep it breezy, and clichés are the enemy. Let's make sure <the character name> feels like someone you could run into at the market and have a laugh with over the price of fish.
 
