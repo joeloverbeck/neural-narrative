@@ -37,3 +37,9 @@ class SpeechDataFactory(ABC):
     @abstractmethod
     def create_speech_data(self) -> SpeechDataProduct:
         pass
+
+
+class DialogueSummaryFactory(ABC):
+    @abstractmethod
+    def create_summary(self) -> SummaryProduct:
+        pass

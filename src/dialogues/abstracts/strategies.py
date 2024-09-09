@@ -1,8 +1,8 @@
 from abc import abstractmethod, ABC
 from typing import List, Any
 
-from src.dialogues.abstracts.factory_products import PlayerInputProduct
-from src.prompting.abstracts.factory_products import LlmToolResponseProduct
+from src.dialogues.abstracts.factory_products import PlayerInputProduct, SpeechDataProduct
+from src.prompting.abstracts.factory_products import LlmToolResponseProduct, LlmContentProduct
 
 
 class InvolvePlayerInDialogueStrategy(ABC):
@@ -20,4 +20,10 @@ class DetermineUserMessagesForSpeechTurnStrategy(ABC):
 class DetermineSystemMessageForSpeechTurnStrategy(ABC):
     @abstractmethod
     def do_algorithm(self, speech_turn_tool_response_product: LlmToolResponseProduct):
+        pass
+
+
+class ProcessLlmContentIntoSpeechDataStrategy(ABC):
+    @abstractmethod
+    def do_algorithm(self, llm_content_product: LlmContentProduct) -> SpeechDataProduct:
         pass

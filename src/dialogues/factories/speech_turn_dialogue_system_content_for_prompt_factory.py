@@ -9,16 +9,19 @@ from src.tools import generate_tool_prompt
 
 
 class SpeechTurnDialogueSystemContentForPromptFactory(SystemContentForPromptFactory):
-    def __init__(self, playthrough_name: str, participants: List[dict], character_data: dict, memories: str,
+    def __init__(self, playthrough_name: str, location_name: str, participants: List[dict], character_data: dict,
+                 memories: str,
                  prompt_file: str,
                  tool_file: str):
         assert playthrough_name
+        assert location_name
         assert len(participants) >= 2
         assert character_data
         assert prompt_file
         assert tool_file
 
         self._playthrough_name = playthrough_name
+        self._location_name = location_name
         self._participants = participants
         self._character_data = character_data
         self._memories = memories
@@ -55,9 +58,14 @@ class SpeechTurnDialogueSystemContentForPromptFactory(SystemContentForPromptFact
         worlds_template = filesystem_manager.load_existing_or_new_json_file(
             filesystem_manager.get_file_path_to_worlds_template_file())
 
+        locations_template = filesystem_manager.load_existing_or_new_json_file(
+            filesystem_manager.get_file_path_to_locations_template_file())
+
         return ConcreteSystemContentForPromptProduct(prompt_template.format(
             world_name=playthrough_metadata_file["world_template"],
             world_description=worlds_template[playthrough_metadata_file["world_template"]]["description"],
+            location_name=self._location_name,
+            location_description=locations_template[self._location_name.lower()]["description"],
             name=self._character_data["name"],
             participant_details=participant_details,
             description=self._character_data["description"],

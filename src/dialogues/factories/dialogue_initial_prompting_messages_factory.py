@@ -9,12 +9,15 @@ from src.prompting.products.concrete_initial_prompting_messages_product import C
 
 
 class DialogueInitialPromptingMessagesFactory(InitialPromptingMessagesFactory):
-    def __init__(self, playthrough_name: str, participants: List[dict], character_data: dict, memories: str):
+    def __init__(self, playthrough_name: str, location_name: str, participants: List[dict], character_data: dict,
+                 memories: str):
         assert playthrough_name
+        assert location_name
         assert len(participants) >= 2
         assert character_data
 
         self._playthrough_name = playthrough_name
+        self._location_name = location_name
         self._participants = participants
         self._character_data = character_data
         self._memories = memories
@@ -29,6 +32,7 @@ class DialogueInitialPromptingMessagesFactory(InitialPromptingMessagesFactory):
 
         system_content_for_prompt_product = SpeechTurnDialogueSystemContentForPromptFactory(
             self._playthrough_name,
+            self._location_name,
             self._participants,
             self._character_data, self._memories,
             DIALOGUE_PROMPT_FILE,

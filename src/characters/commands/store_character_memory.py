@@ -3,7 +3,7 @@ from src.characters.characters import load_character_data
 from src.filesystem.filesystem_manager import FilesystemManager
 
 
-class StoreCharacterMemory(Command):
+class StoreCharacterMemoryCommand(Command):
     def __init__(self, playthrough_name: str, character_identifier: int, memory: str):
         self._playthrough_name = playthrough_name
         self._character_identifier = character_identifier

@@ -1,3 +1,5 @@
+from typing import Optional
+
 from openai.types.chat import ChatCompletion
 
 from src.constants import TOO_MANY_REQUESTS_ERROR_NUMBER, UNAUTHORIZED_ERROR_NUMBER
@@ -6,13 +8,16 @@ from src.prompting.abstracts.factory_products import AiCompletionProduct
 
 
 class ConcreteAiCompletionProduct(AiCompletionProduct):
-    def __init__(self, completion: ChatCompletion):
+    def __init__(self, completion: Optional[ChatCompletion]):
         # upon receiving the completion on creation,
         # the class will establish what the problem is, if any.
         self._content = None
         self._error = None
 
-        if completion.choices and completion.choices[0] and completion.choices[0].message and completion.choices[
+        if not completion:
+            self._is_valid = False
+            self._error = AiCompletionErrorType.MALFORMED_COMPLETION
+        elif completion.choices and completion.choices[0] and completion.choices[0].message and completion.choices[
             0].message.content:
             self._is_valid = True
 

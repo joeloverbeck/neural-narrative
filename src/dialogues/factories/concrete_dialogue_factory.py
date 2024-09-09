@@ -16,21 +16,25 @@ from src.dialogues.strategies.concrete_determine_system_message_for_speech_turn_
     ConcreteDetermineSystemMessageForSpeechTurnStrategy
 from src.dialogues.strategies.concrete_determine_user_messages_for_speech_turn_strategy import \
     ConcreteDetermineUserMessagesForSpeechTurnStrategy
+from src.dialogues.strategies.concrete_process_llm_content_into_speech_data_strategy import \
+    ConcreteProcessLlmContentIntoSpeechDataStrategy
 
 
 class ConcreteDialogueFactory(DialogueFactory, Subject):
-    def __init__(self, client: OpenAI, model: str, playthrough_name: str, participants: List[int],
+    def __init__(self, client: OpenAI, model: str, playthrough_name: str, location_name: str, participants: List[int],
                  player_identifier: Optional[int],
                  involve_player_in_dialogue_strategy: InvolvePlayerInDialogueStrategy):
         assert client
         assert model
         assert playthrough_name
+        assert location_name
         assert len(participants) >= 2
         assert involve_player_in_dialogue_strategy
 
         self._client = client
         self._model = model
         self._playthrough_name = playthrough_name
+        self._location_name = location_name
         self._participants = participants
         self._player_identifier = player_identifier
         self._involve_player_in_dialogue_strategy = involve_player_in_dialogue_strategy
@@ -64,7 +68,8 @@ class ConcreteDialogueFactory(DialogueFactory, Subject):
             SpeechTurnProduceMessagesToPromptLlmCommand(self._playthrough_name, self._client, self._model,
                                                         self._player_identifier, self._participants, dialogue,
                                                         ConcreteDetermineSystemMessageForSpeechTurnStrategy(
-                                                            self._playthrough_name, self._participants,
+                                                            self._playthrough_name, self._location_name,
+                                                            self._participants,
                                                             previous_messages),
                                                         ConcreteDetermineUserMessagesForSpeechTurnStrategy(
                                                             self._playthrough_name,
@@ -73,7 +78,9 @@ class ConcreteDialogueFactory(DialogueFactory, Subject):
                                                             previous_messages)).execute()
 
             speech_data_product = LlmSpeechDataFactory(self._client, self._model,
-                                                       previous_messages).create_speech_data()
+                                                       previous_messages,
+                                                       ConcreteProcessLlmContentIntoSpeechDataStrategy(
+                                                           previous_messages)).create_speech_data()
 
             if not speech_data_product.is_valid():
                 print(f"Failed to produce speech data: {speech_data_product.get_error()}")
