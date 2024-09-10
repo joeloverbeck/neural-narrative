@@ -40,7 +40,7 @@ class DialogueInitialPromptingMessagesFactory(InitialPromptingMessagesFactory):
 
         if not system_content_for_prompt_product.is_valid():
             raise ValueError(
-                f"Failed ot produce the system content for the speech turn: {system_content_for_prompt_product.get_error()}")
+                f"Failed to produce the system content for the speech turn: {system_content_for_prompt_product.get_error()}")
 
         return ConcreteInitialPromptingMessagesProduct([{"role": "system",
                                                          "content": system_content_for_prompt_product.get()},

@@ -1,5 +1,5 @@
 # Function definitions go here (assuming already imported or defined)
-from typing import List, Any
+from typing import List
 
 from src.dialogues.factories.character_choice_dialogue_system_content_for_prompt_factory import \
     CharacterChoiceDialogueSystemContentForPromptFactory
@@ -7,9 +7,10 @@ from src.dialogues.factories.character_choice_dialogue_system_content_for_prompt
 
 def test_create_system_content_for_character_choice_dialogue_prompt():
     # Arrange
-    participants = [{"name": "Jon", "identifier": "1"}, {"name": "Rusty Macy", "identifier": "2"}]
+    participants = [{"name": "Jon", "identifier": "1", "personality": "personality"},
+                    {"name": "Rusty Macy", "identifier": "2", "personality": "personality"}]
     player_identifier = 1
-    dialogue: List[dict[Any, str]] = [{"Jon": "Hello!"}, {"Rusty Macy": "Hello back to you."}]
+    dialogue: List[str] = ["Jon: Hello!", "Rusty Macy: Hello back to you."]
     prompt_template = """A conversation is ongoing, that features the following active participants:
 {all_participants}
 
@@ -52,10 +53,10 @@ Identifier: 1 / Name: Jon
 Identifier: 2 / Name: Rusty Macy
 
 Here's the dialogue so far:
-[{'Jon': 'Hello!'}, {'Rusty Macy': 'Hello back to you.'}]
+['Jon: Hello!', 'Rusty Macy: Hello back to you.']
 
 You are tasked with determining, according to the natural flow of dialogue, who will say the next line of dialogue, among the following participants:
-Identifier: 2 / Name: Rusty Macy
+Identifier: 2 / Name: Rusty Macy / Personality: personality
 
 choose_speech_turn (chooses who among the possible participants will speak the next line of dialogue in the ongoing conversation.)
 {"name": "choose_speech_turn", "description": "chooses who among the possible participants will speak the next line of dialogue in the ongoing conversation.", "parameters": {"type": "object", "properties": {"identifier": {"type": "integer", "description": "The numeric identifier of the participant who will speak the next line of dialogue."}, "name": {"type": "string", "description": "The name of the participant who will speak the next line of dialogue."}}, "required": ["identifier", "name"]}}"""

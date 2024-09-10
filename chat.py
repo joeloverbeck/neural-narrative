@@ -5,7 +5,7 @@ from openai import OpenAI
 
 from src.characters.commands.summarize_dialogue_command import SummarizeDialogueCommand
 # Import from local modules
-from src.constants import OPENROUTER_API_URL, HERMES_70B, HERMES_405B
+from src.constants import OPENROUTER_API_URL, HERMES_405B
 from src.dialogues.commands.store_dialogues_command import StoreDialoguesCommand
 from src.dialogues.factories.concrete_dialogue_factory import ConcreteDialogueFactory
 from src.dialogues.observers.console_dialogue_observer import ConsoleDialogueObserver
@@ -47,7 +47,7 @@ def main():
         api_key=filesystem_manager.load_secret_key(),
     )
 
-    model = HERMES_70B
+    model = HERMES_405B
 
     concrete_involve_player_in_dialogue_strategy = ConcreteInvolvePlayerInDialogueStrategy(client, playthrough_name,
                                                                                            participants,

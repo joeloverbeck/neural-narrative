@@ -1,4 +1,4 @@
-from typing import Optional, List, Any
+from typing import Optional, List
 
 from src.abstracts.observer import Observer
 from src.abstracts.subject import Subject
@@ -31,7 +31,7 @@ class ConcreteInvolvePlayerInDialogueStrategy(InvolvePlayerInDialogueStrategy, S
         for observer in self._observers:
             observer.update(message)
 
-    def do_algorithm(self, previous_messages: List[dict], dialogue: List[dict[Any, str]]) -> PlayerInputProduct:
+    def do_algorithm(self, previous_messages: List[dict], dialogue: List[str]) -> PlayerInputProduct:
         player_input_product = ConcretePlayerInputFactory(
             "\nYour input [options: goodbye, silent]: ").create_player_input()
 

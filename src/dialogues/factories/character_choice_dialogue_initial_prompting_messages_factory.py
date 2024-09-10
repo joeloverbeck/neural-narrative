@@ -1,5 +1,5 @@
 from types import NoneType
-from typing import List, Optional, Any
+from typing import List, Optional
 
 from src.constants import CHOOSING_SPEECH_TURN_PROMPT_FILE, SPEECH_TURN_TOOL_FILE, TOOL_INSTRUCTIONS_FILE
 from src.dialogues.abstracts.abstract_factories import InitialPromptingMessagesFactory
@@ -11,7 +11,7 @@ from src.prompting.products.concrete_initial_prompting_messages_product import C
 
 
 class CharacterChoiceDialogueInitialPromptingMessagesFactory(InitialPromptingMessagesFactory):
-    def __init__(self, participants: List[dict], player_identifier: Optional[int], dialogue: List[dict[Any, str]]):
+    def __init__(self, participants: List[dict], player_identifier: Optional[int], dialogue: List[str]):
         assert participants
         assert not isinstance(dialogue, NoneType)
 

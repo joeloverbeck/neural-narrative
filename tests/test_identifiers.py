@@ -7,10 +7,10 @@ from src.identifiers import determine_next_identifier
 
 def test_determine_next_identifier_characters():
     # Mock content of last_identifiers.json
-    mock_json_data = json.dumps({
+    mock_json_data = json.dumps({"last_identifiers": {
         "characters": "0",
         "places": "5"
-    })
+    }})
 
     # Use unittest.mock to mock open() and simulate reading the JSON file
     with patch("builtins.open", mock_open(read_data=mock_json_data)):
