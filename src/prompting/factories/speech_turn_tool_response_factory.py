@@ -1,4 +1,4 @@
-from typing import List, Optional, Any
+from typing import List, Optional
 
 from openai import OpenAI
 
@@ -13,10 +13,10 @@ from src.prompting.factories.open_ai_llm_content_factory import OpenAiLlmContent
 from src.prompting.products.concrete_llm_tool_response_product import ConcreteLlmToolResponseProduct
 
 
-class SpeechTurnToolResponseFactory(ToolResponseFactory):
+class SpeechTurnChoiceToolResponseFactory(ToolResponseFactory):
     def __init__(self, playthrough_name: str, client: OpenAI, model: str, player_identifier: Optional[int],
                  participants: List[int],
-                 dialogue: List[dict[Any, str]]):
+                 dialogue: List[str]):
         assert playthrough_name
         assert client
         assert model

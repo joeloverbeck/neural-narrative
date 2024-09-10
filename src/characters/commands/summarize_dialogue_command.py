@@ -1,4 +1,4 @@
-from typing import List, Any
+from typing import List
 
 from openai import OpenAI
 
@@ -10,7 +10,7 @@ from src.dialogues.factories.concrete_dialogue_summary_factory import ConcreteDi
 class SummarizeDialogueCommand(Command):
 
     def __init__(self, playthrough_name: str, client: OpenAI, model: str, participants: List[int],
-                 dialogue: List[dict[Any, str]]):
+                 dialogue: List[str]):
         assert playthrough_name
         assert client
         assert model

@@ -9,7 +9,7 @@ class DialogueProduct(ABC):
     """
 
     @abstractmethod
-    def get(self) -> List[dict]:
+    def get(self) -> List[str]:
         pass
 
 

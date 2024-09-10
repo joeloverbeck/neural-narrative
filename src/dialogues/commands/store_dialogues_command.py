@@ -1,4 +1,4 @@
-from typing import List, Any
+from typing import List
 
 from src.abstracts.command import Command
 from src.characters.characters import load_character_data
@@ -6,7 +6,7 @@ from src.filesystem.filesystem_manager import FilesystemManager
 
 
 class StoreDialoguesCommand(Command):
-    def __init__(self, playthrough_name: str, participants: List[int], dialogue: List[dict[Any, str]]):
+    def __init__(self, playthrough_name: str, participants: List[int], dialogue: List[str]):
         assert playthrough_name
         assert participants
         assert len(participants) >= 2
@@ -23,8 +23,7 @@ class StoreDialoguesCommand(Command):
         prettified_dialogue = ""
 
         for speech_turn in self._dialogue:
-            for key, values in speech_turn.items():
-                prettified_dialogue += f"{key}: {values}\n"
+            prettified_dialogue += f"{speech_turn}\n"
 
         prettified_dialogue += "\n"
 

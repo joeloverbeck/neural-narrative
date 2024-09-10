@@ -1,5 +1,5 @@
 from abc import abstractmethod, ABC
-from typing import List, Any
+from typing import List
 
 from src.dialogues.abstracts.factory_products import PlayerInputProduct, SpeechDataProduct
 from src.prompting.abstracts.factory_products import LlmToolResponseProduct, LlmContentProduct
@@ -7,7 +7,7 @@ from src.prompting.abstracts.factory_products import LlmToolResponseProduct, Llm
 
 class InvolvePlayerInDialogueStrategy(ABC):
     @abstractmethod
-    def do_algorithm(self, previous_messages: List[dict], dialogue: List[dict[Any, str]]) -> PlayerInputProduct:
+    def do_algorithm(self, previous_messages: List[dict], dialogue: List[str]) -> PlayerInputProduct:
         pass
 
 

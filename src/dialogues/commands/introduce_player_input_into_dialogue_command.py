@@ -1,4 +1,4 @@
-from typing import List, Any, Optional
+from typing import List, Optional
 
 from src.abstracts.command import Command
 from src.abstracts.observer import Observer
@@ -10,7 +10,7 @@ from src.dialogues.abstracts.factory_products import PlayerInputProduct
 class IntroducePlayerInputIntoDialogueCommand(Command, Subject):
 
     def __init__(self, playthrough_name: str, player_identifier: Optional[int],
-                 player_input_product: PlayerInputProduct, dialogue: List[dict[Any, str]]):
+                 player_input_product: PlayerInputProduct, dialogue: List[str]):
         assert playthrough_name
         assert player_input_product
 
@@ -37,7 +37,7 @@ class IntroducePlayerInputIntoDialogueCommand(Command, Subject):
                                                     self._player_identifier)
 
         # Append the user's line to the dialogue so that the speech turn tool takes it into consideration.
-        self._dialogue.append({player_character_data["name"]: self._player_input_product.get()})
+        self._dialogue.append(f"{player_character_data["name"]}: {self._player_input_product.get()}")
 
         speech_data = {"name": f"{player_character_data["name"]}",
                        "speech": f"{self._player_input_product.get()}",

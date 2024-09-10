@@ -30,5 +30,4 @@ def gather_participant_data(playthrough_name: str, participants: List[int]):
 
 
 def compose_speech_entry(speech_data_product: SpeechDataProduct):
-    return {speech_data_product.get()[
-                "name"]: f"*{speech_data_product.get()['narration_text']}* {speech_data_product.get()['speech']}"}
+    return f"{speech_data_product.get()["name"]}: *{speech_data_product.get()['narration_text']}* {speech_data_product.get()['speech']}"

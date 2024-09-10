@@ -5,6 +5,7 @@ from src.filesystem.filesystem_manager import FilesystemManager
 from src.prompting.abstracts.abstract_factories import SystemContentForPromptFactory
 from src.prompting.abstracts.factory_products import SystemContentForPromptProduct
 from src.prompting.products.concrete_system_content_for_prompt_product import ConcreteSystemContentForPromptProduct
+from src.time.time_manager import TimeManager
 from src.tools import generate_tool_prompt
 
 
@@ -61,11 +62,15 @@ class SpeechTurnDialogueSystemContentForPromptFactory(SystemContentForPromptFact
         locations_template = filesystem_manager.load_existing_or_new_json_file(
             filesystem_manager.get_file_path_to_locations_template_file())
 
+        time_manager = TimeManager(float(playthrough_metadata_file["time"]["hour"]))
+
         return ConcreteSystemContentForPromptProduct(prompt_template.format(
             world_name=playthrough_metadata_file["world_template"],
             world_description=worlds_template[playthrough_metadata_file["world_template"]]["description"],
             location_name=self._location_name,
             location_description=locations_template[self._location_name.lower()]["description"],
+            hour=time_manager.get_hour(),
+            time_group=time_manager.get_time_of_the_day(),
             name=self._character_data["name"],
             participant_details=participant_details,
             description=self._character_data["description"],

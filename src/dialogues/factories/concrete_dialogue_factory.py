@@ -1,4 +1,4 @@
-from typing import List, Optional, Any
+from typing import List, Optional
 
 from openai import OpenAI
 
@@ -57,7 +57,7 @@ class ConcreteDialogueFactory(DialogueFactory, Subject):
         # Assuming that the player will have the first choice to talk,
         # once he does talk, the LLM should be prompted to decide who will speak next.
         previous_messages: List[dict] = []
-        dialogue: List[dict[Any, str]] = []
+        dialogue: List[str] = []
 
         while True:
             player_input_product = self._involve_player_in_dialogue_strategy.do_algorithm(previous_messages, dialogue)

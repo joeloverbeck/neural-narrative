@@ -1,5 +1,5 @@
 from types import NoneType
-from typing import List, Any, Optional
+from typing import List, Optional
 
 from src.prompting.abstracts.abstract_factories import SystemContentForPromptFactory
 from src.prompting.abstracts.factory_products import SystemContentForPromptProduct
@@ -9,7 +9,7 @@ from src.tools import generate_tool_prompt
 
 class CharacterChoiceDialogueSystemContentForPromptFactory(SystemContentForPromptFactory):
 
-    def __init__(self, participants: List[dict], player_identifier: Optional[int], dialogue: List[dict[Any, str]],
+    def __init__(self, participants: List[dict], player_identifier: Optional[int], dialogue: List[str],
                  prompt_template: str, tool_data: dict, tool_instructions_template: str):
         assert participants
         assert not isinstance(dialogue, NoneType)

@@ -1,4 +1,4 @@
-from typing import Optional, List, Any
+from typing import Optional, List
 
 from openai import OpenAI
 
@@ -6,13 +6,13 @@ from src.abstracts.command import Command
 from src.constants import MAX_RETRIES_WHEN_UNRECOVERABLE_SPEECH_TURN_CHOICE
 from src.dialogues.abstracts.strategies import DetermineUserMessagesForSpeechTurnStrategy, \
     DetermineSystemMessageForSpeechTurnStrategy
-from src.prompting.factories.speech_turn_tool_response_factory import SpeechTurnToolResponseFactory
+from src.prompting.factories.speech_turn_tool_response_factory import SpeechTurnChoiceToolResponseFactory
 
 
 class SpeechTurnProduceMessagesToPromptLlmCommand(Command):
     def __init__(self, playthrough_name: str, client: OpenAI, model: str, player_identifier: Optional[int],
                  participants: List[int],
-                 dialogue: List[dict[Any, str]],
+                 dialogue: List[str],
                  determine_system_message_for_speech_turn_strategy: DetermineSystemMessageForSpeechTurnStrategy,
                  determine_user_messages_for_speech_turn_strategy: DetermineUserMessagesForSpeechTurnStrategy):
         assert playthrough_name
@@ -36,10 +36,12 @@ class SpeechTurnProduceMessagesToPromptLlmCommand(Command):
     def execute(self) -> None:
 
         while self._max_retries > 0:
-            speech_turn_tool_response_product = SpeechTurnToolResponseFactory(self._playthrough_name, self._client,
-                                                                              self._model, self._player_identifier,
-                                                                              self._participants,
-                                                                              self._dialogue).create_llm_response()
+            speech_turn_tool_response_product = SpeechTurnChoiceToolResponseFactory(self._playthrough_name,
+                                                                                    self._client,
+                                                                                    self._model,
+                                                                                    self._player_identifier,
+                                                                                    self._participants,
+                                                                                    self._dialogue).create_llm_response()
 
             if self._max_retries <= 0:
                 raise ValueError(

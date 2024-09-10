@@ -1,4 +1,4 @@
-from typing import List, Any
+from typing import List
 
 from openai import OpenAI
 
@@ -17,7 +17,7 @@ from src.tools import generate_tool_prompt
 
 
 class ConcreteDialogueSummaryFactory(DialogueSummaryFactory):
-    def __init__(self, client: OpenAI, model: str, dialogue: List[dict[Any, str]], max_retries: int = MAX_RETRIES):
+    def __init__(self, client: OpenAI, model: str, dialogue: List[str], max_retries: int = MAX_RETRIES):
         assert client
         assert model
         assert dialogue
