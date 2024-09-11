@@ -3,21 +3,24 @@ from typing import List
 from src.constants import DIALOGUE_PROMPT_FILE, SPEECH_GENERATOR_TOOL_FILE
 from src.dialogues.abstracts.abstract_factories import InitialPromptingMessagesFactory
 from src.dialogues.abstracts.factory_products import InitialPromptingMessagesProduct
+from src.dialogues.factories.ConcretePlaceDataForDialoguePromptFactory import ConcretePlaceDataForDialoguePromptFactory
 from src.dialogues.factories.speech_turn_dialogue_system_content_for_prompt_factory import \
     SpeechTurnDialogueSystemContentForPromptFactory
+from src.dialogues.strategies.concrete_prompt_formatter_for_dialogue_strategy import \
+    ConcretePromptFormatterForDialogueStrategy
+from src.maps.factories.concrete_current_location_data_factory import ConcreteCurrentLocationDataFactory
 from src.prompting.products.concrete_initial_prompting_messages_product import ConcreteInitialPromptingMessagesProduct
 
 
 class DialogueInitialPromptingMessagesFactory(InitialPromptingMessagesFactory):
-    def __init__(self, playthrough_name: str, location_name: str, participants: List[dict], character_data: dict,
+    def __init__(self, playthrough_name: str, participants: List[dict],
+                 character_data: dict,
                  memories: str):
         assert playthrough_name
-        assert location_name
         assert len(participants) >= 2
         assert character_data
 
         self._playthrough_name = playthrough_name
-        self._location_name = location_name
         self._participants = participants
         self._character_data = character_data
         self._memories = memories
@@ -31,12 +34,14 @@ class DialogueInitialPromptingMessagesFactory(InitialPromptingMessagesFactory):
                 break
 
         system_content_for_prompt_product = SpeechTurnDialogueSystemContentForPromptFactory(
-            self._playthrough_name,
-            self._location_name,
-            self._participants,
-            self._character_data, self._memories,
-            DIALOGUE_PROMPT_FILE,
-            SPEECH_GENERATOR_TOOL_FILE).create_system_content_for_prompt()
+            self._character_data,
+            SPEECH_GENERATOR_TOOL_FILE,
+            ConcretePromptFormatterForDialogueStrategy(self._playthrough_name, self._participants,
+                                                       self._character_data, self._memories,
+                                                       DIALOGUE_PROMPT_FILE,
+                                                       ConcretePlaceDataForDialoguePromptFactory(self._playthrough_name,
+                                                                                                 ConcreteCurrentLocationDataFactory(
+                                                                                                     self._playthrough_name)))).create_system_content_for_prompt()
 
         if not system_content_for_prompt_product.is_valid():
             raise ValueError(

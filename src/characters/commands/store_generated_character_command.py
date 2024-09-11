@@ -32,3 +32,5 @@ class StoreGeneratedCharacterCommand(Command):
         characters[new_id] = self._character_data
 
         filesystem_manager.save_json_file(characters, characters_file)
+
+        print(f"Saved character '{self._character_data["name"]}' at '{characters_file}'")

@@ -17,7 +17,8 @@ def gather_participant_data(playthrough_name: str, participants: List[int]):
                 'identifier': participant,
                 'name': character_data.get('name', 'Unknown'),
                 'description': character_data.get('description'),
-                'personality': character_data.get('personality')
+                'personality': character_data.get('personality'),
+                'equipment': character_data.get('equipment')
             }
 
             # Append the participant's info to the list

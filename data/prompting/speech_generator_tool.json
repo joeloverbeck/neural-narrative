@@ -12,7 +12,7 @@
         },
         "narration_text": {
           "type": "string",
-          "description": "Narration text describing the character's thoughts and/or actions the character's speech. Here is an example: {name} sits up and faces the interlocutor."
+          "description": "Narration text describing the character's thoughts and/or actions the character's speech. Here is an example: {name} sit up and faced the interlocutor."
         },
         "speech": {
           "type": "string",

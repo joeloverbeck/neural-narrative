@@ -1,6 +1,6 @@
 import sys
 
-from src.playthroughs import create_playthrough
+from src.commands.create_playthrough_command import CreatePlaythroughCommand
 from src.prompting.prompting import prompt_for_input
 
 
@@ -13,11 +13,8 @@ def main():
         world_template = prompt_for_input("Enter the name of the world (from those in the template): ")
 
         # Call the create_playthrough function
-        playthrough_path = create_playthrough(playthrough_name, world_template)
-
-        # Confirm that the playthrough has been successfully created
-        print(f"Playthrough '{playthrough_name}' created successfully at {playthrough_path}.")
-
+        CreatePlaythroughCommand(playthrough_name, world_template).execute()
+        
     except Exception as e:
         # Print the exception message and exit the program
         print(f"Error: {e}")

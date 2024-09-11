@@ -3,7 +3,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 
 from src.dialogues.abstracts.factory_products import DialogueProduct, PlayerInputProduct, \
-    InitialPromptingMessagesProduct, SpeechDataProduct
+    InitialPromptingMessagesProduct, SpeechDataProduct, SummaryProduct, PlaceDataForDialoguePromptProduct
 
 
 class DialogueFactory(ABC):
@@ -42,4 +42,10 @@ class SpeechDataFactory(ABC):
 class DialogueSummaryFactory(ABC):
     @abstractmethod
     def create_summary(self) -> SummaryProduct:
+        pass
+
+
+class PlaceDataForDialoguePromptFactory(ABC):
+    @abstractmethod
+    def create_place_data_for_dialogue_prompt(self) -> PlaceDataForDialoguePromptProduct:
         pass

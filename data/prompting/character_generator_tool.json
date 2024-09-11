@@ -12,7 +12,7 @@
         },
         "description": {
           "type": "string",
-          "description": "Any physical description pieces belong here, as attributes separated by + symbols, e.g. tall + ethnic European + red hair + carries a 1h Sword"
+          "description": "Any physical description pieces belong here, as attributes separated by + symbols, e.g. tall + ethnic European + red hair + one-handed sword. Only include elements that would be visually obvious (e.g. no hidden equipment)."
         },
         "personality": {
           "type": "string",
@@ -32,11 +32,15 @@
         },
         "first message": {
           "type": "string",
-          "description": "A single speech pattern example demonstrating how the character would greet someone they have never met before, a stranger, who may have greeted them with a simple \"Hello.\" Their response should be inconsequential, small talk (but not about the weather or the time of day, and absolutely not including any variation on \"What brings you here...\" because every character says that and it's boring AF."
+          "description": "A single speech pattern example demonstrating how the character would greet someone they have never met before, a stranger, who may have greeted them with a simple \"Hello.\" Their response should be inconsequential, small talk (but not about the weather or the time of day, and absolutely not including any variation on \"What brings you here...\""
         },
         "speech patterns": {
           "type": "string",
           "description": "Four or five quotes in the character's voice, following the instructions about speech patterns."
+        },
+        "equipment": {
+          "type": "string",
+          "description": "A list of all the equipment that the character has in his or her person. It includes clothing, jewelry, weapons, tools, etc."
         }
       },
       "required": [
@@ -47,7 +51,8 @@
         "likes",
         "dislikes",
         "first message",
-        "speech patterns"
+        "speech patterns",
+        "equipment"
       ]
     }
   }

@@ -1,5 +1,3 @@
-import sys
-
 import colorama
 from openai import OpenAI
 
@@ -20,16 +18,10 @@ def main():
 
     playthrough_name = prompt_for_input("Enter your playthrough name: ")
 
-    location = prompt_for_input("Enter the location of the dialogue: ")
-
     filesystem_manager = FilesystemManager()
 
     location_file = filesystem_manager.load_existing_or_new_json_file(
         filesystem_manager.get_file_path_to_locations_template_file())
-
-    if location.lower() not in location_file:
-        print(f"There's no such location as '{location}' in the locations templates file.")
-        sys.exit()
 
     # Prompt for user's own character identifier (optional)
     player_identifier = prompt_for_character_identifier("Enter your character identifier (can be empty): ")
@@ -57,7 +49,7 @@ def main():
 
     concrete_involve_player_in_dialogue_strategy.attach(console_dialogue_observer)
 
-    concrete_dialogue_factory = ConcreteDialogueFactory(client, model, playthrough_name, location, participants,
+    concrete_dialogue_factory = ConcreteDialogueFactory(client, model, playthrough_name, participants,
                                                         player_identifier, concrete_involve_player_in_dialogue_strategy)
 
     concrete_dialogue_factory.attach(console_dialogue_observer)

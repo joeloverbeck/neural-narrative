@@ -33,6 +33,17 @@ class ConcreteToolResponseParsingFactory(ToolResponseParsingFactory):
             # Add the missing '<' to the closing tag
             self._response = self._response[:-10] + '</function>'
 
+    def _clean_json_keys(self, obj):
+        if isinstance(obj, dict):
+            # Iterate through the dictionary and clean keys
+            return {key.strip(): self._clean_json_keys(value) for key, value in obj.items()}
+        elif isinstance(obj, list):
+            # If it's a list, apply cleaning recursively to all list items
+            return [self._clean_json_keys(item) for item in obj]
+        else:
+            # If it's not a dictionary or list, return the object itself
+            return obj
+
     def parse_tool_response(self) -> ToolResponseParsingProduct:
 
         # it could be that the response is almost correct, but the AI has hallucinated something. In that case, the
@@ -46,6 +57,10 @@ class ConcreteToolResponseParsingFactory(ToolResponseParsingFactory):
             function_name, args_string = match.groups()
             try:
                 args = json.loads(args_string)
+
+                # Clean the arguments' keys by trimming spaces
+                args = self._clean_json_keys(args)
+
                 return ConcreteToolResponseParsingProduct(function_json={"function": function_name,
                                                                          "arguments": args, }, is_valid=True,
                                                           error=None)

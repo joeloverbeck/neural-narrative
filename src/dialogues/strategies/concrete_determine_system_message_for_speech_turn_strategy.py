@@ -8,21 +8,18 @@ from src.prompting.abstracts.factory_products import LlmToolResponseProduct
 
 
 class ConcreteDetermineSystemMessageForSpeechTurnStrategy(DetermineSystemMessageForSpeechTurnStrategy):
-    def __init__(self, playthrough_name: str, location_name: str, participants: List[int],
+    def __init__(self, playthrough_name: str, participants: List[int],
                  previous_messages: List[dict]):
         assert playthrough_name
-        assert location_name
         assert len(participants) >= 2
 
         self._playthrough_name = playthrough_name
-        self._location_name = location_name
         self._participants = participants
         self._previous_messages = previous_messages
 
     def do_algorithm(self, speech_turn_tool_response_product: LlmToolResponseProduct):
         # The next AI character should get its own system message (that includes peculiarities for that character).
         dialogue_initial_prompting_messages_product = DialogueInitialPromptingMessagesFactory(self._playthrough_name,
-                                                                                              self._location_name,
                                                                                               gather_participant_data(
                                                                                                   self._playthrough_name,
                                                                                                   self._participants),
