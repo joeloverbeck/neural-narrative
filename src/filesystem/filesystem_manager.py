@@ -4,7 +4,7 @@ import sys
 
 from src.constants import CHARACTERS_FOLDER_NAME, PLAYTHROUGHS_FOLDER, CHARACTERS_FILE, \
     SECRET_KEY_FILE, PLAYTHROUGH_METADATA_FILE, MEMORIES_FILE, DIALOGUES_FILE, WORLD_TEMPLATES_FILE, \
-    LOCATIONS_TEMPLATES_FILE
+    LOCATIONS_TEMPLATES_FILE, MAP_FILE, AREAS_TEMPLATES_FILE
 
 
 class FilesystemManager:
@@ -89,8 +89,15 @@ class FilesystemManager:
     def get_file_path_to_locations_template_file():
         return LOCATIONS_TEMPLATES_FILE
 
+    @staticmethod
+    def get_file_path_to_areas_template_file():
+        return AREAS_TEMPLATES_FILE
+
     def get_file_path_to_playthrough_metadata(self, playthrough_name: str):
         return os.path.join(self.get_file_path_to_playthrough_folder(playthrough_name), PLAYTHROUGH_METADATA_FILE)
+
+    def get_file_path_to_map(self, playthrough_name: str):
+        return os.path.join(self.get_file_path_to_playthrough_folder(playthrough_name), MAP_FILE)
 
     def get_file_path_to_characters(self, playthrough_name: str):
         return os.path.join(self.get_file_path_to_playthroughs_folder(), playthrough_name, CHARACTERS_FOLDER_NAME)

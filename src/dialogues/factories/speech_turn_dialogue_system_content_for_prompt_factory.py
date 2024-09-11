@@ -1,37 +1,26 @@
-from typing import List
-
 from src.constants import TOOL_INSTRUCTIONS_FILE
+from src.dialogues.abstracts.strategies import PromptFormatterForDialogueStrategy
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.prompting.abstracts.abstract_factories import SystemContentForPromptFactory
 from src.prompting.abstracts.factory_products import SystemContentForPromptProduct
 from src.prompting.products.concrete_system_content_for_prompt_product import ConcreteSystemContentForPromptProduct
-from src.time.time_manager import TimeManager
 from src.tools import generate_tool_prompt
 
 
 class SpeechTurnDialogueSystemContentForPromptFactory(SystemContentForPromptFactory):
-    def __init__(self, playthrough_name: str, location_name: str, participants: List[dict], character_data: dict,
-                 memories: str,
-                 prompt_file: str,
-                 tool_file: str):
-        assert playthrough_name
-        assert location_name
-        assert len(participants) >= 2
+    def __init__(self, character_data: dict,
+                 tool_file: str,
+                 prompt_formatter_for_dialogue_strategy: PromptFormatterForDialogueStrategy):
         assert character_data
-        assert prompt_file
         assert tool_file
+        assert prompt_formatter_for_dialogue_strategy
 
-        self._playthrough_name = playthrough_name
-        self._location_name = location_name
-        self._participants = participants
         self._character_data = character_data
-        self._memories = memories
-        self._prompt_file = prompt_file
         self._tool_file = tool_file
+        self._prompt_formatter_for_dialogue_strategy = prompt_formatter_for_dialogue_strategy
 
     def create_system_content_for_prompt(self) -> SystemContentForPromptProduct:
         filesystem_manager = FilesystemManager()
-        prompt_template = filesystem_manager.read_file(self._prompt_file)
         tool_data = filesystem_manager.read_json_file(self._tool_file)
 
         # It's necessary to format some of the values in tool_data with actual values.
@@ -48,38 +37,8 @@ class SpeechTurnDialogueSystemContentForPromptFactory(SystemContentForPromptFact
         tool_data['function']['parameters']['properties']['speech']['description'] = \
             tool_data['function']['parameters']['properties']['speech']['description'].format(**replacements)
 
-        participant_details = "\n".join(
-            [f'{participant["name"]}: {participant["description"]}' for participant in self._participants if
-             participant["name"] != self._character_data["name"]])
-
-        # Retrieve the details of the world
-        playthrough_metadata_file = filesystem_manager.load_existing_or_new_json_file(
-            filesystem_manager.get_file_path_to_playthrough_metadata(self._playthrough_name))
-
-        worlds_template = filesystem_manager.load_existing_or_new_json_file(
-            filesystem_manager.get_file_path_to_worlds_template_file())
-
-        locations_template = filesystem_manager.load_existing_or_new_json_file(
-            filesystem_manager.get_file_path_to_locations_template_file())
-
-        time_manager = TimeManager(float(playthrough_metadata_file["time"]["hour"]))
-
-        return ConcreteSystemContentForPromptProduct(prompt_template.format(
-            world_name=playthrough_metadata_file["world_template"],
-            world_description=worlds_template[playthrough_metadata_file["world_template"]]["description"],
-            location_name=self._location_name,
-            location_description=locations_template[self._location_name.lower()]["description"],
-            hour=time_manager.get_hour(),
-            time_group=time_manager.get_time_of_the_day(),
-            name=self._character_data["name"],
-            participant_details=participant_details,
-            description=self._character_data["description"],
-            personality=self._character_data["personality"],
-            profile=self._character_data["profile"],
-            likes=self._character_data["likes"],
-            dislikes=self._character_data["dislikes"],
-            first_message=self._character_data["first message"],
-            speech_patterns=self._character_data["speech patterns"],
-            memories=self._memories
-        ) + "\n\n" + generate_tool_prompt(tool_data, filesystem_manager.read_file(TOOL_INSTRUCTIONS_FILE)),
-                                                     is_valid=True)
+        return ConcreteSystemContentForPromptProduct(
+            self._prompt_formatter_for_dialogue_strategy.do_algorithm() + "\n\n" + generate_tool_prompt(tool_data,
+                                                                                                        filesystem_manager.read_file(
+                                                                                                            TOOL_INSTRUCTIONS_FILE)),
+            is_valid=True)

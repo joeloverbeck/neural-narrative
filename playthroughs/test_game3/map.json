@@ -1,0 +1,16 @@
+{
+  "1": {
+    "type": "area",
+    "place_template": "the neon slums",
+    "locations": [
+      "2"
+    ],
+    "characters": []
+  },
+  "2": {
+    "type": "location",
+    "place_template": "eidolon arcade",
+    "area": "1",
+    "characters": []
+  }
+}

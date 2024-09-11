@@ -21,20 +21,18 @@ from src.dialogues.strategies.concrete_process_llm_content_into_speech_data_stra
 
 
 class ConcreteDialogueFactory(DialogueFactory, Subject):
-    def __init__(self, client: OpenAI, model: str, playthrough_name: str, location_name: str, participants: List[int],
+    def __init__(self, client: OpenAI, model: str, playthrough_name: str, participants: List[int],
                  player_identifier: Optional[int],
                  involve_player_in_dialogue_strategy: InvolvePlayerInDialogueStrategy):
         assert client
         assert model
         assert playthrough_name
-        assert location_name
         assert len(participants) >= 2
         assert involve_player_in_dialogue_strategy
 
         self._client = client
         self._model = model
         self._playthrough_name = playthrough_name
-        self._location_name = location_name
         self._participants = participants
         self._player_identifier = player_identifier
         self._involve_player_in_dialogue_strategy = involve_player_in_dialogue_strategy
@@ -68,8 +66,7 @@ class ConcreteDialogueFactory(DialogueFactory, Subject):
             SpeechTurnProduceMessagesToPromptLlmCommand(self._playthrough_name, self._client, self._model,
                                                         self._player_identifier, self._participants, dialogue,
                                                         ConcreteDetermineSystemMessageForSpeechTurnStrategy(
-                                                            self._playthrough_name, self._location_name,
-                                                            self._participants,
+                                                            self._playthrough_name, self._participants,
                                                             previous_messages),
                                                         ConcreteDetermineUserMessagesForSpeechTurnStrategy(
                                                             self._playthrough_name,

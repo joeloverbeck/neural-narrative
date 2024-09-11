@@ -55,7 +55,8 @@ def test_extract_character_from_tool_response():
             "likes": "Coding, video games, reading science fiction novels.",
             "dislikes": "Small talk, crowded places, public speaking.",
             "first message": "Hey there! I'm John, a software engineer who loves all things tech.",
-            "speech patterns": "John speaks in a calm and measured tone. He often uses technical jargon and strives to be precise in his language."
+            "speech patterns": "John speaks in a calm and measured tone. He often uses technical jargon and strives to be precise in his language.",
+            "equipment": "Equipment"
         }
     }
 
@@ -68,7 +69,8 @@ def test_extract_character_from_tool_response():
         "likes": "Coding, video games, reading science fiction novels.",
         "dislikes": "Small talk, crowded places, public speaking.",
         "first message": "Hey there! I'm John, a software engineer who loves all things tech.",
-        "speech patterns": "John speaks in a calm and measured tone. He often uses technical jargon and strives to be precise in his language."
+        "speech patterns": "John speaks in a calm and measured tone. He often uses technical jargon and strives to be precise in his language.",
+        "equipment": "Equipment"
     }
 
     # Call the function to parse the character data from the tool's response

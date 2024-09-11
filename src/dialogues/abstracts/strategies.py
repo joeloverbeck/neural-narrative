@@ -27,3 +27,9 @@ class ProcessLlmContentIntoSpeechDataStrategy(ABC):
     @abstractmethod
     def do_algorithm(self, llm_content_product: LlmContentProduct) -> SpeechDataProduct:
         pass
+
+
+class PromptFormatterForDialogueStrategy(ABC):
+    @abstractmethod
+    def do_algorithm(self) -> str:
+        pass

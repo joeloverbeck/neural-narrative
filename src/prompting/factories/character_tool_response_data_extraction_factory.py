@@ -23,5 +23,6 @@ class CharacterToolResponseDataExtractionFactory(ToolResponseDataExtractionFacto
             "likes": arguments.get("likes"),
             "dislikes": arguments.get("dislikes"),
             "first message": arguments.get("first message"),
-            "speech patterns": arguments.get("speech patterns")
+            "speech patterns": arguments.get("speech patterns"),
+            "equipment": arguments.get("equipment")
         })
