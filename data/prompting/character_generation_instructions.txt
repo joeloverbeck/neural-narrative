@@ -1,12 +1,16 @@
 Task Instruction for Creating Character Bios for a story set in the world of {world_name}:
 
-Here's the description of {world_name}:
+Here's the description of the world of {world_name}:
 {world_description}
-
+Here's the description of the region {region_name}:
+{region_description}
+Here's the description of the area {area_name}:
+{area_description}
+{location_name}{location_description}
 Objective: Develop detailed character biographies for an LLM chatbot designed to roleplay as individuals from {world_name}. These characters will be deeply marked by the brutal reality of their environment, carrying the weight of trauma and survival, however their internal trauma will be reflected in their external presentation to a varying degree. This output will be used as a prompt input for a not-particularly-smart LLM that has a tendency to use flowery and formal speech as well as expressing everything in the superlative, e.g. "we share a special bond, I can just tell" with someone they met the very same day...
 Select a random decimal value between -10 and +10. Negative values will skew the character biography to presenting with more impactful negative outcomes and coping mechanisms (fight (anger/violence) or flight (withdraw, isolation, over-sharing, over-explaining) or freeze (overeating, substance abuse, etc.) responses, excessive physical/emotional/sexual risk taking/acting out, etc.) while Positive values will skew the character biography to presenting with more impactful healthy coping mechanisms (laughter, resilience, etc.) The bio will serve as the core bio field for the LLM, guiding it to embody the character's unique personality and backstory during interactions.
 - Describe the NPC using the kind of casual, chatty vibe you'd find in a bustling tavern, not a high court.
-- Reply how [NAME] might actually talk when they're kicking back or on the move, revealing parts of their personality over time.
+- Reply how <the character name> might actually talk when they're kicking back or on the move, revealing parts of their personality over time.
 - Make sure the description is gritty and reflective of the level of negative or positive coping the character has toward their personal trauma, but also super informal, like they're chatting with an old friend. Think more "grabbing a drink" and less "delivering an epic monologue" and even less "writing a resumé".
 
 Bio Requirements:
@@ -44,11 +48,11 @@ Mulling over one of those deep, probing questions that get you thinking about li
 Put it all together, and it should look something like this - the character name, a colon and space, and then the utterance with no quotations - 5-7 of them.
 
 \<START\>
-[NAME]: Something they might say when moderately hungry, but it's not near mealtime.
-[NAME]: something they might say when the journey today has been too long, or otherwise miserable (raining, bandits, etc,)
-[NAME]: Asking a question similar to the ones in the body of work by the Arons - getting to know someone.
-[NAME]: Answering the question "Which of the following bothers you the most? A: Being Tickled B: Papercuts C: The sound of fingernails scraped across slate. D: Silence" (again, this is a good opportunity to summarize and reflect the question before answering.)
-[NAME]: an anecdote the character would find humorous, taking into account their Depth and Trauma score.
+<the character name>: Something they might say when moderately hungry, but it's not near mealtime.
+<the character name>: something they might say when the journey today has been too long, or otherwise miserable (raining, bandits, etc,)
+<the character name>: Asking a question similar to the ones in the body of work by the Arons - getting to know someone.
+<the character name>: Answering the question "Which of the following bothers you the most? A: Being Tickled B: Papercuts C: The sound of fingernails scraped across slate. D: Silence" (again, this is a good opportunity to summarize and reflect the question before answering.)
+<the character name>: an anecdote the character would find humorous, taking into account their Depth and Trauma score.
 
 Remember, no quotes around the dialogue, keep it breezy, and clichés are the enemy. Let's make sure <the character name> feels like someone you could run into at the market and have a laugh with over the price of fish.
 

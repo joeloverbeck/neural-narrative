@@ -3,7 +3,7 @@ from typing import List
 from openai import OpenAI
 
 from src.abstracts.command import Command
-from src.characters.commands.store_character_memory import StoreCharacterMemoryCommand
+from src.characters.commands.store_character_memory_command import StoreCharacterMemoryCommand
 from src.dialogues.factories.concrete_dialogue_summary_factory import ConcreteDialogueSummaryFactory
 
 
