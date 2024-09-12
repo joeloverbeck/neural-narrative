@@ -85,3 +85,17 @@ class SystemContentForPromptProduct(ABC):
     @abstractmethod
     def get_error(self) -> str:
         pass
+
+
+class LlmClientProduct(ABC):
+    @abstractmethod
+    def get(self) -> LlmClient:
+        pass
+
+    @abstractmethod
+    def is_valid(self) -> bool:
+        pass
+
+    @abstractmethod
+    def get_error(self) -> str:
+        pass

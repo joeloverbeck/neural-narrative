@@ -1,29 +1,27 @@
 from typing import List, Optional
 
-from openai import OpenAI
-
 from src.dialogues.dialogues import gather_participant_data
 from src.dialogues.factories.character_choice_dialogue_initial_prompting_messages_factory import \
     CharacterChoiceDialogueInitialPromptingMessagesFactory
 from src.prompting.abstracts.abstract_factories import ToolResponseFactory
 from src.prompting.abstracts.factory_products import LlmToolResponseProduct
-from src.prompting.factories.concrete_ai_completion_factory import ConcreteAiCompletionFactory
+from src.prompting.abstracts.llm_client import LlmClient
+from src.prompting.factories.concrete_llm_content_factory import ConcreteLlmContentFactory
 from src.prompting.factories.concrete_tool_response_parsing_factory import ConcreteToolResponseParsingFactory
-from src.prompting.factories.open_ai_llm_content_factory import OpenAiLlmContentFactory
 from src.prompting.products.concrete_llm_tool_response_product import ConcreteLlmToolResponseProduct
 
 
 class SpeechTurnChoiceToolResponseFactory(ToolResponseFactory):
-    def __init__(self, playthrough_name: str, client: OpenAI, model: str, player_identifier: Optional[int],
+    def __init__(self, playthrough_name: str, llm_client: LlmClient, model: str, player_identifier: Optional[int],
                  participants: List[int],
                  dialogue: List[str]):
         assert playthrough_name
-        assert client
+        assert llm_client
         assert model
         assert len(participants) >= 2
 
         self._playthrough_name = playthrough_name
-        self._client = client
+        self._llm_client = llm_client
         self._model = model
         self._player_identifier = player_identifier
         self._participants = participants
@@ -35,10 +33,9 @@ class SpeechTurnChoiceToolResponseFactory(ToolResponseFactory):
         character_choice_dialogue_initial_prompting_messages_product = CharacterChoiceDialogueInitialPromptingMessagesFactory(
             participants, self._player_identifier, self._dialogue).create_initial_prompting_messages()
 
-        llm_content_product = OpenAiLlmContentFactory(client=self._client, model=self._model,
-                                                      messages=character_choice_dialogue_initial_prompting_messages_product.get(),
-                                                      ai_completion_factory=ConcreteAiCompletionFactory(
-                                                          self._client)).generate_content()
+        llm_content_product = ConcreteLlmContentFactory(model=self._model,
+                                                        messages=character_choice_dialogue_initial_prompting_messages_product.get(),
+                                                        llm_client=self._llm_client).generate_content()
 
         if not llm_content_product.is_valid():
             return ConcreteLlmToolResponseProduct(llm_response={}, is_valid=False,

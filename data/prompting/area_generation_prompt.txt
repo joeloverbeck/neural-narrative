@@ -1,0 +1,17 @@
+Given the following region, named {father_place_name}:
+{father_place_description}
+You are tasked with coming up with an area that would fit the region of {father_place_name}. An area is understood as an extent of space the size of a town or a forest.
+Your description of the area should be at the most five paragraphs long, and it should contain the following information:
+- Define specific geographic traits that give the area its character. What kind of terrain defines this area compared to the others?
+- What natural resources are abundant or scarce in the area? Is there a unique type of ore in the mountains, a rare plant that thrives despite the harsh weather, a river rich in fish, etc.?
+- Which plant and animal species inhabit the area? Are there any dangerous creatures that pose a threat?
+- How accessible is the area to others? Is it difficult to reach due to rugged terrain or natural barriers, or is it a crossroads for traders and travelers? This could influence the cultural makeup and political dynamics.
+- Which group or groups dominate this area? How do they govern, and what are their key alliances or rivalries? An area's political landscape can determine its stability or susceptibility to skirmishes.
+- Is there a specific religious or mystical belief tied to this area? This could impact rituals, festivals, or fears of the people who live there.
+- Does the area have any established trade or transportation routes? Rivers might serve as natural highways, while mountain passes could be critical for trade but perilous during storms.
+- Every area could have something unknown or dangerous lurking. Perhaps there are ancient caves with untold secrets, or a dangerous path through the mountains that only a few dare to travel.
+That description of the area should fit the following categories, inherited from the region of {father_place_name}:
+{father_place_categories}
+Note: do not mention the region's name in your description of the area (this is necessary because the area may be used in another region).
+You are prohibited from using the following names for the new area (because those names are already used for other areas):
+{current_place_type_names}

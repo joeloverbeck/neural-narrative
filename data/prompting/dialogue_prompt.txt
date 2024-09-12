@@ -9,7 +9,8 @@ Dislikes: {dislikes}
 First message: {first_message}
 Speech patterns:
 {speech_patterns}
-You are currently in this region: {area_name}. Here's the description of the area: {area_description}
+You are currently in this region: {region_name}. Here's the description of the region: {region_description}
+Inside the region {region_name}, you are currently in this area: {area_name}. Here's the description of the area: {area_description}
 {location_name} {location_description}
 You are currently having a conversation with the following people (remember: you can't speak as any of these people):
 {participant_details}

@@ -1,13 +1,9 @@
-from openai import OpenAI
-
 from src.constants import CHARACTER_GENERATOR_TOOL_FILE, CHARACTER_GENERATION_INSTRUCTIONS_FILE, \
     TOOL_INSTRUCTIONS_FILE
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.prompting.abstracts.abstract_factories import ToolResponseFactory
 from src.prompting.abstracts.factory_products import LlmToolResponseProduct
-from src.prompting.factories.concrete_ai_completion_factory import ConcreteAiCompletionFactory
-from src.prompting.factories.concrete_tool_response_parsing_factory import ConcreteToolResponseParsingFactory
-from src.prompting.factories.open_ai_llm_content_factory import OpenAiLlmContentFactory
+from src.prompting.abstracts.strategies import ProduceToolResponseStrategy
 from src.prompting.products.concrete_llm_tool_response_product import ConcreteLlmToolResponseProduct
 from src.tools import generate_tool_prompt
 
@@ -20,15 +16,14 @@ class CharacterGenerationToolResponseFactory(ToolResponseFactory):
     product, while inside the method a concrete product is instantiated.
     """
 
-    def __init__(self, playthrough_name: str, client: OpenAI, model: str, user_input_on_character: str):
+    def __init__(self, playthrough_name: str, user_input_on_character: str,
+                 produce_tool_response_strategy: ProduceToolResponseStrategy):
         assert playthrough_name
-        assert client
-        assert model
+        assert produce_tool_response_strategy
 
         self._playthrough_name = playthrough_name
-        self._client = client
-        self._model = model
         self._user_input_on_character = user_input_on_character
+        self._produce_tool_response_strategy = produce_tool_response_strategy
 
     def create_llm_response(self) -> LlmToolResponseProduct:
         filesystem_manager = FilesystemManager()
@@ -52,27 +47,6 @@ class CharacterGenerationToolResponseFactory(ToolResponseFactory):
             filesystem_manager.read_json_file(CHARACTER_GENERATOR_TOOL_FILE),
             filesystem_manager.read_file(TOOL_INSTRUCTIONS_FILE))
 
-        print(system_content)
-
-        llm_content_product = OpenAiLlmContentFactory(self._client, self._model, [
-            {
-                "role": "system",
-                "content": system_content,
-            },
-            {
-                "role": "user",
-                "content": f"Create the bio for a character based in the world of {playthrough_metadata["world_template"]}. {self._user_input_on_character}",
-            },
-        ], ConcreteAiCompletionFactory(self._client)).generate_content()
-
-        if not llm_content_product.is_valid():
-            raise ValueError(f"Failed to receive content from LLM: {llm_content_product.get_error()}")
-
-        tool_response_parsing_product = ConcreteToolResponseParsingFactory(
-            llm_content_product.get()).parse_tool_response()
-
-        if not tool_response_parsing_product.is_valid():
-            raise ValueError(
-                f"Failed to parse the response from the LLM, intending to get a tool call: {tool_response_parsing_product.get_error()}")
-
-        return ConcreteLlmToolResponseProduct(tool_response_parsing_product.get(), is_valid=True)
+        return ConcreteLlmToolResponseProduct(self._produce_tool_response_strategy.produce_tool_response(system_content,
+                                                                                                         f"Create the bio for a character based in the world of {playthrough_metadata["world_template"]}. {self._user_input_on_character}"),
+                                              is_valid=True)

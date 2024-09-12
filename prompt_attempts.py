@@ -2,8 +2,8 @@ from openai import OpenAI
 
 from src.constants import OPENROUTER_API_URL, HERMES_405B
 from src.filesystem.filesystem_manager import FilesystemManager
-from src.prompting.factories.concrete_ai_completion_factory import ConcreteAiCompletionFactory
-from src.prompting.factories.open_ai_llm_content_factory import OpenAiLlmContentFactory
+from src.prompting.factories.concrete_llm_content_factory import ConcreteLlmContentFactory
+from src.prompting.open_ai_llm_client import OpenAiLlmClient
 
 
 def main():
@@ -23,9 +23,8 @@ def main():
                 {"role": "system", "content": "The system context has changed once again!"},
                 {"role": "user", "content": "Aw crap, the system role has changed so many times! Is this even legal?"}]
 
-    content = OpenAiLlmContentFactory(client, model=HERMES_405B, messages=messages,
-                                      ai_completion_factory=ConcreteAiCompletionFactory(
-                                          client)).generate_content().get()
+    content = ConcreteLlmContentFactory(model=HERMES_405B, messages=messages,
+                                        llm_client=OpenAiLlmClient(client)).generate_content().get()
 
     print(content)
 

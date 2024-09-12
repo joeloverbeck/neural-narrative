@@ -10,6 +10,7 @@ from src.dialogues.observers.console_dialogue_observer import ConsoleDialogueObs
 from src.dialogues.strategies.concrete_involve_player_in_dialogue_strategy import \
     ConcreteInvolvePlayerInDialogueStrategy
 from src.filesystem.filesystem_manager import FilesystemManager
+from src.prompting.open_ai_llm_client import OpenAiLlmClient
 from src.prompting.prompting import prompt_for_input, prompt_for_character_identifier, prompt_for_multiple_identifiers
 
 
@@ -49,7 +50,7 @@ def main():
 
     concrete_involve_player_in_dialogue_strategy.attach(console_dialogue_observer)
 
-    concrete_dialogue_factory = ConcreteDialogueFactory(client, model, playthrough_name, participants,
+    concrete_dialogue_factory = ConcreteDialogueFactory(OpenAiLlmClient(client), model, playthrough_name, participants,
                                                         player_identifier, concrete_involve_player_in_dialogue_strategy)
 
     concrete_dialogue_factory.attach(console_dialogue_observer)

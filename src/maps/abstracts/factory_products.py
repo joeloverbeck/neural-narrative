@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 
-class CurrentLocationDataProduct(ABC):
+class PlaceDataProduct(ABC):
     @abstractmethod
     def get(self) -> dict:
         pass
@@ -15,7 +15,7 @@ class CurrentLocationDataProduct(ABC):
         pass
 
 
-class AreaDataProduct(ABC):
+class CurrentPlaceProduct(ABC):
     @abstractmethod
     def get(self) -> dict:
         pass

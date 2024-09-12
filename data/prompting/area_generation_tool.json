@@ -1,0 +1,24 @@
+{
+  "type": "function",
+  "function": {
+    "name": "generate_area",
+    "description": "generate the name and description of an area.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the generated area."
+        },
+        "description": {
+          "type": "string",
+          "description": "The description of the generated area. Follow the instructions provided to produce this description."
+        }
+      },
+      "required": [
+        "name",
+        "description"
+      ]
+    }
+  }
+}

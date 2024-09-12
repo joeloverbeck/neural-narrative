@@ -2,6 +2,7 @@
   "1": {
     "type": "area",
     "place_template": "the neon slums",
+    "region": "3",
     "locations": [
       "2"
     ],
@@ -12,5 +13,13 @@
     "place_template": "eidolon arcade",
     "area": "1",
     "characters": []
+  },
+  "3": {
+    "type": "region",
+    "place_template": "Neuropolis",
+    "events": [
+      "Decades ago, the central AI system governing Neuropolis malfunctioned, causing mass chaos. During this event, thousands of uploaded consciousnesses were either deleted or corrupted. This event gave rise to the black-market VR worlds, created by hackers and exiles.",
+      "A rebellion by those who refused neural implants and augmentations took place in the early days of Neuropolis. These \"Disconnected\" were defeated by corporate security forces, and the survivors now live in the city's deepest, darkest levels, entirely cut off from the virtual realm."
+    ]
   }
 }
