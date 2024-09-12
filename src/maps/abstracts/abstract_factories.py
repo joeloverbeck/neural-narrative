@@ -1,15 +1,15 @@
 from abc import ABC, abstractmethod
 
-from src.maps.abstracts.factory_products import CurrentLocationDataProduct, AreaDataProduct
+from src.maps.abstracts.factory_products import PlaceDataProduct, CurrentPlaceProduct
 
 
-class CurrentLocationDataFactory(ABC):
+class PlaceDataFactory(ABC):
     @abstractmethod
-    def create_current_location_data(self) -> CurrentLocationDataProduct:
+    def create_place_data(self) -> PlaceDataProduct:
         pass
 
 
-class AreaDataFactory(ABC):
+class CurrentPlaceFactory(ABC):
     @abstractmethod
-    def create_area_data(self) -> AreaDataProduct:
+    def create_current_place(self) -> CurrentPlaceProduct:
         pass

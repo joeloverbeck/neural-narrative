@@ -1,28 +1,26 @@
 from typing import List
 
-from openai import OpenAI
-
 from src.constants import SUMMARIZE_DIALOGUE_PROMPT_FILE, DIALOGUE_SUMMARIZATION_TOOL_FILE, TOOL_INSTRUCTIONS_FILE, \
     MAX_RETRIES
 from src.dialogues.abstracts.abstract_factories import DialogueSummaryFactory
 from src.dialogues.abstracts.factory_products import SummaryProduct
 from src.dialogues.products.concrete_summary_product import ConcreteSummaryProduct
 from src.filesystem.filesystem_manager import FilesystemManager
-from src.prompting.factories.concrete_ai_completion_factory import ConcreteAiCompletionFactory
+from src.prompting.abstracts.llm_client import LlmClient
+from src.prompting.factories.concrete_llm_content_factory import ConcreteLlmContentFactory
 from src.prompting.factories.concrete_tool_response_parsing_factory import ConcreteToolResponseParsingFactory
 from src.prompting.factories.dialogue_summary_tool_response_data_extraction_factory import \
     DialogueSummaryToolResponseDataExtractionFactory
-from src.prompting.factories.open_ai_llm_content_factory import OpenAiLlmContentFactory
 from src.tools import generate_tool_prompt
 
 
 class ConcreteDialogueSummaryFactory(DialogueSummaryFactory):
-    def __init__(self, client: OpenAI, model: str, dialogue: List[str], max_retries: int = MAX_RETRIES):
-        assert client
+    def __init__(self, llm_client: LlmClient, model: str, dialogue: List[str], max_retries: int = MAX_RETRIES):
+        assert llm_client
         assert model
         assert dialogue
 
-        self._client = client
+        self._llm_client = llm_client
         self._model = model
         self._dialogue = dialogue
         self._max_retries = max_retries
@@ -45,11 +43,10 @@ class ConcreteDialogueSummaryFactory(DialogueSummaryFactory):
         ]
 
         # Now prompt the LLM for a response.
-        llm_content_product = OpenAiLlmContentFactory(client=self._client, model=self._model,
-                                                      messages=messages,
-                                                      ai_completion_factory=ConcreteAiCompletionFactory(
-                                                          self._client), max_retries=self._max_retries,
-                                                      temperature=0.2).generate_content()
+        llm_content_product = ConcreteLlmContentFactory(model=self._model, messages=messages,
+                                                        llm_client=self._llm_client,
+                                                        max_retries=self._max_retries,
+                                                        temperature=0.2).generate_content()
 
         if not llm_content_product.is_valid():
             return ConcreteSummaryProduct("", is_valid=False,

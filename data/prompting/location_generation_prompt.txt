@@ -1,0 +1,15 @@
+Given the following area, named {father_place_name}:
+{father_place_description}
+You are tasked with coming up with a location that would fit the area of {father_place_name}. A location is understood as an extent of space the size of a building or a cave.
+Your description of the location should be at the most five paragraphs long, and it should contain the following information:
+- Consider what can be sensed: sight, sound, smell, touch, taste.
+- Creatures, entities, or people who live in or protect the location. The presence of creatures or characters is essential for drama and interaction.
+- What is valuable in the location? From ores to rare flora, what can be mined, harvested, or stolen?
+- Natural dangers inherent to the location. Avalanches, rockfalls, sudden storms, or even aggressive flora/fauna.
+- What is the emotional or atmospheric tone of the location? Is it a place of foreboding, peace, or mystery? This can influence the reader's perception.
+- What is the primary function of the location today? Is it a training ground for warriors, a mining operation, or a forbidden area only entered under dire circumstances?
+That description of the location should fit the following categories, inherited from the area of {father_place_name}:
+{father_place_categories}
+Note: do not mention the area's name in your description of the location (this is necessary because the location may be used in another area).
+You are prohibited from using the following names for the new location (because those names are already used for other locations):
+{current_place_type_names}

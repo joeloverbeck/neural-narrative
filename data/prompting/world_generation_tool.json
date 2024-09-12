@@ -1,0 +1,32 @@
+{
+  "type": "function",
+  "function": {
+    "name": "generate_world",
+    "description": "generate the name, description, and two fitting categories of a world.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the generated world."
+        },
+        "description": {
+          "type": "string",
+          "description": "The description of the generated world. Follow the instructions provided to produce this description."
+        },
+        "categories": {
+          "type": "array",
+          "description": "Two categories that the world fits into. Follow the instructions provided to produce these categories.",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "name",
+        "description",
+        "categories"
+      ]
+    }
+  }
+}

@@ -1,0 +1,24 @@
+Given the following world, named {father_place_name}:
+{father_place_description}
+You are tasked with coming up with a region that would fit the world of {father_place_name}. A region is understood as an area the size of a country.
+Your description of the region should be at the most six paragraphs long, and it should contain the following information:
+- What are the most notorious geographical features of this region?
+- What is the climate of this region?
+- Who inhabits the region? What are their cultural norms, traditions, and values?
+- What types of buildings or structures define the region? Are there iconic styles of art, sculpture, or architecture? Think of the cultural aesthetics and how they reflect the region's history.
+- What form of governance exists here? Is it a monarchy, a theocracy, a republic, or something else? Is the region controlled by a council, warlords, or a democratic assembly?
+- Is the region in a state of war or peace? Who are their allies and enemies? Do they have longstanding rivalries or uneasy alliances with neighboring realms?
+- Are there factions, guilds, or clans vying for control? Could there be a secret organization pulling the strings behind the scenes?
+- What resources define the region? What goods are highly sought after?
+- Is this region advanced in technology or craftsmanship?
+- What plants, animals, or creatures inhabit the region?
+- What are the spiritual beliefs of the region's inhabitants? Do they worship elemental spirits, nature deities, or ancestors?
+- How is the region defended? What's the region's reputation in terms of military power?
+- How do people move within the region and beyond?
+- What is the social hierarchy? Are there distinct classes, like nobility, mages, warriors, and commoners?
+- Can people rise through the ranks, or are their roles predetermined by birth or magical talent?
+That description of the region should fit the following categories, inherited from the world of {father_place_name}:
+{father_place_categories}
+Note: do not mention the world's name in your description of the region (this is necessary because the region may be used in another world).
+You are prohibited from using the following names for the new region (because those names are already used for other regions):
+{current_place_type_names}

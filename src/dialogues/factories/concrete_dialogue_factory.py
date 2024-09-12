@@ -1,7 +1,5 @@
 from typing import List, Optional
 
-from openai import OpenAI
-
 from src.abstracts.observer import Observer
 from src.abstracts.subject import Subject
 from src.dialogues.abstracts.abstract_factories import DialogueFactory
@@ -18,19 +16,20 @@ from src.dialogues.strategies.concrete_determine_user_messages_for_speech_turn_s
     ConcreteDetermineUserMessagesForSpeechTurnStrategy
 from src.dialogues.strategies.concrete_process_llm_content_into_speech_data_strategy import \
     ConcreteProcessLlmContentIntoSpeechDataStrategy
+from src.prompting.abstracts.llm_client import LlmClient
 
 
 class ConcreteDialogueFactory(DialogueFactory, Subject):
-    def __init__(self, client: OpenAI, model: str, playthrough_name: str, participants: List[int],
+    def __init__(self, llm_client: LlmClient, model: str, playthrough_name: str, participants: List[int],
                  player_identifier: Optional[int],
                  involve_player_in_dialogue_strategy: InvolvePlayerInDialogueStrategy):
-        assert client
+        assert llm_client
         assert model
         assert playthrough_name
         assert len(participants) >= 2
         assert involve_player_in_dialogue_strategy
 
-        self._client = client
+        self._llm_client = llm_client
         self._model = model
         self._playthrough_name = playthrough_name
         self._participants = participants
@@ -63,7 +62,7 @@ class ConcreteDialogueFactory(DialogueFactory, Subject):
             if player_input_product.is_goodbye():
                 break
 
-            SpeechTurnProduceMessagesToPromptLlmCommand(self._playthrough_name, self._client, self._model,
+            SpeechTurnProduceMessagesToPromptLlmCommand(self._playthrough_name, self._llm_client, self._model,
                                                         self._player_identifier, self._participants, dialogue,
                                                         ConcreteDetermineSystemMessageForSpeechTurnStrategy(
                                                             self._playthrough_name, self._participants,
@@ -74,7 +73,7 @@ class ConcreteDialogueFactory(DialogueFactory, Subject):
                                                             player_input_product,
                                                             previous_messages)).execute()
 
-            speech_data_product = LlmSpeechDataFactory(self._client, self._model,
+            speech_data_product = LlmSpeechDataFactory(self._llm_client, self._model,
                                                        previous_messages,
                                                        ConcreteProcessLlmContentIntoSpeechDataStrategy(
                                                            previous_messages)).create_speech_data()

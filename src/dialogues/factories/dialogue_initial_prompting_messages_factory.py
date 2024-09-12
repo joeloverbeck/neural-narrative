@@ -3,12 +3,12 @@ from typing import List
 from src.constants import DIALOGUE_PROMPT_FILE, SPEECH_GENERATOR_TOOL_FILE
 from src.dialogues.abstracts.abstract_factories import InitialPromptingMessagesFactory
 from src.dialogues.abstracts.factory_products import InitialPromptingMessagesProduct
-from src.dialogues.factories.ConcretePlaceDataForDialoguePromptFactory import ConcretePlaceDataForDialoguePromptFactory
+from src.dialogues.factories.concrete_place_data_for_dialogue_prompt_factory import \
+    ConcretePlaceDataForDialoguePromptFactory
 from src.dialogues.factories.speech_turn_dialogue_system_content_for_prompt_factory import \
     SpeechTurnDialogueSystemContentForPromptFactory
 from src.dialogues.strategies.concrete_prompt_formatter_for_dialogue_strategy import \
     ConcretePromptFormatterForDialogueStrategy
-from src.maps.factories.concrete_current_location_data_factory import ConcreteCurrentLocationDataFactory
 from src.prompting.products.concrete_initial_prompting_messages_product import ConcreteInitialPromptingMessagesProduct
 
 
@@ -39,9 +39,8 @@ class DialogueInitialPromptingMessagesFactory(InitialPromptingMessagesFactory):
             ConcretePromptFormatterForDialogueStrategy(self._playthrough_name, self._participants,
                                                        self._character_data, self._memories,
                                                        DIALOGUE_PROMPT_FILE,
-                                                       ConcretePlaceDataForDialoguePromptFactory(self._playthrough_name,
-                                                                                                 ConcreteCurrentLocationDataFactory(
-                                                                                                     self._playthrough_name)))).create_system_content_for_prompt()
+                                                       ConcretePlaceDataForDialoguePromptFactory(
+                                                           self._playthrough_name))).create_system_content_for_prompt()
 
         if not system_content_for_prompt_product.is_valid():
             raise ValueError(

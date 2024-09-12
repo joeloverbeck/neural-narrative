@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import List
 
 from src.prompting.abstracts.factory_products import LlmToolResponseProduct, ExtractedDataProduct, LlmContentProduct, \
-    ToolResponseParsingProduct, SystemContentForPromptProduct, AiCompletionProduct
+    ToolResponseParsingProduct, SystemContentForPromptProduct
+from src.prompting.abstracts.llm_client import LlmClient
 
 
 class ToolResponseParsingFactory(ABC):
@@ -34,12 +34,6 @@ class ToolResponseDataExtractionFactory(ABC):
         pass
 
 
-class AiCompletionFactory(ABC):
-    @abstractmethod
-    def generate_completion(self, model: str, messages: List[dict], temperature=1.0, top_p=1.0) -> AiCompletionProduct:
-        pass
-
-
 class LlmContentFactory(ABC):
     @abstractmethod
     def generate_content(self) -> LlmContentProduct:
@@ -49,4 +43,10 @@ class LlmContentFactory(ABC):
 class SystemContentForPromptFactory(ABC):
     @abstractmethod
     def create_system_content_for_prompt(self) -> SystemContentForPromptProduct:
+        pass
+
+
+class LlmClientFactory(ABC):
+    @abstractmethod
+    def create_llm_client(self) -> LlmClient:
         pass
