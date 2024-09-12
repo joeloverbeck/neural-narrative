@@ -1,6 +1,7 @@
 from src.constants import CHARACTER_GENERATOR_TOOL_FILE, CHARACTER_GENERATION_INSTRUCTIONS_FILE, \
     TOOL_INSTRUCTIONS_FILE
 from src.filesystem.filesystem_manager import FilesystemManager
+from src.maps.places_parameter import PlacesParameter
 from src.prompting.abstracts.abstract_factories import ToolResponseFactory
 from src.prompting.abstracts.factory_products import LlmToolResponseProduct
 from src.prompting.abstracts.strategies import ProduceToolResponseStrategy
@@ -9,20 +10,15 @@ from src.tools import generate_tool_prompt
 
 
 class CharacterGenerationToolResponseFactory(ToolResponseFactory):
-    """
-    Concrete Factories produce a family of products that belong to a single
-    variant. The factory guarantees that resulting products are compatible. Note
-    that signatures of the Concrete Factory's methods return an abstract
-    product, while inside the method a concrete product is instantiated.
-    """
 
-    def __init__(self, playthrough_name: str, user_input_on_character: str,
+    def __init__(self, playthrough_name: str, places_parameter: PlacesParameter,
                  produce_tool_response_strategy: ProduceToolResponseStrategy):
         assert playthrough_name
+        assert places_parameter
         assert produce_tool_response_strategy
 
         self._playthrough_name = playthrough_name
-        self._user_input_on_character = user_input_on_character
+        self._places_parameter = places_parameter
         self._produce_tool_response_strategy = produce_tool_response_strategy
 
     def create_llm_response(self) -> LlmToolResponseProduct:
@@ -37,16 +33,39 @@ class CharacterGenerationToolResponseFactory(ToolResponseFactory):
         worlds_template = filesystem_manager.load_existing_or_new_json_file(
             filesystem_manager.get_file_path_to_worlds_template_file())
 
+        # Now also load the templates of regions, areas, and locations.
+        regions_template = filesystem_manager.load_existing_or_new_json_file(
+            filesystem_manager.get_file_path_to_regions_template_file())
+
+        areas_template = filesystem_manager.load_existing_or_new_json_file(
+            filesystem_manager.get_file_path_to_areas_template_file())
+
+        locations_template = filesystem_manager.load_existing_or_new_json_file(
+            filesystem_manager.get_file_path_to_locations_template_file())
+
+        location_name = ""
+        location_description = ""
+
+        if self._places_parameter.get_location_template():
+            location_name = f"Here's the description of the location {self._places_parameter.get_location_template()}:\n"
+            location_description = f"{locations_template[self._places_parameter.get_location_template()]["description"]}"
+
         character_generation_instructions = character_generation_instructions.format(
             world_name=playthrough_metadata["world_template"],
             world_description=
             worlds_template[playthrough_metadata["world_template"]][
-                "description"])
+                "description"],
+            region_name=self._places_parameter.get_region_template(),
+            region_description=regions_template[self._places_parameter.get_region_template()]["description"],
+            area_name=self._places_parameter.get_area_template(),
+            area_description=areas_template[self._places_parameter.get_area_template()]["description"],
+            location_name=location_name,
+            location_description=location_description)
 
         system_content = character_generation_instructions + "\n\n" + generate_tool_prompt(
             filesystem_manager.read_json_file(CHARACTER_GENERATOR_TOOL_FILE),
             filesystem_manager.read_file(TOOL_INSTRUCTIONS_FILE))
 
         return ConcreteLlmToolResponseProduct(self._produce_tool_response_strategy.produce_tool_response(system_content,
-                                                                                                         f"Create the bio for a character based in the world of {playthrough_metadata["world_template"]}. {self._user_input_on_character}"),
+                                                                                                         f"Create the bio for a character influenced by the places described above."),
                                               is_valid=True)
