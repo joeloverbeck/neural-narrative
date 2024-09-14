@@ -1,25 +1,28 @@
 from src.constants import CHARACTER_GENERATOR_TOOL_FILE, CHARACTER_GENERATION_INSTRUCTIONS_FILE, \
     TOOL_INSTRUCTIONS_FILE
 from src.filesystem.filesystem_manager import FilesystemManager
-from src.maps.places_parameter import PlacesParameter
-from src.prompting.abstracts.abstract_factories import ToolResponseFactory
+from src.maps.places_templates_parameter import PlacesTemplatesParameter
+from src.prompting.abstracts.abstract_factories import ToolResponseProvider, UserContentForCharacterGenerationFactory
 from src.prompting.abstracts.factory_products import LlmToolResponseProduct
 from src.prompting.abstracts.strategies import ProduceToolResponseStrategy
 from src.prompting.products.concrete_llm_tool_response_product import ConcreteLlmToolResponseProduct
 from src.tools import generate_tool_prompt
 
 
-class CharacterGenerationToolResponseFactory(ToolResponseFactory):
+class CharacterGenerationToolResponseProvider(ToolResponseProvider):
 
-    def __init__(self, playthrough_name: str, places_parameter: PlacesParameter,
-                 produce_tool_response_strategy: ProduceToolResponseStrategy):
+    def __init__(self, playthrough_name: str, places_parameter: PlacesTemplatesParameter,
+                 produce_tool_response_strategy: ProduceToolResponseStrategy,
+                 user_content_for_character_generation_factory: UserContentForCharacterGenerationFactory):
         assert playthrough_name
         assert places_parameter
         assert produce_tool_response_strategy
+        assert user_content_for_character_generation_factory
 
         self._playthrough_name = playthrough_name
         self._places_parameter = places_parameter
         self._produce_tool_response_strategy = produce_tool_response_strategy
+        self._user_content_for_character_generation_factory = user_content_for_character_generation_factory
 
     def create_llm_response(self) -> LlmToolResponseProduct:
         filesystem_manager = FilesystemManager()
@@ -66,6 +69,12 @@ class CharacterGenerationToolResponseFactory(ToolResponseFactory):
             filesystem_manager.read_json_file(CHARACTER_GENERATOR_TOOL_FILE),
             filesystem_manager.read_file(TOOL_INSTRUCTIONS_FILE))
 
-        return ConcreteLlmToolResponseProduct(self._produce_tool_response_strategy.produce_tool_response(system_content,
-                                                                                                         f"Create the bio for a character influenced by the places described above."),
-                                              is_valid=True)
+        user_content_product = self._user_content_for_character_generation_factory.create_user_content_for_character_generation()
+
+        if not user_content_product.is_valid():
+            return ConcreteLlmToolResponseProduct({}, is_valid=False,
+                                                  error=f"Was unable to create the user content for character generation: {user_content_product.get_error()}")
+
+        return ConcreteLlmToolResponseProduct(
+            self._produce_tool_response_strategy.produce_tool_response(system_content, user_content_product.get()),
+            is_valid=True)

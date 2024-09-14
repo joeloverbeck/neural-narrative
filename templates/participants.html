@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Select Characters to Speak With{% endblock %}
+
+{% block content %}
+<h1>Select Characters to Speak With</h1>
+
+{% if error %}
+<p style="color: red;">{{ error }}</p>
+{% endif %}
+
+{% if characters %}
+<form action="/participants" method="post">
+    <div class="characters-list">
+        {% for character in characters %}
+        <div class="character">
+            <label>
+                <div class="character-content">
+                    <input name="selected_characters" type="checkbox" value="{{ character.id }}">
+                    <img alt="{{ character.name }}" src="{{ character.image_url }}" width="150">
+                    <div class="character-details">
+                        <h2>{{ character.name }}</h2>
+                        <p><strong>Description:</strong> {{ character.description }}</p>
+                        <p><strong>Equipment:</strong> {{ character.equipment }}</p>
+                    </div>
+                </div>
+            </label>
+        </div>
+        {% endfor %}
+    </div>
+    <input type="submit" value="Start Chat">
+</form>
+{% else %}
+<p>No characters are present at your current location.</p>
+{% endif %}
+{% endblock %}

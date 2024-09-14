@@ -1,0 +1,23 @@
+<!-- templates/index.html -->
+{% extends 'base.html' %}
+
+{% block title %}
+Select Playthrough
+{% endblock %}
+
+{% block content %}
+<h1>Welcome to the Dialogue System</h1>
+{% if playthrough_names %}
+<form action="/" method="post">
+    <label for="playthrough_name">Select your playthrough:</label>
+    <select id="playthrough_name" name="playthrough_name" required>
+        {% for name in playthrough_names %}
+        <option value="{{ name }}">{{ name }}</option>
+        {% endfor %}
+    </select>
+    <input type="submit" value="Next">
+</form>
+{% else %}
+<p>No playthroughs available.</p>
+{% endif %}
+{% endblock %}

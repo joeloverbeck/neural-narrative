@@ -1,24 +1,23 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from typing import Protocol
 
+from src.abstracts.subject import Subject
 from src.dialogues.abstracts.factory_products import DialogueProduct, PlayerInputProduct, \
-    InitialPromptingMessagesProduct, SpeechDataProduct, SummaryProduct, PlaceDataForDialoguePromptProduct
+    InitialPromptingMessagesProduct, SpeechDataProduct, SummaryProduct
 
 
-class DialogueFactory(ABC):
-    """
-    The Abstract Factory interface declares a set of methods that return
-    different abstract products. These products are called a family and are
-    related by a high-level theme or concept. Products of one family are usually
-    able to collaborate among themselves. A family of products may have several
-    variants, but the products of one variant are incompatible with products of
-    another.
-    """
-
-    @abstractmethod
+class DialogueFactory(Protocol):
     def create_dialogue(self) -> DialogueProduct:
         pass
+
+    def process_turn(self) -> bool:
+        pass
+
+
+class DialogueFactorySubject(DialogueFactory, Subject, Protocol):
+    pass
 
 
 class PlayerInputFactory(ABC):
@@ -27,7 +26,7 @@ class PlayerInputFactory(ABC):
         pass
 
 
-class InitialPromptingMessagesFactory(ABC):
+class InitialPromptingMessagesProvider(ABC):
     @abstractmethod
     def create_initial_prompting_messages(self) -> InitialPromptingMessagesProduct:
         pass
@@ -39,13 +38,6 @@ class SpeechDataFactory(ABC):
         pass
 
 
-class DialogueSummaryFactory(ABC):
-    @abstractmethod
+class DialogueSummaryProvider(Protocol):
     def create_summary(self) -> SummaryProduct:
-        pass
-
-
-class PlaceDataForDialoguePromptFactory(ABC):
-    @abstractmethod
-    def create_place_data_for_dialogue_prompt(self) -> PlaceDataForDialoguePromptProduct:
         pass

@@ -1,7 +1,8 @@
+from src.dialogues.messages_to_llm import MessagesToLlm
 from src.prompting.abstracts.llm_client import LlmClient
 from src.prompting.abstracts.strategies import ProduceToolResponseStrategy
-from src.prompting.factories.concrete_llm_content_factory import ConcreteLlmContentFactory
-from src.prompting.factories.concrete_tool_response_parsing_factory import ConcreteToolResponseParsingFactory
+from src.prompting.providers.concrete_llm_content_provider import ConcreteLlmContentProvider
+from src.prompting.providers.concrete_tool_response_parsing_provider import ConcreteToolResponseParsingProvider
 
 
 class ConcreteProduceToolResponseStrategy(ProduceToolResponseStrategy):
@@ -14,21 +15,18 @@ class ConcreteProduceToolResponseStrategy(ProduceToolResponseStrategy):
         self._model = model
 
     def produce_tool_response(self, system_content: str, user_content: str) -> dict:
-        llm_content_product = ConcreteLlmContentFactory(self._model, [
-            {
-                "role": "system",
-                "content": system_content,
-            },
-            {
-                "role": "user",
-                "content": user_content,
-            },
-        ], self._llm_client).generate_content()
+        messages_to_llm = MessagesToLlm()
+
+        messages_to_llm.add_message("system", system_content)
+        messages_to_llm.add_message("user", user_content)
+        
+        llm_content_product = ConcreteLlmContentProvider(self._model, messages_to_llm,
+                                                         self._llm_client).generate_content()
 
         if not llm_content_product.is_valid():
             raise ValueError(f"Failed to receive content from LLM: {llm_content_product.get_error()}")
 
-        tool_response_parsing_product = ConcreteToolResponseParsingFactory(
+        tool_response_parsing_product = ConcreteToolResponseParsingProvider(
             llm_content_product.get()).parse_tool_response()
 
         if not tool_response_parsing_product.is_valid():

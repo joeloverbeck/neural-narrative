@@ -1,16 +1,19 @@
 # Function definitions go here (assuming already imported or defined)
-from typing import List
 
-from src.dialogues.factories.character_choice_dialogue_system_content_for_prompt_factory import \
-    CharacterChoiceDialogueSystemContentForPromptFactory
+from src.dialogues.providers.character_choice_dialogue_system_content_for_prompt_provider import \
+    CharacterChoiceDialogueSystemContentForPromptProvider
+from src.dialogues.transcription import Transcription
 
 
 def test_create_system_content_for_character_choice_dialogue_prompt():
     # Arrange
     participants = [{"name": "Jon", "identifier": "1", "personality": "personality"},
                     {"name": "Rusty Macy", "identifier": "2", "personality": "personality"}]
-    player_identifier = 1
-    dialogue: List[str] = ["Jon: Hello!", "Rusty Macy: Hello back to you."]
+    player_identifier = "1"
+
+    transcription = Transcription()
+    transcription.add_speech_turn("Jon", "Hello!")
+    transcription.add_speech_turn("Rusty Macy", "Hello back to you.")
     prompt_template = """A conversation is ongoing, that features the following active participants:
 {all_participants}
 
@@ -62,9 +65,9 @@ choose_speech_turn (chooses who among the possible participants will speak the n
 {"name": "choose_speech_turn", "description": "chooses who among the possible participants will speak the next line of dialogue in the ongoing conversation.", "parameters": {"type": "object", "properties": {"identifier": {"type": "integer", "description": "The numeric identifier of the participant who will speak the next line of dialogue."}, "name": {"type": "string", "description": "The name of the participant who will speak the next line of dialogue."}}, "required": ["identifier", "name"]}}"""
 
     # Act
-    result = CharacterChoiceDialogueSystemContentForPromptFactory(participants, player_identifier, dialogue,
-                                                                  prompt_template, tool_data,
-                                                                  tool_instructions_template).create_system_content_for_prompt().get()
+    result = CharacterChoiceDialogueSystemContentForPromptProvider(participants, player_identifier, transcription,
+                                                                   prompt_template, tool_data,
+                                                                   tool_instructions_template).create_system_content_for_prompt().get()
 
     # Assert
     assert result == expected_output

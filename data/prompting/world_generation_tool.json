@@ -16,7 +16,7 @@
         },
         "categories": {
           "type": "array",
-          "description": "Two categories that the world fits into. Follow the instructions provided to produce these categories.",
+          "description": "Given your created description, you should reduce this world to two fitting categories (such as high fantasy, dark fantasy, cyberpunk, horror, etc.).",
           "items": {
             "type": "string"
           }

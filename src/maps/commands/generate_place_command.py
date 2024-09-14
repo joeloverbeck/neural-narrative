@@ -4,16 +4,17 @@ from src.abstracts.command import Command
 from src.constants import HERMES_405B
 from src.enums import TemplateType
 from src.filesystem.filesystem_manager import FilesystemManager
+from src.interfaces.abstracts.interface_manager import InterfaceManager
 from src.maps.commands.store_generated_place_command import StoreGeneratedPlaceCommand
-from src.prompting.factories.open_ai_llm_client_factory import OpenAILlmClientFactory
-from src.prompting.factories.place_generation_tool_response_factory import PlaceGenerationToolResponseFactory
+from src.prompting.factories.openrouter_llm_client_factory import OpenRouterLlmClientFactory
+from src.prompting.factories.place_generation_tool_response_factory import PlaceGenerationToolResponseProvider
 from src.prompting.factories.place_tool_response_data_extraction_factory import PlaceToolResponseDataExtractionFactory
-from src.prompting.prompting import prompt_for_input
 from src.prompting.strategies.concrete_produce_tool_response_strategy import ConcreteProduceToolResponseStrategy
 
 
 class GeneratePlaceCommand(Command):
-    def __init__(self, place_template_type: TemplateType, father_place_template_type: TemplateType):
+    def __init__(self, place_template_type: TemplateType, father_place_template_type: TemplateType,
+                 interface_manager: InterfaceManager = None):
         assert place_template_type
         assert father_place_template_type
 
@@ -31,10 +32,12 @@ class GeneratePlaceCommand(Command):
             raise ValueError(
                 f"Attempted to create a location from something other than an area! The father place was '{self._father_place_template_type}'.")
 
+        self._interface_manager = interface_manager or InterfaceManager()
+
     def execute(self) -> None:
         print(
             f"This command generates one {self._place_template_type.value} for an existing {self._father_place_template_type.value}.")
-        chosen_place_identifier = prompt_for_input(
+        chosen_place_identifier = self._interface_manager.prompt_for_input(
             f"For which {self._father_place_template_type.value} do you want to create the {self._place_template_type.value}?: ")
 
         filesystem_manager = FilesystemManager()
@@ -57,11 +60,11 @@ class GeneratePlaceCommand(Command):
         if chosen_place_identifier not in father_place_templates:
             raise ValueError(f"There isn't a {self._place_template_type} template named '{chosen_place_identifier}'")
 
-        llm_tool_response_product = PlaceGenerationToolResponseFactory(chosen_place_identifier,
-                                                                       self._place_template_type,
-                                                                       ConcreteProduceToolResponseStrategy(
-                                                                           OpenAILlmClientFactory().create_llm_client(),
-                                                                           model=HERMES_405B)).create_llm_response()
+        llm_tool_response_product = PlaceGenerationToolResponseProvider(chosen_place_identifier,
+                                                                        self._place_template_type,
+                                                                        ConcreteProduceToolResponseStrategy(
+                                                                            OpenRouterLlmClientFactory().create_llm_client(),
+                                                                            model=HERMES_405B)).create_llm_response()
 
         if not llm_tool_response_product.is_valid():
             raise ValueError(

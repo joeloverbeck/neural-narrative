@@ -1,15 +1,12 @@
 from abc import ABC, abstractmethod
-from typing import List
+from typing import Protocol
+
+from src.dialogues.messages_to_llm import MessagesToLlm
+from src.dialogues.transcription import Transcription
 
 
-class DialogueProduct(ABC):
-    """
-    Each distinct product of a product family should have a base interface. All
-    variants of the product must implement this interface.
-    """
-
-    @abstractmethod
-    def get(self) -> List[str]:
+class DialogueProduct(Protocol):
+    def get(self) -> Transcription:
         pass
 
 
@@ -33,7 +30,7 @@ class PlayerInputProduct(ABC):
 
 class InitialPromptingMessagesProduct(ABC):
     @abstractmethod
-    def get(self) -> List[dict]:
+    def get(self) -> MessagesToLlm:
         pass
 
 
@@ -54,20 +51,6 @@ class SpeechDataProduct(ABC):
 class SummaryProduct(ABC):
     @abstractmethod
     def get(self) -> str:
-        pass
-
-    @abstractmethod
-    def is_valid(self) -> bool:
-        pass
-
-    @abstractmethod
-    def get_error(self) -> str:
-        pass
-
-
-class PlaceDataForDialoguePromptProduct(ABC):
-    @abstractmethod
-    def get(self) -> dict:
         pass
 
     @abstractmethod

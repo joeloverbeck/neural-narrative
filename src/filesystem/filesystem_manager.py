@@ -3,8 +3,9 @@ import os
 import sys
 
 from src.constants import CHARACTERS_FOLDER_NAME, PLAYTHROUGHS_FOLDER, CHARACTERS_FILE, \
-    SECRET_KEY_FILE, PLAYTHROUGH_METADATA_FILE, MEMORIES_FILE, DIALOGUES_FILE, WORLD_TEMPLATES_FILE, \
-    LOCATIONS_TEMPLATES_FILE, MAP_FILE, AREAS_TEMPLATES_FILE, REGIONS_TEMPLATES_FILE
+    OPENROUTER_SECRET_KEY_FILE, PLAYTHROUGH_METADATA_FILE, MEMORIES_FILE, DIALOGUES_FILE, WORLD_TEMPLATES_FILE, \
+    LOCATIONS_TEMPLATES_FILE, MAP_FILE, AREAS_TEMPLATES_FILE, REGIONS_TEMPLATES_FILE, LOGGING_CONFIG_FILE, \
+    OPENAI_SECRET_KEY_FILE, IMAGES_FOLDER_NAME, OPENAI_PROJECT_KEY_FILE
 
 
 class FilesystemManager:
@@ -20,9 +21,21 @@ class FilesystemManager:
             return json.load(file)
 
     @staticmethod
+    def create_empty_file_if_not_exists(file_path: str):
+        if not os.path.exists(file_path):
+            # Create an empty file
+            with open(file_path, 'w') as f:
+                pass  # This will create the empty file
+
+    @staticmethod
     def write_file(file_path, contents: str):
         with open(file_path, "a") as file:
             file.write(contents)
+
+    @staticmethod
+    def write_binary_file(file_path, contents: bytes):
+        with open(file_path, 'wb') as f:
+            f.write(contents)
 
     @staticmethod
     def save_json_file(json_data, file_path):
@@ -57,12 +70,30 @@ class FilesystemManager:
     def does_file_path_exist(file_path):
         return os.path.exists(file_path)
 
-    def load_secret_key(self):
+    def load_openrouter_secret_key(self):
         try:
             # Attempt to load the secret key
-            return self.read_file(SECRET_KEY_FILE)
+            return self.read_file(OPENROUTER_SECRET_KEY_FILE)
         except FileNotFoundError:
-            sys.exit(f"Error: File '{SECRET_KEY_FILE}'not found. Please check the file path.")
+            sys.exit(f"Error: File '{OPENROUTER_SECRET_KEY_FILE}'not found. Please check the file path.")
+        except Exception as e:
+            sys.exit(f"An unexpected error occurred: {str(e)}")
+
+    def load_openai_secret_key(self):
+        try:
+            # Attempt to load the secret key
+            return self.read_file(OPENAI_SECRET_KEY_FILE)
+        except FileNotFoundError:
+            sys.exit(f"Error: File '{OPENAI_SECRET_KEY_FILE}' not found. Please check the file path.")
+        except Exception as e:
+            sys.exit(f"An unexpected error occurred: {str(e)}")
+
+    def load_openai_project_key(self):
+        try:
+            # Attempt to load the secret key
+            return self.read_file(OPENAI_PROJECT_KEY_FILE)
+        except FileNotFoundError:
+            sys.exit(f"Error: File '{OPENAI_PROJECT_KEY_FILE}' not found. Please check the file path.")
         except Exception as e:
             sys.exit(f"An unexpected error occurred: {str(e)}")
 
@@ -106,6 +137,16 @@ class FilesystemManager:
     def get_file_path_to_characters(self, playthrough_name: str):
         return os.path.join(self.get_file_path_to_playthroughs_folder(), playthrough_name, CHARACTERS_FOLDER_NAME)
 
+    @staticmethod
+    def get_file_path_to_character_images(playthrough_name: str) -> str:
+        images_path = os.path.join(f"static/{playthrough_name}", IMAGES_FOLDER_NAME)
+        os.makedirs(images_path, exist_ok=True)
+
+        return images_path
+
+    def get_file_path_to_character_image(self, playthrough_name: str, character_identifier: str):
+        return os.path.join(self.get_file_path_to_character_images(playthrough_name), f"{character_identifier}.png")
+
     def get_file_path_to_characters_file(self, playthrough_name: str):
         # Build the path to the characters folder
         characters_folder = self.get_file_path_to_characters(playthrough_name)
@@ -114,7 +155,7 @@ class FilesystemManager:
         # Build the path to the characters.json file
         return os.path.join(characters_folder, CHARACTERS_FILE)
 
-    def get_file_path_to_character_folder(self, playthrough_name: str, character_identifier: int, character_data: dict):
+    def get_file_path_to_character_folder(self, playthrough_name: str, character_identifier: str, character_data: dict):
         folder_name = f"{character_data['name']} - {character_identifier}"
         file_path = os.path.join(self.get_file_path_to_characters(playthrough_name), folder_name)
 
@@ -123,7 +164,7 @@ class FilesystemManager:
 
         return file_path
 
-    def get_file_path_to_character_dialogues(self, playthrough_name: str, character_identifier: int,
+    def get_file_path_to_character_dialogues(self, playthrough_name: str, character_identifier: str,
                                              character_data: dict):
         # Define the path
         folder_path = self.get_file_path_to_character_folder(playthrough_name, character_identifier, character_data)
@@ -131,9 +172,12 @@ class FilesystemManager:
         # Define the path to the "dialogues.txt" file
         return os.path.join(folder_path, DIALOGUES_FILE)
 
-    def get_file_path_to_character_memories(self, playthrough_name: str, character_identifier: int,
+    def get_file_path_to_character_memories(self, playthrough_name: str, character_identifier: str,
                                             character_data: dict):
         # Define the path to the "memories.txt" file
         return os.path.join(
             self.get_file_path_to_character_folder(playthrough_name, character_identifier, character_data),
             MEMORIES_FILE)
+
+    def get_logging_config_file(self) -> dict:
+        return self.load_existing_or_new_json_file(LOGGING_CONFIG_FILE)

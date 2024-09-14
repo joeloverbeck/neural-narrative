@@ -1,8 +1,9 @@
 from typing import List
 
-from src.dialogues.abstracts.abstract_factories import PlaceDataForDialoguePromptFactory
 from src.dialogues.abstracts.strategies import PromptFormatterForDialogueStrategy
 from src.filesystem.filesystem_manager import FilesystemManager
+from src.maps.abstracts.abstract_factories import FullPlaceDataFactory
+from src.maps.map_manager import MapManager
 from src.time.time_manager import TimeManager
 
 
@@ -10,58 +11,60 @@ class ConcretePromptFormatterForDialogueStrategy(PromptFormatterForDialogueStrat
     def __init__(self, playthrough_name: str, participants: List[dict],
                  character_data: dict,
                  memories: str, prompt_file: str,
-                 place_data_for_dialogue_prompt_factory: PlaceDataForDialoguePromptFactory):
+                 full_place_data_factory: FullPlaceDataFactory,
+                 filesystem_manager: FilesystemManager = None,
+                 map_manager: MapManager = None):
         assert playthrough_name
         assert len(participants) >= 2
         assert character_data
         assert prompt_file
-        assert place_data_for_dialogue_prompt_factory
 
         self._playthrough_name = playthrough_name
         self._participants = participants
         self._character_data = character_data
         self._memories = memories
         self._prompt_file = prompt_file
-        self._place_data_for_dialogue_prompt_factory = place_data_for_dialogue_prompt_factory
+        self._full_place_data_factory = full_place_data_factory
+
+        self._filesystem_manager = filesystem_manager or FilesystemManager()
+        self._map_manager = map_manager or MapManager(self._playthrough_name)
 
     def do_algorithm(self) -> str:
-        filesystem_manager = FilesystemManager()
+        full_place_data_product = self._full_place_data_factory.create_full_place_data()
 
-        # Retrieve the details of the world
-        playthrough_metadata_file = filesystem_manager.load_existing_or_new_json_file(
-            filesystem_manager.get_file_path_to_playthrough_metadata(self._playthrough_name))
+        if not full_place_data_product.is_valid():
+            raise ValueError(f"Was unable to retrieve the full place data: {full_place_data_product.get_error()}")
 
-        worlds_template = filesystem_manager.load_existing_or_new_json_file(
-            filesystem_manager.get_file_path_to_worlds_template_file())
+        full_place_data = full_place_data_product.get()
+
+        # It could be that there isn't a location involved
+        location_name = ""
+        location_description = ""
+
+        if full_place_data["location_data"]:
+            location_name = f"Inside the area {full_place_data["area_data"]["name"]}, you are currently in this location: {full_place_data["location_data"]["name"]}."
+            location_description = f"Here's the description of the location: {full_place_data["location_data"]["description"]}"
+
+        playthrough_metadata_file = self._filesystem_manager.load_existing_or_new_json_file(
+            self._filesystem_manager.get_file_path_to_playthrough_metadata(self._playthrough_name))
+
+        time_manager = TimeManager(float(playthrough_metadata_file["time"]["hour"]))
+
+        worlds_template = self._filesystem_manager.load_existing_or_new_json_file(
+            self._filesystem_manager.get_file_path_to_worlds_template_file())
 
         participant_details = "\n".join(
             [f'{participant["name"]}: {participant["description"]}. Equipment: {participant["equipment"]}' for
              participant in self._participants if
              participant["name"] != self._character_data["name"]])
 
-        time_manager = TimeManager(float(playthrough_metadata_file["time"]["hour"]))
-
-        place_data_for_dialogue_prompt_product = self._place_data_for_dialogue_prompt_factory.create_place_data_for_dialogue_prompt()
-
-        if not place_data_for_dialogue_prompt_product.is_valid():
-            raise ValueError(
-                f"Wasn't able to produce place data for the dialogue prompt: {place_data_for_dialogue_prompt_product.get_error()}")
-
-        # It could be that there isn't a location involved
-        location_name = ""
-        location_description = ""
-
-        if place_data_for_dialogue_prompt_product.get()["location_data"]:
-            location_name = f"Inside the area {place_data_for_dialogue_prompt_product.get()["area_data"]["name"]}, you are currently in this location: {place_data_for_dialogue_prompt_product.get()["location_data"]["name"]}."
-            location_description = f"Here's the description of the location: {place_data_for_dialogue_prompt_product.get()["location_data"]["description"]}"
-
-        return filesystem_manager.read_file(self._prompt_file).format(
+        return self._filesystem_manager.read_file(self._prompt_file).format(
             world_name=playthrough_metadata_file["world_template"],
             world_description=worlds_template[playthrough_metadata_file["world_template"]]["description"],
-            region_name=place_data_for_dialogue_prompt_product.get()["region_data"]["name"],
-            region_description=place_data_for_dialogue_prompt_product.get()["region_data"]["description"],
-            area_name=place_data_for_dialogue_prompt_product.get()["area_data"]["name"],
-            area_description=place_data_for_dialogue_prompt_product.get()["area_data"]["description"],
+            region_name=full_place_data["region_data"]["name"],
+            region_description=full_place_data["region_data"]["description"],
+            area_name=full_place_data["area_data"]["name"],
+            area_description=full_place_data["area_data"]["description"],
             location_name=location_name,
             location_description=location_description,
             hour=time_manager.get_hour(),

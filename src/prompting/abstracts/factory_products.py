@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from typing import Protocol
 
-from src.enums import AiCompletionErrorType
+from src.prompting.abstracts.llm_client import LlmClient
 
 
 class ToolResponseParsingProduct(ABC):
@@ -45,20 +46,6 @@ class ExtractedDataProduct(ABC):
         pass
 
 
-class AiCompletionProduct(ABC):
-    @abstractmethod
-    def get(self) -> str:
-        pass
-
-    @abstractmethod
-    def is_valid(self) -> bool:
-        pass
-
-    @abstractmethod
-    def get_error(self) -> AiCompletionErrorType:
-        pass
-
-
 class LlmContentProduct(ABC):
     @abstractmethod
     def get(self) -> str:
@@ -97,5 +84,16 @@ class LlmClientProduct(ABC):
         pass
 
     @abstractmethod
+    def get_error(self) -> str:
+        pass
+
+
+class UserContentForCharacterGenerationProduct(Protocol):
+    def get(self) -> str:
+        pass
+
+    def is_valid(self) -> bool:
+        pass
+
     def get_error(self) -> str:
         pass
