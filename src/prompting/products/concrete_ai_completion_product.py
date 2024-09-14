@@ -4,7 +4,7 @@ from openai.types.chat import ChatCompletion
 
 from src.constants import TOO_MANY_REQUESTS_ERROR_NUMBER, UNAUTHORIZED_ERROR_NUMBER
 from src.enums import AiCompletionErrorType
-from src.prompting.abstracts.factory_products import AiCompletionProduct
+from src.prompting.abstracts.ai_completion_product import AiCompletionProduct
 
 
 class ConcreteAiCompletionProduct(AiCompletionProduct):

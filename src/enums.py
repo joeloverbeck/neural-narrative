@@ -11,6 +11,7 @@ class PlaceType(Enum):
     LOCATION = "location"
     AREA = "area"
     REGION = "region"
+    WORLD = "world"
 
 
 class TemplateType(Enum):

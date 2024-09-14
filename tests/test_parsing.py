@@ -1,7 +1,7 @@
 # Assuming parse_tool_response is defined as given in the question
 from src.prompting.factories.character_tool_response_data_extraction_factory import \
     CharacterToolResponseDataExtractionFactory
-from src.prompting.factories.concrete_tool_response_parsing_factory import ConcreteToolResponseParsingFactory
+from src.prompting.providers.concrete_tool_response_parsing_provider import ConcreteToolResponseParsingProvider
 
 
 def test_parse_tool_response():
@@ -36,7 +36,7 @@ def test_parse_tool_response():
     }
 
     # Actual result from parse_tool_response
-    actual_result = ConcreteToolResponseParsingFactory(response).parse_tool_response()
+    actual_result = ConcreteToolResponseParsingProvider(response).parse_tool_response()
 
     assert actual_result.is_valid()
 

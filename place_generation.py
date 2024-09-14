@@ -2,15 +2,16 @@ import sys
 
 from src.constants import HERMES_405B
 from src.enums import TemplateType
+from src.interfaces.abstracts.interface_manager import InterfaceManager
 from src.maps.strategies.fathered_place_generation_strategy import FatheredPlaceGenerationStrategy
 from src.maps.strategies.world_generation_strategy import WorldGenerationStrategy
-from src.prompting.factories.open_ai_llm_client_factory import OpenAILlmClientFactory
-from src.prompting.prompting import prompt_for_input
+from src.prompting.factories.openrouter_llm_client_factory import OpenRouterLlmClientFactory
 from src.prompting.strategies.concrete_produce_tool_response_strategy import ConcreteProduceToolResponseStrategy
 
 
 def main():
-    chosen_place_type = prompt_for_input("What type of place do you want to generate? (world|region|area|location): ")
+    chosen_place_type = InterfaceManager().prompt_for_input(
+        "What type of place do you want to generate? (world|region|area|location): ")
 
     try:
         place_template_type = TemplateType(chosen_place_type)
@@ -20,7 +21,7 @@ def main():
 
     if place_template_type == TemplateType.WORLD:
         WorldGenerationStrategy(
-            ConcreteProduceToolResponseStrategy(OpenAILlmClientFactory().create_llm_client(),
+            ConcreteProduceToolResponseStrategy(OpenRouterLlmClientFactory().create_llm_client(),
                                                 model=HERMES_405B)).generate_place()
     else:
         FatheredPlaceGenerationStrategy(place_template_type).generate_place()

@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Chat{% endblock %}
+
+{% block content %}
+<h1>Chat with Participants</h1>
+
+<div class="chat-window">
+    {% for message in dialogue %}
+    <div class="chat-bubble {{ message.alignment }}">
+        <img alt="{{ message.sender_name }}" class="avatar" src="{{ message.sender_photo_url }}">
+        <div class="message-content">
+            <div class="sender-name">{{ message.sender_name }}</div>
+            <div class="message-text">{{ message.message_text }}</div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<form method="post">
+    <input name="user_input" placeholder="Type your message here..." required type="text">
+    <input type="submit" value="Send">
+</form>
+{% endblock %}

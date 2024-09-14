@@ -1,16 +1,21 @@
+import logging
 from typing import List
 
-from src.characters.characters import load_character_data
-from src.dialogues.abstracts.factory_products import SpeechDataProduct
+from src.characters.characters_manager import CharactersManager
+
+logger = logging.getLogger(__name__)
 
 
-def gather_participant_data(playthrough_name: str, participants: List[int]):
+def gather_participants_data(playthrough_name: str, participants: List[str],
+                             characters_manager: CharactersManager = None):
+    characters_manager = characters_manager or CharactersManager(playthrough_name)
+
     participants_data = []  # Initialize an empty list to store participants' data
 
     for participant in participants:
         try:
             # Load character data for each participant
-            character_data = load_character_data(playthrough_name, participant)
+            character_data = characters_manager.load_character_data(playthrough_name, participant)
 
             # Assuming the character data has a 'name' field
             participant_info = {
@@ -25,10 +30,6 @@ def gather_participant_data(playthrough_name: str, participants: List[int]):
             participants_data.append(participant_info)
 
         except (FileNotFoundError, KeyError) as e:
-            print(f"Error loading data for participant {participant}: {e}")
+            logger.error(f"Error loading data for participant {participant}: {e}")
 
     return participants_data
-
-
-def compose_speech_entry(speech_data_product: SpeechDataProduct):
-    return f"{speech_data_product.get()["name"]}: *{speech_data_product.get()['narration_text']}* {speech_data_product.get()['speech']}"

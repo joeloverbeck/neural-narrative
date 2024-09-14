@@ -1,22 +1,22 @@
 You are tasked with coming up with a world for a narrative. A world is understood as a physical space the size of a planet or a moon.
 Your description of the world should be at the most six paragraphs long, and it should contain the following information:
-- What is the landscape of the world like? (mountains, oceans, forests, deserts)
-- How do the geography and climate influence the daily lives of the inhabitants?
-- Are there any unusual or fantastical geographic features?
-- How does geography affect travel, commerce, or conflict?
-- What creatures, animals, and plants inhabit this world?
-- What are the major civilizations or settlements like in this world? (advanced, primitive, tribal)
-- What do these societies value? (wealth, honor, knowledge, survival)
+- What are the world's major geographical features (continents, oceans, mountains, deserts)?
+- What kinds of flora and fauna inhabit the world?
+- What are the different cultures or civilizations present? What are their customs, traditions, and social norms?
 - What languages, arts, and cultural traditions dominate the landscape?
-- What is the technological level of the world? (stone age, medieval, futuristic)
-- What are the ruling entities? (kingdoms, corporations, empires, democracies)
-- Are there any ongoing conflicts or alliances between different factions?
-- What are the main resources of the world? (natural resources, magic energy, advanced technology)
+- What forms of government exist (monarchies, democracies, empires)?
+- Who holds power, and how is it maintained?
+- Are there political tensions or alliances between different groups?
+- What is the economic system (trade-based, currency, barter)?
+- What resources are abundant or scarce?
 - How do different groups vie for control of these resources?
+- What is the level of technological advancement?
+- Is there magic or advanced science, and how does it work?
 - What are the dominant religions, belief systems, or philosophical schools?
-- What are the different social classes, and how are they determined? (birthright, merit, wealth, magical ability)
-- Are there non-human races or species? How do they interact with humans or the dominant species?
-- Are there racial tensions, alliances, or interspecies cooperation?
-Given your created description, you should reduce this world to two fitting categories (such as high fantasy, dark fantasy, cyberpunk, horror, etc.)
+- Are there conflicts arising from religious differences?
+- What are the class divisions (nobility, commoners, castes)?
+- How is social status determined and can it change?
+- Who inhabits the world (humans, aliens, mythical creatures)?
+- What are the relationships between different species or races? Are there prevalent biases or alliances?
 You are prohibited from using the following names for the new world (because those names are already used for other worlds):
 {world_names}

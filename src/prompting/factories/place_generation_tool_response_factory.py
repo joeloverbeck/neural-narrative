@@ -4,14 +4,14 @@ from src.constants import AREA_GENERATION_PROMPT_FILE, REGION_GENERATION_PROMPT_
     REGION_GENERATION_TOOL_FILE, TOOL_INSTRUCTIONS_FILE, AREA_GENERATION_TOOL_FILE, LOCATION_GENERATION_TOOL_FILE
 from src.enums import TemplateType
 from src.filesystem.filesystem_manager import FilesystemManager
-from src.prompting.abstracts.abstract_factories import ToolResponseFactory
+from src.prompting.abstracts.abstract_factories import ToolResponseProvider
 from src.prompting.abstracts.factory_products import LlmToolResponseProduct
 from src.prompting.abstracts.strategies import ProduceToolResponseStrategy
 from src.prompting.products.concrete_llm_tool_response_product import ConcreteLlmToolResponseProduct
 from src.tools import generate_tool_prompt
 
 
-class PlaceGenerationToolResponseFactory(ToolResponseFactory):
+class PlaceGenerationToolResponseProvider(ToolResponseProvider):
     def __init__(self, place_identifier: str, template_type: TemplateType,
                  produce_tool_response_strategy: ProduceToolResponseStrategy):
         assert place_identifier

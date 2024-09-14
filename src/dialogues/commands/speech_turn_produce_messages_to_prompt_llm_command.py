@@ -1,53 +1,40 @@
-from typing import Optional, List
+import logging
 
 from src.abstracts.command import Command
 from src.constants import MAX_RETRIES_WHEN_UNRECOVERABLE_SPEECH_TURN_CHOICE
 from src.dialogues.abstracts.strategies import DetermineUserMessagesForSpeechTurnStrategy, \
     DetermineSystemMessageForSpeechTurnStrategy
-from src.prompting.abstracts.llm_client import LlmClient
-from src.prompting.factories.speech_turn_tool_response_factory import SpeechTurnChoiceToolResponseFactory
+from src.dialogues.transcription import Transcription
+from src.prompting.factories.speech_turn_choice_tool_response_provider_factory import \
+    SpeechTurnChoiceToolResponseProviderFactory
+
+logger = logging.getLogger(__name__)
 
 
 class SpeechTurnProduceMessagesToPromptLlmCommand(Command):
-    def __init__(self, playthrough_name: str, llm_client: LlmClient, model: str, player_identifier: Optional[int],
-                 participants: List[int],
-                 dialogue: List[str],
+    def __init__(self, transcription: Transcription,
+                 speech_turn_choice_tool_response_factory: SpeechTurnChoiceToolResponseProviderFactory,
                  determine_system_message_for_speech_turn_strategy: DetermineSystemMessageForSpeechTurnStrategy,
                  determine_user_messages_for_speech_turn_strategy: DetermineUserMessagesForSpeechTurnStrategy):
-        assert playthrough_name
-        assert llm_client
-        assert model
-        assert len(participants) >= 2
-        assert determine_system_message_for_speech_turn_strategy
-        assert determine_user_messages_for_speech_turn_strategy
-
-        self._playthrough_name = playthrough_name
-        self._llm_client = llm_client
-        self._model = model
-        self._player_identifier = player_identifier
-        self._participants = participants
-        self._dialogue = dialogue
+        self._transcription = transcription
+        self._speech_turn_choice_tool_response_factory = speech_turn_choice_tool_response_factory
         self._determine_system_message_for_speech_turn_strategy = determine_system_message_for_speech_turn_strategy
         self._determine_user_messages_for_speech_turn_strategy = determine_user_messages_for_speech_turn_strategy
 
         self._max_retries = MAX_RETRIES_WHEN_UNRECOVERABLE_SPEECH_TURN_CHOICE
 
     def execute(self) -> None:
-
         while self._max_retries > 0:
-            speech_turn_tool_response_product = SpeechTurnChoiceToolResponseFactory(self._playthrough_name,
-                                                                                    self._llm_client,
-                                                                                    self._model,
-                                                                                    self._player_identifier,
-                                                                                    self._participants,
-                                                                                    self._dialogue).create_llm_response()
+            speech_turn_tool_response_product = self._speech_turn_choice_tool_response_factory.create_speech_turn_choice_tool_response_provider(
+                self._transcription).create_llm_response()
 
-            if self._max_retries <= 0:
-                raise ValueError(
-                    "Was unable to produce a valid character choice for the next speech turn of the dialogue.")
-            elif not speech_turn_tool_response_product.is_valid():
-                print(f"{speech_turn_tool_response_product.get_error()}")
+            if not speech_turn_tool_response_product.is_valid():
+                logger.error(f"{speech_turn_tool_response_product.get_error()}")
                 self._max_retries -= 1
+                if self._max_retries == 0:
+                    raise ValueError(
+                        "Was unable to produce a valid character choice for the next speech turn of the dialogue."
+                    )
             else:
                 self._determine_system_message_for_speech_turn_strategy.do_algorithm(speech_turn_tool_response_product)
                 self._determine_user_messages_for_speech_turn_strategy.do_algorithm(speech_turn_tool_response_product)

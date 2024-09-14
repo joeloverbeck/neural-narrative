@@ -1,18 +1,27 @@
+import logging
+import logging.config
+
 from src.abstracts.command import Command
-from src.commands.store_last_identifier_command import StoreLastIdentifierCommand
 from src.enums import IdentifierType
 from src.filesystem.filesystem_manager import FilesystemManager
-from src.identifiers import determine_next_identifier
+from src.identifiers_manager import IdentifiersManager
+
+logger = logging.getLogger(__name__)
 
 
 class StoreGeneratedCharacterCommand(Command):
 
-    def __init__(self, playthrough_name: str, character_data: dict):
+    def __init__(self, playthrough_name: str, character_data: dict, filesystem_manager: FilesystemManager = None,
+                 identifiers_manager: IdentifiersManager = None):
         assert playthrough_name
         assert character_data
 
         self._playthrough_name = playthrough_name
         self._character_data = character_data
+        self._filesystem_manager = filesystem_manager or FilesystemManager()
+        self._identifiers_manager = identifiers_manager or IdentifiersManager(self._playthrough_name)
+
+        logging.config.dictConfig(self._filesystem_manager.get_logging_config_file())
 
     def execute(self) -> None:
         # Build the path to the characters.json file
@@ -22,15 +31,11 @@ class StoreGeneratedCharacterCommand(Command):
 
         characters = filesystem_manager.load_existing_or_new_json_file(characters_file)
 
-        new_id = determine_next_identifier(self._playthrough_name, IdentifierType.CHARACTERS)
-
-        # Given that a character is going to be added to file, the identifier on file for characters
-        # should be changed.
-        StoreLastIdentifierCommand(self._playthrough_name, IdentifierType.CHARACTERS, new_id).execute()
-
         # Add the new character entry
-        characters[new_id] = self._character_data
+        characters[
+            self._identifiers_manager.produce_and_update_next_identifier(
+                IdentifierType.CHARACTERS)] = self._character_data
 
         filesystem_manager.save_json_file(characters, characters_file)
 
-        print(f"Saved character '{self._character_data["name"]}' at '{characters_file}'")
+        logger.info(f"Saved character '{self._character_data["name"]}' at '{characters_file}'")

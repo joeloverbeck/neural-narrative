@@ -1,9 +1,9 @@
-from src.prompting.abstracts.abstract_factories import ToolResponseDataExtractionFactory
+from src.prompting.abstracts.abstract_factories import ToolResponseDataExtractionProvider
 from src.prompting.abstracts.factory_products import ExtractedDataProduct
 from src.prompting.products.concrete_extracted_data_product import ConcreteExtractedDataProduct
 
 
-class DialogueSummaryToolResponseDataExtractionFactory(ToolResponseDataExtractionFactory):
+class DialogueSummaryToolResponseDataExtractionFactory(ToolResponseDataExtractionProvider):
 
     def __init__(self, parsed_tool_response: dict):
         self._parsed_tool_response = parsed_tool_response

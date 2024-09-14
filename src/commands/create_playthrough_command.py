@@ -1,51 +1,47 @@
 from src.abstracts.command import Command
-from src.filesystem.filesystem_manager import FilesystemManager
+from src.characters.commands.generate_initial_characters_command import GenerateInitialCharactersCommand
+from src.commands.create_playthrough_metadata_command import CreatePlaythroughMetadataCommand
+from src.maps.commands.create_initial_map_command import CreateInitialMapCommand
+from src.maps.map_manager import MapManager
+from src.playthrough_manager import PlaythroughManager
 
 
 class CreatePlaythroughCommand(Command):
-    def __init__(self, playthrough_name: str, world_template: str):
-        assert playthrough_name
-        assert world_template
+    """Command to create a new playthrough with a specified world template."""
+
+    def __init__(self, playthrough_name: str, world_template: str,
+                 create_playthrough_metadata_command: CreatePlaythroughMetadataCommand,
+                 create_initial_map_command: CreateInitialMapCommand,
+                 generate_initial_characters_command: GenerateInitialCharactersCommand,
+                 map_manager: MapManager = None, playthrough_manager: PlaythroughManager = None):
+        if not playthrough_name:
+            raise ValueError("playthrough_name must not be empty.")
+        if not world_template:
+            raise ValueError("world_template must not be empty.")
+        if not create_playthrough_metadata_command:
+            raise ValueError("create_playthrough_metadata_command must not be empty.")
+        if not create_initial_map_command:
+            raise ValueError("initial_map_command must not be empty.")
+        if not generate_initial_characters_command:
+            raise ValueError("generate_initial_characters_command can't be empty.")
 
         self._playthrough_name = playthrough_name
-        self._world_template = world_template
+        self._create_playthrough_metadata_command = create_playthrough_metadata_command
+        self._create_initial_map_command = create_initial_map_command
+        self._generate_initial_characters_command = generate_initial_characters_command
+        self._map_manager = map_manager or MapManager(playthrough_name)
+        self._playthrough_manager = playthrough_manager or PlaythroughManager(self._playthrough_name)
 
     def execute(self) -> None:
-        filesystem_manager = FilesystemManager()
+        # First create the playthrough metadata.
+        self._create_playthrough_metadata_command.execute()
 
-        # Check if the folder already exists
-        if filesystem_manager.does_file_path_exist(
-                filesystem_manager.get_file_path_to_playthrough_folder(self._playthrough_name)):
-            raise Exception(f"A playthrough with the name '{self._playthrough_name}' already exists.")
+        # Next, we have to create the initial map.
+        self._create_initial_map_command.execute()
 
-        # Checks here if there is such a world template:
-        worlds_file = filesystem_manager.load_existing_or_new_json_file(
-            filesystem_manager.get_file_path_to_worlds_template_file())
+        # Now let's update in the playthrough metadata the current place as the latest location created.
+        latest_identifier, _ = self._map_manager.get_identifier_and_place_template_of_latest_map_entry()
 
-        if self._world_template not in worlds_file:
-            raise ValueError(f"There is no such world template '{self._world_template}'")
+        self._playthrough_manager.update_current_place(latest_identifier)
 
-        filesystem_manager.create_folders_along_file_path(
-            filesystem_manager.get_file_path_to_playthrough_folder(self._playthrough_name))
-
-        playthrough_metadata = {
-            "world_template": self._world_template,
-            "time": "0",
-            "last_identifiers": {
-                "places": "0",
-                "characters": "0"
-            }
-        }
-
-        # Write the initial values to the JSON file
-        filesystem_manager.save_json_file(playthrough_metadata,
-                                          filesystem_manager.get_file_path_to_playthrough_metadata(
-                                              self._playthrough_name))
-
-        # Must also create the map JSON file
-        filesystem_manager.save_json_file({}, filesystem_manager.get_file_path_to_map(self._playthrough_name))
-
-        playthrough_path = filesystem_manager.get_file_path_to_playthrough_folder(self._playthrough_name)
-
-        # Confirm that the playthrough has been successfully created
-        print(f"Playthrough '{self._playthrough_name}' created successfully at {playthrough_path}.")
+        self._generate_initial_characters_command.execute()

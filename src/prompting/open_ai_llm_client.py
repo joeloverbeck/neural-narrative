@@ -1,29 +1,44 @@
+import logging
 from json import JSONDecodeError
-from typing import List
 
 from openai import OpenAI
 
-from src.prompting.abstracts.factory_products import AiCompletionProduct
+from src.dialogues.messages_to_llm import MessagesToLlm
+from src.prompting.abstracts.ai_completion_product import AiCompletionProduct
 from src.prompting.abstracts.llm_client import LlmClient
 from src.prompting.products.concrete_ai_completion_product import ConcreteAiCompletionProduct
 
 
 class OpenAiLlmClient(LlmClient):
     def __init__(self, client: OpenAI):
-        assert client
+        if not client:
+            raise ValueError("client must not be empty.")
+
+        # Set the logging level for the 'httpx' logger to WARNING
+        logging.getLogger("httpx").setLevel(logging.WARNING)
 
         self._client = client
 
-    def generate_completion(self, model: str, messages: List[dict], temperature=1.0, top_p=1.0) -> AiCompletionProduct:
+    def generate_completion(self, model: str, messages_to_llm: MessagesToLlm, temperature=1.0,
+                            top_p=1.0) -> AiCompletionProduct:
         # Surprisingly, this could fail. I got a JSONDecodeError
 
         try:
             completion = self._client.chat.completions.create(
                 model=model,
-                messages=messages,
+                messages=messages_to_llm.get(),
                 temperature=temperature,
                 top_p=top_p
             )
             return ConcreteAiCompletionProduct(completion)
         except JSONDecodeError as error:
             return ConcreteAiCompletionProduct(None)
+
+    def generate_image(self, prompt: str) -> str:
+        response = self._client.images.generate(model="dall-e-3",
+                                                prompt=prompt,
+                                                size="1024x1024",
+                                                quality="standard",
+                                                n=1, )
+
+        return response.data[0].url

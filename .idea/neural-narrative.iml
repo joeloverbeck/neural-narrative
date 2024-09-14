@@ -7,4 +7,7 @@
     <orderEntry type="jdk" jdkName="neural-narrative-env" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
+  <component name="PackageRequirementsSettings">
+    <option name="removeUnused" value="true" />
+  </component>
 </module>
