@@ -6,6 +6,8 @@ from src.dialogues.participants import Participants
 from src.prompting.abstracts.llm_client import LlmClient
 from src.prompting.factories.character_choice_dialogue_llm_content_provider_factory import \
     CharacterChoiceDialogueLlmContentProviderFactory
+from src.prompting.factories.handle_parsed_tool_response_for_dialogue_character_choice_strategy_factory import \
+    HandleParsedToolResponseForDialogueCharacterChoiceStrategyFactory
 from src.prompting.factories.speech_turn_choice_tool_response_provider_factory import \
     SpeechTurnChoiceToolResponseProviderFactory
 from src.prompting.factories.tool_response_parsing_provider_factory import ToolResponseParsingProviderFactory
@@ -40,8 +42,10 @@ class SpeechTurnChoiceToolResponseFactoryComposer:
 
         tool_response_parsing_provider_factory = ToolResponseParsingProviderFactory()
 
-        return SpeechTurnChoiceToolResponseProviderFactory(self._playthrough_name,
-                                                           self._participants,
+        handle_parsed_tool_response_for_dialogue_character_choice_strategy_factory = HandleParsedToolResponseForDialogueCharacterChoiceStrategyFactory(
+            self._playthrough_name, self._participants, tool_response_parsing_provider_factory)
+
+        return SpeechTurnChoiceToolResponseProviderFactory(self._participants,
                                                            character_choice_dialogue_initial_prompting_messages_provider_factory,
                                                            llm_content_provider_factory,
-                                                           tool_response_parsing_provider_factory)
+                                                           handle_parsed_tool_response_for_dialogue_character_choice_strategy_factory)

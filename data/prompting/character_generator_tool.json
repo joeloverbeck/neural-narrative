@@ -12,7 +12,7 @@
         },
         "description": {
           "type": "string",
-          "description": "Any physical description pieces belong here, as attributes separated by + symbols, e.g. tall + ethnic European + red hair + one-handed sword. Only include elements that would be visually obvious (e.g. no hidden equipment)."
+          "description": "Any physical description pieces belong here, as attributes separated by + symbols, e.g. tall + red hair + one-handed sword. Only include elements that would be visually obvious (e.g. no hidden equipment)."
         },
         "personality": {
           "type": "string",

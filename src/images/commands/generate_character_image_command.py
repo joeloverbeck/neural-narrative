@@ -36,11 +36,15 @@ class GenerateCharacterImageCommand(Command):
     def execute(self) -> None:
         character_data = self._character_manager.load_character_data(self._character_identifier)
 
-        prompt = ("Create a close-up portrait, as it could appear in a painting or a photo ID, of the following:\n"
-                  f"Name: {character_data['name']}\n"
-                  f"Description: {character_data['description']}\n"
-                  f"Personality: {character_data['personality']}\n"
-                  f"Equipment: {character_data['equipment']}")
+        prompt = (
+            "Create a close-up portrait, as it could appear in a painting or a photo ID, of the following character:\n"
+            f"Name: {character_data['name']}\n"
+            f"Description: {character_data['description']}\n"
+            f"Personality: {character_data['personality']}\n"
+            f"Equipment belonging to {character_data['name']}: {character_data['equipment']}\n"
+            "Note: the equipment is only listed to influence the portrait of the character. "
+            "Do not depict equipment separately to the character. Avoid generating text."
+            "The resulting image should resemble a photo or portrait made of a candid moment.")
 
         target_image_path = self._filesystem_manager.get_file_path_to_character_image(self._playthrough_name,
                                                                                       self._character_identifier)

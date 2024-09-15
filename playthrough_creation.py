@@ -10,8 +10,10 @@ from src.maps.commands.create_initial_map_command import CreateInitialMapCommand
 from src.maps.factories.concrete_random_place_template_based_on_categories_factory import \
     ConcreteRandomPlaceTemplateBasedOnCategoriesFactory
 from src.maps.map_manager import MapManager
+from src.prompting.factories.llm_content_provider_factory import LlmContentProviderFactory
 from src.prompting.factories.openai_llm_client_factory import OpenAILlmClientFactory
 from src.prompting.factories.openrouter_llm_client_factory import OpenRouterLlmClientFactory
+from src.prompting.factories.tool_response_parsing_provider_factory import ToolResponseParsingProviderFactory
 from src.prompting.strategies.concrete_produce_tool_response_strategy import ConcreteProduceToolResponseStrategy
 from src.requests.factories.ConcreteUrlContentFactory import ConcreteUrlContentFactory
 
@@ -31,10 +33,17 @@ def main():
         create_initial_map_command = CreateInitialMapCommand(playthrough_name, world_template,
                                                              ConcreteRandomPlaceTemplateBasedOnCategoriesFactory(
                                                                  MapManager(playthrough_name)))
+
+        llm_client = OpenRouterLlmClientFactory().create_llm_client()
+
+        llm_content_provider_factory = LlmContentProviderFactory(llm_client, model=HERMES_405B)
+
+        tool_response_parsing_provider_factory = ToolResponseParsingProviderFactory()
+
         create_initial_characters_command = GenerateInitialCharactersCommand(playthrough_name,
                                                                              ConcreteProduceToolResponseStrategy(
-                                                                                 OpenRouterLlmClientFactory().create_llm_client(),
-                                                                                 model=HERMES_405B),
+                                                                                 llm_content_provider_factory,
+                                                                                 tool_response_parsing_provider_factory),
                                                                              OpenAIGeneratedImageFactory(
                                                                                  OpenAILlmClientFactory().create_llm_client()),
                                                                              ConcreteUrlContentFactory())

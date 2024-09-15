@@ -20,13 +20,22 @@ class MapManager:
         self._filesystem_manager = filesystem_manager or FilesystemManager()
         self._identifiers_manager = identifiers_manager or IdentifiersManager(playthrough_name)
 
-    def get_current_place_identifier(self, playthrough_name: str):
+    def get_current_place_identifier(self, playthrough_name: str) -> str:
         assert playthrough_name
 
         playthrough_metadata = self._filesystem_manager.load_existing_or_new_json_file(
             self._filesystem_manager.get_file_path_to_playthrough_metadata(playthrough_name))
 
         return playthrough_metadata["current_place"]
+
+    def get_current_place_template(self, playthrough_name: str) -> str:
+        if not playthrough_name:
+            raise ValueError("playthrough_name must not be empty.")
+
+        map_file = self._filesystem_manager.load_existing_or_new_json_file(
+            self._filesystem_manager.get_file_path_to_map(self._playthrough_name))
+
+        return map_file[self.get_current_place_identifier(playthrough_name)]["place_template"]
 
     def get_place_categories(self, place_template: str, place_type: PlaceType) -> List[str]:
         if place_type == PlaceType.WORLD:
@@ -91,8 +100,6 @@ class MapManager:
             raise ValueError(f"Place ID {place_identifier} not found")
 
         # Initialize templates
-        region_template = None
-        area_template = None
         location_template = None
 
         # Determine the type of the place
