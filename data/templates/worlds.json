@@ -2,22 +2,22 @@
   "Arctoria": {
     "description": "Arctoria is a vast world that mirrors the grandeur and sophistication of the Roman Empire. The landscape is dotted with majestic cities, each a center of art, culture, and learning. The architecture is reminiscent of ancient Rome, with grand amphitheaters, towering aqueducts, and intricate mosaics adorning the walls of temples and villas. The climate is Mediterranean, with warm, dry summers and mild, wet winters.The geography of Arctoria heavily influences daily life. The fertile valleys support an agricultural economy, while the mountain ranges serve as natural barriers and strategic defensive positions. The extensive network of roads and sea routes facilitates trade and communication across the empire.However, Arctoria is not just a mundane world. It is a place where the boundary between reality and fantasy blurs. Some individuals are born with extraordinary powers that can shape the world around them. These powers can manifest as offensive capabilities, healing abilities, the creation of illusions, or even summoning monsters from other dimensions. Yet, these gifts come with a terrible price. If a power-bearer is murdered, their abilities can be stolen by the killer. This makes possessing such powers extremely dangerous, and those born with them often live in fear and secrecy.The appearance of interdimensional monsters adds another layer of unpredictability to life in Arctoria. These creatures can emerge anywhere, at any time, and their intentions are often unclear. Some are benign, content to observe this new world. Others are hostile, causing destruction and chaos wherever they appear. Arctorian society is advanced and values knowledge, honor, and survival. The empire is ruled by a powerful senate, with a complex system of laws and governance. The dominant language is Arctorian, a language closely related to Latin, and the arts, including sculpture, painting, and literature, are highly valued. Magic is not widely understood in Arctoria. It is viewed with a mixture of awe, fear, and suspicion. Those with powers are often treated as outcasts, and their abilities are seen as more of a curse than a gift. The dominant religion is the worship of the pantheon of gods, who are believed to oversee all aspects of life, including the bestowal of magical powers.Social classes in Arctoria are determined by birthright, wealth, and merit. The nobility hold significant power, but there is mobility within the social structure for those who display talent and ambition. Non-human species are rare in Arctoria, but they do exist. These beings, often hailing from other dimensions, are viewed with suspicion and fear, and interactions between humans and non-humans are fraught with tension.In essence, Arctoria is a world where the grandeur of ancient Rome meets the unpredictability of fantasy. It is a place of beauty and danger, where the mundane and the magical coexist uneasily. The struggle for power, both political and magical, drives much of the conflict in this fascinating world.",
     "categories": [
-      "Low Fantasy",
-      "Historical Fantasy"
+      "low fantasy",
+      "historical fantasy"
     ]
   },
   "Erosia": {
     "description": "Erosia is a world where the roles of men and women are flipped when it comes to sexual promiscuity and propriety. Women in Erosia are utter perverts, constantly dominated by their need to have sex, even just for fun. This leads them to become predatory. The males of Erosia have to guard themselves to avoid getting abused, raped, or at least inconvenienced by females. Long-term relationships between men and women are hard because the women are extremely promiscuous. The landscape is dotted with fortresses and safe havens for men to protect them from roving bands of lusty women. Major civilizations are female-dominated, with women holding most positions of power due to their voracious sexual appetites. Men are seen as the 'weaker' sex. Society values sexual conquest and pleasure above all else. Technologically, Erosia is medieval, with castles and walled cities built for protection more than anything. The ruling entities are matriarchal monarchies and queendoms. Ongoing conflicts exist between different factions of powerful women vying for control and access to the most desirable men. The main resource is a rare plant that suppresses female libido, giving men a way to protect themselves. The dominant religion worships a goddess of love and lust. Social classes are determined by birthright and sexual prowess. Non-human races like nymphs and succubi exist and ally themselves with human females in their pursuit of male conquests. Racial tensions are low as most races share the same sexually aggressive females.",
     "categories": [
-      "Fantasy",
-      "Erotic Comedy"
+      "fantasy",
+      "erotic comedy"
     ]
   },
   "Paralyzia": {
     "description": "Paralyzia is a world where its inhabitants have coexisted with a widespread species of animal called Paralysts for their entire history and evolution. The Paralysts shoot special barbs that paralyze their target in minutes, rendering them immobile for the rest of their lives. Most settlements have at least one, if not many, individuals who have been paralyzed by these creatures. This has led to a society where families and communities are deeply involved in the long-term care of their paralyzed loved ones.Geographically, Paralyzia consists of several large continents separated by vast oceans. The continents are dominated by lush forests and grasslands, with some mountain ranges and deserts scattered throughout. The Paralysts inhabit all regions of the world, adapting to various environments.The people of Paralyzia have developed unique customs and traditions centered around the care and support of those affected by the Paralysts. Social norms dictate that families and communities share the responsibility of providing for the paralyzed individuals. The dominant form of government is a democratic system, with elected officials who prioritize the well-being of all citizens, especially those affected by paralysis.Economically, Paralyzia relies on a mix of trade, currency, and barter systems. Resources such as medicinal plants, which are crucial for the treatment and care of the paralyzed, are highly valued and often traded. Technological advancements have been made in the fields of accessibility and mobility, with inventions designed to improve the quality of life for those living with paralysis.The dominant religion in Paralyzia is the Church of the Unyielding Spirit, which preaches compassion, resilience, and the importance of community support in the face of adversity. Social status is determined by one's contributions to the care and well-being of others, with those who dedicate their lives to helping the paralyzed being held in high esteem.",
     "categories": [
-      "Medical Fantasy",
-      "Realistic Fantasy"
+      "medical fantasy",
+      "realistic fantasy"
     ]
   },
   "Capsulon": {
@@ -25,6 +25,13 @@
     "categories": [
       "dystopian future",
       "science fiction"
+    ]
+  },
+  "Zoopolis": {
+    "description": "Zoopolis is a diverse fantasy world teeming with countless sentient species. Animal people of every conceivable kind coexist in this realm, leading to a colorful tapestry of cultures and customs. While humans are present, they are just one of the many species inhabiting the world. The geography of Zoopolis is as varied as its inhabitants, with vast forests, rolling hills, and fertile plains supporting a wide array of flora and fauna. The world is dotted with bustling cities and quaint villages, each home to a unique blend of species living and working together. However, the stability of Zoopolis is threatened by the rising power of The Slow Burn, an empire led by sloth people who believe in their own supremacy. Under the leadership of their ambitious emperor, The Slow Burn seeks to expand its dominion, causing tension and unease among the other nations of Zoopolis. As rumors of impending conflict spread, the diverse inhabitants of this world must navigate the complexities of their differences and find a way to maintain harmony in the face of a growing threat.",
+    "categories": [
+      "fantasy",
+      "sentient species"
     ]
   }
 }

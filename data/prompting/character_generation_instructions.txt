@@ -57,3 +57,5 @@ Put it all together, and it should look something like this - the character name
 Remember, no quotes around the dialogue, keep it breezy, and clichés are the enemy. Let's make sure <the character name> feels like someone you could run into at the market and have a laugh with over the price of fish.
 
 The Author of this NPC has provided this as information - if it is sparse, exercise more creative freedom. If it is more detailed, exercise creative freedom to extend the author's stated vision of the character biography.
+
+The character may be a male or a female. That character may be a sentient species other than human, if the provided background supports it.

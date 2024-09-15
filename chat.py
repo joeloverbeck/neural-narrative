@@ -5,6 +5,10 @@ import colorama
 
 from src.dialogues.commands.setup_dialogue_command import SetupDialogueCommand
 from src.dialogues.factories.console_player_input_factory import ConsolePlayerInputFactory
+from src.dialogues.factories.handle_possible_existence_of_ongoing_conversation_command_factory import \
+    HandlePossibleExistenceOfOngoingConversationCommandFactory
+from src.dialogues.factories.load_data_from_ongoing_dialogue_command_factory import \
+    LoadDataFromOngoingDialogueCommandFactory
 from src.dialogues.observers.console_dialogue_observer import ConsoleDialogueObserver
 from src.dialogues.participants import Participants
 from src.dialogues.strategies.console_choose_participants_strategy import ConsoleChooseParticipantsStrategy
@@ -37,10 +41,19 @@ def main():
 
     participants = Participants()
 
+    load_data_from_ongoing_dialogue_command_factory = LoadDataFromOngoingDialogueCommandFactory(playthrough_name,
+                                                                                                participants)
+
+    handle_possible_existence_of_ongoing_conversation_command_factory = HandlePossibleExistenceOfOngoingConversationCommandFactory(
+        playthrough_name, player_identifier,
+        participants,
+        load_data_from_ongoing_dialogue_command_factory,
+        ConsoleChooseParticipantsStrategy())
+
     SetupDialogueCommand(playthrough_name, player_identifier, participants, dialogue_observer, player_input_factory,
+                         handle_possible_existence_of_ongoing_conversation_command_factory,
                          ConsoleMessageDataProducerForIntroducePlayerInputIntoDialogueStrategy(),
-                         ConsoleMessageDataProducerForSpeechTurnStrategy(),
-                         ConsoleChooseParticipantsStrategy()).execute()
+                         ConsoleMessageDataProducerForSpeechTurnStrategy()).execute()
 
 
 if __name__ == "__main__":

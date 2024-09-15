@@ -36,8 +36,13 @@ class StoreGeneratedPlaceCommand(Command):
         else:
             raise ValueError(f"Wasn't programmed to load the templates file of template '{self._template_type}'.")
 
-        current_places_template_file.update({self._place_data["name"]: {"description": self._place_data["description"],
-                                                                        "categories": self._place_data["categories"]}})
+        # Make the categories lowercase
+        current_places_template_file.update({
+            self._place_data["name"]: {
+                "description": self._place_data["description"],
+                "categories": [category.lower() for category in self._place_data["categories"]]
+            }
+        })
 
         filesystem_manager.save_json_file(current_places_template_file,
                                           file_path)

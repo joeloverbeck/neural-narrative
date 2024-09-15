@@ -9,12 +9,18 @@ from src.dialogues.abstracts.factory_products import PlayerInputProduct, SpeechD
 from src.dialogues.abstracts.strategies import MessageDataProducerForIntroducePlayerInputIntoDialogueStrategy, \
     MessageDataProducerForSpeechTurnStrategy
 from src.dialogues.commands.setup_dialogue_command import SetupDialogueCommand
+from src.dialogues.factories.handle_possible_existence_of_ongoing_conversation_command_factory import \
+    HandlePossibleExistenceOfOngoingConversationCommandFactory
+from src.dialogues.factories.load_data_from_ongoing_dialogue_command_factory import \
+    LoadDataFromOngoingDialogueCommandFactory
 from src.dialogues.factories.web_player_input_factory import WebPlayerInputFactory
 from src.dialogues.participants import Participants
 from src.dialogues.strategies.web_choose_participants_strategy import WebChooseParticipantsStrategy
 from src.filesystem.filesystem_manager import FilesystemManager
+from src.maps.map_manager import MapManager
 from src.playthrough_manager import PlaythroughManager
 from src.prompting.abstracts.factory_products import LlmToolResponseProduct
+from src.time.time_manager import TimeManager
 
 app = Flask(__name__)
 
@@ -35,8 +41,9 @@ class WebMessageDataProducerForIntroducePlayerInputIntoDialogueStrategy(
 
 
 class WebMessageDataProducerForSpeechTurnStrategy(MessageDataProducerForSpeechTurnStrategy):
-    def __init__(self, playthrough_name: str, filesystem_manager: FilesystemManager = None):
+    def __init__(self, playthrough_name: str, player_identifier: str, filesystem_manager: FilesystemManager = None):
         self._playthrough_name = playthrough_name
+        self._player_identifier = player_identifier
         self._filesystem_manager = filesystem_manager or FilesystemManager()
 
     def produce_message_data(self, speech_turn_choice_tool_response_product: LlmToolResponseProduct,
@@ -44,9 +51,14 @@ class WebMessageDataProducerForSpeechTurnStrategy(MessageDataProducerForSpeechTu
         image_url = self._filesystem_manager.get_file_path_to_character_image_for_web(self._playthrough_name,
                                                                                       speech_turn_choice_tool_response_product.get()[
                                                                                           "identifier"])
+        # Could be that the AI has produced by "mistake" text spoken by the player. It's very notorious in the web version.
+        alignment = "left"  # for other characters
+
+        if self._player_identifier == speech_turn_choice_tool_response_product.get()["identifier"]:
+            alignment = "right"
 
         return {
-            'alignment': 'left',
+            'alignment': alignment,
             'sender_name': speech_data_product.get()['name'],
             'sender_photo_url': image_url,
             'message_text': f"*{speech_data_product.get()['narration_text']}* {speech_data_product.get()['speech']} "
@@ -169,11 +181,31 @@ def chat():
         # Create the player input factory
         web_player_input_factory = WebPlayerInputFactory(user_input)
 
+        load_data_from_ongoing_dialogue_command_factory = LoadDataFromOngoingDialogueCommandFactory(playthrough_name,
+                                                                                                    participants_instance)
+
+        handle_possible_existence_of_ongoing_conversation_command_factory = HandlePossibleExistenceOfOngoingConversationCommandFactory(
+            playthrough_name, player_identifier,
+            participants_instance,
+            load_data_from_ongoing_dialogue_command_factory,
+            WebChooseParticipantsStrategy(dialogue_participants))
+
         SetupDialogueCommand(playthrough_name, player_identifier, participants_instance, web_dialogue_observer,
                              web_player_input_factory,
+                             handle_possible_existence_of_ongoing_conversation_command_factory,
                              WebMessageDataProducerForIntroducePlayerInputIntoDialogueStrategy(),
-                             WebMessageDataProducerForSpeechTurnStrategy(playthrough_name),
-                             WebChooseParticipantsStrategy(dialogue_participants)).execute()
+                             WebMessageDataProducerForSpeechTurnStrategy(playthrough_name, player_identifier)).execute()
+
+        # Check if the player's input was "goodbye"
+        player_input_product = web_player_input_factory.create_player_input()
+        if player_input_product.is_goodbye():
+            # Clear session data
+            session.pop('playthrough_name', None)
+            session.pop('participants', None)
+            session.pop('dialogue', None)
+
+            # Redirect to the index page
+            return redirect(url_for('index'))
 
         # Get messages from observer and update dialogue
         for message in web_dialogue_observer.get_messages():
@@ -189,7 +221,20 @@ def chat():
 
         return redirect(url_for('chat'))
     else:
-        return render_template('chat.html', dialogue=dialogue)
+        # retrieve the current time in the experience.
+        filesystem_manager = FilesystemManager()
+        current_hour = filesystem_manager.load_existing_or_new_json_file(
+            filesystem_manager.get_file_path_to_playthrough_metadata(playthrough_name))["time"]["hour"]
+
+        time_manager = TimeManager(float(current_hour))
+
+        map_manager = MapManager(playthrough_name)
+
+        current_place_template = map_manager.get_current_place_template(playthrough_name)
+
+        return render_template('chat.html', dialogue=dialogue,
+                               current_time=time_manager.get_time_of_the_day(),
+                               current_place_template=current_place_template)
 
 
 if __name__ == '__main__':

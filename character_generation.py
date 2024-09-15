@@ -10,8 +10,12 @@ from src.maps.commands.print_place_template_list_command import PrintPlaceTempla
 from src.maps.places_templates_parameter import PlacesTemplatesParameter
 from src.prompting.factories.automatic_user_content_for_character_generation_factory import \
     AutomaticUserContentForCharacterGenerationFactory
+from src.prompting.factories.llm_content_provider_factory import LlmContentProviderFactory
 from src.prompting.factories.openai_llm_client_factory import OpenAILlmClientFactory
 from src.prompting.factories.openrouter_llm_client_factory import OpenRouterLlmClientFactory
+from src.prompting.factories.player_guided_user_content_for_character_generation_factory import \
+    PlayerGuidedUserContentForCharacterGenerationFactory
+from src.prompting.factories.tool_response_parsing_provider_factory import ToolResponseParsingProviderFactory
 from src.prompting.strategies.concrete_produce_tool_response_strategy import ConcreteProduceToolResponseStrategy
 from src.requests.factories.ConcreteUrlContentFactory import ConcreteUrlContentFactory
 
@@ -44,12 +48,32 @@ def main():
     # Now we have to ask for the places involved.
     places_parameter = PlacesTemplatesParameter(region_template, area_template, location_template)
 
+    llm_client = OpenRouterLlmClientFactory().create_llm_client()
+
+    llm_content_provider_factory = LlmContentProviderFactory(llm_client, model=HERMES_405B)
+
+    tool_response_parsing_provider_factory = ToolResponseParsingProviderFactory()
+
+    produce_tool_response_strategy = ConcreteProduceToolResponseStrategy(llm_content_provider_factory,
+                                                                         tool_response_parsing_provider_factory)
+
+    generated_image_factory = OpenAIGeneratedImageFactory(OpenAILlmClientFactory().create_llm_client())
+
+    url_content_factory = ConcreteUrlContentFactory()
+
+    if ConsoleInterfaceManager().prompt_for_input("Do you want to guide character creation?: ").lower() == "yes":
+        GenerateCharacterCommand(playthrough_name,
+                                 places_parameter,
+                                 produce_tool_response_strategy,
+                                 PlayerGuidedUserContentForCharacterGenerationFactory(),
+                                 generated_image_factory, url_content_factory).execute()
+        return
+
     GenerateCharacterCommand(playthrough_name, places_parameter,
-                             ConcreteProduceToolResponseStrategy(OpenRouterLlmClientFactory().create_llm_client(),
-                                                                 model=HERMES_405B),
+                             produce_tool_response_strategy,
                              AutomaticUserContentForCharacterGenerationFactory(),
-                             OpenAIGeneratedImageFactory(OpenAILlmClientFactory().create_llm_client()),
-                             ConcreteUrlContentFactory()).execute()
+                             generated_image_factory,
+                             url_content_factory).execute()
 
 
 if __name__ == "__main__":

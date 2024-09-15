@@ -7,9 +7,11 @@ from src.filesystem.filesystem_manager import FilesystemManager
 from src.interfaces.abstracts.interface_manager import InterfaceManager
 from src.interfaces.console_interface_manager import ConsoleInterfaceManager
 from src.maps.commands.store_generated_place_command import StoreGeneratedPlaceCommand
+from src.prompting.factories.llm_content_provider_factory import LlmContentProviderFactory
 from src.prompting.factories.openrouter_llm_client_factory import OpenRouterLlmClientFactory
-from src.prompting.factories.place_generation_tool_response_factory import PlaceGenerationToolResponseProvider
 from src.prompting.factories.place_tool_response_data_extraction_factory import PlaceToolResponseDataExtractionFactory
+from src.prompting.factories.tool_response_parsing_provider_factory import ToolResponseParsingProviderFactory
+from src.prompting.providers.place_generation_tool_response_provider import PlaceGenerationToolResponseProvider
 from src.prompting.strategies.concrete_produce_tool_response_strategy import ConcreteProduceToolResponseStrategy
 
 
@@ -61,11 +63,18 @@ class GeneratePlaceCommand(Command):
         if chosen_place_identifier not in father_place_templates:
             raise ValueError(f"There isn't a {self._place_template_type} template named '{chosen_place_identifier}'")
 
+        llm_client = OpenRouterLlmClientFactory().create_llm_client()
+
+        llm_content_provider_factory = LlmContentProviderFactory(llm_client, model=HERMES_405B)
+
+        tool_response_parsing_provider_factory = ToolResponseParsingProviderFactory()
+
+        produce_tool_response_strategy = ConcreteProduceToolResponseStrategy(llm_content_provider_factory,
+                                                                             tool_response_parsing_provider_factory)
+
         llm_tool_response_product = PlaceGenerationToolResponseProvider(chosen_place_identifier,
                                                                         self._place_template_type,
-                                                                        ConcreteProduceToolResponseStrategy(
-                                                                            OpenRouterLlmClientFactory().create_llm_client(),
-                                                                            model=HERMES_405B)).create_llm_response()
+                                                                        produce_tool_response_strategy).create_llm_response()
 
         if not llm_tool_response_product.is_valid():
             raise ValueError(
@@ -75,6 +84,10 @@ class GeneratePlaceCommand(Command):
         place_data = PlaceToolResponseDataExtractionFactory(
             llm_tool_response_product.get()).extract_data().get()
 
-        place_data.update({"categories": father_place_templates[chosen_place_identifier]["categories"]})
+        # Make them lowercase.
+        place_data.update({
+            "categories": [category.lower() for category in
+                           father_place_templates[chosen_place_identifier]["categories"]]
+        })
 
         StoreGeneratedPlaceCommand(place_data, template_type=self._place_template_type).execute()

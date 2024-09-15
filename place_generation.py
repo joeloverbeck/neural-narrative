@@ -5,7 +5,9 @@ from src.enums import TemplateType
 from src.interfaces.console_interface_manager import ConsoleInterfaceManager
 from src.maps.strategies.fathered_place_generation_strategy import FatheredPlaceGenerationStrategy
 from src.maps.strategies.world_generation_strategy import WorldGenerationStrategy
+from src.prompting.factories.llm_content_provider_factory import LlmContentProviderFactory
 from src.prompting.factories.openrouter_llm_client_factory import OpenRouterLlmClientFactory
+from src.prompting.factories.tool_response_parsing_provider_factory import ToolResponseParsingProviderFactory
 from src.prompting.strategies.concrete_produce_tool_response_strategy import ConcreteProduceToolResponseStrategy
 
 
@@ -19,10 +21,17 @@ def main():
         print(f"Couldn't create a TemplateType from the chosen place type '{chosen_place_type}'.")
         sys.exit()
 
+    llm_client = OpenRouterLlmClientFactory().create_llm_client()
+
+    llm_content_provider_factory = LlmContentProviderFactory(llm_client, model=HERMES_405B)
+
+    tool_response_parsing_provider_factory = ToolResponseParsingProviderFactory()
+
+    produce_tool_response_strategy = ConcreteProduceToolResponseStrategy(llm_content_provider_factory,
+                                                                         tool_response_parsing_provider_factory)
+
     if place_template_type == TemplateType.WORLD:
-        WorldGenerationStrategy(
-            ConcreteProduceToolResponseStrategy(OpenRouterLlmClientFactory().create_llm_client(),
-                                                model=HERMES_405B)).generate_place()
+        WorldGenerationStrategy(produce_tool_response_strategy).generate_place()
     else:
         FatheredPlaceGenerationStrategy(place_template_type).generate_place()
 

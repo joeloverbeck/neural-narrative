@@ -6,12 +6,23 @@
 {% block content %}
 <h1>Chat with Participants</h1>
 
+
+<!-- Wrap both current time and place labels in a flex container -->
+<div class="info-bar">
+    <div class="current-time">
+        Time: {{ current_time }}
+    </div>
+    <div class="current-place">
+        Place: {{ current_place_template }}
+    </div>
+</div>
+
 <div class="chat-window" id="chat-window">
     {% for message in dialogue %}
     <div class="chat-bubble {{ message.alignment }}">
         <img alt="{{ message.sender_name }}" class="avatar" src="{{ message.sender_photo_url }}">
         <div class="message-content">
-            <div class="sender-name">{{ message.sender_name }}</div>
+            <div class="sender-label">{{ message.sender_name }}</div>
             <div class="message-text">{{ message.message_text }}</div>
         </div>
     </div>
@@ -38,5 +49,23 @@
             chatWindow.scrollTop = chatWindow.scrollHeight;
         }
     });
+
+document.addEventListener('DOMContentLoaded', function () {
+    var messageTexts = document.querySelectorAll('.message-text');
+
+    messageTexts.forEach(function (messageText) {
+        var content = messageText.innerHTML;
+
+        // Insert a div with a class for styling after the first narration, and trim the whitespace after it
+        var updatedContent = content.replace(/^\*(.*?)\*\s*(.*)/, '<span class="narration">$1</span><div class="narration-break"></div>$2');
+
+        // For other narrations in the message, wrap them without adding a line break
+        updatedContent = updatedContent.replace(/\*(.*?)\*/g, '<span class="narration">$1</span>');
+
+        // Update the HTML of the message-text div with the new content
+        messageText.innerHTML = updatedContent;
+    });
+
+});
 </script>
 {% endblock %}
