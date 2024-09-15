@@ -1,5 +1,6 @@
-from typing import List, Optional
+from typing import Optional
 
+from src.dialogues.participants import Participants
 from src.dialogues.transcription import Transcription
 from src.prompting.abstracts.abstract_factories import SystemContentForPromptProvider
 from src.prompting.abstracts.factory_products import SystemContentForPromptProduct
@@ -9,11 +10,9 @@ from src.tools import generate_tool_prompt
 
 class CharacterChoiceDialogueSystemContentForPromptProvider(SystemContentForPromptProvider):
 
-    def __init__(self, participants_data: List[dict], player_identifier: Optional[str], transcription: Transcription,
+    def __init__(self, participants: Participants, player_identifier: Optional[str], transcription: Transcription,
                  prompt_template: str, tool_data: dict, tool_instructions_template: str):
-        assert participants_data
-
-        self._participants_data = participants_data
+        self._participants = participants
         self._player_identifier = player_identifier
         self._transcription = transcription
         self._prompt_template = prompt_template
@@ -23,16 +22,18 @@ class CharacterChoiceDialogueSystemContentForPromptProvider(SystemContentForProm
     def create_system_content_for_prompt(self) -> SystemContentForPromptProduct:
 
         all_participants = "\n".join(
-            [f"Identifier: {participant['identifier']} / Name: {participant['name']}" for participant in
-             self._participants_data])
+            [f"Identifier: {identifier} / Name: {participant['name']}" for identifier, participant in
+             self._participants.get().items()]
+        )
 
         if self._player_identifier:
             participants_without_player = "\n".join(
                 [
-                    f"Identifier: {participant['identifier']} / Name: {participant['name']} / Personality: {participant['personality']}"
-                    for participant in
-                    self._participants_data if
-                    participant['identifier'] != self._player_identifier])
+                    f"Identifier: {identifier} / Name: {participant['name']} / Personality: {participant['personality']}"
+                    for identifier, participant in self._participants.get().items()
+                    if identifier != self._player_identifier
+                ]
+            )
         else:
             participants_without_player = all_participants
 

@@ -1,5 +1,5 @@
 # Function definitions go here (assuming already imported or defined)
-
+from src.dialogues.participants import Participants
 from src.dialogues.providers.character_choice_dialogue_system_content_for_prompt_provider import \
     CharacterChoiceDialogueSystemContentForPromptProvider
 from src.dialogues.transcription import Transcription
@@ -7,8 +7,11 @@ from src.dialogues.transcription import Transcription
 
 def test_create_system_content_for_character_choice_dialogue_prompt():
     # Arrange
-    participants = [{"name": "Jon", "identifier": "1", "personality": "personality"},
-                    {"name": "Rusty Macy", "identifier": "2", "personality": "personality"}]
+    participants = Participants()
+
+    participants.add_participant("1", "Jon", "description", "personality", "equipment")
+    participants.add_participant("2", "Rusty Macy", "description", "personality", "equipment")
+
     player_identifier = "1"
 
     transcription = Transcription()

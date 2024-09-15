@@ -1,5 +1,3 @@
-from typing import List
-
 from src.dialogues.factories.determine_system_message_for_speech_turn_strategy_factory import \
     DetermineSystemMessageForSpeechTurnStrategyFactory
 from src.dialogues.factories.determine_user_messages_for_speech_turn_strategy_factory import \
@@ -12,25 +10,22 @@ from src.dialogues.factories.speech_turn_dialogue_system_content_for_prompt_prov
     SpeechTurnDialogueSystemContentForPromptProviderFactory
 from src.dialogues.factories.speech_turn_produce_messages_to_prompt_llm_command_factory import \
     SpeechTurnProduceMessagesToPromptLlmCommandFactory
+from src.dialogues.participants import Participants
 from src.maps.factories.concrete_full_place_data_factory import ConcreteFullPlaceDataFactory
-from src.prompting.factories.speech_turn_choice_tool_response_provider_factory import \
-    SpeechTurnChoiceToolResponseProviderFactory
 
 
 class SpeechTurnProduceMessagesToPromptLlmCommandFactoryComposer:
-    def __init__(self, playthrough_name: str, player_identifier: str, participants: List[str],
-                 speech_turn_choice_tool_response_provider_factory: SpeechTurnChoiceToolResponseProviderFactory):
+    def __init__(self, playthrough_name: str, player_identifier: str, participants: Participants):
         if not playthrough_name:
             raise ValueError("playthrough_name can't be empty.")
         if not player_identifier:
             raise ValueError("player identifier can't be empty.")
-        if not len(participants) >= 2:
-            raise ValueError("There should be at least two participants in the dialogue.")
+        if not participants.enough_participants():
+            raise ValueError("Not enough participants.")
 
         self._playthrough_name = playthrough_name
         self._player_identifier = player_identifier
         self._participants = participants
-        self._speech_turn_choice_tool_response_provider_factory = speech_turn_choice_tool_response_provider_factory
 
     def compose(self) -> SpeechTurnProduceMessagesToPromptLlmCommandFactory:
         full_place_data_factory = ConcreteFullPlaceDataFactory(self._playthrough_name)
@@ -52,6 +47,5 @@ class SpeechTurnProduceMessagesToPromptLlmCommandFactoryComposer:
             self._playthrough_name, self._player_identifier)
 
         return SpeechTurnProduceMessagesToPromptLlmCommandFactory(
-            self._speech_turn_choice_tool_response_provider_factory,
             determine_system_message_for_speech_turn_strategy_factory,
             determine_user_messages_for_speech_turn_strategy_factory)

@@ -3,6 +3,8 @@ DEFAULT_CURRENT_PLACE = "-1"
 DEFAULT_IDENTIFIER = "0"
 MAX_CHARACTERS_TO_CREATE_AT_NEW_PLACE = 3
 
+MAX_DIALOGUE_ENTRIES_FOR_WEB = 15
+
 MAX_RETRIES: int = 10
 MAX_RETRIES_WHEN_UNRECOVERABLE_SPEECH_TURN_CHOICE: int = 3
 MAX_RETRIES_WHEN_FAILED_TO_RETURN_FUNCTION_CALL: int = 3
@@ -19,6 +21,8 @@ LOGGING_CONFIG_FILE: str = "data/logging/logging_config.json"
 PLAYTHROUGHS_FOLDER: str = "playthroughs"
 CHARACTERS_FOLDER_NAME: str = "characters"
 IMAGES_FOLDER_NAME: str = "images"
+ONGOING_DIALOGUE_FOLDER_NAME: str = "ongoing dialogue"
+ONGOING_DIALOGUE_FILE: str = "ongoing_dialogue.json"
 DEFAULT_IMAGE_FILE: str = "static/images/default.png"
 PLAYTHROUGH_METADATA_FILE: str = "playthrough_metadata.json"
 MAP_FILE: str = "map.json"

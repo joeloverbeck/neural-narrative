@@ -11,8 +11,9 @@ class ConcreteDetermineUserMessagesForSpeechTurnStrategy(DetermineUserMessagesFo
     def __init__(self, playthrough_name: str, player_identifier: Optional[str],
                  player_input_product: PlayerInputProduct, messages_to_llm: MessagesToLlm,
                  characters_manager: CharactersManager = None):
-        assert playthrough_name
-        assert player_input_product
+        if player_identifier and not isinstance(player_identifier, str):
+            raise TypeError(
+                f"Received a player identifier that wasn't a string, but a {type(player_identifier)}: {player_identifier}.")
 
         self._playthrough_name = playthrough_name
         self._player_identifier = player_identifier
@@ -29,6 +30,6 @@ class ConcreteDetermineUserMessagesForSpeechTurnStrategy(DetermineUserMessagesFo
                                               f"Produce {speech_turn_tool_response_product.get()["name"]}'s speech.")
         else:
             self._messages_to_llm.add_message("user",
-                                              f"{self._characters_manager.load_character_data(self._playthrough_name, self._player_identifier)["name"]}: {self._player_input_product.get()}")
+                                              f"{self._characters_manager.load_character_data(self._player_identifier)["name"]}: {self._player_input_product.get()}")
             self._messages_to_llm.add_message("user",
                                               f"Next, write {speech_turn_tool_response_product.get()["name"]}'s speech.")

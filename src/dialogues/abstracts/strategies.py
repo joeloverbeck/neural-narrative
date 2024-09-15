@@ -1,5 +1,5 @@
 from abc import abstractmethod, ABC
-from typing import Protocol
+from typing import Protocol, List
 
 from src.dialogues.abstracts.factory_products import PlayerInputProduct, SpeechDataProduct
 from src.dialogues.messages_to_llm import MessagesToLlm
@@ -33,4 +33,20 @@ class ProcessLlmContentIntoSpeechDataStrategy(ABC):
 class PromptFormatterForDialogueStrategy(ABC):
     @abstractmethod
     def do_algorithm(self) -> str:
+        pass
+
+
+class MessageDataProducerForIntroducePlayerInputIntoDialogueStrategy(Protocol):
+    def produce_message_data(self, player_character_data: dict, player_input_product: PlayerInputProduct) -> dict:
+        pass
+
+
+class MessageDataProducerForSpeechTurnStrategy(Protocol):
+    def produce_message_data(self, speech_turn_choice_tool_response_product: LlmToolResponseProduct,
+                             speech_data_product: SpeechDataProduct) -> dict[str, str]:
+        pass
+
+
+class ChooseParticipantsStrategy(Protocol):
+    def choose_participants(self) -> List[str]:
         pass

@@ -1,6 +1,5 @@
-from typing import List
-
 from src.dialogues.abstracts.strategies import PromptFormatterForDialogueStrategy
+from src.dialogues.participants import Participants
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.abstracts.abstract_factories import FullPlaceDataFactory
 from src.maps.map_manager import MapManager
@@ -8,16 +7,14 @@ from src.time.time_manager import TimeManager
 
 
 class ConcretePromptFormatterForDialogueStrategy(PromptFormatterForDialogueStrategy):
-    def __init__(self, playthrough_name: str, participants: List[dict],
+    def __init__(self, playthrough_name: str, participants: Participants,
                  character_data: dict,
                  memories: str, prompt_file: str,
                  full_place_data_factory: FullPlaceDataFactory,
                  filesystem_manager: FilesystemManager = None,
                  map_manager: MapManager = None):
-        assert playthrough_name
-        assert len(participants) >= 2
-        assert character_data
-        assert prompt_file
+        if not participants.enough_participants():
+            raise ValueError("Not enough participants.")
 
         self._playthrough_name = playthrough_name
         self._participants = participants
@@ -55,7 +52,7 @@ class ConcretePromptFormatterForDialogueStrategy(PromptFormatterForDialogueStrat
 
         participant_details = "\n".join(
             [f'{participant["name"]}: {participant["description"]}. Equipment: {participant["equipment"]}' for
-             participant in self._participants if
+             _, participant in self._participants.get().items() if
              participant["name"] != self._character_data["name"]])
 
         return self._filesystem_manager.read_file(self._prompt_file).format(

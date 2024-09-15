@@ -5,6 +5,7 @@ from src.constants import HERMES_405B
 from src.enums import TemplateType
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.interfaces.abstracts.interface_manager import InterfaceManager
+from src.interfaces.console_interface_manager import ConsoleInterfaceManager
 from src.maps.commands.store_generated_place_command import StoreGeneratedPlaceCommand
 from src.prompting.factories.openrouter_llm_client_factory import OpenRouterLlmClientFactory
 from src.prompting.factories.place_generation_tool_response_factory import PlaceGenerationToolResponseProvider
@@ -32,7 +33,7 @@ class GeneratePlaceCommand(Command):
             raise ValueError(
                 f"Attempted to create a location from something other than an area! The father place was '{self._father_place_template_type}'.")
 
-        self._interface_manager = interface_manager or InterfaceManager()
+        self._interface_manager = interface_manager or ConsoleInterfaceManager()
 
     def execute(self) -> None:
         print(

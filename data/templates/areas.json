@@ -19,5 +19,12 @@
       "Fantasy",
       "Erotic Comedy"
     ]
+  },
+  "Neo-Eden": {
+    "description": "Neo-Eden is a sprawling, self-contained biodome located in the heart of the dystopian landscape. This marvel of engineering and biotechnology is a stark contrast to the bleak, polluted wasteland that surrounds it. Within the protective shell of the biodome, a lush, green paradise flourishes, teeming with vibrant plant life and shimmering waterways.The biodome is characterized by its carefully maintained ecosystem, with a variety of flora and fauna that have been genetically modified to thrive in the enclosed environment. The air is filtered and purified, providing a welcome respite from the toxic atmosphere outside. However, this pristine environment comes at a cost, as access to Neo-Eden is heavily restricted and resources are tightly controlled.Neo-Eden is governed by a council of scientists and engineers who oversee the day-to-day operations of the biodome. The council is allied with the powerful CapsuleTech Corporation, which provides the necessary funding and resources to maintain the biodome's delicate balance. However, there are whispers of discontent among the inhabitants, as the council's strict rules and the corporation's influence breed resentment and a yearning for freedom.Despite the physical isolation of Neo-Eden, it remains a hub of activity, with researchers and scientists from across the region flocking to study its unique ecosystem. The biodome is also a vital source of rare plant species and biological samples, which are highly sought after by the wealthy elite for their purported medicinal properties.Yet even within this seeming paradise, dark secrets lurk. Rumors abound of a hidden laboratory deep within the heart of Neo-Eden, where the council conducts forbidden experiments in the name of scientific progress. The truth behind these whispers remains elusive, but one thing is certain: in this harsh, unforgiving world, even the most idyllic haven is not immune to the darkness that pervades the land.",
+    "categories": [
+      "dystopian future",
+      "science fiction"
+    ]
   }
 }

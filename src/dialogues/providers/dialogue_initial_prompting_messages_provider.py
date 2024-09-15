@@ -1,19 +1,19 @@
-from typing import List
-
 from src.dialogues.abstracts.abstract_factories import InitialPromptingMessagesProvider
 from src.dialogues.abstracts.factory_products import InitialPromptingMessagesProduct
 from src.dialogues.factories.speech_turn_dialogue_system_content_for_prompt_provider_factory import \
     SpeechTurnDialogueSystemContentForPromptProviderFactory
 from src.dialogues.messages_to_llm import MessagesToLlm
+from src.dialogues.participants import Participants
 from src.prompting.products.concrete_initial_prompting_messages_product import ConcreteInitialPromptingMessagesProduct
 
 
 class DialogueInitialPromptingMessagesProvider(InitialPromptingMessagesProvider):
-    def __init__(self, participants: List[dict],
+    def __init__(self, participants: Participants,
                  character_data: dict,
                  memories: str,
                  speech_turn_dialogue_system_content_for_prompt_provider_factory: SpeechTurnDialogueSystemContentForPromptProviderFactory):
-        assert len(participants) >= 2
+        if not participants.enough_participants():
+            raise ValueError("Not enough participants.")
 
         self._participants = participants
         self._character_data = character_data
@@ -23,7 +23,7 @@ class DialogueInitialPromptingMessagesProvider(InitialPromptingMessagesProvider)
     def create_initial_prompting_messages(self) -> InitialPromptingMessagesProduct:
         other_character_name: str = "[CHARACTER]"
 
-        for character in self._participants:
+        for identifier, character in self._participants.get().items():
             if character["name"] != self._character_data["name"]:
                 other_character_name = character["name"]
                 break

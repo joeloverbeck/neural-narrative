@@ -1,4 +1,3 @@
-<!-- templates/index.html -->
 {% extends 'base.html' %}
 
 {% block title %}
@@ -6,18 +5,20 @@ Select Playthrough
 {% endblock %}
 
 {% block content %}
-<h1>Welcome to the Dialogue System</h1>
-{% if playthrough_names %}
-<form action="/" method="post">
-    <label for="playthrough_name">Select your playthrough:</label>
-    <select id="playthrough_name" name="playthrough_name" required>
-        {% for name in playthrough_names %}
-        <option value="{{ name }}">{{ name }}</option>
-        {% endfor %}
-    </select>
-    <input type="submit" value="Next">
-</form>
-{% else %}
-<p>No playthroughs available.</p>
-{% endif %}
+<div class="index-container">
+    <h1>Welcome to the Dialogue System</h1>
+    {% if playthrough_names %}
+    <form action="/" class="playthrough-form" method="post">
+        <label class="playthrough-label" for="playthrough_name">Select your playthrough:</label>
+        <select class="playthrough-select" id="playthrough_name" name="playthrough_name" required>
+            {% for name in playthrough_names %}
+            <option value="{{ name }}">{{ name }}</option>
+            {% endfor %}
+        </select>
+        <input class="next-button" type="submit" value="Next">
+    </form>
+    {% else %}
+    <p class="no-playthroughs">No playthroughs available.</p>
+    {% endif %}
+</div>
 {% endblock %}

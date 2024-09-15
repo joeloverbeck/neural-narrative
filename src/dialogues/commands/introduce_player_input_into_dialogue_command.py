@@ -5,6 +5,7 @@ from src.abstracts.observer import Observer
 from src.abstracts.subject import Subject
 from src.characters.characters_manager import CharactersManager
 from src.dialogues.abstracts.factory_products import PlayerInputProduct
+from src.dialogues.abstracts.strategies import MessageDataProducerForIntroducePlayerInputIntoDialogueStrategy
 from src.dialogues.transcription import Transcription
 
 
@@ -12,12 +13,16 @@ class IntroducePlayerInputIntoDialogueCommand(Command, Subject):
 
     def __init__(self, playthrough_name: str, player_identifier: Optional[str],
                  player_input_product: PlayerInputProduct, transcription: Transcription,
+                 message_data_producer_for_introduce_player_input_into_dialogue_strategy: MessageDataProducerForIntroducePlayerInputIntoDialogueStrategy,
                  characters_manager: CharactersManager = None):
+        if player_identifier and not isinstance(player_identifier, str):
+            raise TypeError(f"passed a player identifier that was a {type(player_identifier)}")
 
         self._playthrough_name = playthrough_name
         self._player_identifier = player_identifier
         self._player_input_product = player_input_product
         self._transcription = transcription
+        self._message_data_producer_for_introduce_player_input_into_dialogue_strategy = message_data_producer_for_introduce_player_input_into_dialogue_strategy
 
         self._observers: List[Observer] = []
 
@@ -35,14 +40,10 @@ class IntroducePlayerInputIntoDialogueCommand(Command, Subject):
 
     def execute(self) -> None:
         # There's a player, who is going to contribute to the conversation.
-        player_character_data = self._characters_manager.load_character_data(self._playthrough_name,
-                                                                             self._player_identifier)
+        player_character_data = self._characters_manager.load_character_data(self._player_identifier)
 
         # Append the user's line to the transcription so that the speech turn tool takes it into consideration.
         self._transcription.add_speech_turn(player_character_data["name"], self._player_input_product.get())
 
-        speech_data = {"name": f"{player_character_data["name"]}",
-                       "speech": f"{self._player_input_product.get()}",
-                       "narration_text": ""}
-
-        self.notify(speech_data)
+        self.notify(self._message_data_producer_for_introduce_player_input_into_dialogue_strategy.produce_message_data(
+            player_character_data, self._player_input_product))
