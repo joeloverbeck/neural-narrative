@@ -13,6 +13,12 @@ class Transcription:
 
         self._transcription.append(f"{name}: {speech}")
 
+    def add_speech_line(self, speech_line: str):
+        if not speech_line:
+            raise ValueError("speech_line should not be empty.")
+
+        self._transcription.append(speech_line)
+
     def get(self) -> List[str]:
         return self._transcription
 

@@ -1,7 +1,3 @@
-import os
-
-from flask import url_for
-
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.identifiers_manager import IdentifiersManager
 from src.playthrough_manager import PlaythroughManager
@@ -25,31 +21,24 @@ class CharactersManager:
 
         return self._identifiers_manager.get_highest_identifier(characters_file)
 
-    def get_character_data(self, character_identifier: str) -> dict:
-        """
-                Returns a dictionary with the 'name,' 'description,' 'personality,' and 'equipment'
-                of the character corresponding to the given identifier.
+    def load_character_data(self, character_identifier: str):
+        if not isinstance(character_identifier, str):
+            raise TypeError(
+                f"Attempted to load the character data with a non-string identifier. Identifier type: {type(character_identifier)}")
 
-                :param character_identifier: The identifier of the character as a string.
-                :return: A dictionary containing the specified fields of the character.
-                :raises ValueError: If the character identifier does not exist.
-                """
         # Load the characters JSON file
         characters_file = self._filesystem_manager.load_existing_or_new_json_file(
             self._filesystem_manager.get_file_path_to_characters_file(self._playthrough_name))
 
-        # Retrieve the character data for the given identifier
-        character_data = characters_file.get(character_identifier)
+        # Return the character data for the given identifier
+        if character_identifier not in characters_file:
+            raise KeyError(f"Character with identifier '{character_identifier}' not found.")
 
-        if not character_data:
-            raise ValueError(f"Character with identifier '{character_identifier}' not found.")
+        character_data = characters_file[character_identifier]
 
-        # Extract the required fields
-        required_fields = ["name", "description", "personality", "equipment"]
-        character_data = {field: character_data[field] for field in required_fields if field in character_data}
-
-        character_data['image_url'] = url_for('static',
-                                              filename=f'playthroughs/{self._playthrough_name}/images/{character_identifier}.png')
+        character_data['identifier'] = character_identifier
+        character_data['image_url'] = self._filesystem_manager.get_file_path_to_character_image_for_web(
+            self._playthrough_name, character_identifier)
 
         return character_data
 
@@ -67,35 +56,15 @@ class CharactersManager:
 
         # Retrieve data for each character
         characters = []
-        for character_id in character_identifiers:
-            character_data = self.get_character_data(character_id)
-            character_data['id'] = character_id  # Include the identifier
-            # Assume images are stored in 'static/images/characters/<character_id>.png'
-            character_data['image_url'] = url_for('static',
-                                                  filename=f'playthroughs/{self._playthrough_name}/images/{character_id}.png')
+
+        for character_identifier in character_identifiers:
+            character_data = self.load_character_data(character_identifier)
             characters.append(character_data)
 
         return characters
 
-    def load_character_data(self, playthrough_name: str, character_identifier: str):
-        # Define the path
-        file_path = self._filesystem_manager.get_file_path_to_characters_file(playthrough_name)
-
-        # Check if the file exists
-        if not os.path.exists(file_path):
-            raise FileNotFoundError(f"The file at path {file_path} does not exist.")
-
-        # Load the JSON data from the file
-        characters_data = self._filesystem_manager.read_json_file(file_path)
-
-        # Return the character data for the given identifier
-        if str(character_identifier) not in characters_data:
-            raise KeyError(f"Character with identifier '{character_identifier}' not found.")
-
-        return characters_data[str(character_identifier)]
-
     def load_character_memories(self, playthrough_name: str, character_identifier: str):
-        character_data = self.load_character_data(playthrough_name, character_identifier)
+        character_data = self.load_character_data(character_identifier)
 
         file_path = self._filesystem_manager.get_file_path_to_character_memories(playthrough_name, character_identifier,
                                                                                  character_data)

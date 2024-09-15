@@ -5,6 +5,7 @@ import pytest
 from src.characters.commands.summarize_dialogue_command import SummarizeDialogueCommand
 from src.characters.factories.store_character_memory_command_factory import StoreCharacterMemoryCommandFactory
 from src.dialogues.factories.dialogue_summary_provider_factory import DialogueSummaryProviderFactory
+from src.dialogues.participants import Participants
 from src.dialogues.transcription import Transcription
 
 
@@ -43,8 +44,13 @@ def test_no_summary_for_insufficient_transcription(setup_dependencies):
     # Set transcription to be insufficient
     deps['transcription'].is_transcription_sufficient.return_value = False
 
+    participants = Participants()
+
+    participants.add_participant("1", "char_1", "description", "personality", "equipment")
+    participants.add_participant("2", "char_2", "description", "personality", "equipment")
+
     command = SummarizeDialogueCommand(
-        participants=["char_1", "char_2"],
+        participants=participants,
         transcription=deps['transcription'],
         dialogue_summary_provider_factory=deps['dialogue_summary_provider_factory'],
         store_character_memory_command_factory=deps['store_character_memory_command_factory']
@@ -66,8 +72,13 @@ def test_valid_summary_created_and_memories_stored(setup_dependencies):
     # Mock the summary product to be valid
     deps['summary_product'].is_valid.return_value = True
 
+    participants = Participants()
+
+    participants.add_participant("1", "char_1", "description", "personality", "equipment")
+    participants.add_participant("2", "char_2", "description", "personality", "equipment")
+
     command = SummarizeDialogueCommand(
-        participants=["char_1", "char_2"],
+        participants=participants,
         transcription=deps['transcription'],
         dialogue_summary_provider_factory=deps['dialogue_summary_provider_factory'],
         store_character_memory_command_factory=deps['store_character_memory_command_factory']
@@ -82,9 +93,9 @@ def test_valid_summary_created_and_memories_stored(setup_dependencies):
 
     # Ensure memories are stored for all participants
     deps['store_character_memory_command_factory'].create_store_character_memory_command.assert_any_call(
-        "char_1", deps['summary_product'].get.return_value)
+        "1", deps['summary_product'].get.return_value)
     deps['store_character_memory_command_factory'].create_store_character_memory_command.assert_any_call(
-        "char_2", deps['summary_product'].get.return_value)
+        "2", deps['summary_product'].get.return_value)
 
     # Ensure that the store memory command is executed for each participant
     assert deps['store_memory_command'].execute.call_count == 2
@@ -100,8 +111,13 @@ def test_summary_creation_fails(setup_dependencies):
     deps['summary_product'].is_valid.return_value = False
     deps['summary_product'].get_error.return_value = "Invalid summary"
 
+    participants = Participants()
+
+    participants.add_participant("1", "char_1", "description", "personality", "equipment")
+    participants.add_participant("2", "char_2", "description", "personality", "equipment")
+
     command = SummarizeDialogueCommand(
-        participants=["char_1", "char_2"],
+        participants=participants,
         transcription=deps['transcription'],
         dialogue_summary_provider_factory=deps['dialogue_summary_provider_factory'],
         store_character_memory_command_factory=deps['store_character_memory_command_factory']

@@ -1,3 +1,4 @@
+<!-- templates/participants.html -->
 {% extends "base.html" %}
 
 {% block title %}Select Characters to Speak With{% endblock %}
@@ -13,10 +14,10 @@
 <form action="/participants" method="post">
     <div class="characters-list">
         {% for character in characters %}
-        <div class="character">
+        <div class="character card">
             <label>
                 <div class="character-content">
-                    <input name="selected_characters" type="checkbox" value="{{ character.id }}">
+                    <input name="selected_characters" type="checkbox" value="{{ character.identifier }}">
                     <img alt="{{ character.name }}" src="{{ character.image_url }}" width="150">
                     <div class="character-details">
                         <h2>{{ character.name }}</h2>

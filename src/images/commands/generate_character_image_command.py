@@ -34,7 +34,7 @@ class GenerateCharacterImageCommand(Command):
         self._secret_key = self._filesystem_manager.load_openai_secret_key()
 
     def execute(self) -> None:
-        character_data = self._character_manager.get_character_data(self._character_identifier)
+        character_data = self._character_manager.load_character_data(self._character_identifier)
 
         prompt = ("Create a close-up portrait, as it could appear in a painting or a photo ID, of the following:\n"
                   f"Name: {character_data['name']}\n"

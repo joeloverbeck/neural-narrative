@@ -2,7 +2,7 @@ import sys
 
 from src.constants import HERMES_405B
 from src.enums import TemplateType
-from src.interfaces.abstracts.interface_manager import InterfaceManager
+from src.interfaces.console_interface_manager import ConsoleInterfaceManager
 from src.maps.strategies.fathered_place_generation_strategy import FatheredPlaceGenerationStrategy
 from src.maps.strategies.world_generation_strategy import WorldGenerationStrategy
 from src.prompting.factories.openrouter_llm_client_factory import OpenRouterLlmClientFactory
@@ -10,7 +10,7 @@ from src.prompting.strategies.concrete_produce_tool_response_strategy import Con
 
 
 def main():
-    chosen_place_type = InterfaceManager().prompt_for_input(
+    chosen_place_type = ConsoleInterfaceManager().prompt_for_input(
         "What type of place do you want to generate? (world|region|area|location): ")
 
     try:

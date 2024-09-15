@@ -1,6 +1,5 @@
-from typing import List
-
 from src.constants import CHOOSING_SPEECH_TURN_PROMPT_FILE, SPEECH_TURN_TOOL_FILE, TOOL_INSTRUCTIONS_FILE
+from src.dialogues.participants import Participants
 from src.dialogues.providers.character_choice_dialogue_system_content_for_prompt_provider import \
     CharacterChoiceDialogueSystemContentForPromptProvider
 from src.dialogues.transcription import Transcription
@@ -17,10 +16,10 @@ class CharacterChoiceDialogueSystemContentForPromptProviderFactory:
         self._filesystem_manager = filesystem_manager or FilesystemManager()
 
     def create_character_choice_dialogue_system_content_for_prompt_provider(
-            self, participants_data: List[dict[str, str]],
+            self, participants: Participants,
             transcription: Transcription) -> CharacterChoiceDialogueSystemContentForPromptProvider:
         return CharacterChoiceDialogueSystemContentForPromptProvider(
-            participants_data, self._player_identifier,
+            participants, self._player_identifier,
             transcription,
             self._filesystem_manager.read_file(
                 CHOOSING_SPEECH_TURN_PROMPT_FILE),

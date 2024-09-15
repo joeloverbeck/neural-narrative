@@ -5,7 +5,7 @@ import sys
 from src.constants import CHARACTERS_FOLDER_NAME, PLAYTHROUGHS_FOLDER, CHARACTERS_FILE, \
     OPENROUTER_SECRET_KEY_FILE, PLAYTHROUGH_METADATA_FILE, MEMORIES_FILE, DIALOGUES_FILE, WORLD_TEMPLATES_FILE, \
     LOCATIONS_TEMPLATES_FILE, MAP_FILE, AREAS_TEMPLATES_FILE, REGIONS_TEMPLATES_FILE, LOGGING_CONFIG_FILE, \
-    OPENAI_SECRET_KEY_FILE, IMAGES_FOLDER_NAME, OPENAI_PROJECT_KEY_FILE
+    OPENAI_SECRET_KEY_FILE, IMAGES_FOLDER_NAME, OPENAI_PROJECT_KEY_FILE, ONGOING_DIALOGUE_FOLDER_NAME
 
 
 class FilesystemManager:
@@ -112,6 +112,30 @@ class FilesystemManager:
     def get_file_path_to_playthrough_folder(self, playthrough_name: str):
         return os.path.join(self.get_file_path_to_playthroughs_folder(), playthrough_name)
 
+    def get_file_path_to_ongoing_dialogue(self, playthrough_name) -> str:
+        return os.path.join(self.get_file_path_to_playthrough_folder(playthrough_name),
+                            ONGOING_DIALOGUE_FOLDER_NAME)
+
+    def get_file_path_to_ongoing_dialogue_folder(self, playthrough_name: str) -> str:
+        if not playthrough_name:
+            raise ValueError("playthrough_name should not be empty.")
+
+        folder_path = self.get_file_path_to_ongoing_dialogue(playthrough_name)
+
+        if not folder_path:
+            os.makedirs(folder_path)
+
+        return folder_path
+
+    def remove_ongoing_dialogue(self, playthrough_name: str):
+        if not playthrough_name:
+            raise ValueError("playthrough_name can't be empty.")
+
+        file_path = self.get_file_path_to_ongoing_dialogue(playthrough_name)
+
+        if os.path.exists(file_path):
+            os.remove(file_path)
+
     @staticmethod
     def get_file_path_to_worlds_template_file():
         return WORLD_TEMPLATES_FILE
@@ -139,13 +163,17 @@ class FilesystemManager:
 
     @staticmethod
     def get_file_path_to_character_images(playthrough_name: str) -> str:
-        images_path = os.path.join(f"static/{playthrough_name}", IMAGES_FOLDER_NAME)
+        images_path = os.path.join(f"static/{PLAYTHROUGHS_FOLDER}/{playthrough_name}", IMAGES_FOLDER_NAME)
         os.makedirs(images_path, exist_ok=True)
 
         return images_path
 
     def get_file_path_to_character_image(self, playthrough_name: str, character_identifier: str):
         return os.path.join(self.get_file_path_to_character_images(playthrough_name), f"{character_identifier}.png")
+
+    @staticmethod
+    def get_file_path_to_character_image_for_web(playthrough_name: str, character_identifier: str):
+        return f"playthroughs/{playthrough_name}/{IMAGES_FOLDER_NAME}/{character_identifier}.png"
 
     def get_file_path_to_characters_file(self, playthrough_name: str):
         # Build the path to the characters folder

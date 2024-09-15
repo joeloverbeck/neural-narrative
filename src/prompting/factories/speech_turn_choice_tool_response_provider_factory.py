@@ -1,7 +1,6 @@
-from typing import List
-
 from src.dialogues.factories.character_choice_dialogue_initial_prompting_messages_provider_factory import \
     CharacterChoiceDialogueInitialPromptingMessagesProviderFactory
+from src.dialogues.participants import Participants
 from src.dialogues.transcription import Transcription
 from src.prompting.factories.character_choice_dialogue_llm_content_provider_factory import \
     CharacterChoiceDialogueLlmContentProviderFactory
@@ -10,7 +9,7 @@ from src.prompting.providers.speech_turn_tool_response_provider import SpeechTur
 
 
 class SpeechTurnChoiceToolResponseProviderFactory:
-    def __init__(self, playthrough_name: str, participants: List[str],
+    def __init__(self, playthrough_name: str, participants: Participants,
                  character_choice_dialogue_initial_prompting_messages_provider_factory: CharacterChoiceDialogueInitialPromptingMessagesProviderFactory,
                  character_choice_dialogue_llm_content_provider_factory: CharacterChoiceDialogueLlmContentProviderFactory,
                  tool_response_parsing_provider_factory: ToolResponseParsingProviderFactory):

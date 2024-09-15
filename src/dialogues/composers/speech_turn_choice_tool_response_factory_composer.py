@@ -1,9 +1,8 @@
-from typing import List
-
 from src.dialogues.factories.character_choice_dialogue_initial_prompting_messages_provider_factory import \
     CharacterChoiceDialogueInitialPromptingMessagesProviderFactory
 from src.dialogues.factories.character_choice_dialogue_system_content_for_prompt_provider_factory import \
     CharacterChoiceDialogueSystemContentForPromptProviderFactory
+from src.dialogues.participants import Participants
 from src.prompting.abstracts.llm_client import LlmClient
 from src.prompting.factories.character_choice_dialogue_llm_content_provider_factory import \
     CharacterChoiceDialogueLlmContentProviderFactory
@@ -13,14 +12,14 @@ from src.prompting.factories.tool_response_parsing_provider_factory import ToolR
 
 
 class SpeechTurnChoiceToolResponseFactoryComposer:
-    def __init__(self, playthrough_name: str, player_identifier: str, participants: List[str], llm_client: LlmClient,
+    def __init__(self, playthrough_name: str, player_identifier: str, participants: Participants, llm_client: LlmClient,
                  model: str):
         if not playthrough_name:
             raise ValueError("playthrough_name can't be empty.")
         if not player_identifier:
             raise ValueError("player identifier can't be empty.")
-        if not len(participants) >= 2:
-            raise ValueError("There should be at least two participants in the dialogue.")
+        if not participants.enough_participants():
+            raise ValueError("Not enough participants.")
         if not model:
             raise ValueError("model can't be empty.")
 

@@ -4,12 +4,15 @@
 body {
     font-family: Arial, sans-serif;
     margin: 50px;
+    background: linear-gradient(120deg, #f0f0f0, #e0e0e0); /* Soft gradient background */
 }
 
+
 .container {
-    max-width: 800px; /* Adjusted to desired width */
+    max-width: 1200px; /* Further increase max-width */
     margin: auto;
 }
+
 
 h1 {
     text-align: center;
@@ -17,32 +20,35 @@ h1 {
 
 form {
     margin-top: 30px;
+    text-align: center; /* Center the form inputs */
+}
+
+input[type="text"] {
+    padding: 10px;
+    width: 80%; /* Limit input field width to 80% */
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    margin: 0 auto; /* Center the input field */
 }
 
 input[type="submit"] {
+    width: 80%; /* Limit submit button width to 80% */
     padding: 10px;
     font-size: 16px;
     cursor: pointer;
-    width: 100%;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
+    margin: 0 auto; /* Center the submit button */
+    display: block; /* Ensure it's centered as a block element */
 }
+
 
 input[type="submit"]:hover {
     background-color: #45a049;
 }
 
-/* Adjusted form input styles */
-label, input[type="text"], select {
-    display: block;
-    width: 100%;
-}
-
 input[type="checkbox"] {
     display: inline-block; /* Ensure checkbox is inline */
     width: auto;           /* Let the checkbox have its default width */
-    margin-right: 10px;    /* Adjust spacing */
+    margin-right: 15px;    /* Adjust spacing */
 }
 
 /* Character list styles */
@@ -86,32 +92,17 @@ input[type="checkbox"] {
     margin-top: 0;
 }
 
-/* Responsive design for smaller screens */
-@media (max-width: 600px) {
-    .container {
-        max-width: 100%;
-        margin: 10px;
-    }
-
-    .character-content {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .character-content img {
-        margin-right: 0;     /* Remove right margin when stacking */
-        margin-bottom: 15px; /* Add bottom margin for spacing */
-    }
-}
 
 /* Chat window styles */
 .chat-window {
     border: 1px solid #ccc;
     padding: 15px;
-    height: 400px;
+    height: 900px; /* Increase the height here */
+    width: 95%;    /* Keep the current width */
     overflow-y: scroll;
     margin-bottom: 20px;
     background-color: #f5f5f5;
+    margin: 0 auto; /* Center the chat window horizontally */
 }
 
 .message {
@@ -140,7 +131,6 @@ input[type="submit"] {
     font-size: 16px;
 }
 
-
 /* Chat bubble styles */
 .chat-bubble {
     display: flex;
@@ -157,10 +147,10 @@ input[type="submit"] {
 }
 
 .avatar {
-    width: 40px;
-    height: 40px;
+    width: 150px;  /* Further increase size */
+    height: 150px; /* Further increase size */
     border-radius: 50%;
-    margin: 0 10px;
+    margin: 0 20px; /* Adjust margin for better spacing */
 }
 
 .message-content {
@@ -188,10 +178,12 @@ input[type="submit"] {
 .chat-window {
     border: 1px solid #ccc;
     padding: 15px;
-    height: 400px;
-    overflow-y: auto;
+    height: 500px;
+    width: 95%;    /* Increased width to 90% of the container */
+    overflow-y: scroll;
     margin-bottom: 20px;
     background-color: #f5f5f5;
+    margin: 0 auto; /* Center the chat window horizontally */
 }
 
 .chat-window::-webkit-scrollbar {
@@ -205,4 +197,157 @@ input[type="submit"] {
 
 .chat-window::-webkit-scrollbar-thumb:hover {
     background-color: #555;
+}
+
+
+/* Styles for index.html */
+
+.index-container {
+    background: linear-gradient(135deg, #f9f9f9, #e6e6e6); /* Light gradient background */
+    padding: 50px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 600px; /* Restrict width */
+    margin: 50px auto; /* Center the container */
+    text-align: center; /* Center-align everything inside */
+}
+
+h1 {
+    font-family: 'Helvetica Neue', sans-serif;
+    font-weight: 300;
+    color: #333;
+    margin-bottom: 40px;
+}
+
+.playthrough-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.playthrough-label {
+    font-size: 18px;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.playthrough-select {
+    padding: 10px;
+    font-size: 16px;
+    width: 100%;
+    max-width: 400px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-bottom: 20px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center; /* Center the text */
+    appearance: none; /* Remove default arrow styling for better control */
+}
+
+.playthrough-select:focus {
+    outline: none;
+    border-color: #45a049; /* Same color as button hover */
+}
+
+.next-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    font-size: 18px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.next-button:hover {
+    background-color: #45a049;
+}
+
+.no-playthroughs {
+    color: #888;
+    font-size: 16px;
+    margin-top: 20px;
+}
+
+
+/* Styles for 'participants.html' */
+
+/* Style the participant cards */
+.card {
+    background-color: #fff; /* White card background */
+    border-radius: 10px;     /* Rounded corners */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    padding: 20px;
+    margin-bottom: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition */
+    max-width: 100%; /* Ensure the cards don’t stretch beyond the page width */
+}
+
+/* Hover effect for the card */
+.card:hover {
+    transform: translateY(-10px); /* Lift the card when hovered */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2); /* Increase shadow depth on hover */
+    background-color: #f9f9f9; /* Lighten the background color on hover */
+}
+
+/* Character details inside the card */
+.character-details {
+    flex: 1;
+    text-align: left; /* Align text to the left */
+}
+
+/* Make the text inside each card stand out */
+.character-details h2 {
+    font-size: 1.5em;
+    margin-top: 0;
+    color: #333;
+    font-weight: 600;
+}
+
+.character-details p {
+    margin: 5px 0;
+    color: #666;
+}
+
+
+/* Ensure that character images are aligned and have proper spacing */
+.character-content img {
+    margin-right: 20px;
+    border-radius: 8px; /* Rounded image corners for a friendlier look */
+    width: 120px;
+    height: auto;
+}
+
+
+/* Responsive design for smaller screens */
+@media (max-width: 600px) {
+    .container {
+        max-width: 100%;
+        margin: 10px;
+    }
+
+    .character-content {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .character-content img {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .chat-window {
+        width: 100%; /* Chat window takes full width on small screens */
+    }
+
+    .avatar {
+        width: 80px; /* Reduced size for small screens */
+        height: 80px;
+    }
+
+    input[type="text"], input[type="submit"] {
+        width: 100%; /* Ensure inputs are full width on small screens */
+    }
 }

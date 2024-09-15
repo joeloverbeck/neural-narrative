@@ -1,19 +1,24 @@
 from src.constants import WORLD_GENERATION_PROMPT_FILE, WORLD_GENERATION_TOOL_FILE, TOOL_INSTRUCTIONS_FILE
 from src.filesystem.filesystem_manager import FilesystemManager
+from src.interfaces.abstracts.interface_manager import InterfaceManager
+from src.interfaces.console_interface_manager import ConsoleInterfaceManager
 from src.maps.abstracts.strategies import PlaceGenerationStrategy
 from src.prompting.abstracts.strategies import ProduceToolResponseStrategy
-from src.prompting.prompting import prompt_for_input
 from src.tools import generate_tool_prompt
 
 
 class WorldGenerationStrategy(PlaceGenerationStrategy):
-    def __init__(self, produce_tool_response_strategy: ProduceToolResponseStrategy):
+    def __init__(self, produce_tool_response_strategy: ProduceToolResponseStrategy,
+                 interface_manager: InterfaceManager = None):
         assert produce_tool_response_strategy
 
         self._produce_tool_response_strategy = produce_tool_response_strategy
 
+        self._interface_manager = interface_manager or ConsoleInterfaceManager()
+
     def generate_place(self):
-        world_notion = prompt_for_input("What are your notions about how this world should be like?: ")
+        world_notion = self._interface_manager.prompt_for_input(
+            "What are your notions about how this world should be like?: ")
 
         filesystem_manager = FilesystemManager()
 

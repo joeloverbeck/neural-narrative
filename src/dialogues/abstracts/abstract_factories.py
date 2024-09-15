@@ -9,10 +9,7 @@ from src.dialogues.abstracts.factory_products import DialogueProduct, PlayerInpu
 
 
 class DialogueFactory(Protocol):
-    def create_dialogue(self) -> DialogueProduct:
-        pass
-
-    def process_turn(self) -> bool:
+    def process_turn_of_dialogue(self) -> DialogueProduct:
         pass
 
 

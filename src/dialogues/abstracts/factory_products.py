@@ -6,7 +6,13 @@ from src.dialogues.transcription import Transcription
 
 
 class DialogueProduct(Protocol):
-    def get(self) -> Transcription:
+    def get_messages_to_llm(self) -> MessagesToLlm:
+        pass
+
+    def get_transcription(self) -> Transcription:
+        pass
+
+    def has_ended(self) -> bool:
         pass
 
 

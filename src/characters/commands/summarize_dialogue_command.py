@@ -1,9 +1,9 @@
 import logging
-from typing import List
 
 from src.abstracts.command import Command
 from src.characters.factories.store_character_memory_command_factory import StoreCharacterMemoryCommandFactory
 from src.dialogues.factories.dialogue_summary_provider_factory import DialogueSummaryProviderFactory
+from src.dialogues.participants import Participants
 from src.dialogues.transcription import Transcription
 
 logger = logging.getLogger(__name__)
@@ -11,10 +11,11 @@ logger = logging.getLogger(__name__)
 
 class SummarizeDialogueCommand(Command):
 
-    def __init__(self, participants: List[str],
+    def __init__(self, participants: Participants,
                  transcription: Transcription, dialogue_summary_provider_factory: DialogueSummaryProviderFactory,
                  store_character_memory_command_factory: StoreCharacterMemoryCommandFactory):
-        assert len(participants) >= 2
+        if not participants.enough_participants():
+            raise ValueError("There weren't enough participants.")
 
         self._participants = participants
         self._transcription = transcription
@@ -35,6 +36,6 @@ class SummarizeDialogueCommand(Command):
             raise ValueError(f"Failed to create a summary for the dialogue: {summary_product.get_error()}")
 
         # Now that we have the summary, gotta add it to the memories of all participants.
-        for participant_identifier in self._participants:
+        for participant_identifier in self._participants.get_participant_keys():
             self._store_character_memory_command_factory.create_store_character_memory_command(participant_identifier,
                                                                                                summary_product.get()).execute()

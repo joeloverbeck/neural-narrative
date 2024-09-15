@@ -1,8 +1,6 @@
-from typing import List
-
-from src.dialogues.dialogues import gather_participants_data
 from src.dialogues.factories.character_choice_dialogue_initial_prompting_messages_provider_factory import \
     CharacterChoiceDialogueInitialPromptingMessagesProviderFactory
+from src.dialogues.participants import Participants
 from src.dialogues.transcription import Transcription
 from src.prompting.abstracts.abstract_factories import ToolResponseProvider
 from src.prompting.abstracts.factory_products import LlmToolResponseProduct
@@ -13,12 +11,12 @@ from src.prompting.products.concrete_llm_tool_response_product import ConcreteLl
 
 
 class SpeechTurnChoiceToolResponseProvider(ToolResponseProvider):
-    def __init__(self, playthrough_name: str, participants: List[str], transcription: Transcription,
+    def __init__(self, playthrough_name: str, participants: Participants, transcription: Transcription,
                  character_choice_dialogue_initial_prompting_messages_provider_factory: CharacterChoiceDialogueInitialPromptingMessagesProviderFactory,
                  llm_content_provider_factory: CharacterChoiceDialogueLlmContentProviderFactory,
                  tool_response_parsing_provider_factory: ToolResponseParsingProviderFactory):
-        assert playthrough_name
-        assert len(participants) >= 2
+        if not participants.enough_participants():
+            raise ValueError("Not enough participants.")
 
         self._playthrough_name = playthrough_name
         self._participants = participants
@@ -28,10 +26,8 @@ class SpeechTurnChoiceToolResponseProvider(ToolResponseProvider):
         self._tool_response_parsing_provider_factory = tool_response_parsing_provider_factory
 
     def create_llm_response(self) -> LlmToolResponseProduct:
-        participants_data = gather_participants_data(self._playthrough_name, self._participants)
-
         character_choice_dialogue_initial_prompting_messages_product = self._character_choice_dialogue_initial_prompting_messages_provider_factory.create_character_choice_dialogue_initial_prompting_messages_provider(
-            participants_data, self._transcription).create_initial_prompting_messages()
+            self._participants, self._transcription).create_initial_prompting_messages()
 
         llm_content_product = self._llm_content_provider_factory.create_llm_content_provider_factory(
             character_choice_dialogue_initial_prompting_messages_product).generate_content()
