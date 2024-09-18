@@ -4,7 +4,7 @@ from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.places_templates_parameter import PlacesTemplatesParameter
 from src.prompting.abstracts.abstract_factories import ToolResponseProvider, UserContentForCharacterGenerationFactory
 from src.prompting.abstracts.factory_products import LlmToolResponseProduct
-from src.prompting.abstracts.strategies import ProduceToolResponseStrategy
+from src.prompting.factories.produce_tool_response_strategy_factory import ProduceToolResponseStrategyFactory
 from src.prompting.products.concrete_llm_tool_response_product import ConcreteLlmToolResponseProduct
 from src.tools import generate_tool_prompt
 
@@ -12,16 +12,15 @@ from src.tools import generate_tool_prompt
 class CharacterGenerationToolResponseProvider(ToolResponseProvider):
 
     def __init__(self, playthrough_name: str, places_parameter: PlacesTemplatesParameter,
-                 produce_tool_response_strategy: ProduceToolResponseStrategy,
+                 produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
                  user_content_for_character_generation_factory: UserContentForCharacterGenerationFactory):
         assert playthrough_name
         assert places_parameter
-        assert produce_tool_response_strategy
         assert user_content_for_character_generation_factory
 
         self._playthrough_name = playthrough_name
         self._places_parameter = places_parameter
-        self._produce_tool_response_strategy = produce_tool_response_strategy
+        self._produce_tool_response_strategy_factory = produce_tool_response_strategy_factory
         self._user_content_for_character_generation_factory = user_content_for_character_generation_factory
 
     def create_llm_response(self) -> LlmToolResponseProduct:
@@ -76,5 +75,6 @@ class CharacterGenerationToolResponseProvider(ToolResponseProvider):
                                                   error=f"Was unable to create the user content for character generation: {user_content_product.get_error()}")
 
         return ConcreteLlmToolResponseProduct(
-            self._produce_tool_response_strategy.produce_tool_response(system_content, user_content_product.get()),
+            self._produce_tool_response_strategy_factory.create_produce_tool_response_strategy().produce_tool_response(
+                system_content, user_content_product.get()),
             is_valid=True)

@@ -4,17 +4,18 @@ from abc import ABC, abstractmethod
 from typing import Protocol
 
 from src.abstracts.subject import Subject
-from src.dialogues.abstracts.factory_products import DialogueProduct, PlayerInputProduct, \
-    InitialPromptingMessagesProduct, SpeechDataProduct, SummaryProduct
+from src.dialogues.abstracts.factory_products import (
+    DialogueProduct,
+    PlayerInputProduct,
+    InitialPromptingMessagesProduct,
+    SpeechDataProduct,
+    SummaryProduct,
+)
 
 
 class DialogueFactory(Protocol):
     def process_turn_of_dialogue(self) -> DialogueProduct:
         pass
-
-
-class DialogueFactorySubject(DialogueFactory, Subject, Protocol):
-    pass
 
 
 class PlayerInputFactory(ABC):
@@ -38,3 +39,7 @@ class SpeechDataFactory(ABC):
 class DialogueSummaryProvider(Protocol):
     def create_summary(self) -> SummaryProduct:
         pass
+
+
+class DialogueFactorySubject(DialogueFactory, Subject, Protocol):
+    pass

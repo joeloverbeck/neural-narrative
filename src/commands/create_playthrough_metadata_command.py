@@ -4,15 +4,27 @@ import random
 
 from src.abstracts.command import Command
 from src.builders.playthrough_metadata_builder import PlaythroughMetadataBuilder
-from src.constants import DEFAULT_PLAYER_IDENTIFIER, DEFAULT_CURRENT_PLACE, DEFAULT_IDENTIFIER
-from src.exceptions import WorldTemplateNotFoundException, PlaythroughAlreadyExistsException
+from src.constants import (
+    DEFAULT_PLAYER_IDENTIFIER,
+    DEFAULT_CURRENT_PLACE,
+    DEFAULT_IDENTIFIER,
+)
+from src.exceptions import (
+    WorldTemplateNotFoundException,
+    PlaythroughAlreadyExistsException,
+)
 from src.filesystem.filesystem_manager import FilesystemManager
 
 logger = logging.getLogger(__name__)
 
 
 class CreatePlaythroughMetadataCommand(Command):
-    def __init__(self, playthrough_name: str, world_template: str, filesystem_manager: FilesystemManager = None):
+    def __init__(
+            self,
+            playthrough_name: str,
+            world_template: str,
+            filesystem_manager: FilesystemManager = None,
+    ):
         if not playthrough_name:
             raise ValueError("playthrough_name must not be empty.")
         if not world_template:
@@ -27,49 +39,69 @@ class CreatePlaythroughMetadataCommand(Command):
     def execute(self) -> None:
         # Check if the folder already exists
         if self._filesystem_manager.does_file_path_exist(
-                self._filesystem_manager.get_file_path_to_playthrough_folder(self._playthrough_name)):
+                self._filesystem_manager.get_file_path_to_playthrough_folder(
+                    self._playthrough_name
+                )
+        ):
             raise PlaythroughAlreadyExistsException(
-                f"A playthrough with the name '{self._playthrough_name}' already exists.")
+                f"A playthrough with the name '{self._playthrough_name}' already exists."
+            )
 
         # Checks here if there is such a world template:
         worlds_file = self._filesystem_manager.load_existing_or_new_json_file(
-            self._filesystem_manager.get_file_path_to_worlds_template_file())
+            self._filesystem_manager.get_file_path_to_worlds_template_file()
+        )
 
         if self._world_template not in worlds_file:
-            raise WorldTemplateNotFoundException(f"There is no such world template '{self._world_template}'")
+            raise WorldTemplateNotFoundException(
+                f"There is no such world template '{self._world_template}'"
+            )
 
         # Create the playthrough folder
         self._filesystem_manager.create_folders_along_file_path(
-            self._filesystem_manager.get_file_path_to_playthrough_folder(self._playthrough_name))
+            self._filesystem_manager.get_file_path_to_playthrough_folder(
+                self._playthrough_name
+            )
+        )
 
         # Generate random hour and assign it as a string
         random_hour = random.randint(0, 23)
 
         metadata_builder = PlaythroughMetadataBuilder()
-        playthrough_metadata = (metadata_builder
-                                .set_world_template(self._world_template)
-                                .set_player_identifier(DEFAULT_PLAYER_IDENTIFIER)
-                                .set_current_place(DEFAULT_CURRENT_PLACE)
-                                .set_time_hour(random_hour)
-                                .set_last_identifiers(DEFAULT_IDENTIFIER, DEFAULT_IDENTIFIER)
-                                .build())
+        playthrough_metadata = (
+            metadata_builder.set_world_template(self._world_template)
+            .set_player_identifier(DEFAULT_PLAYER_IDENTIFIER)
+            .set_followers()
+            .set_current_place(DEFAULT_CURRENT_PLACE)
+            .set_time_hour(random_hour)
+            .set_last_identifiers(DEFAULT_IDENTIFIER, DEFAULT_IDENTIFIER)
+            .build()
+        )
 
         # Save the metadata and map files
         try:
             # Write the initial values to the JSON file
-            self._filesystem_manager.save_json_file(playthrough_metadata,
-                                                    self._filesystem_manager.get_file_path_to_playthrough_metadata(
-                                                        self._playthrough_name))
+            self._filesystem_manager.save_json_file(
+                playthrough_metadata,
+                self._filesystem_manager.get_file_path_to_playthrough_metadata(
+                    self._playthrough_name
+                ),
+            )
 
             # Must also create the map JSON file
-            self._filesystem_manager.save_json_file({},
-                                                    self._filesystem_manager.get_file_path_to_map(
-                                                        self._playthrough_name))
+            self._filesystem_manager.save_json_file(
+                {},
+                self._filesystem_manager.get_file_path_to_map(self._playthrough_name),
+            )
         except IOError as e:
             logger.error(f"Failed to save playthrough files: {e}")
             raise
 
-        playthrough_path = self._filesystem_manager.get_file_path_to_playthrough_folder(self._playthrough_name)
+        playthrough_path = self._filesystem_manager.get_file_path_to_playthrough_folder(
+            self._playthrough_name
+        )
 
         # Confirm that the playthrough has been successfully created
-        logger.info(f"Playthrough '{self._playthrough_name}' created successfully at {playthrough_path}.")
+        logger.info(
+            f"Playthrough '{self._playthrough_name}' created successfully at {playthrough_path}."
+        )

@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Location Hub{% endblock %}
+
+{% block content %}
+<h1>Location Hub</h1>
+
+<!-- Display the current place -->
+<div class="current-place">
+    <h2>Current Place: {{ current_place }}</h2>
+</div>
+
+<!-- Form to add characters at the current place to followers -->
+{% if characters %}
+<h3>Characters at this Location:</h3>
+<form method="post">
+    <div class="characters-list">
+        {% for character in characters %}
+        <div class="character card">
+            <label>
+                <div class="character-content">
+                    <input name="add_followers" type="checkbox" value="{{ character.identifier }}">
+                    <img alt="{{ character.name }}" src="{{ character.image_url }}" width="150">
+                    <div class="character-details">
+                        <h2>{{ character.name }}</h2>
+                        <p><strong>Description:</strong> {{ character.description }}</p>
+                        <p><strong>Equipment:</strong> {{ character.equipment }}</p>
+                    </div>
+                </div>
+            </label>
+        </div>
+        {% endfor %}
+    </div>
+    <input name="action" type="submit" value="Add to Followers">
+</form>
+{% else %}
+<p>No characters are present at this location.</p>
+{% endif %}
+
+<!-- Form to remove followers and leave them at the current location -->
+{% if followers %}
+<h3>Your Followers:</h3>
+<form method="post">
+    <div class="characters-list">
+        {% for follower in followers %}
+        <div class="character card">
+            <label>
+                <div class="character-content">
+                    <input name="remove_followers" type="checkbox" value="{{ follower.identifier }}">
+                    <img alt="{{ follower.name }}" src="{{ follower.image_url }}" width="150">
+                    <div class="character-details">
+                        <h2>{{ follower.name }}</h2>
+                        <p><strong>Description:</strong> {{ follower.description }}</p>
+                        <p><strong>Equipment:</strong> {{ follower.equipment }}</p>
+                    </div>
+                </div>
+            </label>
+        </div>
+        {% endfor %}
+    </div>
+    <input name="action" type="submit" value="Remove from Followers">
+</form>
+{% else %}
+<p>You have no followers.</p>
+{% endif %}
+
+<!-- Navigation link to proceed -->
+<div class="navigation">
+    <a href="{{ url_for('participants') }}">Proceed to Chat</a>
+</div>
+
+{% endblock %}

@@ -20,3 +20,4 @@ Your description of the world should be at the most six paragraphs long, and it 
 - What are the relationships between different species or races? Are there prevalent biases or alliances?
 You are prohibited from using the following names for the new world (because those names are already used for other worlds):
 {world_names}
+Remember to include in your function call response the two fitting categories for this world.

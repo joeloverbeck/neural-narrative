@@ -14,10 +14,10 @@ class ConcreteDetermineSystemMessageForSpeechTurnStrategy(DetermineSystemMessage
         self._messages_to_llm = messages_to_llm
         self._dialogue_initial_prompting_messages_provider_factory = dialogue_initial_prompting_messages_provider_factory
 
-    def do_algorithm(self, speech_turn_tool_response_product: LlmToolResponseProduct):
+    def do_algorithm(self, speech_turn_choice_tool_response_product: LlmToolResponseProduct):
         # The next AI character should get its own system message (that includes peculiarities for that character).
         dialogue_initial_prompting_messages_product = self._dialogue_initial_prompting_messages_provider_factory.create_dialogue_initial_prompting_messages_provider(
-            speech_turn_tool_response_product).create_initial_prompting_messages()
+            speech_turn_choice_tool_response_product).create_initial_prompting_messages()
 
         # Vital here to use "extend_from_messages_to_llm" instead of just adding: it needs to filter out guiding messages.
         self._messages_to_llm.extend_from_messages_to_llm(dialogue_initial_prompting_messages_product.get())

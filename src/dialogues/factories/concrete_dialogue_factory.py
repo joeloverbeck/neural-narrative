@@ -1,40 +1,67 @@
-import logging
-from typing import List, Optional
+from typing import Optional, List
 
 from src.abstracts.observer import Observer
-from src.abstracts.subject import Subject
-from src.dialogues.abstracts.abstract_factories import DialogueFactory
+from src.dialogues.abstracts.abstract_factories import (
+    DialogueFactorySubject,
+)
 from src.dialogues.abstracts.factory_products import DialogueProduct
-from src.dialogues.abstracts.strategies import InvolvePlayerInDialogueStrategy, MessageDataProducerForSpeechTurnStrategy
-from src.dialogues.factories.llm_speech_data_provider_factory import LlmSpeechDataProviderFactory
-from src.dialogues.factories.speech_turn_produce_messages_to_prompt_llm_command_factory import \
-    SpeechTurnProduceMessagesToPromptLlmCommandFactory
+from src.dialogues.abstracts.strategies import (
+    InvolvePlayerInDialogueStrategy,
+    DetermineSystemMessageForSpeechTurnStrategy,
+)
+from src.dialogues.factories.create_speech_turn_data_command_factory import (
+    CreateSpeechTurnDataCommandFactory,
+)
+from src.dialogues.factories.determine_user_messages_for_speech_turn_strategy_factory import (
+    DetermineUserMessagesForSpeechTurnStrategyFactory,
+)
 from src.dialogues.messages_to_llm import MessagesToLlm
 from src.dialogues.products.concrete_dialogue_product import ConcreteDialogueProduct
 from src.dialogues.transcription import Transcription
-from src.prompting.factories.speech_turn_choice_tool_response_provider_factory import \
-    SpeechTurnChoiceToolResponseProviderFactory
+from src.playthrough_manager import PlaythroughManager
+from src.prompting.factories.speech_turn_choice_tool_response_provider_factory import (
+    SpeechTurnChoiceToolResponseProviderFactory,
+)
+from tests.test_concrete_llm_content_factory import messages_to_llm
 
-logger = logging.getLogger(__name__)
 
-
-class ConcreteDialogueFactory(DialogueFactory, Subject):
-    def __init__(self, messages_to_llm: Optional[MessagesToLlm], transcription: Optional[Transcription],
-                 involve_player_in_dialogue_strategy: InvolvePlayerInDialogueStrategy,
-                 speech_turn_choice_tool_response_provider_factory: SpeechTurnChoiceToolResponseProviderFactory,
-                 speech_turn_produce_messages_to_prompt_llm_command_factory: SpeechTurnProduceMessagesToPromptLlmCommandFactory,
-                 llm_speech_data_provider_factory: LlmSpeechDataProviderFactory,
-                 message_data_producer_for_speech_turn_strategy: MessageDataProducerForSpeechTurnStrategy):
+class ConcreteDialogueFactory(DialogueFactorySubject):
+    def __init__(
+            self,
+            playthrough_name: str,
+            messages_to_llm: Optional[MessagesToLlm],
+            transcription: Optional[Transcription],
+            involve_player_in_dialogue_strategy: InvolvePlayerInDialogueStrategy,
+            speech_turn_choice_tool_response_provider_factory: SpeechTurnChoiceToolResponseProviderFactory,
+            determine_system_message_for_speech_turn_strategy: DetermineSystemMessageForSpeechTurnStrategy,
+            determine_user_messages_for_speech_turn_strategy_factory: DetermineUserMessagesForSpeechTurnStrategyFactory,
+            create_speech_turn_data_command_factory: CreateSpeechTurnDataCommandFactory,
+            playthrough_manager: PlaythroughManager = None,
+    ):
+        self._playthrough_name = playthrough_name
         self._involve_player_in_dialogue_strategy = involve_player_in_dialogue_strategy
-        self._speech_turn_choice_tool_response_provider_factory = speech_turn_choice_tool_response_provider_factory
-        self._speech_turn_produce_messages_to_prompt_llm_command_factory = speech_turn_produce_messages_to_prompt_llm_command_factory
-        self._llm_speech_data_provider_factory = llm_speech_data_provider_factory
-        self._message_data_producer_for_speech_turn_strategy = message_data_producer_for_speech_turn_strategy
-
-        self._observers: List[Observer] = []
+        self._speech_turn_choice_tool_response_provider_factory = (
+            speech_turn_choice_tool_response_provider_factory
+        )
+        self._determine_system_message_for_speech_turn_strategy = (
+            determine_system_message_for_speech_turn_strategy
+        )
+        self._determine_user_messages_for_speech_turn_strategy_factory = (
+            determine_user_messages_for_speech_turn_strategy_factory
+        )
 
         self._messages_to_llm = messages_to_llm or MessagesToLlm()
         self._transcription = transcription or Transcription()
+
+        self._create_speech_turn_data_command_factory = (
+            create_speech_turn_data_command_factory
+        )
+
+        self._playthrough_manager = playthrough_manager or PlaythroughManager(
+            self._playthrough_name
+        )
+
+        self._observers: List[Observer] = []
 
     def attach(self, observer: Observer) -> None:
         self._observers.append(observer)
@@ -47,31 +74,49 @@ class ConcreteDialogueFactory(DialogueFactory, Subject):
             observer.update(message)
 
     def process_turn_of_dialogue(self) -> DialogueProduct:
-        player_input_product = self._involve_player_in_dialogue_strategy.do_algorithm(self._messages_to_llm,
-                                                                                      self._transcription)
+        player_input_product = self._involve_player_in_dialogue_strategy.do_algorithm(
+            self._messages_to_llm, self._transcription
+        )
 
         if player_input_product.is_goodbye():
-            return ConcreteDialogueProduct(self._messages_to_llm, self._transcription, has_ended=True)
+            return ConcreteDialogueProduct(
+                self._messages_to_llm, self._transcription, has_ended=True
+            )
 
         speech_turn_choice_tool_response_product = self._speech_turn_choice_tool_response_provider_factory.create_speech_turn_choice_tool_response_provider(
-            self._transcription).create_llm_response()
+            self._transcription
+        ).create_llm_response()
+
+        # If at this point the speech turn choice is still the player, we have a problem.
+        if (
+                speech_turn_choice_tool_response_product.get()["identifier"]
+                == self._playthrough_manager.get_player_identifier()
+        ):
+            raise ValueError(
+                "Was about to produce the speech turn, but the player had been chosen as the next speaker."
+            )
 
         # Proceed with the rest of the processing
-        self._speech_turn_produce_messages_to_prompt_llm_command_factory.create_speech_turn_produce_messages_to_prompt_llm_command(
-            self._messages_to_llm, self._transcription, player_input_product,
-            speech_turn_choice_tool_response_product).execute()
+        self._determine_system_message_for_speech_turn_strategy.do_algorithm(
+            speech_turn_choice_tool_response_product
+        )
+        self._determine_user_messages_for_speech_turn_strategy_factory.create_determine_user_messages_for_speech_turn_strategy(
+            player_input_product, self._messages_to_llm
+        ).do_algorithm(
+            speech_turn_choice_tool_response_product
+        )
 
-        speech_data_product = self._llm_speech_data_provider_factory.create_llm_speech_data_provider(
-            self._messages_to_llm).create_speech_data()
+        create_speech_turn_data_command = (
+            self._create_speech_turn_data_command_factory.create_command(
+                speech_turn_choice_tool_response_product
+            )
+        )
 
-        if not speech_data_product.is_valid():
-            logger.error(f"Failed to produce speech data: {speech_data_product.get_error()}")
-            return ConcreteDialogueProduct(self._messages_to_llm, self._transcription, has_ended=False)
+        for observer in self._observers:
+            create_speech_turn_data_command.attach(observer)
 
-        self._transcription.add_speech_turn(speech_data_product.get()["name"],
-                                            f"*{speech_data_product.get()['narration_text']}* {speech_data_product.get()['speech']}")
+        create_speech_turn_data_command.execute()
 
-        self.notify(self._message_data_producer_for_speech_turn_strategy.produce_message_data(
-            speech_turn_choice_tool_response_product, speech_data_product))
-
-        return ConcreteDialogueProduct(self._messages_to_llm, self._transcription, has_ended=False)
+        return ConcreteDialogueProduct(
+            self._messages_to_llm, self._transcription, has_ended=False
+        )

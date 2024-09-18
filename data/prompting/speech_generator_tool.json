@@ -12,11 +12,11 @@
         },
         "narration_text": {
           "type": "string",
-          "description": "Narration text describing the character's thoughts and/or actions the character's speech. Here is an example: {name} sit up and faced the interlocutor."
+          "description": "Narration text describing the character's thoughts and/or actions the character's speech. Here is an example: {name} sits up and faces the interlocutor."
         },
         "speech": {
           "type": "string",
-          "description": "{name}'s speech. Base {name}'s speech pattern on the bio above."
+          "description": "{name}'s speech. Base {name}'s speech pattern on the bio above. Pay attention to the provided speech patterns to mimic them."
         }
       },
       "required": [
