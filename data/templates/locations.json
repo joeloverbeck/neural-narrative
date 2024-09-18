@@ -40,5 +40,12 @@
       "fantasy",
       "sentient species"
     ]
+  },
+  "The Iron Cradle": {
+    "description": "The Iron Cradle is a massive, ancient mining complex carved deep into the heart of the mountains. The air is thick with the scent of rust and echoes with the distant clang of metal on stone, a remnant of its industrious past. This sprawling network of tunnels and caverns is now largely abandoned, its once-rich veins of luminescent ore depleted. The walls are rough and cool to the touch, gleaming faintly with remnants of the precious mineral. In the darkest depths, one might taste the metallic tang of the mountain's breath.\n\nThe Iron Cradle is guarded by the Gearhawks, a reclusive band of survivors who have made the old mines their fortress. They are skilled mechanics and fierce defenders, using their knowledge of the labyrinthine tunnels to outwit invaders. Rumors persist of untapped reserves of luminescent ore hidden within the Cradle's deepest chambers, drawing daring scavengers and fortune-seekers despite the dangers.\n\nThe Cradle is a place of eerie silence punctuated by the groan of settling stone and the occasional clatter of dislodged rock. The darkness is oppressive, broken only by the faint glow of luminescent fungi and the flickering lights of the Gearhawks' encampments. The air is still and heavy, amplifying the sense of isolation and abandonment.\n\nIn the present day, the Iron Cradle serves as a stark reminder of the perils of unchecked exploitation and the resilience of those who adapt to survive in a post-apocalyptic landscape. It is a place of history and mystery, where the remnants of a lost industrial age lie forgotten beneath the mountains.",
+    "categories": [
+      "dieselpunk",
+      "post-apocalyptic"
+    ]
   }
 }

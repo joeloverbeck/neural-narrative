@@ -1,30 +1,46 @@
 import json
 import os
 import sys
+from typing import List
 
-from src.constants import CHARACTERS_FOLDER_NAME, PLAYTHROUGHS_FOLDER, CHARACTERS_FILE, \
-    OPENROUTER_SECRET_KEY_FILE, PLAYTHROUGH_METADATA_FILE, MEMORIES_FILE, DIALOGUES_FILE, WORLD_TEMPLATES_FILE, \
-    LOCATIONS_TEMPLATES_FILE, MAP_FILE, AREAS_TEMPLATES_FILE, REGIONS_TEMPLATES_FILE, LOGGING_CONFIG_FILE, \
-    OPENAI_SECRET_KEY_FILE, IMAGES_FOLDER_NAME, OPENAI_PROJECT_KEY_FILE, ONGOING_DIALOGUE_FOLDER_NAME
+from src.constants import (
+    CHARACTERS_FOLDER_NAME,
+    PLAYTHROUGHS_FOLDER,
+    CHARACTERS_FILE,
+    OPENROUTER_SECRET_KEY_FILE,
+    PLAYTHROUGH_METADATA_FILE,
+    MEMORIES_FILE,
+    DIALOGUES_FILE,
+    WORLD_TEMPLATES_FILE,
+    LOCATIONS_TEMPLATES_FILE,
+    MAP_FILE,
+    AREAS_TEMPLATES_FILE,
+    REGIONS_TEMPLATES_FILE,
+    LOGGING_CONFIG_FILE,
+    OPENAI_SECRET_KEY_FILE,
+    IMAGES_FOLDER_NAME,
+    OPENAI_PROJECT_KEY_FILE,
+    ONGOING_DIALOGUE_FOLDER_NAME,
+)
 
 
 class FilesystemManager:
     @staticmethod
     def read_file(file_path):
-        with open(file_path, 'r') as file:
+        with open(file_path, "r") as file:
             return file.read().strip()
 
     @staticmethod
     def read_json_file(file_path: str) -> dict:
         """Load JSON data from a file."""
-        with open(file_path, 'r') as file:
+        with open(file_path, "r") as file:
             return json.load(file)
 
     @staticmethod
     def create_empty_file_if_not_exists(file_path: str):
         if not os.path.exists(file_path):
             # Create an empty file
-            with open(file_path, 'w') as f:
+            with open(file_path, "w") as f:
                 pass  # This will create the empty file
 
     @staticmethod
@@ -34,7 +50,7 @@ class FilesystemManager:
 
     @staticmethod
     def write_binary_file(file_path, contents: bytes):
-        with open(file_path, 'wb') as f:
+        with open(file_path, "wb") as f:
             f.write(contents)
 
     @staticmethod
@@ -55,7 +71,9 @@ class FilesystemManager:
             dict: The contents of the JSON file, either loaded or initialized as an empty dictionary.
         """
         if not file_path:
-            raise ValueError("Attempted to load or create new JSON file, but the path wasn't valid.")
+            raise ValueError(
+                "Attempted to load or create new JSON file, but the path wasn't valid."
+            )
 
         # If the file doesn't exist, create it and write an empty dictionary to it
         if not os.path.exists(file_path):
@@ -75,7 +93,9 @@ class FilesystemManager:
             # Attempt to load the secret key
             return self.read_file(OPENROUTER_SECRET_KEY_FILE)
         except FileNotFoundError:
-            sys.exit(f"Error: File '{OPENROUTER_SECRET_KEY_FILE}'not found. Please check the file path.")
+            sys.exit(
+                f"Error: File '{OPENROUTER_SECRET_KEY_FILE}'not found. Please check the file path."
+            )
         except Exception as e:
             sys.exit(f"An unexpected error occurred: {str(e)}")
 
@@ -84,7 +104,9 @@ class FilesystemManager:
             # Attempt to load the secret key
             return self.read_file(OPENAI_SECRET_KEY_FILE)
         except FileNotFoundError:
-            sys.exit(f"Error: File '{OPENAI_SECRET_KEY_FILE}' not found. Please check the file path.")
+            sys.exit(
+                f"Error: File '{OPENAI_SECRET_KEY_FILE}' not found. Please check the file path."
+            )
         except Exception as e:
             sys.exit(f"An unexpected error occurred: {str(e)}")
 
@@ -93,7 +115,9 @@ class FilesystemManager:
             # Attempt to load the secret key
             return self.read_file(OPENAI_PROJECT_KEY_FILE)
         except FileNotFoundError:
-            sys.exit(f"Error: File '{OPENAI_PROJECT_KEY_FILE}' not found. Please check the file path.")
+            sys.exit(
+                f"Error: File '{OPENAI_PROJECT_KEY_FILE}' not found. Please check the file path."
+            )
         except Exception as e:
             sys.exit(f"An unexpected error occurred: {str(e)}")
 
@@ -105,16 +129,36 @@ class FilesystemManager:
 
         return PLAYTHROUGHS_FOLDER
 
+    def get_playthrough_names(self) -> List[str]:
+        playthroughs_folder = self.get_file_path_to_playthroughs_folder()
+
+        # Retrieve the list of existing playthrough folders
+        if os.path.exists(playthroughs_folder):
+            return [
+                name
+                for name in os.listdir(playthroughs_folder)
+                if os.path.isdir(os.path.join(playthroughs_folder, name))
+            ]
+        else:
+            return []
+
+    def playthrough_exists(self, playthrough_name):
+        return playthrough_name in self.get_playthrough_names()
+
     @staticmethod
     def create_folders_along_file_path(file_path):
         os.makedirs(file_path)
 
     def get_file_path_to_playthrough_folder(self, playthrough_name: str):
-        return os.path.join(self.get_file_path_to_playthroughs_folder(), playthrough_name)
+        return os.path.join(
+            self.get_file_path_to_playthroughs_folder(), playthrough_name
+        )
 
     def get_file_path_to_ongoing_dialogue(self, playthrough_name) -> str:
-        return os.path.join(self.get_file_path_to_playthrough_folder(playthrough_name),
-                            ONGOING_DIALOGUE_FOLDER_NAME)
+        return os.path.join(
+            self.get_file_path_to_playthrough_folder(playthrough_name),
+            ONGOING_DIALOGUE_FOLDER_NAME,
+        )
 
     def get_file_path_to_ongoing_dialogue_folder(self, playthrough_name: str) -> str:
         if not playthrough_name:
@@ -153,26 +197,44 @@ class FilesystemManager:
         return REGIONS_TEMPLATES_FILE
 
     def get_file_path_to_playthrough_metadata(self, playthrough_name: str):
-        return os.path.join(self.get_file_path_to_playthrough_folder(playthrough_name), PLAYTHROUGH_METADATA_FILE)
+        return os.path.join(
+            self.get_file_path_to_playthrough_folder(playthrough_name),
+            PLAYTHROUGH_METADATA_FILE,
+        )
 
     def get_file_path_to_map(self, playthrough_name: str):
-        return os.path.join(self.get_file_path_to_playthrough_folder(playthrough_name), MAP_FILE)
+        return os.path.join(
+            self.get_file_path_to_playthrough_folder(playthrough_name), MAP_FILE
+        )
 
     def get_file_path_to_characters(self, playthrough_name: str):
-        return os.path.join(self.get_file_path_to_playthroughs_folder(), playthrough_name, CHARACTERS_FOLDER_NAME)
+        return os.path.join(
+            self.get_file_path_to_playthroughs_folder(),
+            playthrough_name,
+            CHARACTERS_FOLDER_NAME,
+        )
 
     @staticmethod
     def get_file_path_to_character_images(playthrough_name: str) -> str:
-        images_path = os.path.join(f"static/{PLAYTHROUGHS_FOLDER}/{playthrough_name}", IMAGES_FOLDER_NAME)
+        images_path = os.path.join(
+            f"static/{PLAYTHROUGHS_FOLDER}/{playthrough_name}", IMAGES_FOLDER_NAME
+        )
         os.makedirs(images_path, exist_ok=True)
 
         return images_path
 
-    def get_file_path_to_character_image(self, playthrough_name: str, character_identifier: str):
-        return os.path.join(self.get_file_path_to_character_images(playthrough_name), f"{character_identifier}.png")
+    def get_file_path_to_character_image(
+            self, playthrough_name: str, character_identifier: str
+    ):
+        return os.path.join(
+            self.get_file_path_to_character_images(playthrough_name),
+            f"{character_identifier}.png",
+        )
 
     @staticmethod
-    def get_file_path_to_character_image_for_web(playthrough_name: str, character_identifier: str):
+    def get_file_path_to_character_image_for_web(
+            playthrough_name: str, character_identifier: str
+    ):
         return f"playthroughs/{playthrough_name}/{IMAGES_FOLDER_NAME}/{character_identifier}.png"
 
     def get_file_path_to_characters_file(self, playthrough_name: str):
@@ -183,29 +245,40 @@ class FilesystemManager:
         # Build the path to the characters.json file
         return os.path.join(characters_folder, CHARACTERS_FILE)
 
-    def get_file_path_to_character_folder(self, playthrough_name: str, character_identifier: str, character_data: dict):
+    def get_file_path_to_character_folder(
+            self, playthrough_name: str, character_identifier: str, character_data: dict
+    ):
         folder_name = f"{character_data['name']} - {character_identifier}"
-        file_path = os.path.join(self.get_file_path_to_characters(playthrough_name), folder_name)
+        file_path = os.path.join(
+            self.get_file_path_to_characters(playthrough_name), folder_name
+        )
 
         # Create the folder if it doesn't exist
         os.makedirs(file_path, exist_ok=True)
 
         return file_path
 
-    def get_file_path_to_character_dialogues(self, playthrough_name: str, character_identifier: str,
-                                             character_data: dict):
+    def get_file_path_to_character_dialogues(
+            self, playthrough_name: str, character_identifier: str, character_data: dict
+    ):
         # Define the path
-        folder_path = self.get_file_path_to_character_folder(playthrough_name, character_identifier, character_data)
+        folder_path = self.get_file_path_to_character_folder(
+            playthrough_name, character_identifier, character_data
+        )
 
         # Define the path to the "dialogues.txt" file
         return os.path.join(folder_path, DIALOGUES_FILE)
 
-    def get_file_path_to_character_memories(self, playthrough_name: str, character_identifier: str,
-                                            character_data: dict):
+    def get_file_path_to_character_memories(
+            self, playthrough_name: str, character_identifier: str, character_data: dict
+    ):
         # Define the path to the "memories.txt" file
         return os.path.join(
-            self.get_file_path_to_character_folder(playthrough_name, character_identifier, character_data),
-            MEMORIES_FILE)
+            self.get_file_path_to_character_folder(
+                playthrough_name, character_identifier, character_data
+            ),
+            MEMORIES_FILE,
+        )
 
     def get_logging_config_file(self) -> dict:
         return self.load_existing_or_new_json_file(LOGGING_CONFIG_FILE)

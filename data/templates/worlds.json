@@ -33,5 +33,12 @@
       "fantasy",
       "sentient species"
     ]
+  },
+  "Desparia": {
+    "description": "Desparia is a world stuck culturally in the 1910s, when a fleet of aliens came to Earth and started attacking all the major cities. The aliens, having traveled for centuries to reach Earth, lack reinforcements. The surviving human beings now live in walled communities, with the wastelands in-between being warzones where aliens attack humans on sight. Most humans are desperate, on edge, filled with trauma, and scared, but they try to keep hopeful with music and stories, trying to retain the sense of dignity and promise of the future that existed in the 1910s. Geographically, Desparia has continents, oceans, mountains, and deserts similar to Earth. The flora and fauna are also Earth-like, with some mutations caused by alien technology. Culturally, 1910s customs, traditions, and social norms dominate, with a mix of languages and cultural traditions from different communities. Forms of government include city-state democracies and local councils maintaining power through resource control. Tensions exist between communities vying for resources. The economy is trade and barter-based, with resources like food, water, and alien technology being abundant or scarce. Technologically, Desparia has a mix of 1910s and salvaged alien tech. Magic and advanced science are limited. Dominant belief systems include pre-alien religions and philosophies centered on survival and hope. Class divisions are based on resource access and can change through discovery or loss of valuable resources. The world is inhabited by humans and the alien race, with prevalent biases and rare alliances between species.",
+    "categories": [
+      "dieselpunk",
+      "post-apocalyptic"
+    ]
   }
 }

@@ -33,5 +33,12 @@
       "fantasy",
       "sentient species"
     ]
+  },
+  "Novaria": {
+    "description": "Novaria is a region defined by its rugged, mountainous terrain and deep, resource-rich valleys. The climate is cool and temperate, with frequent rainfall supporting lush forests and abundant agriculture in the valleys.\n\nThe inhabitants of Novaria are a resilient people, clinging to the traditions and values of a bygone era. They are deeply spiritual, finding solace in the worship of nature deities and the veneration of ancestors. Community bonds are strong, with a culture that values cooperation, hard work, and resourcefulness.\n\nNovaria is governed by a council of elders, each representing a different valley community. Decisions are made through consensus, with a focus on maintaining peace and stability in the region. While Novaria is not actively at war, tensions simmer with neighboring realms over access to resources and control of trade routes.\n\nThe region is known for its distinctive architecture, featuring sturdy stone buildings with intricate carvings and colorful tiled roofs. Art and sculpture often depict natural motifs and scenes of everyday life, reflecting the close connection between the people and the land.\n\nNovaria is rich in mineral resources, particularly coal and iron, which are highly sought after by neighboring regions. The people of Novaria are skilled miners and metalworkers, with a reputation for producing high-quality tools and weapons.\n\nThe region is defended by a well-trained militia, with each valley community contributing fighters to the common defense. While not a major military power, Novaria is respected for its fierce fighters and impenetrable mountain fortresses.\n\nTransport within the region is primarily by foot or on horseback, with narrow mountain trails connecting the valley communities. Trade with neighboring regions is conducted via a network of mountain passes and river routes.\n\nSocial hierarchy in Novaria is based on a combination of birth and merit. While family lineage is important, individuals can rise through the ranks based on their skills, accomplishments, and service to the community. The council of elders is chosen based on wisdom and experience, rather than noble birth.",
+    "categories": [
+      "dieselpunk",
+      "post-apocalyptic"
+    ]
   }
 }
