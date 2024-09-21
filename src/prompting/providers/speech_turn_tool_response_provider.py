@@ -23,14 +23,14 @@ logger = logging.getLogger(__name__)
 
 class SpeechTurnChoiceToolResponseProvider(ToolResponseProvider):
     def __init__(
-            self,
-            playthrough_name: str,
-            participants: Participants,
-            transcription: Transcription,
-            character_choice_dialogue_initial_prompting_messages_provider_factory: CharacterChoiceDialogueInitialPromptingMessagesProviderFactory,
-            llm_content_provider_factory: CharacterChoiceDialogueLlmContentProviderFactory,
-            handle_parsed_tool_response_for_dialogue_character_choice_strategy_factory: HandleParsedToolResponseForDialogueCharacterChoiceStrategyFactory,
-            playthrough_manager: PlaythroughManager = None,
+        self,
+        playthrough_name: str,
+        participants: Participants,
+        transcription: Transcription,
+        character_choice_dialogue_initial_prompting_messages_provider_factory: CharacterChoiceDialogueInitialPromptingMessagesProviderFactory,
+        llm_content_provider_factory: CharacterChoiceDialogueLlmContentProviderFactory,
+        handle_parsed_tool_response_for_dialogue_character_choice_strategy_factory: HandleParsedToolResponseForDialogueCharacterChoiceStrategyFactory,
+        playthrough_manager: PlaythroughManager = None,
     ):
         if not participants.enough_participants():
             raise ValueError("Not enough participants.")
@@ -72,9 +72,9 @@ class SpeechTurnChoiceToolResponseProvider(ToolResponseProvider):
             llm_content_product
         )
 
-        if not parsed_tool_response.get():
+        if not parsed_tool_response.is_valid():
             raise ValueError(
-                "Failed to produce any data about the choice for the next speaker."
+                f"Failed to choose the next speaker: {parsed_tool_response.get_error()}"
             )
 
         return parsed_tool_response

@@ -18,12 +18,12 @@ logger = logging.getLogger(__name__)
 class CreateSpeechTurnDataCommand(Command, Subject):
 
     def __init__(
-            self,
-            messages_to_llm: MessagesToLlm,
-            transcription: Transcription,
-            speech_turn_choice_tool_response_product: LlmToolResponseProduct,
-            llm_speech_data_provider_factory: LlmSpeechDataProviderFactory,
-            message_data_producer_for_speech_turn_strategy: MessageDataProducerForSpeechTurnStrategy,
+        self,
+        messages_to_llm: MessagesToLlm,
+        transcription: Transcription,
+        speech_turn_choice_tool_response_product: LlmToolResponseProduct,
+        llm_speech_data_provider_factory: LlmSpeechDataProviderFactory,
+        message_data_producer_for_speech_turn_strategy: MessageDataProducerForSpeechTurnStrategy,
     ):
 
         self._messages_to_llm = messages_to_llm
@@ -62,9 +62,7 @@ class CreateSpeechTurnDataCommand(Command, Subject):
 
             # There's no real recovery to speech data being invalid, so let's pretend that the player
             # doesn't know what to say at the moment.
-            speech_data_product.get()[
-                "narration_text"
-            ] = f"{speech_data_product.get()["name"]} looks confused."
+            speech_data_product.get()["narration_text"] = f"Looks confused."
             speech_data_product.get()["speech"] = "I don't know what to say."
 
         self._transcription.add_speech_turn(

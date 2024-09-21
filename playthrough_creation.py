@@ -1,13 +1,25 @@
 import sys
 
-from src.characters.commands.generate_initial_characters_command import (
-    GenerateInitialCharactersCommand,
+from src.characters.commands.generate_player_character_command import (
+    GeneratePlayerCharacterCommand,
+)
+from src.characters.factories.generate_character_command_factory import (
+    GenerateCharacterCommandFactory,
+)
+from src.characters.factories.generate_random_characters_command_factory import (
+    GenerateRandomCharactersCommandFactory,
+)
+from src.characters.factories.store_generated_character_command_factory import (
+    StoreGeneratedCharacterCommandFactory,
 )
 from src.commands.create_playthrough_command import CreatePlaythroughCommand
 from src.commands.create_playthrough_metadata_command import (
     CreatePlaythroughMetadataCommand,
 )
-from src.constants import HERMES_405B
+from src.constants import HERMES_405B_FREE
+from src.images.factories.generate_character_image_command_factory import (
+    GenerateCharacterImageCommandFactory,
+)
 from src.images.factories.openai_generated_image_factory import (
     OpenAIGeneratedImageFactory,
 )
@@ -16,6 +28,7 @@ from src.maps.commands.create_initial_map_command import CreateInitialMapCommand
 from src.maps.factories.concrete_random_place_template_based_on_categories_factory import (
     ConcreteRandomPlaceTemplateBasedOnCategoriesFactory,
 )
+from src.maps.factories.visit_place_command_factory import VisitPlaceCommandFactory
 from src.maps.map_manager import MapManager
 from src.prompting.factories.openai_llm_client_factory import OpenAILlmClientFactory
 from src.prompting.factories.openrouter_llm_client_factory import (
@@ -55,14 +68,42 @@ def main():
         llm_client = OpenRouterLlmClientFactory().create_llm_client()
 
         produce_tool_response_strategy_factory = ProduceToolResponseStrategyFactory(
-            llm_client, HERMES_405B
+            llm_client, HERMES_405B_FREE
         )
 
-        create_initial_characters_command = GenerateInitialCharactersCommand(
+        store_generate_character_command_factory = (
+            StoreGeneratedCharacterCommandFactory(playthrough_name)
+        )
+
+        generated_image_factory = OpenAIGeneratedImageFactory(
+            OpenAILlmClientFactory().create_llm_client()
+        )
+
+        url_content_factory = ConcreteUrlContentFactory()
+
+        generate_character_image_command_factory = GenerateCharacterImageCommandFactory(
+            playthrough_name, generated_image_factory, url_content_factory
+        )
+
+        generate_character_command_factory = GenerateCharacterCommandFactory(
             playthrough_name,
             produce_tool_response_strategy_factory,
-            OpenAIGeneratedImageFactory(OpenAILlmClientFactory().create_llm_client()),
-            ConcreteUrlContentFactory(),
+            store_generate_character_command_factory,
+            generate_character_image_command_factory,
+        )
+
+        create_player_character_command = GeneratePlayerCharacterCommand(
+            playthrough_name, generate_character_command_factory
+        )
+
+        generate_random_characters_command_factory = (
+            GenerateRandomCharactersCommandFactory(
+                playthrough_name, generate_character_command_factory
+            )
+        )
+
+        visit_place_command_factory = VisitPlaceCommandFactory(
+            playthrough_name, generate_random_characters_command_factory
         )
 
         # Call the create_playthrough function
@@ -71,7 +112,8 @@ def main():
             world_template,
             create_playthrough_metadata_command,
             create_initial_map_command,
-            create_initial_characters_command,
+            create_player_character_command,
+            visit_place_command_factory,
         ).execute()
 
     except Exception as e:

@@ -5,7 +5,7 @@ from src.abstracts.observer import Observer
 from src.characters.factories.store_character_memory_command_factory import (
     StoreCharacterMemoryCommandFactory,
 )
-from src.constants import HERMES_405B
+from src.constants import HERMES_405B_FREE
 from src.dialogues.abstracts.abstract_factories import PlayerInputFactory
 from src.dialogues.abstracts.strategies import (
     MessageDataProducerForIntroducePlayerInputIntoDialogueStrategy,
@@ -98,7 +98,7 @@ class LaunchDialogueCommand(Command):
         dialogue_factory.attach(self._dialogue_observer)
 
         dialogue_summary_provider_factory = DialogueSummaryProviderFactory(
-            llm_client, HERMES_405B
+            llm_client, HERMES_405B_FREE
         )
 
         store_character_memory_command_factory = StoreCharacterMemoryCommandFactory(

@@ -94,18 +94,46 @@ class CharactersManager:
         # Get the current place data
         current_place_data = map_file.get(current_place, {})
 
-        return self.get_full_data_of_characters(
+        characters = self.get_full_data_of_characters(
             current_place_data.get("characters", [])
         )
 
-    def load_character_memories(self, playthrough_name: str, character_identifier: str):
+        return characters
+
+    def get_characters_at_current_place_plus_followers(self):
+        characters = self.get_characters_at_current_place()
+
+        # Add to that the player's followers.
+        followers = self.get_full_data_of_characters(
+            PlaythroughManager(self._playthrough_name).get_followers()
+        )
+
+        characters.extend(followers)
+
+        return characters
+
+    def load_character_memories(self, character_identifier: str) -> str:
         character_data = self.load_character_data(character_identifier)
 
         file_path = self._filesystem_manager.get_file_path_to_character_memories(
-            playthrough_name, character_identifier, character_data
+            self._playthrough_name, character_identifier, character_data["name"]
         )
 
         # Check if the file exists, and if not, create an empty file
         self._filesystem_manager.create_empty_file_if_not_exists(file_path)
 
         return self._filesystem_manager.read_file(file_path)
+
+    def get_all_character_names(self) -> List[str]:
+        """
+        Returns a list of all character names in the characters.json file.
+        """
+        # Load the characters JSON file
+        characters_file = self._filesystem_manager.load_existing_or_new_json_file(
+            self._filesystem_manager.get_file_path_to_characters_file(
+                self._playthrough_name
+            )
+        )
+
+        # Extract and return the names
+        return [char_data.get("name", "") for char_data in characters_file.values()]

@@ -1,0 +1,19 @@
+{
+  "type": "function",
+  "function": {
+    "name": "generate_place_description",
+    "description": "generate the description of a place, filtered through the player character's perspective.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "The description of the place indicated above, filtered through the player's first-person perspective, as indicated in the instructions."
+        }
+      },
+      "required": [
+        "description"
+      ]
+    }
+  }
+}

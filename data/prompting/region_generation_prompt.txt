@@ -22,3 +22,4 @@ That description of the region should fit the following categories, inherited fr
 Note: do not mention the world's name in your description of the region (this is necessary because the region may be used in another world).
 You are prohibited from using the following names for the new region (because those names are already used for other regions):
 {current_place_type_names}
+If the user has provided guidance for the kind of region he wants, you should build upon that guidance.

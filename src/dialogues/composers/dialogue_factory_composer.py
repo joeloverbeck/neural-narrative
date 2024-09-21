@@ -1,4 +1,4 @@
-from src.constants import HERMES_405B, HERMES_70B
+from src.constants import HERMES_70B, HERMES_405B_FREE
 from src.dialogues.abstracts.abstract_factories import (
     DialogueFactorySubject,
 )
@@ -69,7 +69,7 @@ class DialogueFactoryComposer:
         )
 
         llm_speech_data_provider_factory = LlmSpeechDataProviderFactoryComposer(
-            self._llm_client, HERMES_405B
+            self._llm_client, HERMES_405B_FREE
         ).compose()
 
         determine_system_message_for_speech_turn_strategy = (

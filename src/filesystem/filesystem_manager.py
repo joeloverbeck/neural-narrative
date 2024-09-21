@@ -224,7 +224,7 @@ class FilesystemManager:
         return images_path
 
     def get_file_path_to_character_image(
-            self, playthrough_name: str, character_identifier: str
+        self, playthrough_name: str, character_identifier: str
     ):
         return os.path.join(
             self.get_file_path_to_character_images(playthrough_name),
@@ -233,7 +233,7 @@ class FilesystemManager:
 
     @staticmethod
     def get_file_path_to_character_image_for_web(
-            playthrough_name: str, character_identifier: str
+        playthrough_name: str, character_identifier: str
     ):
         return f"playthroughs/{playthrough_name}/{IMAGES_FOLDER_NAME}/{character_identifier}.png"
 
@@ -246,9 +246,9 @@ class FilesystemManager:
         return os.path.join(characters_folder, CHARACTERS_FILE)
 
     def get_file_path_to_character_folder(
-            self, playthrough_name: str, character_identifier: str, character_data: dict
+        self, playthrough_name: str, character_identifier: str, character_name: str
     ):
-        folder_name = f"{character_data['name']} - {character_identifier}"
+        folder_name = f"{character_name} - {character_identifier}"
         file_path = os.path.join(
             self.get_file_path_to_characters(playthrough_name), folder_name
         )
@@ -259,23 +259,33 @@ class FilesystemManager:
         return file_path
 
     def get_file_path_to_character_dialogues(
-            self, playthrough_name: str, character_identifier: str, character_data: dict
+        self, playthrough_name: str, character_identifier: str, character_name: str
     ):
+        if not isinstance(character_name, str):
+            raise TypeError(
+                f"character_name should have been a string, but was '{type(character_name)}'"
+            )
+
         # Define the path
         folder_path = self.get_file_path_to_character_folder(
-            playthrough_name, character_identifier, character_data
+            playthrough_name, character_identifier, character_name
         )
 
         # Define the path to the "dialogues.txt" file
         return os.path.join(folder_path, DIALOGUES_FILE)
 
     def get_file_path_to_character_memories(
-            self, playthrough_name: str, character_identifier: str, character_data: dict
+        self, playthrough_name: str, character_identifier: str, character_name: str
     ):
+        if not isinstance(character_name, str):
+            raise TypeError(
+                f"character_name should have been a string, but was '{type(character_name)}'"
+            )
+
         # Define the path to the "memories.txt" file
         return os.path.join(
             self.get_file_path_to_character_folder(
-                playthrough_name, character_identifier, character_data
+                playthrough_name, character_identifier, character_name
             ),
             MEMORIES_FILE,
         )

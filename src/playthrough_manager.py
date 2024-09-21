@@ -53,6 +53,42 @@ class PlaythroughManager:
 
         return playthrough_metadata["player_identifier"]
 
+    def get_world_template(self) -> str:
+        playthrough_metadata_file = (
+            self._filesystem_manager.load_existing_or_new_json_file(
+                self._filesystem_manager.get_file_path_to_playthrough_metadata(
+                    self._playthrough_name
+                )
+            )
+        )
+
+        return playthrough_metadata_file["world_template"]
+
+    def get_hour(self) -> int:
+        playthrough_metadata = self._filesystem_manager.load_existing_or_new_json_file(
+            self._filesystem_manager.get_file_path_to_playthrough_metadata(
+                self._playthrough_name
+            )
+        )
+
+        return playthrough_metadata["time"]["hour"]
+
+    def update_hour(self, hour: int):
+        playthrough_metadata = self._filesystem_manager.load_existing_or_new_json_file(
+            self._filesystem_manager.get_file_path_to_playthrough_metadata(
+                self._playthrough_name
+            )
+        )
+
+        playthrough_metadata["time"]["hour"] = hour
+
+        self._filesystem_manager.save_json_file(
+            playthrough_metadata,
+            self._filesystem_manager.get_file_path_to_playthrough_metadata(
+                self._playthrough_name
+            ),
+        )
+
     def get_followers(self) -> List[str]:
         playthrough_metadata = self._filesystem_manager.load_existing_or_new_json_file(
             self._filesystem_manager.get_file_path_to_playthrough_metadata(

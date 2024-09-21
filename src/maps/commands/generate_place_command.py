@@ -1,7 +1,8 @@
+import logging
 from typing import Optional
 
 from src.abstracts.command import Command
-from src.constants import HERMES_405B
+from src.constants import HERMES_405B_FREE
 from src.enums import TemplateType
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.interfaces.abstracts.interface_manager import InterfaceManager
@@ -20,6 +21,8 @@ from src.prompting.providers.place_generation_tool_response_provider import (
     PlaceGenerationToolResponseProvider,
 )
 
+logger = logging.getLogger(__name__)
+
 
 class GeneratePlaceCommand(Command):
     def __init__(
@@ -27,10 +30,8 @@ class GeneratePlaceCommand(Command):
         place_template_type: TemplateType,
         father_place_template_type: TemplateType,
         interface_manager: InterfaceManager = None,
+        filesystem_manager: FilesystemManager = None,
     ):
-        assert place_template_type
-        assert father_place_template_type
-
         self._place_template_type = place_template_type
         self._father_place_template_type = father_place_template_type
 
@@ -58,30 +59,37 @@ class GeneratePlaceCommand(Command):
             )
 
         self._interface_manager = interface_manager or ConsoleInterfaceManager()
+        self._filesystem_manager = filesystem_manager or FilesystemManager()
 
     def execute(self) -> None:
-        print(
-            f"This command generates one {self._place_template_type.value} for an existing {self._father_place_template_type.value}."
+        logger.info(
+            f"This command generates one %s for an existing %s.",
+            self._place_template_type.value,
+            self._father_place_template_type.value,
         )
         chosen_place_identifier = self._interface_manager.prompt_for_input(
             f"For which {self._father_place_template_type.value} do you want to create the {self._place_template_type.value}?: "
         )
 
-        filesystem_manager = FilesystemManager()
-
         father_place_templates: Optional[dict]
 
         if self._father_place_template_type == TemplateType.WORLD:
-            father_place_templates = filesystem_manager.load_existing_or_new_json_file(
-                filesystem_manager.get_file_path_to_worlds_template_file()
+            father_place_templates = (
+                self._filesystem_manager.load_existing_or_new_json_file(
+                    self._filesystem_manager.get_file_path_to_worlds_template_file()
+                )
             )
         elif self._father_place_template_type == TemplateType.REGION:
-            father_place_templates = filesystem_manager.load_existing_or_new_json_file(
-                filesystem_manager.get_file_path_to_regions_template_file()
+            father_place_templates = (
+                self._filesystem_manager.load_existing_or_new_json_file(
+                    self._filesystem_manager.get_file_path_to_regions_template_file()
+                )
             )
         elif self._father_place_template_type == TemplateType.AREA:
-            father_place_templates = filesystem_manager.load_existing_or_new_json_file(
-                filesystem_manager.get_file_path_to_areas_template_file()
+            father_place_templates = (
+                self._filesystem_manager.load_existing_or_new_json_file(
+                    self._filesystem_manager.get_file_path_to_areas_template_file()
+                )
             )
         else:
             raise ValueError(
@@ -96,7 +104,7 @@ class GeneratePlaceCommand(Command):
         llm_client = OpenRouterLlmClientFactory().create_llm_client()
 
         produce_tool_response_strategy_factory = ProduceToolResponseStrategyFactory(
-            llm_client, HERMES_405B
+            llm_client, HERMES_405B_FREE
         )
 
         llm_tool_response_product = PlaceGenerationToolResponseProvider(

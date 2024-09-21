@@ -1,8 +1,11 @@
+import logging
 from typing import Optional
 
 from src.abstracts.command import Command
 from src.enums import TemplateType
 from src.filesystem.filesystem_manager import FilesystemManager
+
+logger = logging.getLogger(__name__)
 
 
 class StoreGeneratedPlaceCommand(Command):
@@ -12,8 +15,10 @@ class StoreGeneratedPlaceCommand(Command):
         template_type: TemplateType,
         filesystem_manager: FilesystemManager = None,
     ):
-        assert place_data
-        assert template_type
+        if not isinstance(place_data, dict):
+            raise TypeError(
+                f"place_data should have been a dict, but was '{type(place_data)}'."
+            )
 
         self._place_data = place_data
         self._template_type = template_type
@@ -69,6 +74,6 @@ class StoreGeneratedPlaceCommand(Command):
 
         self._filesystem_manager.save_json_file(current_places_template_file, file_path)
 
-        print(
+        logger.info(
             f"Saved {self._template_type.value} template '{self._place_data["name"]}'."
         )
