@@ -21,10 +21,10 @@ logger = logging.getLogger(__name__)
 
 class WorldGenerationStrategy(PlaceGenerationStrategy):
     def __init__(
-            self,
-            produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
-            interface_manager: InterfaceManager = None,
-            filesystem_manager: FilesystemManager = None,
+        self,
+        produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
+        interface_manager: InterfaceManager = None,
+        filesystem_manager: FilesystemManager = None,
     ):
         self._produce_tool_response_strategy_factory = (
             produce_tool_response_strategy_factory
@@ -49,12 +49,12 @@ class WorldGenerationStrategy(PlaceGenerationStrategy):
         ).format(world_names=world_names)
 
         system_content = (
-                world_generation_prompt
-                + "\n\n"
-                + generate_tool_prompt(
-            self._filesystem_manager.read_json_file(WORLD_GENERATION_TOOL_FILE),
-            self._filesystem_manager.read_file(TOOL_INSTRUCTIONS_FILE),
-        )
+            world_generation_prompt
+            + "\n\n"
+            + generate_tool_prompt(
+                self._filesystem_manager.read_json_file(WORLD_GENERATION_TOOL_FILE),
+                self._filesystem_manager.read_file(TOOL_INSTRUCTIONS_FILE),
+            )
         )
 
         user_content = (
@@ -77,4 +77,6 @@ class WorldGenerationStrategy(PlaceGenerationStrategy):
             "categories": arguments.get("categories"),
         }
 
-        StoreGeneratedPlaceCommand(world_data, TemplateType.WORLD)
+        logger.info(f"World produced: {world_data}")
+
+        StoreGeneratedPlaceCommand(world_data, TemplateType.WORLD).execute()

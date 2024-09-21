@@ -97,3 +97,14 @@ class UserContentForCharacterGenerationProduct(Protocol):
 
     def get_error(self) -> str:
         pass
+
+
+class FilteredPlaceDescriptionGenerationProduct(Protocol):
+    def get(self) -> str:
+        pass
+
+    def is_valid(self) -> bool:
+        pass
+
+    def get_error(self) -> str:
+        pass

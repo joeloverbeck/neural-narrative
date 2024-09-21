@@ -15,7 +15,7 @@ from src.prompting.abstracts.factory_products import (
 
 class InvolvePlayerInDialogueStrategy(Protocol):
     def do_algorithm(
-            self, messages_to_llm: MessagesToLlm, transcription: Transcription
+        self, messages_to_llm: MessagesToLlm, transcription: Transcription
     ) -> PlayerInputProduct:
         pass
 
@@ -29,7 +29,7 @@ class DetermineUserMessagesForSpeechTurnStrategy(ABC):
 class DetermineSystemMessageForSpeechTurnStrategy(ABC):
     @abstractmethod
     def do_algorithm(
-            self, speech_turn_choice_tool_response_product: LlmToolResponseProduct
+        self, speech_turn_choice_tool_response_product: LlmToolResponseProduct
     ):
         pass
 
@@ -48,16 +48,16 @@ class PromptFormatterForDialogueStrategy(ABC):
 
 class MessageDataProducerForIntroducePlayerInputIntoDialogueStrategy(Protocol):
     def produce_message_data(
-            self, player_character_data: dict, player_input_product: PlayerInputProduct
+        self, player_character_data: dict, player_input_product: PlayerInputProduct
     ) -> dict:
         pass
 
 
 class MessageDataProducerForSpeechTurnStrategy(Protocol):
     def produce_message_data(
-            self,
-            speech_turn_choice_tool_response_product: LlmToolResponseProduct,
-            speech_data_product: SpeechDataProduct,
+        self,
+        speech_turn_choice_tool_response_product: LlmToolResponseProduct,
+        speech_data_product: SpeechDataProduct,
     ) -> dict[str, str]:
         pass
 

@@ -14,7 +14,8 @@ class ParticipantsView(MethodView):
 
         characters_manager = CharactersManager(playthrough_name)
 
-        characters = characters_manager.get_characters_at_current_place()
+        # First load the characters at the current place
+        characters = characters_manager.get_characters_at_current_place_plus_followers()
 
         WebService.format_image_urls_of_characters(characters)
 
@@ -38,7 +39,9 @@ class ParticipantsView(MethodView):
         if len(selected_characters) < 1:
             error = "Please select at least one character."
             # Retrieve character data again for re-rendering the template
-            characters = characters_manager.get_characters_at_current_place()
+            characters = (
+                characters_manager.get_characters_at_current_place_plus_followers()
+            )
 
             WebService.format_image_urls_of_characters(characters)
 

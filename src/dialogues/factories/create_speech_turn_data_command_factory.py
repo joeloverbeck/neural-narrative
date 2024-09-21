@@ -14,11 +14,11 @@ from tests.test_concrete_llm_content_factory import messages_to_llm
 class CreateSpeechTurnDataCommandFactory:
 
     def __init__(
-            self,
-            messages_to_llm: MessagesToLlm,
-            transcription: Transcription,
-            llm_speech_data_provider_factory: LlmSpeechDataProviderFactory,
-            message_data_producer_for_speech_turn_strategy: MessageDataProducerForSpeechTurnStrategy,
+        self,
+        messages_to_llm: MessagesToLlm,
+        transcription: Transcription,
+        llm_speech_data_provider_factory: LlmSpeechDataProviderFactory,
+        message_data_producer_for_speech_turn_strategy: MessageDataProducerForSpeechTurnStrategy,
     ):
         self._messages_to_llm = messages_to_llm
         self._transcription = transcription
@@ -28,7 +28,7 @@ class CreateSpeechTurnDataCommandFactory:
         )
 
     def create_command(
-            self, speech_turn_choice_tool_response_product: LlmToolResponseProduct
+        self, speech_turn_choice_tool_response_product: LlmToolResponseProduct
     ) -> CreateSpeechTurnDataCommand:
         return CreateSpeechTurnDataCommand(
             self._messages_to_llm,

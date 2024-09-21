@@ -7,9 +7,9 @@ from src.playthrough_manager import PlaythroughManager
 
 class ConcreteCurrentPlaceFactory(CurrentPlaceFactory):
     def __init__(
-            self,
-            playthrough_name: str,
-            playthrough_manager: PlaythroughManager = None,
+        self,
+        playthrough_name: str,
+        playthrough_manager: PlaythroughManager = None,
     ):
         assert playthrough_name
 

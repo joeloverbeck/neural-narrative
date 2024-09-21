@@ -1,13 +1,60 @@
+<!-- templates/location-hub.html -->
 {% extends "base.html" %}
 
 {% block title %}Location Hub{% endblock %}
 
 {% block content %}
-<h1>Location Hub</h1>
+<h1>{{ current_place }}</h1>
 
-<!-- Display the current place -->
-<div class="current-place">
-    <h2>Current Place: {{ current_place }}</h2>
+<div class="place-and-time">
+    <div class="current-time">
+        Time: {{ current_hour }}:00 {{ current_time_of_day }}
+    </div>
+</div>
+
+<!-- Describe Place Section -->
+<div class="describe-place-section">
+    {% if place_description %}
+    <div class="place-description-container">
+        <p class="place-description">{{ place_description }}</p>
+    </div>
+    {% endif %}
+</div>
+
+<div class="available-actions">
+    <h2>Available Actions</h2>
+    <div class="action-buttons">
+        <form method="post">
+            <input name="action" type="hidden" value="Describe Place">
+            <input class="action-button" type="submit" value="Describe current place">
+        </form>
+        {% if current_place_type.value == "location" %}
+        <form method="post">
+            <input name="action" type="hidden" value="Exit Location">
+            <input class="action-button" type="submit" value="Exit current place">
+        </form>
+        {% endif %}
+        <form method="post">
+            <input name="action" type="hidden" value="Proceed to Chat">
+            <input class="action-button" type="submit" value="Proceed to chat">
+        </form>
+
+        <!-- Buttons for visiting locations -->
+        {% if locations_present %}
+        {% for location in locations_present %}
+        <form method="post">
+            <input name="action" type="hidden" value="Visit Location">
+            <input name="location_identifier" type="hidden" value="{{ location.identifier }}">
+            <input class="action-button" type="submit" value="Visit {{ location.place_template }}">
+        </form>
+        {% endfor %}
+        {% endif %}
+
+        <form method="post">
+            <input name="action" type="hidden" value="Advance Time">
+            <input class="action-button" type="submit" value="Advance time 5 hours">
+        </form>
+    </div>
 </div>
 
 <!-- Form to add characters at the current place to followers -->
@@ -63,10 +110,5 @@
 {% else %}
 <p>You have no followers.</p>
 {% endif %}
-
-<!-- Navigation link to proceed -->
-<div class="navigation">
-    <a href="{{ url_for('participants') }}">Proceed to Chat</a>
-</div>
 
 {% endblock %}

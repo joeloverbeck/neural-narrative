@@ -59,3 +59,6 @@ Remember, no quotes around the dialogue, keep it breezy, and clichés are the en
 The Author of this NPC has provided this as information - if it is sparse, exercise more creative freedom. If it is more detailed, exercise creative freedom to extend the author's stated vision of the character biography.
 
 The character may be a male or a female. That character may be a sentient species other than human, if the provided background supports it.
+
+You are prohibited from using any of the following names as the names of this new character (those named characters already exist):
+{prohibited_names}

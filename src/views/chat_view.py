@@ -4,6 +4,7 @@ from flask.views import MethodView
 from src.constants import MAX_DIALOGUE_ENTRIES_FOR_WEB
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.map_manager import MapManager
+from src.playthrough_manager import PlaythroughManager
 from src.services.dialogue_service import DialogueService
 from src.time.time_manager import TimeManager
 
@@ -14,18 +15,24 @@ class ChatView(MethodView):
         playthrough_name = session.get("playthrough_name")
         dialogue_participants = session.get("participants")
 
-        if not playthrough_name or not dialogue_participants:
+        if not playthrough_name:
             return redirect(url_for("index"))
+
+        # There is a playthrough_name in session, but the participants may not be there.
+        if not dialogue_participants and PlaythroughManager(
+            playthrough_name
+        ).has_ongoing_dialogue(playthrough_name):
+            filesystem_manager = FilesystemManager()
+
+            session["participants"] = filesystem_manager.load_existing_or_new_json_file(
+                filesystem_manager.get_file_path_to_ongoing_dialogue(playthrough_name)
+            )["participants"]
+
+            dialogue_participants = session.get("participants")
 
         dialogue = session.get("dialogue", [])
 
-        # Retrieve current time and place
-        filesystem_manager = FilesystemManager()
-        current_hour = filesystem_manager.load_existing_or_new_json_file(
-            filesystem_manager.get_file_path_to_playthrough_metadata(playthrough_name)
-        )["time"]["hour"]
-
-        time_manager = TimeManager(float(current_hour))
+        time_manager = TimeManager(playthrough_name)
         map_manager = MapManager(playthrough_name)
         current_place_template = map_manager.get_current_place_template()
 

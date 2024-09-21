@@ -9,11 +9,11 @@ logger = logging.getLogger(__name__)
 
 class MovementManager:
     def __init__(
-            self,
-            playthrough_name: str,
-            playthrough_manager: PlaythroughManager = None,
-            filesystem_manager: FilesystemManager = None,
-            map_manager: MapManager = None,
+        self,
+        playthrough_name: str,
+        playthrough_manager: PlaythroughManager = None,
+        filesystem_manager: FilesystemManager = None,
+        map_manager: MapManager = None,
     ):
         if not playthrough_name:
             raise ValueError("playthrough_name can't be empty.")
@@ -83,7 +83,7 @@ class MovementManager:
         )
 
     def add_follower(
-            self, character_identifier: str, current_place_identifier: str
+        self, character_identifier: str, current_place_identifier: str
     ) -> None:
         if not character_identifier:
             raise ValueError("character_identifier can't be empty.")

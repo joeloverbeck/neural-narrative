@@ -27,16 +27,16 @@ from tests.test_concrete_llm_content_factory import messages_to_llm
 
 class ConcreteDialogueFactory(DialogueFactorySubject):
     def __init__(
-            self,
-            playthrough_name: str,
-            messages_to_llm: Optional[MessagesToLlm],
-            transcription: Optional[Transcription],
-            involve_player_in_dialogue_strategy: InvolvePlayerInDialogueStrategy,
-            speech_turn_choice_tool_response_provider_factory: SpeechTurnChoiceToolResponseProviderFactory,
-            determine_system_message_for_speech_turn_strategy: DetermineSystemMessageForSpeechTurnStrategy,
-            determine_user_messages_for_speech_turn_strategy_factory: DetermineUserMessagesForSpeechTurnStrategyFactory,
-            create_speech_turn_data_command_factory: CreateSpeechTurnDataCommandFactory,
-            playthrough_manager: PlaythroughManager = None,
+        self,
+        playthrough_name: str,
+        messages_to_llm: Optional[MessagesToLlm],
+        transcription: Optional[Transcription],
+        involve_player_in_dialogue_strategy: InvolvePlayerInDialogueStrategy,
+        speech_turn_choice_tool_response_provider_factory: SpeechTurnChoiceToolResponseProviderFactory,
+        determine_system_message_for_speech_turn_strategy: DetermineSystemMessageForSpeechTurnStrategy,
+        determine_user_messages_for_speech_turn_strategy_factory: DetermineUserMessagesForSpeechTurnStrategyFactory,
+        create_speech_turn_data_command_factory: CreateSpeechTurnDataCommandFactory,
+        playthrough_manager: PlaythroughManager = None,
     ):
         self._playthrough_name = playthrough_name
         self._involve_player_in_dialogue_strategy = involve_player_in_dialogue_strategy
@@ -87,10 +87,15 @@ class ConcreteDialogueFactory(DialogueFactorySubject):
             self._transcription
         ).create_llm_response()
 
+        if not speech_turn_choice_tool_response_product.is_valid():
+            raise ValueError(
+                f"Was unable to choose next speaker: {speech_turn_choice_tool_response_product.get_error()}"
+            )
+
         # If at this point the speech turn choice is still the player, we have a problem.
         if (
-                speech_turn_choice_tool_response_product.get()["identifier"]
-                == self._playthrough_manager.get_player_identifier()
+            speech_turn_choice_tool_response_product.get()["identifier"]
+            == self._playthrough_manager.get_player_identifier()
         ):
             raise ValueError(
                 "Was about to produce the speech turn, but the player had been chosen as the next speaker."

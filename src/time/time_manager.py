@@ -1,14 +1,22 @@
+from src.playthrough_manager import PlaythroughManager
+
+
 class TimeManager:
-    def __init__(self, initial_time: float):
-        if not isinstance(initial_time, float):
-            raise ValueError(f"Expected 'initial_time' to be a float, but was {initial_time}")
-        if initial_time >= 24:
-            raise ValueError(f"Attempted to pass an invalid initial time to TimeManager: {initial_time}")
 
-        self._world_time = initial_time
+    def __init__(
+        self, playthrough_name: str, playthrough_manager: PlaythroughManager = None
+    ):
+        if not playthrough_name:
+            raise ValueError("playthrough_name can't be empty.")
 
-    def get_time_of_the_day(self):
-        hour = int(self._world_time)
+        self._playthrough_name = playthrough_name
+
+        self._playthrough_manager = playthrough_manager or PlaythroughManager(
+            self._playthrough_name
+        )
+
+    def get_time_of_the_day(self) -> str:
+        hour = self._playthrough_manager.get_hour()
 
         if 6 <= hour < 12:
             return "in the morning"
@@ -19,11 +27,17 @@ class TimeManager:
         else:
             return "at night"
 
-    def get_hour(self):
-        return int(self._world_time)
+    def get_hour(self) -> int:
+        return int(self._playthrough_manager.get_hour())
 
-    def advance_time(self, hours: int):
-        self._world_time += hours
-        if self._world_time >= 24:
+    def advance_time(self, hours: int) -> None:
+        hour = self._playthrough_manager.get_hour()
+
+        hour += hours
+
+        if hour >= 24:
             # Wrap around at 24 hours
-            self._world_time -= 24
+            hour -= 24
+
+        # Update the hour in the metadata
+        self._playthrough_manager.update_hour(hour)

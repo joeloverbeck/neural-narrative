@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Dict
 
 from src.constants import (
     AREA_GENERATION_PROMPT_FILE,
@@ -11,6 +11,8 @@ from src.constants import (
 )
 from src.enums import TemplateType
 from src.filesystem.filesystem_manager import FilesystemManager
+from src.interfaces.abstracts.interface_manager import InterfaceManager
+from src.maps.template_type_data import TemplateTypeData
 from src.prompting.abstracts.abstract_factories import ToolResponseProvider
 from src.prompting.abstracts.factory_products import LlmToolResponseProduct
 from src.prompting.factories.produce_tool_response_strategy_factory import (
@@ -24,13 +26,15 @@ from src.tools import generate_tool_prompt
 
 class PlaceGenerationToolResponseProvider(ToolResponseProvider):
     def __init__(
-            self,
-            place_identifier: str,
-            template_type: TemplateType,
-            produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
+        self,
+        place_identifier: str,
+        template_type: TemplateType,
+        produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
+        filesystem_manager: FilesystemManager = None,
+        interface_manager: InterfaceManager = None,
     ):
-        assert place_identifier
-        assert template_type
+        if not place_identifier:
+            raise ValueError("place_identifier can't be empty.")
 
         self._place_identifier = place_identifier
         self._template_type = template_type
@@ -38,87 +42,67 @@ class PlaceGenerationToolResponseProvider(ToolResponseProvider):
             produce_tool_response_strategy_factory
         )
 
+        self._filesystem_manager = filesystem_manager or FilesystemManager()
+
+    def _get_template_type_data(self) -> Optional[TemplateTypeData]:
+        data_mapping: Dict[TemplateType, TemplateTypeData] = {
+            TemplateType.REGION: TemplateTypeData(
+                prompt_file=REGION_GENERATION_PROMPT_FILE,
+                father_templates_file_path=self._filesystem_manager.get_file_path_to_worlds_template_file(),
+                current_place_templates_file_path=self._filesystem_manager.get_file_path_to_regions_template_file(),
+                tool_file=REGION_GENERATION_TOOL_FILE,
+            ),
+            TemplateType.AREA: TemplateTypeData(
+                prompt_file=AREA_GENERATION_PROMPT_FILE,
+                father_templates_file_path=self._filesystem_manager.get_file_path_to_regions_template_file(),
+                current_place_templates_file_path=self._filesystem_manager.get_file_path_to_areas_template_file(),
+                tool_file=AREA_GENERATION_TOOL_FILE,
+            ),
+            TemplateType.LOCATION: TemplateTypeData(
+                prompt_file=LOCATION_GENERATION_PROMPT_FILE,
+                father_templates_file_path=self._filesystem_manager.get_file_path_to_areas_template_file(),
+                current_place_templates_file_path=self._filesystem_manager.get_file_path_to_locations_template_file(),
+                tool_file=LOCATION_GENERATION_TOOL_FILE,
+            ),
+        }
+        return data_mapping.get(self._template_type)
+
     def create_llm_response(self) -> LlmToolResponseProduct:
-        # Must load and format the corresponding prompt
-        filesystem_manager = FilesystemManager()
-
-        place_generation_prompt: Optional[str]
-
-        if self._template_type == TemplateType.REGION:
-            place_generation_prompt = filesystem_manager.read_file(
-                REGION_GENERATION_PROMPT_FILE
-            )
-
-        elif self._template_type == TemplateType.AREA:
-            place_generation_prompt = filesystem_manager.read_file(
-                AREA_GENERATION_PROMPT_FILE
-            )
-
-        elif self._template_type == TemplateType.LOCATION:
-            place_generation_prompt = filesystem_manager.read_file(
-                LOCATION_GENERATION_PROMPT_FILE
-            )
-        else:
+        template_data = self._get_template_type_data()
+        if not template_data:
             return ConcreteLlmToolResponseProduct(
                 {},
                 is_valid=False,
-                error=f"Don't know how to load generation prompt for template '{self._template_type}'.",
+                error=f"Unknown template type '{self._template_type}'.",
             )
 
-        # now load the corresponding father templates file
-        father_templates_file: Optional[dict]
+        # Load and format the corresponding prompt
+        place_generation_prompt = self._filesystem_manager.read_file(
+            template_data.prompt_file
+        )
 
-        if self._template_type == TemplateType.REGION:
-            father_templates_file = filesystem_manager.load_existing_or_new_json_file(
-                filesystem_manager.get_file_path_to_worlds_template_file()
-            )
+        # Load the father templates file
+        father_templates_file = self._filesystem_manager.load_existing_or_new_json_file(
+            template_data.father_templates_file_path
+        )
 
-        elif self._template_type == TemplateType.AREA:
-            father_templates_file = filesystem_manager.load_existing_or_new_json_file(
-                filesystem_manager.get_file_path_to_regions_template_file()
-            )
-
-        elif self._template_type == TemplateType.LOCATION:
-            father_templates_file = filesystem_manager.load_existing_or_new_json_file(
-                filesystem_manager.get_file_path_to_areas_template_file()
-            )
-        else:
+        # Get the place template
+        if self._place_identifier not in father_templates_file:
             return ConcreteLlmToolResponseProduct(
                 {},
                 is_valid=False,
-                error=f"Don't know how to load the father templates file for template '{self._template_type}'.",
+                error=f"Place identifier '{self._place_identifier}' not found in father templates.",
             )
-
         place_template = father_templates_file[self._place_identifier]
 
-        current_place_type_templates: Optional[dict]
+        # Load current place type templates
+        current_place_type_templates = (
+            self._filesystem_manager.load_existing_or_new_json_file(
+                template_data.current_place_templates_file_path
+            )
+        )
 
-        if self._template_type == TemplateType.REGION:
-            current_place_type_templates = (
-                filesystem_manager.load_existing_or_new_json_file(
-                    filesystem_manager.get_file_path_to_regions_template_file()
-                )
-            )
-        elif self._template_type == TemplateType.AREA:
-            current_place_type_templates = (
-                filesystem_manager.load_existing_or_new_json_file(
-                    filesystem_manager.get_file_path_to_areas_template_file()
-                )
-            )
-        elif self._template_type == TemplateType.LOCATION:
-            current_place_type_templates = (
-                filesystem_manager.load_existing_or_new_json_file(
-                    filesystem_manager.get_file_path_to_locations_template_file()
-                )
-            )
-        else:
-            return ConcreteLlmToolResponseProduct(
-                {},
-                is_valid=False,
-                error=f"Don't know how to load the current place type templates for template '{self._template_type}'.",
-            )
-
-        # Now we have all the necessary information to format the prompt
+        # Format the prompt
         place_generation_prompt = place_generation_prompt.format(
             father_place_name=self._place_identifier,
             father_place_description=place_template["description"],
@@ -126,34 +110,33 @@ class PlaceGenerationToolResponseProvider(ToolResponseProvider):
             current_place_type_names=list(current_place_type_templates.keys()),
         )
 
+        # Prepare the system content
         system_content = place_generation_prompt + "\n\n"
 
-        if self._template_type == TemplateType.REGION:
-            system_content += generate_tool_prompt(
-                filesystem_manager.read_json_file(REGION_GENERATION_TOOL_FILE),
-                filesystem_manager.read_file(TOOL_INSTRUCTIONS_FILE),
-            )
-        elif self._template_type == TemplateType.AREA:
-            system_content += generate_tool_prompt(
-                filesystem_manager.read_json_file(AREA_GENERATION_TOOL_FILE),
-                filesystem_manager.read_file(TOOL_INSTRUCTIONS_FILE),
-            )
-        elif self._template_type == TemplateType.LOCATION:
-            system_content += generate_tool_prompt(
-                filesystem_manager.read_json_file(LOCATION_GENERATION_TOOL_FILE),
-                filesystem_manager.read_file(TOOL_INSTRUCTIONS_FILE),
-            )
-        else:
-            return ConcreteLlmToolResponseProduct(
-                {},
-                is_valid=False,
-                error=f"Don't know how to create the tool part of the prompt for template '{self._template_type}'.",
+        # Generate the tool prompt
+        tool_json = self._filesystem_manager.read_json_file(template_data.tool_file)
+        tool_instructions = self._filesystem_manager.read_file(TOOL_INSTRUCTIONS_FILE)
+        system_content += generate_tool_prompt(tool_json, tool_instructions)
+
+        # Generate the response
+        response_strategy = (
+            self._produce_tool_response_strategy_factory.create_produce_tool_response_strategy()
+        )
+
+        user_guidance = input(
+            "Do you have any notion of how you want this place to be? (can be left empty): "
+        )
+
+        user_content = f"Create the name and description of a {self._template_type.value}, following the above instructions."
+
+        if user_guidance:
+            user_content += (
+                f" User guidance about how he wants this place to be: {user_guidance}"
             )
 
-        return ConcreteLlmToolResponseProduct(
-            self._produce_tool_response_strategy_factory.create_produce_tool_response_strategy().produce_tool_response(
-                system_content,
-                f"Create the name and description of a {self._template_type.value}, following the above instructions.",
-            ),
-            is_valid=True,
+        response_content = response_strategy.produce_tool_response(
+            system_content,
+            user_content,
         )
+
+        return ConcreteLlmToolResponseProduct(response_content, is_valid=True)

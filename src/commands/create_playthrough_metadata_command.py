@@ -20,10 +20,10 @@ logger = logging.getLogger(__name__)
 
 class CreatePlaythroughMetadataCommand(Command):
     def __init__(
-            self,
-            playthrough_name: str,
-            world_template: str,
-            filesystem_manager: FilesystemManager = None,
+        self,
+        playthrough_name: str,
+        world_template: str,
+        filesystem_manager: FilesystemManager = None,
     ):
         if not playthrough_name:
             raise ValueError("playthrough_name must not be empty.")
@@ -39,9 +39,9 @@ class CreatePlaythroughMetadataCommand(Command):
     def execute(self) -> None:
         # Check if the folder already exists
         if self._filesystem_manager.does_file_path_exist(
-                self._filesystem_manager.get_file_path_to_playthrough_folder(
-                    self._playthrough_name
-                )
+            self._filesystem_manager.get_file_path_to_playthrough_folder(
+                self._playthrough_name
+            )
         ):
             raise PlaythroughAlreadyExistsException(
                 f"A playthrough with the name '{self._playthrough_name}' already exists."

@@ -1,9 +1,15 @@
 import sys
 
 from src.characters.commands.generate_character_command import GenerateCharacterCommand
-from src.constants import HERMES_405B
+from src.characters.factories.store_generated_character_command_factory import (
+    StoreGeneratedCharacterCommandFactory,
+)
+from src.constants import HERMES_405B_FREE
 from src.enums import TemplateType
 from src.filesystem.filesystem_manager import FilesystemManager
+from src.images.factories.generate_character_image_command_factory import (
+    GenerateCharacterImageCommandFactory,
+)
 from src.images.factories.openai_generated_image_factory import (
     OpenAIGeneratedImageFactory,
 )
@@ -24,6 +30,9 @@ from src.prompting.factories.player_guided_user_content_for_character_generation
 )
 from src.prompting.factories.produce_tool_response_strategy_factory import (
     ProduceToolResponseStrategyFactory,
+)
+from src.prompting.providers.character_generation_tool_response_provider import (
+    CharacterGenerationToolResponseProvider,
 )
 from src.requests.factories.ConcreteUrlContentFactory import ConcreteUrlContentFactory
 
@@ -69,7 +78,29 @@ def main():
     llm_client = OpenRouterLlmClientFactory().create_llm_client()
 
     produce_tool_response_strategy_factory = ProduceToolResponseStrategyFactory(
-        llm_client, HERMES_405B
+        llm_client, HERMES_405B_FREE
+    )
+
+    guided_character_generation_tool_response_provider = (
+        CharacterGenerationToolResponseProvider(
+            playthrough_name,
+            places_parameter,
+            produce_tool_response_strategy_factory,
+            PlayerGuidedUserContentForCharacterGenerationFactory(),
+        )
+    )
+
+    random_character_generation_tool_response_provider = (
+        CharacterGenerationToolResponseProvider(
+            playthrough_name,
+            places_parameter,
+            produce_tool_response_strategy_factory,
+            AutomaticUserContentForCharacterGenerationFactory(),
+        )
+    )
+
+    store_generate_character_command_factory = StoreGeneratedCharacterCommandFactory(
+        playthrough_name
     )
 
     generated_image_factory = OpenAIGeneratedImageFactory(
@@ -77,6 +108,10 @@ def main():
     )
 
     url_content_factory = ConcreteUrlContentFactory()
+
+    generate_character_image_command_factory = GenerateCharacterImageCommandFactory(
+        playthrough_name, generated_image_factory, url_content_factory
+    )
 
     if (
         ConsoleInterfaceManager()
@@ -86,21 +121,19 @@ def main():
     ):
         GenerateCharacterCommand(
             playthrough_name,
-            places_parameter,
-            produce_tool_response_strategy_factory,
-            PlayerGuidedUserContentForCharacterGenerationFactory(),
-            generated_image_factory,
-            url_content_factory,
+            guided_character_generation_tool_response_provider,
+            store_generate_character_command_factory,
+            generate_character_image_command_factory,
+            place_character_at_current_place=True,
         ).execute()
         return
 
     GenerateCharacterCommand(
         playthrough_name,
-        places_parameter,
-        produce_tool_response_strategy_factory,
-        AutomaticUserContentForCharacterGenerationFactory(),
-        generated_image_factory,
-        url_content_factory,
+        random_character_generation_tool_response_provider,
+        store_generate_character_command_factory,
+        generate_character_image_command_factory,
+        place_character_at_current_place=True,
     ).execute()
 
 

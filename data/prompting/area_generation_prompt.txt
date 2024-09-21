@@ -15,3 +15,4 @@ That description of the area should fit the following categories, inherited from
 Note: do not mention the region's name in your description of the area (this is necessary because the area may be used in another region).
 You are prohibited from using the following names for the new area (because those names are already used for other areas):
 {current_place_type_names}
+If the user has provided guidance for the kind of area he wants, you should build upon that guidance.
