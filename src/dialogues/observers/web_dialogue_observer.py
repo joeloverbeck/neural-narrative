@@ -12,8 +12,6 @@ class WebDialogueObserver(Observer):
         self._characters_manager = CharactersManager(session.get("playthrough_name"))
 
     def update(self, message: dict) -> None:
-        # alignment = 'left' if sender_id != 'player' else 'right'
-
         self._messages.append(
             {
                 "alignment": message["alignment"],

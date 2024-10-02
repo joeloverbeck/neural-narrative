@@ -1,0 +1,22 @@
+{
+  "type": "function",
+  "function": {
+    "name": "generate_guidelines_for_generating_characters",
+    "description": "generate about twenty entries that are guidelines for the breadth of characters that would be fitting to create for the provided combination of places.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "guidelines": {
+          "type": "array",
+          "description": "Write about twenty entries that are guidelines for creating interesting characters based on the above combination of places. Each guideline should be about two or three sentences. Follow the provided instructions for what elements each guideline should include.",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "guidelines"
+      ]
+    }
+  }
+}

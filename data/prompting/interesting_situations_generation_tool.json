@@ -1,0 +1,22 @@
+{
+  "type": "function",
+  "function": {
+    "name": "generate_interesting_situations",
+    "description": "generate a list of at least five very interesting and intriguing situations that could stem from the provided conversation.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "interesting_situations": {
+          "type": "array",
+          "description": "A list of at least five very interesting and intriguing situations that could stem from the provided conversation. Follow the provided instructions.",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "interesting_situations"
+      ]
+    }
+  }
+}

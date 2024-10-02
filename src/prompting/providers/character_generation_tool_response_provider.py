@@ -2,7 +2,6 @@ from src.characters.characters_manager import CharactersManager
 from src.constants import (
     CHARACTER_GENERATOR_TOOL_FILE,
     CHARACTER_GENERATION_INSTRUCTIONS_FILE,
-    TOOL_INSTRUCTIONS_FILE,
 )
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.places_templates_parameter import PlacesTemplatesParameter
@@ -20,10 +19,12 @@ from src.prompting.formatters.character_generation_instructions_formatter import
 from src.prompting.products.concrete_llm_tool_response_product import (
     ConcreteLlmToolResponseProduct,
 )
-from src.tools import generate_tool_prompt
+from src.prompting.providers.base_tool_response_provider import BaseToolResponseProvider
 
 
-class CharacterGenerationToolResponseProvider(ToolResponseProvider):
+class CharacterGenerationToolResponseProvider(
+    BaseToolResponseProvider, ToolResponseProvider
+):
 
     def __init__(
         self,
@@ -34,19 +35,17 @@ class CharacterGenerationToolResponseProvider(ToolResponseProvider):
         filesystem_manager: FilesystemManager = None,
         characters_manager: CharactersManager = None,
     ):
+        super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
+
         if not playthrough_name:
             raise ValueError("playthrough_name can't be empty.")
 
         self._playthrough_name = playthrough_name
         self._places_parameter = places_parameter
-        self._produce_tool_response_strategy_factory = (
-            produce_tool_response_strategy_factory
-        )
         self._user_content_for_character_generation_factory = (
             user_content_for_character_generation_factory
         )
 
-        self._filesystem_manager = filesystem_manager or FilesystemManager()
         self._characters_manager = characters_manager or CharactersManager(
             self._playthrough_name
         )
@@ -67,7 +66,11 @@ class CharacterGenerationToolResponseProvider(ToolResponseProvider):
                 self._places_parameter,
             ).format()
 
-            system_content = self._generate_system_content(instructions)
+            # Generate system content
+            tool_data = self._read_tool_file(CHARACTER_GENERATOR_TOOL_FILE)
+            tool_instructions = self._read_tool_instructions()
+            tool_prompt = self._generate_tool_prompt(tool_data, tool_instructions)
+            system_content = self._generate_system_content(instructions, tool_prompt)
 
             user_content_product = (
                 self._user_content_for_character_generation_factory.create_user_content_for_character_generation()
@@ -83,11 +86,12 @@ class CharacterGenerationToolResponseProvider(ToolResponseProvider):
                     ),
                 )
 
-            response_data = self._produce_tool_response_strategy_factory.create_produce_tool_response_strategy().produce_tool_response(
+            # Produce tool response
+            tool_response = self._produce_tool_response(
                 system_content, user_content_product.get()
             )
 
-            return ConcreteLlmToolResponseProduct(response_data, is_valid=True)
+            return ConcreteLlmToolResponseProduct(tool_response, is_valid=True)
 
         except Exception as e:
             return ConcreteLlmToolResponseProduct(
@@ -139,14 +143,3 @@ class CharacterGenerationToolResponseProvider(ToolResponseProvider):
             return location_name, location_description
 
         return "", ""
-
-    def _generate_system_content(self, instructions: str) -> str:
-        """Constructs the system content by combining the formatted instructions and the tool prompt."""
-        tool_prompt = generate_tool_prompt(
-            self._filesystem_manager.read_json_file(CHARACTER_GENERATOR_TOOL_FILE),
-            self._filesystem_manager.read_file(TOOL_INSTRUCTIONS_FILE),
-        )
-
-        system_content = f"{instructions}\n\n{tool_prompt}"
-
-        return system_content

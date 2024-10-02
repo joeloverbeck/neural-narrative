@@ -1,6 +1,6 @@
 from src.maps.abstracts.factory_products import FullPlaceDataProduct
 from src.maps.map_manager import MapManager
-from src.maps.products.concrete_ful_place_data_product import (
+from src.maps.products.concrete_full_place_data_product import (
     ConcreteFullPlaceDataProduct,
 )
 from src.playthrough_manager import PlaythroughManager

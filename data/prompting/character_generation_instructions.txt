@@ -62,3 +62,6 @@ The character may be a male or a female. That character may be a sentient specie
 
 You are prohibited from using any of the following names as the names of this new character (those named characters already exist):
 {prohibited_names}
+
+For what sort of character to create that would fit the aforementioned combination of places, follow these guidelines for character creation:
+{character_generation_guidelines}

@@ -4,8 +4,7 @@ from src.characters.commands.generate_character_command import GenerateCharacter
 from src.characters.factories.store_generated_character_command_factory import (
     StoreGeneratedCharacterCommandFactory,
 )
-from src.constants import HERMES_405B_FREE
-from src.enums import TemplateType
+from src.config.config_manager import ConfigManager
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.images.factories.generate_character_image_command_factory import (
     GenerateCharacterImageCommandFactory,
@@ -14,10 +13,6 @@ from src.images.factories.openai_generated_image_factory import (
     OpenAIGeneratedImageFactory,
 )
 from src.interfaces.console_interface_manager import ConsoleInterfaceManager
-from src.maps.commands.print_place_template_list_command import (
-    PrintPlaceTemplateListCommand,
-)
-from src.maps.places_templates_parameter import PlacesTemplatesParameter
 from src.prompting.factories.automatic_user_content_for_character_generation_factory import (
     AutomaticUserContentForCharacterGenerationFactory,
 )
@@ -52,33 +47,14 @@ def main():
         print(f"There is no playthrough named '{playthrough_name}'")
         sys.exit()
 
-    PrintPlaceTemplateListCommand(TemplateType.REGION).execute()
-
-    region_template = interface_manager.prompt_for_input(
-        "To what region does the character belong?: "
-    )
-
-    PrintPlaceTemplateListCommand(TemplateType.AREA).execute()
-
-    area_template = interface_manager.prompt_for_input(
-        "To what area does the character belong?: "
-    )
-
-    PrintPlaceTemplateListCommand(TemplateType.LOCATION).execute()
-
-    location_template = input(
-        "To what location does the character belong? (could be empty): "
-    )
-
-    # Now we have to ask for the places involved.
-    places_parameter = PlacesTemplatesParameter(
-        region_template, area_template, location_template
+    places_parameter = (
+        ConsoleInterfaceManager().create_places_templates_parameter_for_character_generation()
     )
 
     llm_client = OpenRouterLlmClientFactory().create_llm_client()
 
     produce_tool_response_strategy_factory = ProduceToolResponseStrategyFactory(
-        llm_client, HERMES_405B_FREE
+        llm_client, ConfigManager().get_heavy_llm()
     )
 
     guided_character_generation_tool_response_provider = (

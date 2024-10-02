@@ -1,8 +1,14 @@
 from abc import ABC, abstractmethod
 from typing import Protocol, List
 
-from src.maps.abstracts.factory_products import PlaceDataProduct, CurrentPlaceProduct, PlaceTemplateProduct, \
-    FullPlaceDataProduct
+from src.maps.abstracts.factory_products import (
+    PlaceDataProduct,
+    CurrentPlaceProduct,
+    PlaceTemplateProduct,
+    FullPlaceDataProduct,
+    RandomPlaceTypeMapEntryCreationResult,
+    CardinalConnectionCreationProduct,
+)
 
 
 class PlaceDataFactory(ABC):
@@ -18,11 +24,24 @@ class CurrentPlaceFactory(ABC):
 
 
 class RandomPlaceTemplateBasedOnCategoriesFactory(Protocol):
-    def create_random_place_template_based_on_categories(self, place_templates: dict,
-                                                         categories: List[str]) -> PlaceTemplateProduct:
+    def create_random_place_template_based_on_categories(
+            self, place_templates: dict, categories: List[str]
+    ) -> PlaceTemplateProduct:
         pass
 
 
 class FullPlaceDataFactory(Protocol):
     def create_full_place_data(self) -> FullPlaceDataProduct:
+        pass
+
+
+class RandomPlaceTypeMapEntryCreationFactory(Protocol):
+    def create_random_place_type_map_entry(
+            self,
+    ) -> RandomPlaceTypeMapEntryCreationResult:
+        pass
+
+
+class CardinalConnectionCreationFactory(Protocol):
+    def create_cardinal_connection(self) -> CardinalConnectionCreationProduct:
         pass

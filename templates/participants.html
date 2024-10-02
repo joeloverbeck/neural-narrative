@@ -1,6 +1,11 @@
 <!-- templates/participants.html -->
 {% extends "base.html" %}
 
+{% block styles %}
+{{super()}}
+<link href="{{ url_for('static', filename='participants.css') }}" rel="stylesheet" type="text/css">
+{% endblock %}
+
 {% block title %}Select Characters to Speak With{% endblock %}
 
 {% block content %}
@@ -29,6 +34,13 @@
         </div>
         {% endfor %}
     </div>
+
+    <!-- Add the purpose input here -->
+    <label for="purpose">Purpose of the chat:</label>
+    <input id="purpose" name="purpose" type="text">
+    <!-- Alternatively, use a textarea -->
+    <!-- <textarea id="purpose" name="purpose"></textarea> -->
+
     <input type="submit" value="Start Chat">
 </form>
 {% else %}

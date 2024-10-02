@@ -1,10 +1,12 @@
 import logging
 import random
+from tkinter import Place
 from typing import List, Dict, Optional
 
 from src.enums import PlaceType
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.identifiers_manager import IdentifiersManager
+from src.maps.enums import CardinalDirection
 from src.maps.places_templates_parameter import PlacesTemplatesParameter
 from src.playthrough_manager import PlaythroughManager
 
@@ -140,6 +142,73 @@ class MapManager:
         place = self._get_place(current_place_id, map_file)
 
         return self._get_place_template(place)
+
+    def get_world_description(self):
+        worlds_templates_file = self._filesystem_manager.load_existing_or_new_json_file(
+            self._filesystem_manager.get_file_path_to_worlds_template_file()
+        )
+
+        return worlds_templates_file[self._playthrough_manager.get_world_template()][
+            "description"
+        ]
+
+    def get_father_identifier(self, place_identifier: str) -> str:
+        """
+        Retrieve the father identifier of a given place identifier.
+        For areas, this will be the 'region' it belongs to.
+        For locations, this will be the 'area' it belongs to.
+
+        Args:
+            place_identifier (str): The identifier of the place.
+
+        Returns:
+            str: The father identifier of the given place.
+
+        Raises:
+            ValueError: If the place_identifier is empty or invalid,
+                        or if the place is a region (which has no father),
+                        or if the place type is unhandled.
+        """
+        if not place_identifier:
+            raise ValueError("place_identifier can't be empty.")
+
+        map_file = self._load_map_file()
+        place = self._get_place(place_identifier, map_file)
+        place_type = self.determine_place_type(place_identifier)
+
+        if place_type == PlaceType.AREA:
+            father_identifier = place.get("region")
+            if not father_identifier:
+                raise ValueError(f"Area '{place_identifier}' has no 'region' key.")
+            return father_identifier
+        elif place_type == PlaceType.LOCATION:
+            father_identifier = place.get("area")
+            if not father_identifier:
+                raise ValueError(f"Location '{place_identifier}' has no 'area' key.")
+            return father_identifier
+        elif place_type == PlaceType.REGION:
+            raise ValueError(f"Region '{place_identifier}' has no father identifier.")
+        else:
+            raise ValueError(
+                f"Unhandled place type '{place_type.value}' for identifier '{place_identifier}'."
+            )
+
+    def get_father_template(self) -> str:
+        current_place_id = self._playthrough_manager.get_current_place_identifier()
+
+        places_parameter = self.fill_places_parameter(current_place_id)
+
+        current_place_type = self.get_current_place_type()
+
+        if current_place_type == PlaceType.LOCATION:
+            return places_parameter.get_area_template()
+        if current_place_type == PlaceType.AREA:
+            print(places_parameter.get_area_template())
+            return places_parameter.get_region_template()
+
+        raise ValueError(
+            f"This function isn't prepared to handle the place type '{current_place_type.value}'."
+        )
 
     def get_current_place_type(self) -> PlaceType:
         map_file = self._load_map_file()
@@ -287,3 +356,165 @@ class MapManager:
             logger.warning(f"No locations found in area '{area_identifier}'.")
 
         return locations
+
+    def get_place_templates_of_type(self, place_type: PlaceType) -> List[str]:
+        """
+        Retrieve a list of place templates for places of the specified type in the map file.
+
+        Args:
+            place_type (PlaceType): The type of places to retrieve templates for.
+
+        Returns:
+            List[str]: A list of place template names.
+        """
+        map_file = self._load_map_file()
+        return [
+            place_data.get("place_template")
+            for place_data in map_file.values()
+            if place_data.get("type") == place_type.value
+        ]
+
+    def does_area_have_cardinal_connection(
+            self, area_identifier: str, cardinal_direction: CardinalDirection
+    ):
+        if not area_identifier:
+            raise ValueError("area_identifier can't be empty.")
+
+        map_file = self._load_map_file()
+
+        # Let's ensure that the place is an area.
+        if not map_file[area_identifier]["type"] == PlaceType.AREA.value:
+            raise ValueError(
+                f"The given identifier '{area_identifier}' didn't belong to an area, but to a '{map_file[area_identifier]["type"]}'."
+            )
+
+        area_entry = map_file[area_identifier]
+
+        return cardinal_direction.value in area_entry
+
+    def get_cardinal_connections(
+            self, area_identifier: str
+    ) -> Dict[str, Optional[Dict[str, str]]]:
+        """
+        Retrieve the cardinal connections for a given area.
+
+        Args:
+            area_identifier (str): The identifier of the area.
+
+        Returns:
+            Dict[str, Optional[Dict[str, str]]]: A dictionary with keys as cardinal directions
+            ('north', 'south', 'east', 'west') and values as dictionaries containing 'identifier' and 'place_template'
+            of the connected areas, or None if there is no connection in that direction.
+        """
+        if not area_identifier:
+            raise ValueError("area_identifier can't be empty.")
+
+        map_file = self._load_map_file()
+
+        if area_identifier not in map_file:
+            raise ValueError(f"Area identifier '{area_identifier}' not found in map.")
+
+        area_entry = map_file[area_identifier]
+
+        # Ensure the place is an area
+        if area_entry.get("type") != PlaceType.AREA.value:
+            raise ValueError(
+                f"The given identifier '{area_identifier}' is not an area, but a '{area_entry.get('type')}'."
+            )
+
+        result = {}
+
+        # Iterate over all cardinal directions
+        for direction in [d.value for d in CardinalDirection]:
+            connected_area_id = area_entry.get(direction)
+
+            if connected_area_id:
+                connected_area = map_file.get(connected_area_id)
+                if not connected_area:
+                    logger.warning(
+                        f"Connected area '{connected_area_id}' not found in map."
+                    )
+                    result[direction] = None
+                else:
+                    place_template = connected_area.get("place_template")
+                    if not place_template:
+                        logger.warning(
+                            f"Place template not found for connected area '{connected_area_id}'."
+                        )
+                        place_template = None
+                    result[direction] = {
+                        "identifier": connected_area_id,
+                        "place_template": place_template,
+                    }
+            else:
+                result[direction] = None
+
+        return result
+
+    def create_cardinal_connection(
+            self,
+            cardinal_direction: CardinalDirection,
+            origin_identifier: str,
+            destination_identifier: str,
+    ):
+        if not origin_identifier:
+            raise ValueError("origin_identifier can't be empty.")
+        if not destination_identifier:
+            raise ValueError("destination_identifier can't be empty.")
+
+        map_data = self._load_map_file()
+
+        if cardinal_direction.value in map_data[origin_identifier]:
+            raise ValueError(
+                f"There was already a cardinal connection for '{cardinal_direction.value}' in '{origin_identifier}'."
+            )
+
+        map_data[origin_identifier][cardinal_direction.value] = destination_identifier
+
+        self._save_map_file(map_data)
+
+    @staticmethod
+    def get_opposite_cardinal_direction(
+            cardinal_direction: CardinalDirection,
+    ) -> CardinalDirection:
+        if cardinal_direction == CardinalDirection.NORTH:
+            return CardinalDirection.SOUTH
+        elif cardinal_direction == CardinalDirection.SOUTH:
+            return CardinalDirection.NORTH
+        elif cardinal_direction == CardinalDirection.EAST:
+            return CardinalDirection.WEST
+        elif cardinal_direction == CardinalDirection.WEST:
+            return CardinalDirection.EAST
+        else:
+            raise ValueError(
+                f"Case not handled for cardinal direction '{cardinal_direction}'"
+            )
+
+    def add_location(self, place_identifier: str):
+        if not place_identifier:
+            raise ValueError("place_identifier can't be empty.")
+
+        if not self.get_current_place_type() == PlaceType.AREA:
+            raise ValueError(
+                "Attempted to add a location to a place that wasn't an area."
+            )
+
+        map_file = self._load_map_file()
+
+        # If it turns out that the place_identifier about to be added is already one of the locations,
+        # something has gone wrong up to this point.
+        if (
+                place_identifier
+                in map_file[self._playthrough_manager.get_current_place_identifier()][
+            "locations"
+        ]
+        ):
+            raise ValueError(
+                f"Place identifier '{place_identifier}' already present in the locations of the current area."
+            )
+
+        map_file[self._playthrough_manager.get_current_place_identifier()][
+            "locations"
+        ].append(place_identifier)
+
+        self._save_map_file(map_file)

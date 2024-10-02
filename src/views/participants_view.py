@@ -28,6 +28,7 @@ class ParticipantsView(MethodView):
 
     def post(self):
         selected_characters = request.form.getlist("selected_characters")
+        purpose = request.form.get("purpose", "")  # Retrieve the purpose input
 
         playthrough_name = session.get("playthrough_name")
 
@@ -50,5 +51,10 @@ class ParticipantsView(MethodView):
             )
 
         session["participants"] = selected_characters
+        session["purpose"] = purpose
+
+        # Now that we're heading definitely to chat, pop the place_description from the location hub, because
+        # it's likely very long.
+        session.pop("place_description", None)
 
         return redirect(url_for("chat"))

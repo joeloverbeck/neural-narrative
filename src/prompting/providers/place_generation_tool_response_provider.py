@@ -5,13 +5,11 @@ from src.constants import (
     REGION_GENERATION_PROMPT_FILE,
     LOCATION_GENERATION_PROMPT_FILE,
     REGION_GENERATION_TOOL_FILE,
-    TOOL_INSTRUCTIONS_FILE,
     AREA_GENERATION_TOOL_FILE,
     LOCATION_GENERATION_TOOL_FILE,
 )
 from src.enums import TemplateType
 from src.filesystem.filesystem_manager import FilesystemManager
-from src.interfaces.abstracts.interface_manager import InterfaceManager
 from src.maps.template_type_data import TemplateTypeData
 from src.prompting.abstracts.abstract_factories import ToolResponseProvider
 from src.prompting.abstracts.factory_products import LlmToolResponseProduct
@@ -21,28 +19,26 @@ from src.prompting.factories.produce_tool_response_strategy_factory import (
 from src.prompting.products.concrete_llm_tool_response_product import (
     ConcreteLlmToolResponseProduct,
 )
-from src.tools import generate_tool_prompt
+from src.prompting.providers.base_tool_response_provider import BaseToolResponseProvider
 
 
-class PlaceGenerationToolResponseProvider(ToolResponseProvider):
+class PlaceGenerationToolResponseProvider(
+    BaseToolResponseProvider, ToolResponseProvider
+):
     def __init__(
         self,
         place_identifier: str,
         template_type: TemplateType,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         filesystem_manager: FilesystemManager = None,
-        interface_manager: InterfaceManager = None,
     ):
+        super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
+
         if not place_identifier:
             raise ValueError("place_identifier can't be empty.")
 
         self._place_identifier = place_identifier
         self._template_type = template_type
-        self._produce_tool_response_strategy_factory = (
-            produce_tool_response_strategy_factory
-        )
-
-        self._filesystem_manager = filesystem_manager or FilesystemManager()
 
     def _get_template_type_data(self) -> Optional[TemplateTypeData]:
         data_mapping: Dict[TemplateType, TemplateTypeData] = {
@@ -77,9 +73,7 @@ class PlaceGenerationToolResponseProvider(ToolResponseProvider):
             )
 
         # Load and format the corresponding prompt
-        place_generation_prompt = self._filesystem_manager.read_file(
-            template_data.prompt_file
-        )
+        place_generation_prompt = self._read_prompt_file(template_data.prompt_file)
 
         # Load the father templates file
         father_templates_file = self._filesystem_manager.load_existing_or_new_json_file(
@@ -103,26 +97,23 @@ class PlaceGenerationToolResponseProvider(ToolResponseProvider):
         )
 
         # Format the prompt
-        place_generation_prompt = place_generation_prompt.format(
+        place_generation_prompt = self._format_prompt(
+            place_generation_prompt,
             father_place_name=self._place_identifier,
             father_place_description=place_template["description"],
             father_place_categories=place_template["categories"],
             current_place_type_names=list(current_place_type_templates.keys()),
         )
 
-        # Prepare the system content
-        system_content = place_generation_prompt + "\n\n"
-
         # Generate the tool prompt
-        tool_json = self._filesystem_manager.read_json_file(template_data.tool_file)
-        tool_instructions = self._filesystem_manager.read_file(TOOL_INSTRUCTIONS_FILE)
-        system_content += generate_tool_prompt(tool_json, tool_instructions)
-
-        # Generate the response
-        response_strategy = (
-            self._produce_tool_response_strategy_factory.create_produce_tool_response_strategy()
+        tool_data = self._read_tool_file(template_data.tool_file)
+        tool_instructions = self._read_tool_instructions()
+        tool_prompt = self._generate_tool_prompt(tool_data, tool_instructions)
+        system_content = self._generate_system_content(
+            place_generation_prompt, tool_prompt
         )
 
+        # Generate the response
         user_guidance = input(
             "Do you have any notion of how you want this place to be? (can be left empty): "
         )
@@ -134,9 +125,7 @@ class PlaceGenerationToolResponseProvider(ToolResponseProvider):
                 f" User guidance about how he wants this place to be: {user_guidance}"
             )
 
-        response_content = response_strategy.produce_tool_response(
-            system_content,
-            user_content,
-        )
+        # Produce tool response
+        tool_response = self._produce_tool_response(system_content, user_content)
 
-        return ConcreteLlmToolResponseProduct(response_content, is_valid=True)
+        return ConcreteLlmToolResponseProduct(tool_response, is_valid=True)

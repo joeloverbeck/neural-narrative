@@ -2,7 +2,7 @@ import logging
 from typing import Optional
 
 from src.abstracts.command import Command
-from src.constants import HERMES_405B_FREE
+from src.config.config_manager import ConfigManager
 from src.enums import TemplateType
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.interfaces.abstracts.interface_manager import InterfaceManager
@@ -31,6 +31,7 @@ class GeneratePlaceCommand(Command):
         father_place_template_type: TemplateType,
         interface_manager: InterfaceManager = None,
         filesystem_manager: FilesystemManager = None,
+            config_manager: ConfigManager = None,
     ):
         self._place_template_type = place_template_type
         self._father_place_template_type = father_place_template_type
@@ -60,6 +61,7 @@ class GeneratePlaceCommand(Command):
 
         self._interface_manager = interface_manager or ConsoleInterfaceManager()
         self._filesystem_manager = filesystem_manager or FilesystemManager()
+        self._config_manager = config_manager or ConfigManager()
 
     def execute(self) -> None:
         logger.info(
@@ -104,7 +106,7 @@ class GeneratePlaceCommand(Command):
         llm_client = OpenRouterLlmClientFactory().create_llm_client()
 
         produce_tool_response_strategy_factory = ProduceToolResponseStrategyFactory(
-            llm_client, HERMES_405B_FREE
+            llm_client, self._config_manager.get_heavy_llm()
         )
 
         llm_tool_response_product = PlaceGenerationToolResponseProvider(

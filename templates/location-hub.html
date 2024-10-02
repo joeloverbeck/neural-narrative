@@ -3,41 +3,58 @@
 
 {% block title %}Location Hub{% endblock %}
 
+{% block styles %}
+{{super()}}
+<link href="{{ url_for('static', filename='location-hub.css') }}" rel="stylesheet" type="text/css">
+{% endblock %}
+
 {% block content %}
 <h1>{{ current_place }}</h1>
 
 <div class="place-and-time">
     <div class="current-time">
-        Time: {{ current_hour }}:00 {{ current_time_of_day }}
+        Time: {{ current_hour }} {{ current_time_of_day }}
     </div>
 </div>
 
 <!-- Describe Place Section -->
-<div class="describe-place-section">
-    {% if place_description %}
-    <div class="place-description-container">
-        <p class="place-description">{{ place_description }}</p>
-    </div>
-    {% endif %}
+{% if place_description %}
+<div class="place-description">
+    <p>{{ place_description }}</p>
 </div>
+{% endif %}
 
-<div class="available-actions">
+<div class="available-actions-section">
     <h2>Available Actions</h2>
-    <div class="action-buttons">
+    <!-- Exploration message -->
+    {% if exploration_result_message %}
+    <p>{{ exploration_result_message }}</p>
+    {% endif %}
+    <div class="action-grid">
         <form method="post">
             <input name="action" type="hidden" value="Describe Place">
             <input class="action-button" type="submit" value="Describe current place">
         </form>
+
         {% if current_place_type.value == "location" %}
         <form method="post">
             <input name="action" type="hidden" value="Exit Location">
             <input class="action-button" type="submit" value="Exit current place">
         </form>
         {% endif %}
+
         <form method="post">
             <input name="action" type="hidden" value="Proceed to Chat">
             <input class="action-button" type="submit" value="Proceed to chat">
         </form>
+
+        <!-- Button for searching for locations -->
+        {% if current_place_type.value == "area" %}
+        <form method="post">
+            <input name="action" type="hidden" value="Search For Location">
+            <input class="action-button" type="submit" value="Search for location">
+        </form>
+        {% endif %}
 
         <!-- Buttons for visiting locations -->
         {% if locations_present %}
@@ -47,6 +64,26 @@
             <input name="location_identifier" type="hidden" value="{{ location.identifier }}">
             <input class="action-button" type="submit" value="Visit {{ location.place_template }}">
         </form>
+        {% endfor %}
+        {% endif %}
+
+        <!-- Buttons for exploring cardinal directions -->
+        {% if cardinal_connections %}
+        {% for key, value in cardinal_connections.items() %}
+        {% if not value %}
+        <form method="post">
+            <input name="action" type="hidden" value="Explore Cardinal Direction">
+            <input name="cardinal_direction" type="hidden" value="{{ key }}">
+            <input class="action-button" type="submit" value="Explore {{ key }}">
+        </form>
+        {% endif %}
+        {% if value %}
+        <form method="post">
+            <input name="action" type="hidden" value="Travel In Cardinal Direction">
+            <input name="destination_identifier" type="hidden" value="{{ value.get('identifier') }}">
+            <input class="action-button" type="submit" value="Travel {{ key }} to {{ value.get('place_template') }}">
+        </form>
+        {% endif %}
         {% endfor %}
         {% endif %}
 

@@ -60,7 +60,7 @@ class CreateSpeechTurnDataCommand(Command, Subject):
                 f"Failed to produce speech data: %s", speech_data_product.get_error()
             )
 
-            # There's no real recovery to speech data being invalid, so let's pretend that the player
+            # There's no real recovery to speech data being invalid, so let's pretend that the character
             # doesn't know what to say at the moment.
             speech_data_product.get()["narration_text"] = f"Looks confused."
             speech_data_product.get()["speech"] = "I don't know what to say."
