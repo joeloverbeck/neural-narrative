@@ -13,6 +13,9 @@ class IndexView(MethodView):
         # Retrieve the list of existing playthrough folders
         playthrough_names = filesystem_manager.get_playthrough_names()
 
+        # Pop session variables that should be reset now.
+        session.pop("no_available_templates", None)
+
         return render_template("index.html", playthrough_names=playthrough_names)
 
     def post(self):

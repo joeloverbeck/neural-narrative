@@ -2,7 +2,7 @@ import logging
 import logging.config
 import sys
 
-from src.constants import HERMES_405B_FREE
+from src.config.config_manager import ConfigManager
 from src.enums import TemplateType
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.interfaces.console_interface_manager import ConsoleInterfaceManager
@@ -37,7 +37,9 @@ def main():
 
     if place_template_type == TemplateType.WORLD:
         WorldGenerationStrategy(
-            ProduceToolResponseStrategyFactory(llm_client, HERMES_405B_FREE)
+            ProduceToolResponseStrategyFactory(
+                llm_client, ConfigManager().get_heavy_llm()
+            )
         ).generate_place()
     else:
         FatheredPlaceGenerationStrategy(place_template_type).generate_place()

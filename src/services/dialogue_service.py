@@ -24,9 +24,14 @@ from src.playthrough_manager import PlaythroughManager
 
 
 class DialogueService:
-    def __init__(self, playthrough_name, dialogue_participants):
+    def __init__(self, playthrough_name: str, dialogue_participants, purpose: str):
+        if not playthrough_name:
+            raise ValueError("playthrough_name can't be empty.")
+
         self._playthrough_name = playthrough_name
         self._dialogue_participants = dialogue_participants
+        self._purpose = purpose
+
         self._filesystem_manager = FilesystemManager()
         self._playthrough_manager = PlaythroughManager(playthrough_name)
         self._participants_instance = Participants()
@@ -42,6 +47,7 @@ class DialogueService:
             self._playthrough_name,
             self._playthrough_manager.get_player_identifier(),
             self._participants_instance,
+            self._purpose,
             self._web_dialogue_observer,
             web_player_input_factory,
             self.get_conversation_command_factory(),

@@ -16,7 +16,7 @@ from src.commands.create_playthrough_command import CreatePlaythroughCommand
 from src.commands.create_playthrough_metadata_command import (
     CreatePlaythroughMetadataCommand,
 )
-from src.constants import HERMES_405B_FREE
+from src.config.config_manager import ConfigManager
 from src.images.factories.generate_character_image_command_factory import (
     GenerateCharacterImageCommandFactory,
 )
@@ -29,7 +29,6 @@ from src.maps.factories.concrete_random_place_template_based_on_categories_facto
     ConcreteRandomPlaceTemplateBasedOnCategoriesFactory,
 )
 from src.maps.factories.visit_place_command_factory import VisitPlaceCommandFactory
-from src.maps.map_manager import MapManager
 from src.prompting.factories.openai_llm_client_factory import OpenAILlmClientFactory
 from src.prompting.factories.openrouter_llm_client_factory import (
     OpenRouterLlmClientFactory,
@@ -60,15 +59,13 @@ def main():
         create_initial_map_command = CreateInitialMapCommand(
             playthrough_name,
             world_template,
-            ConcreteRandomPlaceTemplateBasedOnCategoriesFactory(
-                MapManager(playthrough_name)
-            ),
+            ConcreteRandomPlaceTemplateBasedOnCategoriesFactory(playthrough_name),
         )
 
         llm_client = OpenRouterLlmClientFactory().create_llm_client()
 
         produce_tool_response_strategy_factory = ProduceToolResponseStrategyFactory(
-            llm_client, HERMES_405B_FREE
+            llm_client, ConfigManager().get_heavy_llm()
         )
 
         store_generate_character_command_factory = (
@@ -103,7 +100,9 @@ def main():
         )
 
         visit_place_command_factory = VisitPlaceCommandFactory(
-            playthrough_name, generate_random_characters_command_factory
+            playthrough_name,
+            generate_random_characters_command_factory,
+            produce_tool_response_strategy_factory,
         )
 
         # Call the create_playthrough function

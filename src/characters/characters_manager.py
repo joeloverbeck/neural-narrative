@@ -137,3 +137,96 @@ class CharactersManager:
 
         # Extract and return the names
         return [char_data.get("name", "") for char_data in characters_file.values()]
+
+    @staticmethod
+    def create_key_for_character_generation_guidelines(
+            world: str, region: str, area: str, location: str = None
+    ) -> str:
+        if not world:
+            raise ValueError("world can't be empty.")
+        if not region:
+            raise ValueError("region can't be empty.")
+        if not area:
+            raise ValueError("area can't be empty.")
+
+        return (
+            f"{world}:{region}:{area}:{location}"
+            if location
+            else f"{world}:{region}:{area}"
+        )
+
+    def load_character_generation_guidelines(
+            self, world: str, region: str, area: str, location: str = None
+    ) -> List[str]:
+        if not world:
+            raise ValueError("world can't be empty.")
+        if not region:
+            raise ValueError("region can't be empty.")
+        if not area:
+            raise ValueError("area can't be empty.")
+
+        guidelines_file = self._filesystem_manager.load_existing_or_new_json_file(
+            self._filesystem_manager.get_file_path_to_character_generation_guidelines_file()
+        )
+
+        key = self.create_key_for_character_generation_guidelines(
+            world, region, area, location
+        )
+
+        if not key in guidelines_file:
+            raise ValueError(
+                f"The key {key} wasn't present in the file of character generation guidelines. You should ask first if there's a matching entry."
+            )
+
+        return guidelines_file[key]
+
+    def save_character_generation_guidelines(
+            self,
+            world: str,
+            region: str,
+            area: str,
+            guidelines: List[str],
+            location: str = None,
+    ):
+        if not world:
+            raise ValueError("world can't be empty.")
+        if not region:
+            raise ValueError("region can't be empty.")
+        if not area:
+            raise ValueError("area can't be empty.")
+
+        guidelines_file = self._filesystem_manager.load_existing_or_new_json_file(
+            self._filesystem_manager.get_file_path_to_character_generation_guidelines_file()
+        )
+
+        guidelines_file[
+            self.create_key_for_character_generation_guidelines(
+                world, region, area, location
+            )
+        ] = guidelines
+
+        self._filesystem_manager.save_json_file(
+            guidelines_file,
+            self._filesystem_manager.get_file_path_to_character_generation_guidelines_file(),
+        )
+
+    def are_there_character_generation_guidelines_for_place(
+            self, world: str, region: str, area: str, location: str = None
+    ) -> bool:
+        if not world:
+            raise ValueError("world can't be empty.")
+        if not region:
+            raise ValueError("region can't be empty.")
+        if not area:
+            raise ValueError("area can't be empty.")
+
+        guidelines_file = self._filesystem_manager.load_existing_or_new_json_file(
+            self._filesystem_manager.get_file_path_to_character_generation_guidelines_file()
+        )
+
+        return (
+                self.create_key_for_character_generation_guidelines(
+                    world, region, area, location
+                )
+                in guidelines_file
+        )

@@ -21,6 +21,8 @@ from src.constants import (
     IMAGES_FOLDER_NAME,
     OPENAI_PROJECT_KEY_FILE,
     ONGOING_DIALOGUE_FOLDER_NAME,
+    CONFIG_FILE,
+    CHARACTER_GENERATION_GUIDELINES_FILE,
 )
 
 
@@ -122,6 +124,10 @@ class FilesystemManager:
             sys.exit(f"An unexpected error occurred: {str(e)}")
 
     @staticmethod
+    def get_file_path_to_config_file():
+        return CONFIG_FILE
+
+    @staticmethod
     def get_file_path_to_playthroughs_folder():
         # Ensure the playthroughs folder exists
         if not os.path.exists(PLAYTHROUGHS_FOLDER):
@@ -171,6 +177,24 @@ class FilesystemManager:
 
         return folder_path
 
+    def get_file_path_to_interesting_situations(self, playthrough_name: str) -> str:
+        if not playthrough_name:
+            raise ValueError("playthrough_name should not be empty.")
+
+        return os.path.join(
+            self.get_file_path_to_playthrough_folder(playthrough_name),
+            "interesting_situations.txt",
+        )
+
+    @staticmethod
+    def get_file_path_to_empty_content_context_file() -> str:
+        errors_folder = "errors"
+
+        if not errors_folder:
+            os.makedirs(errors_folder)
+
+        return os.path.join(errors_folder, "empty_content_context.json")
+
     def remove_ongoing_dialogue(self, playthrough_name: str):
         if not playthrough_name:
             raise ValueError("playthrough_name can't be empty.")
@@ -213,6 +237,10 @@ class FilesystemManager:
             playthrough_name,
             CHARACTERS_FOLDER_NAME,
         )
+
+    @staticmethod
+    def get_file_path_to_character_generation_guidelines_file():
+        return CHARACTER_GENERATION_GUIDELINES_FILE
 
     @staticmethod
     def get_file_path_to_character_images(playthrough_name: str) -> str:

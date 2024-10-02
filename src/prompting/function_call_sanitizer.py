@@ -22,6 +22,7 @@ class FunctionCallSanitizer:
     )
     REPLACE_INCORRECT_CLOSING_FUNCTION_TAG_REGEX = re.compile(r"{/function}")
     REMOVE_EXTRA_CHARACTERS_AFTER_JSON_REGEX = re.compile(r"(}.*?)(</function>)")
+    FIX_CLOSING_FUNCTION_TAG_WITHOUT_LT_OR_SLASH = re.compile(r"(?<!<)(?<!</)function>")
 
     def __init__(self, function_call: str):
         if not function_call:
@@ -121,6 +122,13 @@ class FunctionCallSanitizer:
         function_call = re.sub(
             FunctionCallSanitizer.REMOVE_EXTRA_CHARACTERS_AFTER_JSON_REGEX,
             r"}\2",
+            function_call,
+        )
+
+        # Step 15: Fix closing function tag without proper opening symbols
+        function_call = re.sub(
+            FunctionCallSanitizer.FIX_CLOSING_FUNCTION_TAG_WITHOUT_LT_OR_SLASH,
+            r"</function>",
             function_call,
         )
 

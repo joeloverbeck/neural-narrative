@@ -4,6 +4,9 @@ from src.dialogues.abstracts.abstract_factories import DialogueFactory
 from src.dialogues.commands.store_temporary_dialogue_command import (
     StoreTemporaryDialogueCommand,
 )
+from src.dialogues.factories.generate_interesting_situations_command_factory import (
+    GenerateInterestingSituationsCommandFactory,
+)
 from src.dialogues.factories.store_dialogues_command_factory import (
     StoreDialoguesCommandFactory,
 )
@@ -20,9 +23,11 @@ class ProduceDialogueCommand(Command):
         self,
         playthrough_name: str,
         participants: Participants,
+            purpose: str,
         dialogue_factory: DialogueFactory,
         summarize_dialogue_command_factory: SummarizeDialogueCommandFactory,
         store_dialogues_command_factory: StoreDialoguesCommandFactory,
+            generate_interesting_situations_command_factory: GenerateInterestingSituationsCommandFactory,
         filesystem_manager: FilesystemManager = None,
         time_manager: TimeManager = None,
     ):
@@ -33,9 +38,13 @@ class ProduceDialogueCommand(Command):
 
         self._playthrough_name = playthrough_name
         self._participants = participants
+        self._purpose = purpose
         self._dialogue_factory = dialogue_factory
         self._summarize_dialogue_command_factory = summarize_dialogue_command_factory
         self._store_dialogues_command_factory = store_dialogues_command_factory
+        self._generate_interesting_situations_command_factory = (
+            generate_interesting_situations_command_factory
+        )
 
         self._filesystem_manager = filesystem_manager or FilesystemManager()
         self._time_manager = time_manager or TimeManager(self._playthrough_name)
@@ -44,12 +53,16 @@ class ProduceDialogueCommand(Command):
         dialogue_product = self._dialogue_factory.process_turn_of_dialogue()
 
         if dialogue_product.has_ended():
-            # Must create summary, as well as store the transcription permanently.
             self._summarize_dialogue_command_factory.create_summarize_dialogue_command(
                 dialogue_product.get_transcription()
             ).execute()
 
             self._store_dialogues_command_factory.create_store_dialogues_command(
+                dialogue_product.get_transcription()
+            ).execute()
+
+            # Must coax the LLM into creating interesting situations.
+            self._generate_interesting_situations_command_factory.create_generate_interesting_situations_command(
                 dialogue_product.get_transcription()
             ).execute()
 
@@ -64,6 +77,7 @@ class ProduceDialogueCommand(Command):
             StoreTemporaryDialogueCommand(
                 self._playthrough_name,
                 self._participants,
+                self._purpose,
                 dialogue_product.get_messages_to_llm(),
                 dialogue_product.get_transcription(),
             ).execute()

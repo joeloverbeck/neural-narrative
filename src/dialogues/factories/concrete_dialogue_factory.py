@@ -92,7 +92,8 @@ class ConcreteDialogueFactory(DialogueFactorySubject):
                 f"Was unable to choose next speaker: {speech_turn_choice_tool_response_product.get_error()}"
             )
 
-        # If at this point the speech turn choice is still the player, we have a problem.
+        # If at this point the speech turn choice is still the player, we have a problem, because the previous code
+        # should have effectively blocked that possibility.
         if (
             speech_turn_choice_tool_response_product.get()["identifier"]
             == self._playthrough_manager.get_player_identifier()

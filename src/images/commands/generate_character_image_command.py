@@ -52,7 +52,7 @@ class GenerateCharacterImageCommand(Command):
             f"Personality: {character_data['personality']}\n"
             f"Equipment belonging to {character_data['name']}: {character_data['equipment']}\n"
             "Note: the equipment is only listed to influence the portrait of the character. "
-            "Do not depict equipment separately to the character. Avoid generating text."
+            "Do not depict equipment separately to the character. Don't generate text."
             "The resulting image should resemble a photo or portrait made of a candid moment."
         )
 

@@ -12,6 +12,7 @@ class ConcretePromptFormatterForDialogueStrategy(PromptFormatterForDialogueStrat
         self,
         playthrough_name: str,
         participants: Participants,
+            purpose: str,
         character_data: dict,
         memories: str,
         prompt_file: str,
@@ -25,6 +26,7 @@ class ConcretePromptFormatterForDialogueStrategy(PromptFormatterForDialogueStrat
 
         self._playthrough_name = playthrough_name
         self._participants = participants
+        self._purpose = purpose
         self._character_data = character_data
         self._memories = memories
         self._prompt_file = prompt_file
@@ -35,6 +37,35 @@ class ConcretePromptFormatterForDialogueStrategy(PromptFormatterForDialogueStrat
         self._playthrough_manager = playthrough_manager or PlaythroughManager(
             self._playthrough_name
         )
+
+    def _format_participant_details(self) -> str:
+        return "\n".join(
+            [
+                f'{participant["name"]}: {participant["description"]}. Equipment: {participant["equipment"]}'
+                for _, participant in self._participants.get().items()
+                if participant["name"] != self._character_data["name"]
+            ]
+        )
+
+    def _format_dialogue_purpose(self) -> str:
+        if self._purpose:
+            return f"The purpose of this dialogue is: {self._purpose}"
+
+        return ""
+
+    @staticmethod
+    def _format_location_name(full_place_data: dict) -> str:
+        if full_place_data["location_data"]:
+            return f"Inside the area {full_place_data["area_data"]["name"]}, you are currently in this location: {full_place_data["location_data"]["name"]}."
+
+        return ""
+
+    @staticmethod
+    def _format_location_description(full_place_data: dict) -> str:
+        if full_place_data["location_data"]:
+            return f"Here's the description of the location: {full_place_data["location_data"]["description"]}"
+
+        return ""
 
     def do_algorithm(self) -> str:
         full_place_data_product = self._full_place_data_factory.create_full_place_data()
@@ -47,12 +78,8 @@ class ConcretePromptFormatterForDialogueStrategy(PromptFormatterForDialogueStrat
         full_place_data = full_place_data_product.get()
 
         # It could be that there isn't a location involved
-        location_name = ""
-        location_description = ""
-
-        if full_place_data["location_data"]:
-            location_name = f"Inside the area {full_place_data["area_data"]["name"]}, you are currently in this location: {full_place_data["location_data"]["name"]}."
-            location_description = f"Here's the description of the location: {full_place_data["location_data"]["description"]}"
+        location_name = self._format_location_name(full_place_data)
+        location_description = self._format_location_description(full_place_data)
 
         time_manager = TimeManager(self._playthrough_name)
 
@@ -60,13 +87,9 @@ class ConcretePromptFormatterForDialogueStrategy(PromptFormatterForDialogueStrat
             self._filesystem_manager.get_file_path_to_worlds_template_file()
         )
 
-        participant_details = "\n".join(
-            [
-                f'{participant["name"]}: {participant["description"]}. Equipment: {participant["equipment"]}'
-                for _, participant in self._participants.get().items()
-                if participant["name"] != self._character_data["name"]
-            ]
-        )
+        participant_details = self._format_participant_details()
+
+        dialogue_purpose = self._format_dialogue_purpose()
 
         return self._filesystem_manager.read_file(self._prompt_file).format(
             world_name=self._playthrough_manager.get_world_template(),
@@ -90,5 +113,6 @@ class ConcretePromptFormatterForDialogueStrategy(PromptFormatterForDialogueStrat
             dislikes=self._character_data["dislikes"],
             first_message=self._character_data["first message"],
             speech_patterns=self._character_data["speech patterns"],
+            dialogue_purpose=dialogue_purpose,
             memories=self._memories,
         )

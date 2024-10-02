@@ -1,4 +1,5 @@
-from src.constants import HERMES_70B, HERMES_405B_FREE
+from src.config.config_manager import ConfigManager
+from src.constants import HERMES_70B
 from src.dialogues.abstracts.abstract_factories import (
     DialogueFactorySubject,
 )
@@ -35,6 +36,7 @@ class DialogueFactoryComposer:
         playthrough_name: str,
         player_identifier: str,
         participants: Participants,
+            purpose: str,
         llm_client: LlmClient,
         messages_to_llm: MessagesToLlm,
         transcription: Transcription,
@@ -49,6 +51,7 @@ class DialogueFactoryComposer:
         self._playthrough_name = playthrough_name
         self._player_identifier = player_identifier
         self._participants = participants
+        self._purpose = purpose
         self._llm_client = llm_client
         self._messages_to_llm = messages_to_llm
         self._transcription = transcription
@@ -69,12 +72,15 @@ class DialogueFactoryComposer:
         )
 
         llm_speech_data_provider_factory = LlmSpeechDataProviderFactoryComposer(
-            self._llm_client, HERMES_405B_FREE
+            self._llm_client, ConfigManager().get_heavy_llm()
         ).compose()
 
         determine_system_message_for_speech_turn_strategy = (
             DetermineSystemMessageForSpeechTurnStrategyComposer(
-                self._playthrough_name, self._participants, self._messages_to_llm
+                self._playthrough_name,
+                self._participants,
+                self._purpose,
+                self._messages_to_llm,
             ).compose()
         )
 

@@ -4,18 +4,27 @@ import logging.config
 import colorama
 
 from src.dialogues.commands.setup_dialogue_command import SetupDialogueCommand
-from src.dialogues.factories.console_player_input_factory import ConsolePlayerInputFactory
-from src.dialogues.factories.handle_possible_existence_of_ongoing_conversation_command_factory import \
-    HandlePossibleExistenceOfOngoingConversationCommandFactory
-from src.dialogues.factories.load_data_from_ongoing_dialogue_command_factory import \
-    LoadDataFromOngoingDialogueCommandFactory
+from src.dialogues.factories.console_player_input_factory import (
+    ConsolePlayerInputFactory,
+)
+from src.dialogues.factories.handle_possible_existence_of_ongoing_conversation_command_factory import (
+    HandlePossibleExistenceOfOngoingConversationCommandFactory,
+)
+from src.dialogues.factories.load_data_from_ongoing_dialogue_command_factory import (
+    LoadDataFromOngoingDialogueCommandFactory,
+)
 from src.dialogues.observers.console_dialogue_observer import ConsoleDialogueObserver
 from src.dialogues.participants import Participants
-from src.dialogues.strategies.console_choose_participants_strategy import ConsoleChooseParticipantsStrategy
-from src.dialogues.strategies.console_message_data_producer_for_introduce_player_input_into_dialogue_strategy import \
-    ConsoleMessageDataProducerForIntroducePlayerInputIntoDialogueStrategy
-from src.dialogues.strategies.console_message_data_producer_for_speech_turn_strategy import \
-    ConsoleMessageDataProducerForSpeechTurnStrategy
+from src.dialogues.strategies.console_choose_participants_strategy import (
+    ConsoleChooseParticipantsStrategy,
+)
+from src.dialogues.strategies.console_message_data_producer_for_introduce_player_input_into_dialogue_strategy import (
+    ConsoleMessageDataProducerForIntroducePlayerInputIntoDialogueStrategy,
+)
+from src.dialogues.strategies.console_message_data_producer_for_speech_turn_strategy import (
+    ConsoleMessageDataProducerForSpeechTurnStrategy,
+)
+
 # Import from local modules
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.interfaces.console_interface_manager import ConsoleInterfaceManager
@@ -31,7 +40,9 @@ def main():
 
     interface_manager = ConsoleInterfaceManager()
 
-    playthrough_name = interface_manager.prompt_for_input("Enter your playthrough name: ")
+    playthrough_name = interface_manager.prompt_for_input(
+        "Enter your playthrough name: "
+    )
 
     player_identifier = PlaythroughManager(playthrough_name).get_player_identifier()
 
@@ -41,19 +52,33 @@ def main():
 
     participants = Participants()
 
-    load_data_from_ongoing_dialogue_command_factory = LoadDataFromOngoingDialogueCommandFactory(playthrough_name,
-                                                                                                participants)
+    load_data_from_ongoing_dialogue_command_factory = (
+        LoadDataFromOngoingDialogueCommandFactory(playthrough_name, participants)
+    )
 
-    handle_possible_existence_of_ongoing_conversation_command_factory = HandlePossibleExistenceOfOngoingConversationCommandFactory(
-        playthrough_name, player_identifier,
+    handle_possible_existence_of_ongoing_conversation_command_factory = (
+        HandlePossibleExistenceOfOngoingConversationCommandFactory(
+            playthrough_name,
+            player_identifier,
+            participants,
+            load_data_from_ongoing_dialogue_command_factory,
+            ConsoleChooseParticipantsStrategy(),
+        )
+    )
+
+    purpose = input("Enter the purpose of the dialogue (can be empty): ")
+
+    SetupDialogueCommand(
+        playthrough_name,
+        player_identifier,
         participants,
-        load_data_from_ongoing_dialogue_command_factory,
-        ConsoleChooseParticipantsStrategy())
-
-    SetupDialogueCommand(playthrough_name, player_identifier, participants, dialogue_observer, player_input_factory,
-                         handle_possible_existence_of_ongoing_conversation_command_factory,
-                         ConsoleMessageDataProducerForIntroducePlayerInputIntoDialogueStrategy(),
-                         ConsoleMessageDataProducerForSpeechTurnStrategy()).execute()
+        purpose,
+        dialogue_observer,
+        player_input_factory,
+        handle_possible_existence_of_ongoing_conversation_command_factory,
+        ConsoleMessageDataProducerForIntroducePlayerInputIntoDialogueStrategy(),
+        ConsoleMessageDataProducerForSpeechTurnStrategy(),
+    ).execute()
 
 
 if __name__ == "__main__":

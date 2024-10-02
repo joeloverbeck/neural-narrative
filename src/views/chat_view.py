@@ -14,21 +14,27 @@ class ChatView(MethodView):
         # Handle GET request
         playthrough_name = session.get("playthrough_name")
         dialogue_participants = session.get("participants")
+        purpose = session.get("purpose")
 
         if not playthrough_name:
             return redirect(url_for("index"))
 
+        playthrough_manager = PlaythroughManager(playthrough_name)
+        filesystem_manager = FilesystemManager()
+
+        ongoing_dialogue_file = filesystem_manager.load_existing_or_new_json_file(
+            filesystem_manager.get_file_path_to_ongoing_dialogue(playthrough_name)
+        )
+
         # There is a playthrough_name in session, but the participants may not be there.
-        if not dialogue_participants and PlaythroughManager(
+        if not dialogue_participants and playthrough_manager.has_ongoing_dialogue(
             playthrough_name
-        ).has_ongoing_dialogue(playthrough_name):
-            filesystem_manager = FilesystemManager()
+        ):
+            session["participants"] = ongoing_dialogue_file["participants"]
 
-            session["participants"] = filesystem_manager.load_existing_or_new_json_file(
-                filesystem_manager.get_file_path_to_ongoing_dialogue(playthrough_name)
-            )["participants"]
-
-            dialogue_participants = session.get("participants")
+        # There is a playthrough_name in session, but the purpose may not be there.
+        if not purpose and playthrough_manager.has_ongoing_dialogue(playthrough_name):
+            session["purpose"] = ongoing_dialogue_file["purpose"]
 
         dialogue = session.get("dialogue", [])
 
@@ -47,6 +53,7 @@ class ChatView(MethodView):
         # Handle POST request
         playthrough_name = session.get("playthrough_name")
         dialogue_participants = session.get("participants")
+        purpose = session.get("purpose", "")
 
         if not playthrough_name or not dialogue_participants:
             return redirect(url_for("index"))
@@ -59,7 +66,9 @@ class ChatView(MethodView):
             return redirect(url_for("chat"))
 
         # Process the dialogue
-        dialogue_service = DialogueService(playthrough_name, dialogue_participants)
+        dialogue_service = DialogueService(
+            playthrough_name, dialogue_participants, purpose
+        )
 
         messages, is_goodbye = dialogue_service.process_user_input(user_input)
 
@@ -67,6 +76,7 @@ class ChatView(MethodView):
             session.pop("playthrough_name", None)
             session.pop("participants", None)
             session.pop("dialogue", None)
+            session.pop("purpose", None)
 
             return redirect(url_for("index"))
 

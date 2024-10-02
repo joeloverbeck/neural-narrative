@@ -35,22 +35,41 @@ class CharacterGenerationInstructionsFormatter:
             "character_generation_instructions"
         ]
 
+        world_name = playthrough_metadata["world_template"]
+        region_name = self._places_templates_parameter.get_region_template()
+        area_name = self._places_templates_parameter.get_area_template()
+        location_name = self._places_templates_parameter.get_location_template()
+
+        key = self._characters_manager.create_key_for_character_generation_guidelines(
+            world_name, region_name, area_name, location_name
+        )
+
+        if not self._characters_manager.are_there_character_generation_guidelines_for_place(
+                world_name, region_name, area_name, location_name
+        ):
+            raise ValueError(
+                f"No character generation guidelines exist for key '{key}'."
+            )
+
         formatted_instructions = character_generation_instructions.format(
-            world_name=playthrough_metadata["world_template"],
+            world_name=world_name,
             world_description=worlds_templates[playthrough_metadata["world_template"]][
                 "description"
             ],
-            region_name=self._places_templates_parameter.get_region_template(),
+            region_name=region_name,
             region_description=regions_templates[
                 self._places_templates_parameter.get_region_template()
             ]["description"],
-            area_name=self._places_templates_parameter.get_area_template(),
+            area_name=area_name,
             area_description=areas_templates[
                 self._places_templates_parameter.get_area_template()
             ]["description"],
             location_name=self._location_name,
             location_description=self._location_description,
             prohibited_names=self._characters_manager.get_all_character_names(),
+            character_generation_guidelines=self._characters_manager.load_character_generation_guidelines(
+                world_name, region_name, area_name, location_name
+            ),
         )
 
         return formatted_instructions
