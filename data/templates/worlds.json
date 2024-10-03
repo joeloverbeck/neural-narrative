@@ -24,7 +24,7 @@
     "description": "Capsulon is a world in the distant future where overpopulation and chaos have driven those with means to live in tiny, fully-enclosed capsule homes. The inhabitants spend all their time hooked into advanced virtual reality systems, their bodily needs tended to by automated machines that handle waste removal and nutrient delivery. The VR worlds they inhabit are vast and varied, offering escapist fantasies far removed from the bleak, overcrowded reality outside. Meanwhile, the less fortunate masses are crammed into what little habitable space remains, struggling to survive in a harsh dystopia.\\n\\nThis world is dominated by the CapsuleTech Corporation, which holds a monopoly on the capsule home technology and the immersive VR experiences it enables. The corporation wields enormous power and influence, with the lines between government and business blurred. An individual's social status and quality of life are determined by their level of access to CapsuleTech's offerings. The haves live in a false digital utopia, while the have-nots are left to scrap and scheme in the overcrowded, decaying urban sprawl. Tensions are high between these stratified classes.\\n\\nResources like food, water, and energy are tightly controlled and rationed by CapsuleTech and the other megacorporations that manage the world's dwindling supplies. Black markets thrive in the seedier levels of the packed cities. The only 'wilderness' that remains are the VR fantasy worlds, where the elite engage in all manner of depraved entertainments, their debauchery having no consequences in the 'real' world. Life is cheap on Capsulon, with billions consigned to lives of squalor and subservience, all in service to the corpo-aristocracy plugged into their escapist virtual realities. Rebellion brews in the slums, but the corporations maintain an iron grip on the world through surveillance, brutal security forces, and control of the technology and resources people depend on to survive in this dystopian future.",
     "categories": [
       "dystopian future",
-      "science fiction"
+      "cyberpunk"
     ]
   },
   "Zoopolis": {
@@ -74,6 +74,13 @@
     "categories": [
       "realistic",
       "modern"
+    ]
+  },
+  "Xerovoid": {
+    "description": "Xerovoid is a desolate, lifeless planet recently discovered by humans through a wormhole near Earth. The landscape is dominated by vast expanses of barren rock and sand, with towering mountain ranges and deep canyons carving the surface. The atmosphere is thin and unbreathable for humans, requiring specialized equipment for any exploration or colonization efforts. No signs of flora or fauna have been detected, leaving the planet eerily silent and still. As the first human settlers arrive, they face the challenges of establishing a sustainable presence on this alien world. They must rely on advanced technology to create habitable environments and harness the scarce resources available, primarily focusing on mining and scientific research. The settlements are governed by a consortium of Earth-based corporations and research institutions, with a clear hierarchy and strict protocols to ensure survival in the harsh conditions. The social structure is utilitarian, with each individual's role and status determined by their skills and contributions to the colony's well-being. The dominant culture is shaped by the pioneering spirit and the drive to unravel the mysteries of Xerovoid, hoping to find answers about its past and potential for future life. As the colonists adapt to their new home, they begin to develop unique traditions and customs, blending elements of their Earthly heritage with the realities of life on this alien world.",
+    "categories": [
+      "science fiction",
+      "space colonization"
     ]
   }
 }

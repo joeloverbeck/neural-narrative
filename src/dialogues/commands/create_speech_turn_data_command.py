@@ -57,7 +57,7 @@ class CreateSpeechTurnDataCommand(Command, Subject):
 
         if not speech_data_product.is_valid():
             logger.error(
-                f"Failed to produce speech data: %s", speech_data_product.get_error()
+                "Failed to produce speech data: %s", speech_data_product.get_error()
             )
 
             # There's no real recovery to speech data being invalid, so let's pretend that the character

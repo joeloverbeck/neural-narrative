@@ -1,0 +1,51 @@
+<!-- templates/character-generation.html -->
+{% extends "base.html" %}
+
+{% block title %}Character Generation{% endblock %}
+
+{% block styles %}
+{{super()}}
+<link href="{{ url_for('static', filename='character-generation.css') }}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block content %}
+
+<h1>Character Generation</h1>
+
+{% if character_generation_message %}
+<div class="message">
+    <p>{{ character_generation_message }}</p>
+</div>
+{% endif %}
+
+<div class="guidelines-list">
+    <h2>Select a guideline:</h2>
+    <div class="guidelines-grid">
+        {% for guideline in guidelines %}
+        <div class="guideline-item card" onclick='fillGuideline({{ guideline|tojson }});'>
+            <p>{{ guideline }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="guideline-textbox">
+    <h2>Guideline:</h2>
+    <form method="post">
+        <textarea cols="50" id="guideline_text" name="guideline_text" rows="10">{{ selected_guideline }}</textarea>
+        <br>
+        <input name="action" type="hidden" value="Generate Character">
+        <input type="submit" value="Generate Character">
+    </form>
+    <form action="{{ url_for('location-hub') }}" method="get">
+        <input class="action-button" type="submit" value="Return to location hub">
+    </form>
+</div>
+
+<script>
+    function fillGuideline(guideline) {
+        document.getElementById('guideline_text').value = guideline;
+    }
+</script>
+
+{% endblock %}

@@ -6,9 +6,6 @@ from src.characters.commands.generate_player_character_command import (
 from src.characters.factories.generate_character_command_factory import (
     GenerateCharacterCommandFactory,
 )
-from src.characters.factories.generate_random_characters_command_factory import (
-    GenerateRandomCharactersCommandFactory,
-)
 from src.characters.factories.store_generated_character_command_factory import (
     StoreGeneratedCharacterCommandFactory,
 )
@@ -93,15 +90,8 @@ def main():
             playthrough_name, generate_character_command_factory
         )
 
-        generate_random_characters_command_factory = (
-            GenerateRandomCharactersCommandFactory(
-                playthrough_name, generate_character_command_factory
-            )
-        )
-
         visit_place_command_factory = VisitPlaceCommandFactory(
             playthrough_name,
-            generate_random_characters_command_factory,
             produce_tool_response_strategy_factory,
         )
 

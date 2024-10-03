@@ -20,7 +20,7 @@ class ConcreteRandomPlaceTemplateBasedOnCategoriesFactory(
         self._map_manager = map_manager or MapManager(playthrough_name)
 
     def create_random_place_template_based_on_categories(
-            self, place_templates: dict, categories: List[str]
+        self, place_templates: dict, categories: List[str]
     ) -> PlaceTemplateProduct:
         return ConcretePlaceTemplateProduct(
             self._map_manager.select_random_place(

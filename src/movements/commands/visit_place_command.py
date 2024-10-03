@@ -3,9 +3,6 @@ from src.characters.characters_manager import CharactersManager
 from src.characters.commands.generate_character_generation_guidelines_command import (
     GenerateCharacterGenerationGuidelinesCommand,
 )
-from src.characters.factories.generate_random_characters_command_factory import (
-    GenerateRandomCharactersCommandFactory,
-)
 from src.constants import TIME_ADVANCED_DUE_TO_EXITING_LOCATION
 from src.maps.map_manager import MapManager
 from src.playthrough_manager import PlaythroughManager
@@ -20,7 +17,6 @@ class VisitPlaceCommand(Command):
         self,
         playthrough_name: str,
         place_identifier: str,
-        generate_random_characters_command_factory: GenerateRandomCharactersCommandFactory,
             character_generation_guidelines_factory: CharacterGenerationGuidelinesFactory,
         playthrough_manager: PlaythroughManager = None,
         map_manager: MapManager = None,
@@ -34,9 +30,6 @@ class VisitPlaceCommand(Command):
 
         self._playthrough_name = playthrough_name
         self._place_identifier = place_identifier
-        self._generate_random_characters_command_factory = (
-            generate_random_characters_command_factory
-        )
         self._character_generation_guidelines_factory = (
             character_generation_guidelines_factory
         )
@@ -58,8 +51,10 @@ class VisitPlaceCommand(Command):
             # If the place hasn't been visited, then generally the character generation guidelines haven't been generated.
             world_name = self._playthrough_manager.get_world_template()
 
-            places_templates_parameter = self._map_manager.fill_places_parameter(
-                self._place_identifier
+            places_templates_parameter = (
+                self._map_manager.fill_places_templates_parameter(
+                    self._place_identifier
+                )
             )
 
             if not self._characters_manager.are_there_character_generation_guidelines_for_place(
@@ -74,10 +69,6 @@ class VisitPlaceCommand(Command):
                     self._place_identifier,
                     self._character_generation_guidelines_factory,
                 ).execute()
-
-            self._generate_random_characters_command_factory.create_generate_random_characters_command(
-                self._map_manager.fill_places_parameter(self._place_identifier)
-            ).execute()
 
             # Now set the place as visited.
             self._map_manager.set_as_visited(self._place_identifier)

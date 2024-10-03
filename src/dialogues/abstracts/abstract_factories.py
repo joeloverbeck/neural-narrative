@@ -13,7 +13,7 @@ from src.dialogues.abstracts.factory_products import (
 )
 
 
-class DialogueFactory(Protocol):
+class DialogueTurnFactory(Protocol):
     def process_turn_of_dialogue(self) -> DialogueProduct:
         pass
 
@@ -41,5 +41,5 @@ class DialogueSummaryProvider(Protocol):
         pass
 
 
-class DialogueFactorySubject(DialogueFactory, Subject, Protocol):
+class DialogueTurnFactorySubject(DialogueTurnFactory, Subject, Protocol):
     pass

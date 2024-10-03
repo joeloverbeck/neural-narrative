@@ -42,7 +42,7 @@ class GenerateCharacterGenerationGuidelinesCommand(Command):
         )
 
     def execute(self) -> None:
-        places_templates_parameter = self._map_manager.fill_places_parameter(
+        places_templates_parameter = self._map_manager.fill_places_templates_parameter(
             self._place_identifier
         )
 

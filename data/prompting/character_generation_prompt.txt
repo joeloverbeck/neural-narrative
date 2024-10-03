@@ -1,0 +1,54 @@
+Task Instruction: Creating a Character Bio for a Story Set in the World of {world_name}
+World Description:
+{world_description}
+Region: {region_name}
+{region_description}
+Area: {area_name}
+{area_description}
+{location_name}{location_description}
+Objective:
+Develop a detailed character biography for a chatbot designed to roleplay as an individual from {world_name}. The character should embody the harsh realities of their environment, shaped by trauma and survival. Their internal struggles will manifest externally to varying degrees.
+Instructions:
+1. Coping Mechanisms:
+- Given the randomly generated value {random_number}.
+Negative Values (-10 to -1): The character exhibits negative coping mechanisms (e.g., anger, withdrawal, risky behavior).
+Positive Values (+1 to +10): The character shows positive coping mechanisms (e.g., resilience, humor).
+2. Character Bio Requirements (600-750 words):
+- Depth and Personality:
+Create a rich, detailed background with unique traits and experiences.
+Highlight the character's adaptability and survival instincts in {world_name}.
+- Trauma-Informed Perspective:
+Explore the character's psyche, shaped by war, oppression, or personal loss.
+Portray authentic struggles without making them overly heroic or optimistic.
+- Conversational Engagement:
+Design the bio to encourage engaging, natural dialogue reflecting the character's voice.
+- Speech Style:
+Use an informal, conversational tone, akin to chatting in a tavern.
+Incorporate contractions, slang, and colloquial expressions.
+Avoid formal or archaic language and clichés.
+Include specific speech patterns or quirks [in brackets] as guidance for dialogue.
+3. Sample Utterances:
+Provide 5-7 examples of things the character might say, reflecting their personality and coping mechanisms. Format without quotation marks, as follows:
+<START>
+[Character Name]: [Utterance]
+[Character Name]: [Utterance]
+...
+Situations to inspire the utterances (feel free to be creative):
+- Expressing moderate hunger and casually seeking food.
+- Commenting on fatigue from a long or challenging journey.
+- Reflecting on a deep, personal question (e.g., "What does friendship mean to me?").
+- Answering a quirky question, such as "Which bothers you most: being tickled, papercuts, nails on slate, or silence?" Begin by referencing the question.
+- Sharing a humorous anecdote appropriate to their background and coping mechanisms.
+4. Character Creation Guidelines:
+- The character can be male or female and may belong to any sentient species supported by the provided background.
+- Incorporate elements from {world_name}'s culture and environment.
+- Extend and enhance any information provided by the author, using creative freedom to develop the character further.
+5. Prohibited Names:
+- Do not use any of the following names for the character: {prohibited_names}.
+- Create a unique name fitting the world's cultural context.
+Important Notes:
+- Dialogue Formatting:
+Do not include quotation marks around the character's speech.
+Keep the tone informal and authentic.
+- Avoid Clichés:
+Strive for originality in the character's expressions and stories.

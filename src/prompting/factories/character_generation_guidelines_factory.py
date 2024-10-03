@@ -66,6 +66,11 @@ class CharacterGenerationGuidelinesFactory(BaseToolResponseProvider):
                 f"\n{full_place_data["location_data"]["description"]}\n----\n"
             )
 
+        place_categories = self._map_manager.get_place_categories(
+            self._map_manager.get_current_place_template(),
+            self._map_manager.get_current_place_type(),
+        )
+
         # Prepare the prompt
         prompt_template = self._read_prompt_file(
             CHARACTER_GENERATION_GUIDELINES_PROMPT_FILE
@@ -79,6 +84,7 @@ class CharacterGenerationGuidelinesFactory(BaseToolResponseProvider):
             area_name=area_name,
             area_description=area_description,
             location_segment=location_segment,
+            categories=", ".join(place_categories),
         )
 
         # Generate system content

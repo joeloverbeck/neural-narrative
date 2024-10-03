@@ -46,8 +46,14 @@ class FilesystemManager:
                 pass  # This will create the empty file
 
     @staticmethod
-    def write_file(file_path, contents: str):
+    def append_to_file(file_path, contents: str):
         with open(file_path, "a") as file:
+            file.write(contents)
+
+    @staticmethod
+    def write_file(file_path, contents: str):
+        """This function removes the previous contents of the file."""
+        with open(file_path, "w") as file:
             file.write(contents)
 
     @staticmethod

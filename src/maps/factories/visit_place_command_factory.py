@@ -1,6 +1,3 @@
-from src.characters.factories.generate_random_characters_command_factory import (
-    GenerateRandomCharactersCommandFactory,
-)
 from src.movements.commands.visit_place_command import VisitPlaceCommand
 from src.prompting.factories.character_generation_guidelines_factory import (
     CharacterGenerationGuidelinesFactory,
@@ -15,13 +12,9 @@ class VisitPlaceCommandFactory:
     def __init__(
         self,
         playthrough_name: str,
-        generate_random_characters_command_factory: GenerateRandomCharactersCommandFactory,
             produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
     ):
         self._playthrough_name = playthrough_name
-        self._generate_random_characters_command_factory = (
-            generate_random_characters_command_factory
-        )
         self._produce_tool_response_strategy_factory = (
             produce_tool_response_strategy_factory
         )
@@ -33,7 +26,6 @@ class VisitPlaceCommandFactory:
         return VisitPlaceCommand(
             self._playthrough_name,
             place_identifier,
-            self._generate_random_characters_command_factory,
             CharacterGenerationGuidelinesFactory(
                 self._playthrough_name,
                 place_identifier,

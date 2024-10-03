@@ -1,6 +1,6 @@
 from src.abstracts.command import Command
 from src.constants import TIME_ADVANCED_DUE_TO_DIALOGUE
-from src.dialogues.abstracts.abstract_factories import DialogueFactory
+from src.dialogues.abstracts.abstract_factories import DialogueTurnFactory
 from src.dialogues.commands.store_temporary_dialogue_command import (
     StoreTemporaryDialogueCommand,
 )
@@ -24,7 +24,7 @@ class ProduceDialogueCommand(Command):
         playthrough_name: str,
         participants: Participants,
             purpose: str,
-        dialogue_factory: DialogueFactory,
+            dialogue_turn_factory: DialogueTurnFactory,
         summarize_dialogue_command_factory: SummarizeDialogueCommandFactory,
         store_dialogues_command_factory: StoreDialoguesCommandFactory,
             generate_interesting_situations_command_factory: GenerateInterestingSituationsCommandFactory,
@@ -39,7 +39,7 @@ class ProduceDialogueCommand(Command):
         self._playthrough_name = playthrough_name
         self._participants = participants
         self._purpose = purpose
-        self._dialogue_factory = dialogue_factory
+        self._dialogue_turn_factory = dialogue_turn_factory
         self._summarize_dialogue_command_factory = summarize_dialogue_command_factory
         self._store_dialogues_command_factory = store_dialogues_command_factory
         self._generate_interesting_situations_command_factory = (
@@ -50,7 +50,7 @@ class ProduceDialogueCommand(Command):
         self._time_manager = time_manager or TimeManager(self._playthrough_name)
 
     def execute(self) -> None:
-        dialogue_product = self._dialogue_factory.process_turn_of_dialogue()
+        dialogue_product = self._dialogue_turn_factory.process_turn_of_dialogue()
 
         if dialogue_product.has_ended():
             self._summarize_dialogue_command_factory.create_summarize_dialogue_command(

@@ -1,3 +1,5 @@
+import random
+
 from src.characters.characters_manager import CharactersManager
 from src.maps.places_templates_parameter import PlacesTemplatesParameter
 
@@ -67,9 +69,7 @@ class CharacterGenerationInstructionsFormatter:
             location_name=self._location_name,
             location_description=self._location_description,
             prohibited_names=self._characters_manager.get_all_character_names(),
-            character_generation_guidelines=self._characters_manager.load_character_generation_guidelines(
-                world_name, region_name, area_name, location_name
-            ),
+            random_number=random.randint(-10, 10),
         )
 
         return formatted_instructions

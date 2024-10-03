@@ -40,7 +40,7 @@ class GenerateInterestingSituationsCommand(Command):
         for interesting_situation in interesting_situations_product.get():
             interesting_situations += interesting_situation + "\n"
 
-        self._filesystem_manager.write_file(
+        self._filesystem_manager.append_to_file(
             self._filesystem_manager.get_file_path_to_interesting_situations(
                 self._playthrough_name
             ),
@@ -48,7 +48,7 @@ class GenerateInterestingSituationsCommand(Command):
         )
 
         logger.info(
-            f"Generated interesting situations from dialogue at '%s'",
+            "Generated interesting situations from dialogue at '%s'",
             self._filesystem_manager.get_file_path_to_interesting_situations(
                 self._playthrough_name
             ),

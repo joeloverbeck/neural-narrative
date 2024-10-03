@@ -61,7 +61,7 @@ class DialogueInitialPromptingMessagesProvider(InitialPromptingMessagesProvider)
         )
         messages_to_llm.add_message(
             "user",
-            f"Here's an second: {other_character_name}: Hello.",
+            f"Here's a second example: {other_character_name}: Hello.",
             is_guiding_message=True,
         )
         messages_to_llm.add_message(

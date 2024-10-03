@@ -102,23 +102,24 @@ class CharacterGenerationToolResponseProvider(
 
     def _load_templates(self) -> dict:
         """Loads all necessary templates and metadata from the filesystem."""
-        filesystem = self._filesystem_manager
-        playthrough_metadata = filesystem.load_existing_or_new_json_file(
-            filesystem.get_file_path_to_playthrough_metadata(self._playthrough_name)
+        playthrough_metadata = self._filesystem_manager.load_existing_or_new_json_file(
+            self._filesystem_manager.get_file_path_to_playthrough_metadata(
+                self._playthrough_name
+            )
         )
-        worlds_templates = filesystem.load_existing_or_new_json_file(
-            filesystem.get_file_path_to_worlds_template_file()
+        worlds_templates = self._filesystem_manager.load_existing_or_new_json_file(
+            self._filesystem_manager.get_file_path_to_worlds_template_file()
         )
-        regions_templates = filesystem.load_existing_or_new_json_file(
-            filesystem.get_file_path_to_regions_template_file()
+        regions_templates = self._filesystem_manager.load_existing_or_new_json_file(
+            self._filesystem_manager.get_file_path_to_regions_template_file()
         )
-        areas_templates = filesystem.load_existing_or_new_json_file(
-            filesystem.get_file_path_to_areas_template_file()
+        areas_templates = self._filesystem_manager.load_existing_or_new_json_file(
+            self._filesystem_manager.get_file_path_to_areas_template_file()
         )
-        locations_templates = filesystem.load_existing_or_new_json_file(
-            filesystem.get_file_path_to_locations_template_file()
+        locations_templates = self._filesystem_manager.load_existing_or_new_json_file(
+            self._filesystem_manager.get_file_path_to_locations_template_file()
         )
-        character_generation_instructions = filesystem.read_file(
+        character_generation_instructions = self._filesystem_manager.read_file(
             CHARACTER_GENERATION_INSTRUCTIONS_FILE
         )
 
@@ -136,9 +137,7 @@ class CharacterGenerationToolResponseProvider(
         location_template = self._places_parameter.get_location_template()
 
         if location_template:
-            location_name = (
-                f"Here's the description of the location {location_template}:\n"
-            )
+            location_name = f"Location: {location_template}:\n"
             location_description = locations_templates[location_template]["description"]
             return location_name, location_description
 

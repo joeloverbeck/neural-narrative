@@ -1,7 +1,6 @@
 DEFAULT_PLAYER_IDENTIFIER = "-1"
 DEFAULT_CURRENT_PLACE = "-1"
 DEFAULT_IDENTIFIER = "0"
-MAX_CHARACTERS_TO_CREATE_AT_NEW_PLACE = 5
 
 MAX_DIALOGUE_ENTRIES_FOR_WEB = 10
 
@@ -48,7 +47,7 @@ REGIONS_TEMPLATES_FILE: str = "data/templates/regions.json"
 AREAS_TEMPLATES_FILE: str = "data/templates/areas.json"
 LOCATIONS_TEMPLATES_FILE: str = "data/templates/locations.json"
 
-CHARACTER_GENERATOR_TOOL_FILE: str = "data/prompting/character_generator_tool.json"
+CHARACTER_GENERATOR_TOOL_FILE: str = "data/prompting/character_generation_tool.json"
 SPEECH_GENERATOR_TOOL_FILE: str = "data/prompting/speech_generator_tool.json"
 SPEECH_TURN_TOOL_FILE: str = "data/prompting/speech_turn_tool.json"
 DIALOGUE_SUMMARIZATION_TOOL_FILE: str = (
@@ -68,7 +67,7 @@ INTERESTING_SITUATIONS_GENERATION_TOOL_FILE: str = (
 )
 
 CHARACTER_GENERATION_INSTRUCTIONS_FILE: str = (
-    "data/prompting/character_generation_instructions.txt"
+    "data/prompting/character_generation_prompt.txt"
 )
 TOOL_INSTRUCTIONS_FILE: str = "data/prompting/tool_instructions.txt"
 DIALOGUE_PROMPT_FILE: str = "data/prompting/dialogue_prompt.txt"

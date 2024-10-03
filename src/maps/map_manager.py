@@ -1,6 +1,5 @@
 import logging
 import random
-from tkinter import Place
 from typing import List, Dict, Optional
 
 from src.enums import PlaceType
@@ -196,7 +195,7 @@ class MapManager:
     def get_father_template(self) -> str:
         current_place_id = self._playthrough_manager.get_current_place_identifier()
 
-        places_parameter = self.fill_places_parameter(current_place_id)
+        places_parameter = self.fill_places_templates_parameter(current_place_id)
 
         current_place_type = self.get_current_place_type()
 
@@ -268,7 +267,9 @@ class MapManager:
                 f"Unknown place type '{place_type_str}' for place ID '{place_identifier}'."
             )
 
-    def fill_places_parameter(self, place_identifier: str) -> PlacesTemplatesParameter:
+    def fill_places_templates_parameter(
+            self, place_identifier: str
+    ) -> PlacesTemplatesParameter:
         if not place_identifier:
             raise ValueError("place_identifier can't be empty.")
 
