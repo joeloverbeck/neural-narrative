@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Character Memories{% endblock %}
+
+{% block styles %}
+{{ super() }}
+<link href="{{ url_for('static', filename='character-memories.css') }}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block content %}
+<h1>Edit Character Memories</h1>
+
+<!-- Display success message if memories were saved -->
+{% if session.get('memories_saved_message') %}
+<div class="success-message">
+    {{ session.pop('memories_saved_message') }}
+</div>
+{% endif %}
+
+<form action="{{ url_for('character-memories') }}" method="get">
+    <label for="character_selector">Select a character:</label>
+    <select id="character_selector" name="character_identifier" onchange="this.form.submit()">
+        <option value="">-- Select a character --</option>
+        {% for character in all_characters %}
+        <option %} %}selected{% and character.identifier==selected_character.identifier endif
+                if selected_character value="{{ character.identifier }}" {%>
+            {{ character.name }}
+        </option>
+        {% endfor %}
+    </select>
+</form>
+
+{% if selected_character %}
+<h2>Memories of {{ selected_character.name }}</h2>
+
+<form method="post">
+    <input name="character_identifier" type="hidden" value="{{ selected_character.identifier }}">
+    <input name="action" type="hidden" value="save_memories">
+    <textarea cols="100" name="character_memories" rows="20">{{ character_memories }}</textarea><br>
+    <input type="submit" value="Save Memories">
+</form>
+{% endif %}
+
+<form action="{{ url_for('location-hub') }}" method="get">
+    <input class="action-button" type="submit" value="Return to location hub">
+</form>
+{% endblock %}
+

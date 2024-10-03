@@ -124,6 +124,33 @@ class CharactersManager:
 
         return self._filesystem_manager.read_file(file_path)
 
+    def get_all_characters(self) -> List[dict]:
+        """Returns a list of all characters with their identifiers and names."""
+        characters_file = self._filesystem_manager.load_existing_or_new_json_file(
+            self._filesystem_manager.get_file_path_to_characters_file(
+                self._playthrough_name
+            )
+        )
+
+        all_characters = []
+        for identifier, data in characters_file.items():
+            character = {
+                "identifier": identifier,
+                "name": data.get("name", "Unknown"),
+            }
+            all_characters.append(character)
+        return all_characters
+
+    def save_character_memories(self, character_identifier: str, memories: str):
+        """Saves the given memories to the character's memories file."""
+        character_data = self.load_character_data(character_identifier)
+        character_name = character_data["name"]
+
+        file_path = self._filesystem_manager.get_file_path_to_character_memories(
+            self._playthrough_name, character_identifier, character_name
+        )
+        self._filesystem_manager.write_file(file_path, memories)
+
     def get_all_character_names(self) -> List[str]:
         """
         Returns a list of all character names in the characters.json file.

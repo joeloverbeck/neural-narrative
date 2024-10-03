@@ -1,35 +1,18 @@
-from src.characters.factories.generate_character_command_factory import (
-    GenerateCharacterCommandFactory,
-)
-from src.characters.factories.generate_random_characters_command_factory import (
-    GenerateRandomCharactersCommandFactory,
-)
-from src.characters.factories.store_generated_character_command_factory import (
-    StoreGeneratedCharacterCommandFactory,
-)
 from src.config.config_manager import ConfigManager
 from src.enums import PlaceType
 from src.filesystem.filesystem_manager import FilesystemManager
-from src.images.factories.generate_character_image_command_factory import (
-    GenerateCharacterImageCommandFactory,
-)
-from src.images.factories.openai_generated_image_factory import (
-    OpenAIGeneratedImageFactory,
-)
 from src.maps.factories.visit_place_command_factory import VisitPlaceCommandFactory
 from src.maps.map_manager import MapManager
 from src.playthrough_manager import PlaythroughManager
 from src.prompting.factories.concrete_filtered_place_description_generation_factory import (
     ConcreteFilteredPlaceDescriptionGenerationFactory,
 )
-from src.prompting.factories.openai_llm_client_factory import OpenAILlmClientFactory
 from src.prompting.factories.openrouter_llm_client_factory import (
     OpenRouterLlmClientFactory,
 )
 from src.prompting.factories.produce_tool_response_strategy_factory import (
     ProduceToolResponseStrategyFactory,
 )
-from src.requests.factories.ConcreteUrlContentFactory import ConcreteUrlContentFactory
 
 
 class PlaceService:
@@ -86,24 +69,5 @@ class PlaceService:
             OpenRouterLlmClientFactory().create_llm_client(),
             self._config_manager.get_heavy_llm(),
         )
-        store_character_factory = StoreGeneratedCharacterCommandFactory(
-            playthrough_name
-        )
-        image_command_factory = GenerateCharacterImageCommandFactory(
-            playthrough_name,
-            OpenAIGeneratedImageFactory(OpenAILlmClientFactory().create_llm_client()),
-            ConcreteUrlContentFactory(),
-        )
-        character_command_factory = GenerateCharacterCommandFactory(
-            playthrough_name,
-            strategy_factory,
-            store_character_factory,
-            image_command_factory,
-        )
-        random_characters_factory = GenerateRandomCharactersCommandFactory(
-            playthrough_name, character_command_factory
-        )
 
-        return VisitPlaceCommandFactory(
-            playthrough_name, random_characters_factory, strategy_factory
-        )
+        return VisitPlaceCommandFactory(playthrough_name, strategy_factory)

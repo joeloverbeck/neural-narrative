@@ -1,7 +1,7 @@
 from src.config.config_manager import ConfigManager
 from src.constants import HERMES_70B
 from src.dialogues.abstracts.abstract_factories import (
-    DialogueFactorySubject,
+    DialogueTurnFactorySubject,
 )
 from src.dialogues.abstracts.strategies import (
     InvolvePlayerInDialogueStrategy,
@@ -16,7 +16,16 @@ from src.dialogues.composers.llm_speech_data_provider_factory_composer import (
 from src.dialogues.composers.speech_turn_choice_tool_response_factory_composer import (
     SpeechTurnChoiceToolResponseFactoryComposer,
 )
-from src.dialogues.factories.concrete_dialogue_factory import ConcreteDialogueFactory
+from src.dialogues.configs.dialogue_turn_factory_config import DialogueTurnFactoryConfig
+from src.dialogues.configs.dialogue_turn_factory_factories_config import (
+    DialogueTurnFactoryFactoriesConfig,
+)
+from src.dialogues.configs.dialogue_turn_factory_strategies_config import (
+    DialogueTurnFactoryStrategiesConfig,
+)
+from src.dialogues.factories.concrete_dialogue_turn_factory import (
+    ConcreteDialogueTurnFactory,
+)
 from src.dialogues.factories.create_speech_turn_data_command_factory import (
     CreateSpeechTurnDataCommandFactory,
 )
@@ -29,7 +38,7 @@ from src.dialogues.transcription import Transcription
 from src.prompting.abstracts.llm_client import LlmClient
 
 
-class DialogueFactoryComposer:
+class DialogueTurnFactoryComposer:
 
     def __init__(
         self,
@@ -60,7 +69,7 @@ class DialogueFactoryComposer:
             message_data_producer_for_speech_turn_strategy
         )
 
-    def compose(self) -> DialogueFactorySubject:
+    def compose(self) -> DialogueTurnFactorySubject:
         speech_turn_choice_tool_response_provider_factory = (
             SpeechTurnChoiceToolResponseFactoryComposer(
                 self._playthrough_name,
@@ -97,13 +106,17 @@ class DialogueFactoryComposer:
             self._message_data_producer_for_speech_turn_strategy,
         )
 
-        return ConcreteDialogueFactory(
-            self._playthrough_name,
-            self._messages_to_llm,
-            self._transcription,
-            self._involve_player_in_dialogue_strategy,
-            speech_turn_choice_tool_response_provider_factory,
-            determine_system_message_for_speech_turn_strategy,
-            determine_user_messages_for_speech_turn_strategy_factory,
-            create_speech_turn_data_command_factory,
+        return ConcreteDialogueTurnFactory(
+            DialogueTurnFactoryConfig(
+                self._playthrough_name, self._messages_to_llm, self._transcription
+            ),
+            DialogueTurnFactoryFactoriesConfig(
+                speech_turn_choice_tool_response_provider_factory,
+                create_speech_turn_data_command_factory,
+                determine_user_messages_for_speech_turn_strategy_factory,
+            ),
+            DialogueTurnFactoryStrategiesConfig(
+                self._involve_player_in_dialogue_strategy,
+                determine_system_message_for_speech_turn_strategy,
+            ),
         )

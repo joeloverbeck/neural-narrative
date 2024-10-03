@@ -39,6 +39,6 @@ class StoreCharacterMemoryCommand(Command):
             self._playthrough_name, self._character_identifier, character_data["name"]
         )
 
-        self._filesystem_manager.write_file(file_path, self._memory + "\n")
+        self._filesystem_manager.append_to_file(file_path, self._memory + "\n")
 
         logger.info(f"Saved memory at '{file_path}'.")

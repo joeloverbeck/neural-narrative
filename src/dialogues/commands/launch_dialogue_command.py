@@ -12,7 +12,9 @@ from src.dialogues.abstracts.strategies import (
     MessageDataProducerForSpeechTurnStrategy,
 )
 from src.dialogues.commands.produce_dialogue_command import ProduceDialogueCommand
-from src.dialogues.composers.dialogue_factory_composer import DialogueFactoryComposer
+from src.dialogues.composers.dialogue_turn_factory_composer import (
+    DialogueTurnFactoryComposer,
+)
 from src.dialogues.factories.dialogue_summary_provider_factory import (
     DialogueSummaryProviderFactory,
 )
@@ -94,7 +96,7 @@ class LaunchDialogueCommand(Command):
             introduce_player_input_into_dialogue_command_factory,
         )
 
-        dialogue_factory = DialogueFactoryComposer(
+        dialogue_turn_factory = DialogueTurnFactoryComposer(
             self._playthrough_name,
             self._player_identifier,
             self._participants,
@@ -106,7 +108,7 @@ class LaunchDialogueCommand(Command):
             self._message_data_producer_for_speech_turn_strategy,
         ).compose()
 
-        dialogue_factory.attach(self._dialogue_observer)
+        dialogue_turn_factory.attach(self._dialogue_observer)
 
         dialogue_summary_provider_factory = DialogueSummaryProviderFactory(
             llm_client, self._config_manager.get_heavy_llm()
@@ -140,7 +142,7 @@ class LaunchDialogueCommand(Command):
             self._playthrough_name,
             self._participants,
             self._purpose,
-            dialogue_factory,
+            dialogue_turn_factory,
             summarize_dialogue_command_factory,
             store_dialogues_command_factory,
             generate_interesting_situations_command_factory,

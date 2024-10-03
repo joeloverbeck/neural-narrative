@@ -32,9 +32,11 @@ class GeneratePlayerCharacterCommand(Command):
         )
 
     def execute(self) -> None:
-        places_parameter = self._map_manager.fill_places_parameter(
+        places_parameter = self._map_manager.fill_places_templates_parameter(
             self._playthrough_manager.get_current_place_identifier()
         )
+
+        print("about to create player char.")
 
         # Now should create the player character.
         self._generate_character_command_factory.create_generate_character_command(

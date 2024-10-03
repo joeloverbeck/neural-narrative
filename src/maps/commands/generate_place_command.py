@@ -65,7 +65,7 @@ class GeneratePlaceCommand(Command):
 
     def execute(self) -> None:
         logger.info(
-            f"This command generates one %s for an existing %s.",
+            "This command generates one %s for an existing %s.",
             self._place_template_type.value,
             self._father_place_template_type.value,
         )
