@@ -4,7 +4,7 @@ from typing import List
 class InterestingSituationsProduct:
 
     def __init__(
-            self, interesting_situations: List[str], is_valid: bool, error: str = None
+        self, interesting_situations: List[str], is_valid: bool, error: str = None
     ):
         self._interesting_situations = interesting_situations
         self._is_valid = is_valid

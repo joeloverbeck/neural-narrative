@@ -17,11 +17,11 @@ class VisitPlaceCommand(Command):
         self,
         playthrough_name: str,
         place_identifier: str,
-            character_generation_guidelines_factory: CharacterGenerationGuidelinesFactory,
+        character_generation_guidelines_factory: CharacterGenerationGuidelinesFactory,
         playthrough_manager: PlaythroughManager = None,
         map_manager: MapManager = None,
         time_manager: TimeManager = None,
-            characters_manager: CharactersManager = None,
+        characters_manager: CharactersManager = None,
     ):
         if not playthrough_name:
             raise ValueError("playthrough_name can't be empty.")
@@ -52,10 +52,10 @@ class VisitPlaceCommand(Command):
         )
 
         if not self._characters_manager.are_there_character_generation_guidelines_for_place(
-                world_name,
-                places_templates_parameter.get_region_template(),
-                places_templates_parameter.get_area_template(),
-                places_templates_parameter.get_location_template(),
+            world_name,
+            places_templates_parameter.get_region_template(),
+            places_templates_parameter.get_area_template(),
+            places_templates_parameter.get_location_template(),
         ):
             # We need to create the character generation guidelines for this location.
             GenerateCharacterGenerationGuidelinesCommand(

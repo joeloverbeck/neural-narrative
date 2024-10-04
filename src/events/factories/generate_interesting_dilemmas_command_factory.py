@@ -10,9 +10,9 @@ from src.prompting.factories.produce_tool_response_strategy_factory import (
 
 class GenerateInterestingDilemmasCommandFactory:
     def __init__(
-            self,
-            playthrough_name: str,
-            produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
+        self,
+        playthrough_name: str,
+        produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
     ):
         if not playthrough_name:
             raise ValueError("playthrough_name can't be empty.")
@@ -23,8 +23,8 @@ class GenerateInterestingDilemmasCommandFactory:
         )
 
     def create_command(
-            self,
-            transcription: Transcription,
+        self,
+        transcription: Transcription,
     ) -> GenerateInterestingDilemmasCommand:
         return GenerateInterestingDilemmasCommand(
             playthrough_name=self._playthrough_name,

@@ -19,7 +19,7 @@ class GuidelinesBasedUserContentForCharacterGenerationFactory(
         self._guideline = guideline
 
     def create_user_content_for_character_generation(
-            self,
+        self,
     ) -> UserContentForCharacterGenerationProduct:
         return ConcreteUserContentForCharacterGenerationProduct(
             f"Create the bio for a character influenced by the places described above, as well as the following guideline: {self._guideline}",

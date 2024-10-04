@@ -24,15 +24,15 @@ class ConcreteRandomPlaceTypeMapEntryCreationFactory(
     RandomPlaceTypeMapEntryCreationFactory
 ):
     def __init__(
-            self,
-            playthrough_name: str,
-            father_template: str,
-            place_type: PlaceType,
-            father_place_type: PlaceType,
-            random_place_template_based_on_categories_factory: RandomPlaceTemplateBasedOnCategoriesFactory,
-            create_map_entry_for_playthrough_command_factory: CreateMapEntryForPlaythroughCommandFactory,
-            filesystem_manager: FilesystemManager = None,
-            map_manager: MapManager = None,
+        self,
+        playthrough_name: str,
+        father_template: str,
+        place_type: PlaceType,
+        father_place_type: PlaceType,
+        random_place_template_based_on_categories_factory: RandomPlaceTemplateBasedOnCategoriesFactory,
+        create_map_entry_for_playthrough_command_factory: CreateMapEntryForPlaythroughCommandFactory,
+        filesystem_manager: FilesystemManager = None,
+        map_manager: MapManager = None,
     ):
         if not playthrough_name:
             raise ValueError("'playthrough_name' can't be empty.")
@@ -53,7 +53,7 @@ class ConcreteRandomPlaceTypeMapEntryCreationFactory(
         self._map_manager = map_manager or MapManager(playthrough_name)
 
     def create_random_place_type_map_entry(
-            self,
+        self,
     ) -> RandomPlaceTypeMapEntryCreationResult:
         try:
             place_templates_file_path = self._get_template_file_path()
@@ -113,7 +113,7 @@ class ConcreteRandomPlaceTypeMapEntryCreationFactory(
         }
 
     def _create_template_product(
-            self, available_templates: Dict
+        self, available_templates: Dict
     ) -> PlaceTemplateProduct:
         categories = self._map_manager.get_place_categories(
             self._father_template, self._father_place_type

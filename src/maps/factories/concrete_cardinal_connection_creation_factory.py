@@ -21,11 +21,11 @@ from src.playthrough_manager import PlaythroughManager
 class ConcreteCardinalConnectionCreationFactory(CardinalConnectionCreationFactory):
 
     def __init__(
-            self,
-            playthrough_name: str,
-            cardinal_direction: CardinalDirection,
-            map_manager: MapManager = None,
-            playthrough_manager: PlaythroughManager = None,
+        self,
+        playthrough_name: str,
+        cardinal_direction: CardinalDirection,
+        map_manager: MapManager = None,
+        playthrough_manager: PlaythroughManager = None,
     ):
         if not playthrough_name:
             raise ValueError("playthrough_name can't be empty.")
@@ -65,16 +65,16 @@ class ConcreteCardinalConnectionCreationFactory(CardinalConnectionCreationFactor
         ).create_random_place_type_map_entry()
 
         if (
-                result.get_result_type()
-                == RandomPlaceTypeMapEntryCreationResultType.NO_AVAILABLE_TEMPLATES
+            result.get_result_type()
+            == RandomPlaceTypeMapEntryCreationResultType.NO_AVAILABLE_TEMPLATES
         ):
             return ConcreteCardinalConnectionCreationProduct(
                 was_successful=False, error="No remaining areas to add to map."
             )
 
         if (
-                result.get_result_type()
-                == RandomPlaceTypeMapEntryCreationResultType.FAILURE
+            result.get_result_type()
+            == RandomPlaceTypeMapEntryCreationResultType.FAILURE
         ):
             return ConcreteCardinalConnectionCreationProduct(
                 was_successful=False,

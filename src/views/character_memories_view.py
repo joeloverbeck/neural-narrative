@@ -30,8 +30,8 @@ class CharacterMemoriesView(MethodView):
         for character in all_characters:
             character["selected"] = False
             if (
-                    selected_character
-                    and character["identifier"] == selected_character["identifier"]
+                selected_character
+                and character["identifier"] == selected_character["identifier"]
             ):
                 character["selected"] = True
 

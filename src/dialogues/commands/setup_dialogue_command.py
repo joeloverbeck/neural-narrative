@@ -19,16 +19,16 @@ from src.dialogues.transcription import Transcription
 
 class SetupDialogueCommand(Command):
     def __init__(
-            self,
-            playthrough_name: str,
-            player_identifier: str,
-            participants: Participants,
-            purpose: str,
-            dialogue_observer: Observer,
-            player_input_factory: PlayerInputFactory,
-            handle_possible_existence_of_ongoing_conversation_command_factory: HandlePossibleExistenceOfOngoingConversationCommandFactory,
-            message_data_producer_for_introduce_player_input_into_dialogue_strategy: MessageDataProducerForIntroducePlayerInputIntoDialogueStrategy,
-            message_data_producer_for_speech_turn_strategy: MessageDataProducerForSpeechTurnStrategy,
+        self,
+        playthrough_name: str,
+        player_identifier: str,
+        participants: Participants,
+        purpose: str,
+        dialogue_observer: Observer,
+        player_input_factory: PlayerInputFactory,
+        handle_possible_existence_of_ongoing_conversation_command_factory: HandlePossibleExistenceOfOngoingConversationCommandFactory,
+        message_data_producer_for_introduce_player_input_into_dialogue_strategy: MessageDataProducerForIntroducePlayerInputIntoDialogueStrategy,
+        message_data_producer_for_speech_turn_strategy: MessageDataProducerForSpeechTurnStrategy,
     ):
         if not playthrough_name:
             raise ValueError("playthrough_name must not be empty.")

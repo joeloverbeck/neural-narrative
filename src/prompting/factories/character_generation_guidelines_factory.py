@@ -20,13 +20,13 @@ logger = logging.getLogger(__name__)
 
 class CharacterGenerationGuidelinesFactory(BaseToolResponseProvider):
     def __init__(
-            self,
-            playthrough_name: str,
-            place_identifier: str,
-            produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
-            filesystem_manager: FilesystemManager = None,
-            playthrough_manager: PlaythroughManager = None,
-            map_manager: MapManager = None,
+        self,
+        playthrough_name: str,
+        place_identifier: str,
+        produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
+        filesystem_manager: FilesystemManager = None,
+        playthrough_manager: PlaythroughManager = None,
+        map_manager: MapManager = None,
     ):
         super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
 
@@ -44,7 +44,7 @@ class CharacterGenerationGuidelinesFactory(BaseToolResponseProvider):
         self._map_manager = map_manager or MapManager(self._playthrough_name)
 
     def generate_character_generation_guidelines(
-            self,
+        self,
     ) -> CharacterGenerationGuidelinesProduct:
 
         world_name = self._playthrough_manager.get_world_template()

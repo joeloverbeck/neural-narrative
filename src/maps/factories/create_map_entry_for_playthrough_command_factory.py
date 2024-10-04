@@ -9,10 +9,10 @@ from src.maps.commands.create_map_entry_for_playthrough_command import (
 class CreateMapEntryForPlaythroughCommandFactory:
 
     def __init__(
-            self,
-            playthrough_name: str,
-            father_identifier: Optional[str],
-            place_type: PlaceType,
+        self,
+        playthrough_name: str,
+        father_identifier: Optional[str],
+        place_type: PlaceType,
     ):
         if not playthrough_name:
             raise ValueError("playthrough_name can't be empty.")
@@ -22,7 +22,7 @@ class CreateMapEntryForPlaythroughCommandFactory:
         self._place_type = place_type
 
     def create_command(
-            self, place_template: str
+        self, place_template: str
     ) -> CreateMapEntryForPlaythroughCommand:
         if not place_template:
             raise ValueError("place_template can't be empty.")

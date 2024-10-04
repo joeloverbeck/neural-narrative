@@ -29,9 +29,9 @@ logger = logging.getLogger(__name__)
 class ConcreteDialogueTurnFactory(DialogueTurnFactorySubject):
     def __init__(
         self,
-            dialogue_turn_factory_config: DialogueTurnFactoryConfig,
-            dialogue_turn_factory_factories_config: DialogueTurnFactoryFactoriesConfig,
-            dialogue_turn_factory_strategies_config: DialogueTurnFactoryStrategiesConfig,
+        dialogue_turn_factory_config: DialogueTurnFactoryConfig,
+        dialogue_turn_factory_factories_config: DialogueTurnFactoryFactoriesConfig,
+        dialogue_turn_factory_strategies_config: DialogueTurnFactoryStrategiesConfig,
         playthrough_manager: PlaythroughManager = None,
     ):
         self._playthrough_name = dialogue_turn_factory_config.playthrough_name
@@ -50,10 +50,10 @@ class ConcreteDialogueTurnFactory(DialogueTurnFactorySubject):
         )
 
         self._messages_to_llm = (
-                dialogue_turn_factory_config.messages_to_llm or MessagesToLlm()
+            dialogue_turn_factory_config.messages_to_llm or MessagesToLlm()
         )
         self._transcription = (
-                dialogue_turn_factory_config.transcription or Transcription()
+            dialogue_turn_factory_config.transcription or Transcription()
         )
 
         self._create_speech_turn_data_command_factory = (
@@ -99,15 +99,15 @@ class ConcreteDialogueTurnFactory(DialogueTurnFactorySubject):
     def _validate_next_speaker(self, response_product: LlmToolResponseProduct) -> None:
         """Validate that the next speaker is not the player."""
         if (
-                response_product.get()["identifier"]
+            response_product.get()["identifier"]
             == self._playthrough_manager.get_player_identifier()
         ):
             raise InvalidNextSpeakerError("Next speaker cannot be the player.")
 
     def _process_speech_turn(
-            self,
-            player_input_product: PlayerInputProduct,
-            response_product: LlmToolResponseProduct,
+        self,
+        player_input_product: PlayerInputProduct,
+        response_product: LlmToolResponseProduct,
     ):
         """Process the speech turn for the given speaker."""
         self._determine_system_message_for_speech_turn_strategy.do_algorithm(
@@ -137,7 +137,7 @@ class ConcreteDialogueTurnFactory(DialogueTurnFactorySubject):
 
     def _determine_next_speaker(self) -> LlmToolResponseProduct:
         if not self._participants.has_only_two_participants_with_player(
-                self._playthrough_manager.get_player_identifier()
+            self._playthrough_manager.get_player_identifier()
         ):
             return self._choose_next_speaker()
         else:

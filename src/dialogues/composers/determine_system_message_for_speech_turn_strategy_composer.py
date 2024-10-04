@@ -23,11 +23,11 @@ from src.maps.factories.concrete_full_place_data_factory import (
 class DetermineSystemMessageForSpeechTurnStrategyComposer:
 
     def __init__(
-            self,
-            playthrough_name: str,
-            participants: Participants,
-            purpose: str,
-            messages_to_llm: MessagesToLlm,
+        self,
+        playthrough_name: str,
+        participants: Participants,
+        purpose: str,
+        messages_to_llm: MessagesToLlm,
     ):
         if not playthrough_name:
             raise ValueError("playthrough_name can't be empty.")

@@ -46,7 +46,7 @@ def test_init_with_empty_father_template():
 @patch("src.maps.map_manager.MapManager")
 @patch("src.filesystem.filesystem_manager.FilesystemManager")
 def test_create_random_place_type_map_entry_no_available_templates(
-        mock_filesystem_manager_class, mock_map_manager_class
+    mock_filesystem_manager_class, mock_map_manager_class
 ):
     mock_filesystem_manager = mock_filesystem_manager_class.return_value
     mock_map_manager = mock_map_manager_class.return_value
@@ -71,15 +71,15 @@ def test_create_random_place_type_map_entry_no_available_templates(
     result = factory.create_random_place_type_map_entry()
 
     assert (
-            result.get_result_type()
-            == RandomPlaceTypeMapEntryCreationResultType.NO_AVAILABLE_TEMPLATES
+        result.get_result_type()
+        == RandomPlaceTypeMapEntryCreationResultType.NO_AVAILABLE_TEMPLATES
     )
 
 
 @patch("src.maps.map_manager.MapManager")
 @patch("src.filesystem.filesystem_manager.FilesystemManager")
 def test_create_random_place_type_map_entry_template_product_invalid(
-        mock_filesystem_manager_class, mock_map_manager_class
+    mock_filesystem_manager_class, mock_map_manager_class
 ):
     mock_filesystem_manager = mock_filesystem_manager_class.return_value
     mock_map_manager = mock_map_manager_class.return_value
@@ -123,7 +123,7 @@ def test_create_random_place_type_map_entry_template_product_invalid(
 @patch("src.maps.map_manager.MapManager")
 @patch("src.filesystem.filesystem_manager.FilesystemManager")
 def test_create_random_place_type_map_entry_success(
-        mock_filesystem_manager_class, mock_map_manager_class
+    mock_filesystem_manager_class, mock_map_manager_class
 ):
     mock_filesystem_manager = mock_filesystem_manager_class.return_value
     mock_map_manager = mock_map_manager_class.return_value
@@ -171,7 +171,7 @@ def test_create_random_place_type_map_entry_success(
 @patch("src.maps.map_manager.MapManager")
 @patch("src.filesystem.filesystem_manager.FilesystemManager")
 def test_create_random_place_type_map_entry_exception(
-        mock_filesystem_manager_class, mock_map_manager_class
+    mock_filesystem_manager_class, mock_map_manager_class
 ):
     mock_filesystem_manager = mock_filesystem_manager_class.return_value
     mock_map_manager = mock_map_manager_class.return_value

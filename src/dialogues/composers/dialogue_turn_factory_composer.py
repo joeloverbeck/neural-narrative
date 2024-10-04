@@ -44,7 +44,7 @@ class DialogueTurnFactoryComposer:
         playthrough_name: str,
         player_identifier: str,
         participants: Participants,
-            purpose: str,
+        purpose: str,
         llm_client: LlmClient,
         messages_to_llm: MessagesToLlm,
         transcription: Transcription,

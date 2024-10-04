@@ -27,7 +27,7 @@ def main():
     filesystem_manager = FilesystemManager()
 
     if not filesystem_manager.does_file_path_exist(
-            filesystem_manager.get_file_path_to_playthrough_folder(playthrough_name)
+        filesystem_manager.get_file_path_to_playthrough_folder(playthrough_name)
     ):
         print(f"There is no playthrough named '{playthrough_name}'")
         sys.exit()

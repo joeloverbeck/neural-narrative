@@ -14,13 +14,13 @@ logger = logging.getLogger(__name__)
 class GenerateCharacterGenerationGuidelinesCommand(Command):
 
     def __init__(
-            self,
-            playthrough_name: str,
-            place_identifier: str,
-            character_generation_guidelines_factory: CharacterGenerationGuidelinesFactory,
-            map_manager: MapManager = None,
-            playthrough_manager: PlaythroughManager = None,
-            characters_manager: CharactersManager = None,
+        self,
+        playthrough_name: str,
+        place_identifier: str,
+        character_generation_guidelines_factory: CharacterGenerationGuidelinesFactory,
+        map_manager: MapManager = None,
+        playthrough_manager: PlaythroughManager = None,
+        characters_manager: CharactersManager = None,
     ):
         if not playthrough_name:
             raise ValueError("playthrough_name can't be empty.")
@@ -56,10 +56,10 @@ class GenerateCharacterGenerationGuidelinesCommand(Command):
         )
 
         if self._characters_manager.are_there_character_generation_guidelines_for_place(
-                world_name,
-                places_templates_parameter.get_region_template(),
-                places_templates_parameter.get_area_template(),
-                places_templates_parameter.get_location_template(),
+            world_name,
+            places_templates_parameter.get_region_template(),
+            places_templates_parameter.get_area_template(),
+            places_templates_parameter.get_location_template(),
         ):
             logger.info(
                 f"There were already character generation guidelines created for {key}."

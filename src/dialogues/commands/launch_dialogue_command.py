@@ -53,14 +53,14 @@ class LaunchDialogueCommand(Command):
         playthrough_name: str,
         player_identifier: str,
         participants: Participants,
-            purpose: str,
+        purpose: str,
         messages_to_llm: Optional[MessagesToLlm],
         transcription: Optional[Transcription],
         dialogue_observer: Observer,
         player_input_factory: PlayerInputFactory,
         message_data_producer_for_introduce_player_input_into_dialogue_strategy: MessageDataProducerForIntroducePlayerInputIntoDialogueStrategy,
         message_data_producer_for_speech_turn_strategy: MessageDataProducerForSpeechTurnStrategy,
-            config_manager: ConfigManager = None,
+        config_manager: ConfigManager = None,
     ):
         if not playthrough_name:
             raise ValueError("playthrough_name can't be empty.")

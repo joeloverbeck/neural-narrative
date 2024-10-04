@@ -23,14 +23,14 @@ logger = logging.getLogger(__name__)
 
 class ConcreteLlmContentProvider(LlmContentProvider):
     def __init__(
-            self,
-            model: str,
-            messages_to_llm: MessagesToLlm,
-            llm_client: LlmClient,
-            max_retries=MAX_RETRIES,
-            temperature=1.0,
-            top_p=1.0,
-            filesystem_manager: FilesystemManager = None,
+        self,
+        model: str,
+        messages_to_llm: MessagesToLlm,
+        llm_client: LlmClient,
+        max_retries=MAX_RETRIES,
+        temperature=1.0,
+        top_p=1.0,
+        filesystem_manager: FilesystemManager = None,
     ):
         if not messages_to_llm:
             raise ValueError("messages_to_llm must not be empty.")
@@ -65,30 +65,30 @@ class ConcreteLlmContentProvider(LlmContentProvider):
 
             if self._retry_count < self._max_retries:
                 if (
-                        ai_completion_product.get_error()
-                        == AiCompletionErrorType.TOO_MANY_REQUESTS
+                    ai_completion_product.get_error()
+                    == AiCompletionErrorType.TOO_MANY_REQUESTS
                 ):
                     logger.warning(
                         f"Attempt {self._retry_count}/{self._max_retries} failed due to too many requests. Retrying in {WAIT_TIME_WHEN_TOO_MANY_REQUESTS_ERROR}..."
                     )
                     sleep(WAIT_TIME_WHEN_TOO_MANY_REQUESTS_ERROR)
                 elif (
-                        ai_completion_product.get_error()
-                        == AiCompletionErrorType.UNAUTHORIZED
+                    ai_completion_product.get_error()
+                    == AiCompletionErrorType.UNAUTHORIZED
                 ):
                     logger.warning(
                         f"Attempt {self._retry_count}/{self._max_retries} failed due to unauthorized access. Retrying in {WAIT_TIME_WHEN_UNAUTHORIZED_ERROR}..."
                     )
                     sleep(WAIT_TIME_WHEN_UNAUTHORIZED_ERROR)
                 elif (
-                        ai_completion_product.get_error()
-                        == AiCompletionErrorType.MALFORMED_COMPLETION
+                    ai_completion_product.get_error()
+                    == AiCompletionErrorType.MALFORMED_COMPLETION
                 ):
                     logger.warning(f"The completion returned by the AI was malformed.")
                     sleep(WAIT_TIME_WHEN_MALFORMED_COMPLETION)
                 elif (
-                        ai_completion_product.get_error()
-                        == AiCompletionErrorType.EMPTY_CONTENT
+                    ai_completion_product.get_error()
+                    == AiCompletionErrorType.EMPTY_CONTENT
                 ):
                     logger.warning(
                         f"Attempt {self._retry_count}/{self._max_retries} failed due to empty content returned by LLM. Retrying in {WAIT_TIME_WHEN_EMPTY_CONTENT}..."

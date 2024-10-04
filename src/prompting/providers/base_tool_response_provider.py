@@ -12,9 +12,9 @@ class BaseToolResponseProvider:
     """
 
     def __init__(
-            self,
-            produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
-            filesystem_manager: FilesystemManager = None,
+        self,
+        produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
+        filesystem_manager: FilesystemManager = None,
     ):
         if not produce_tool_response_strategy_factory:
             raise ValueError("produce_tool_response_strategy_factory must not be None.")

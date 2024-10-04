@@ -19,7 +19,7 @@ class DetermineUserMessagesForSpeechTurnStrategyFactory:
         self._player_identifier = player_identifier
 
     def create_strategy(
-            self, player_input_product: PlayerInputProduct, messages_to_llm: MessagesToLlm
+        self, player_input_product: PlayerInputProduct, messages_to_llm: MessagesToLlm
     ) -> DetermineUserMessagesForSpeechTurnStrategy:
         return ConcreteDetermineUserMessagesForSpeechTurnStrategy(
             self._playthrough_name,

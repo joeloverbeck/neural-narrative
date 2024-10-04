@@ -33,7 +33,7 @@ class ConcreteFilteredPlaceDescriptionGenerationFactory(
         map_manager: MapManager = None,
         characters_manager: CharactersManager = None,
         filesystem_manager: FilesystemManager = None,
-            time_manager: TimeManager = None,
+        time_manager: TimeManager = None,
     ):
         super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
 

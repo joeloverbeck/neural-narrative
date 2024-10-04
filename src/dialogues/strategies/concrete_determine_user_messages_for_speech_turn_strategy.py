@@ -13,12 +13,12 @@ class ConcreteDetermineUserMessagesForSpeechTurnStrategy(
     DetermineUserMessagesForSpeechTurnStrategy
 ):
     def __init__(
-            self,
-            playthrough_name: str,
-            player_identifier: Optional[str],
-            player_input_product: PlayerInputProduct,
-            messages_to_llm: MessagesToLlm,
-            characters_manager: CharactersManager = None,
+        self,
+        playthrough_name: str,
+        player_identifier: Optional[str],
+        player_input_product: PlayerInputProduct,
+        messages_to_llm: MessagesToLlm,
+        characters_manager: CharactersManager = None,
     ):
         if player_identifier and not isinstance(player_identifier, str):
             raise TypeError(

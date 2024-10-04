@@ -25,7 +25,7 @@ class CurrentPlaceFactory(ABC):
 
 class RandomPlaceTemplateBasedOnCategoriesFactory(Protocol):
     def create_random_place_template_based_on_categories(
-            self, place_templates: dict, categories: List[str]
+        self, place_templates: dict, categories: List[str]
     ) -> PlaceTemplateProduct:
         pass
 
@@ -37,7 +37,7 @@ class FullPlaceDataFactory(Protocol):
 
 class RandomPlaceTypeMapEntryCreationFactory(Protocol):
     def create_random_place_type_map_entry(
-            self,
+        self,
     ) -> RandomPlaceTypeMapEntryCreationResult:
         pass
 

@@ -31,7 +31,7 @@ class StoreDialoguesCommand(Command):
         )
 
     def _store_dialogue_for_participant(
-            self, participant: str, prettified_dialogue: str
+        self, participant: str, prettified_dialogue: str
     ):
         character_dialogues_path = (
             self._filesystem_manager.get_file_path_to_character_dialogues(
