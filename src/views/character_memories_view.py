@@ -27,6 +27,14 @@ class CharacterMemoriesView(MethodView):
                 selected_character_identifier
             )
 
+        for character in all_characters:
+            character["selected"] = False
+            if (
+                    selected_character
+                    and character["identifier"] == selected_character["identifier"]
+            ):
+                character["selected"] = True
+
         return render_template(
             "character-memories.html",
             all_characters=all_characters,
@@ -46,6 +54,9 @@ class CharacterMemoriesView(MethodView):
 
         if action == "save_memories" and character_identifier:
             new_memories = request.form.get("character_memories", "")
+
+            # Normalize newlines to prevent issues with excessive newline characters
+            new_memories = new_memories.replace("\r\n", "\n").strip()
 
             characters_manager.save_character_memories(
                 character_identifier, new_memories

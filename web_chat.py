@@ -1,12 +1,18 @@
+import logging.config
+
 from flask import Flask
 
+from src.filesystem.filesystem_manager import FilesystemManager
 from src.views.character_generation_view import CharacterGenerationView
 from src.views.character_memories_view import CharacterMemoriesView
 from src.views.chat_view import ChatView
+from src.views.event_inspiration_view import EventInspirationView
 from src.views.index_view import IndexView
 from src.views.location_hub_view import LocationHubView
 from src.views.participants_view import ParticipantsView
 from src.views.travel_view import TravelView
+
+logging.config.dictConfig(FilesystemManager().get_logging_config_file())
 
 app = Flask(__name__)
 
@@ -26,6 +32,9 @@ app.add_url_rule(
     "/character-memories",
     view_func=CharacterMemoriesView.as_view("character-memories"),
     methods=["GET", "POST"],
+)
+app.add_url_rule(
+    "/event-inspiration", view_func=EventInspirationView.as_view("event-inspiration")
 )
 
 if __name__ == "__main__":

@@ -1,5 +1,4 @@
 from src.config.config_manager import ConfigManager
-from src.constants import HERMES_70B
 from src.dialogues.abstracts.abstract_factories import (
     DialogueTurnFactorySubject,
 )
@@ -76,7 +75,7 @@ class DialogueTurnFactoryComposer:
                 self._player_identifier,
                 self._participants,
                 self._llm_client,
-                HERMES_70B,
+                ConfigManager().get_light_llm(),
             ).compose()
         )
 
@@ -108,7 +107,10 @@ class DialogueTurnFactoryComposer:
 
         return ConcreteDialogueTurnFactory(
             DialogueTurnFactoryConfig(
-                self._playthrough_name, self._messages_to_llm, self._transcription
+                self._playthrough_name,
+                self._participants,
+                self._messages_to_llm,
+                self._transcription,
             ),
             DialogueTurnFactoryFactoriesConfig(
                 speech_turn_choice_tool_response_provider_factory,

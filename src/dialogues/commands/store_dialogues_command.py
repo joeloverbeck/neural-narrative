@@ -30,6 +30,24 @@ class StoreDialoguesCommand(Command):
             self._playthrough_name
         )
 
+    def _store_dialogue_for_participant(
+            self, participant: str, prettified_dialogue: str
+    ):
+        character_dialogues_path = (
+            self._filesystem_manager.get_file_path_to_character_dialogues(
+                self._playthrough_name,
+                character_identifier=participant,
+                character_name=self._characters_manager.load_character_data(
+                    participant
+                )["name"],
+            )
+        )
+
+        self._filesystem_manager.append_to_file(
+            character_dialogues_path, prettified_dialogue
+        )
+        logger.info(f"Saved dialogue at '{character_dialogues_path}'.")
+
     def execute(self) -> None:
         if not self._transcription.is_transcription_sufficient():
             logger.error("Won't save an empty or insufficient dialogue.")
@@ -43,17 +61,4 @@ class StoreDialoguesCommand(Command):
         prettified_dialogue += "\n"
 
         for participant in self._participants.get_participant_keys():
-            character_dialogues_path = (
-                self._filesystem_manager.get_file_path_to_character_dialogues(
-                    self._playthrough_name,
-                    character_identifier=participant,
-                    character_name=self._characters_manager.load_character_data(
-                        participant
-                    )["name"],
-                )
-            )
-
-            self._filesystem_manager.append_to_file(
-                character_dialogues_path, prettified_dialogue
-            )
-            logger.info(f"Saved dialogue at '{character_dialogues_path}'.")
+            self._store_dialogue_for_participant(participant, prettified_dialogue)

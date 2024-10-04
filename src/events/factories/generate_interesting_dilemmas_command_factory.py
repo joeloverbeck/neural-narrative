@@ -1,16 +1,14 @@
-from src.dialogues.commands.generate_interesting_situations_command import (
-    GenerateInterestingSituationsCommand,
-)
-from src.dialogues.factories.interesting_situations_factory import (
-    InterestingSituationsFactory,
-)
 from src.dialogues.transcription import Transcription
+from src.events.commands.generate_interesting_dilemmas_command import (
+    GenerateInterestingDilemmasCommand,
+)
+from src.events.factories.interesting_dilemmas_factory import InterestingDilemmasFactory
 from src.prompting.factories.produce_tool_response_strategy_factory import (
     ProduceToolResponseStrategyFactory,
 )
 
 
-class GenerateInterestingSituationsCommandFactory:
+class GenerateInterestingDilemmasCommandFactory:
     def __init__(
             self,
             playthrough_name: str,
@@ -24,13 +22,13 @@ class GenerateInterestingSituationsCommandFactory:
             produce_tool_response_strategy_factory
         )
 
-    def create_generate_interesting_situations_command(
+    def create_command(
             self,
             transcription: Transcription,
-    ) -> GenerateInterestingSituationsCommand:
-        return GenerateInterestingSituationsCommand(
+    ) -> GenerateInterestingDilemmasCommand:
+        return GenerateInterestingDilemmasCommand(
             playthrough_name=self._playthrough_name,
-            interesting_situations_factory=InterestingSituationsFactory(
+            interesting_dilemmas_factory=InterestingDilemmasFactory(
                 transcription, self._produce_tool_response_strategy_factory
             ),
         )

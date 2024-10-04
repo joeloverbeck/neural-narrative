@@ -1,11 +1,12 @@
+import logging
+from typing import Optional
+
 from src.abstracts.command import Command
 from src.constants import TIME_ADVANCED_DUE_TO_DIALOGUE
 from src.dialogues.abstracts.abstract_factories import DialogueTurnFactory
+from src.dialogues.abstracts.factory_products import DialogueProduct
 from src.dialogues.commands.store_temporary_dialogue_command import (
     StoreTemporaryDialogueCommand,
-)
-from src.dialogues.factories.generate_interesting_situations_command_factory import (
-    GenerateInterestingSituationsCommandFactory,
 )
 from src.dialogues.factories.store_dialogues_command_factory import (
     StoreDialoguesCommandFactory,
@@ -14,8 +15,16 @@ from src.dialogues.factories.summarize_dialogue_command_factory import (
     SummarizeDialogueCommandFactory,
 )
 from src.dialogues.participants import Participants
+from src.events.factories.generate_interesting_dilemmas_command_factory import (
+    GenerateInterestingDilemmasCommandFactory,
+)
+from src.events.factories.generate_interesting_situations_command_factory import (
+    GenerateInterestingSituationsCommandFactory,
+)
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.time.time_manager import TimeManager
+
+logger = logging.getLogger(__name__)
 
 
 class ProduceDialogueCommand(Command):
@@ -28,8 +37,9 @@ class ProduceDialogueCommand(Command):
         summarize_dialogue_command_factory: SummarizeDialogueCommandFactory,
         store_dialogues_command_factory: StoreDialoguesCommandFactory,
             generate_interesting_situations_command_factory: GenerateInterestingSituationsCommandFactory,
-        filesystem_manager: FilesystemManager = None,
-        time_manager: TimeManager = None,
+            generate_interesting_dilemmas_command_factory: GenerateInterestingDilemmasCommandFactory,
+            filesystem_manager: Optional[FilesystemManager] = None,
+            time_manager: Optional[TimeManager] = None,
     ):
         if not playthrough_name:
             raise ValueError("playthrough_name can't be empty.")
@@ -45,14 +55,15 @@ class ProduceDialogueCommand(Command):
         self._generate_interesting_situations_command_factory = (
             generate_interesting_situations_command_factory
         )
+        self._generate_interesting_dilemmas_command_factory = (
+            generate_interesting_dilemmas_command_factory
+        )
 
         self._filesystem_manager = filesystem_manager or FilesystemManager()
         self._time_manager = time_manager or TimeManager(self._playthrough_name)
 
-    def execute(self) -> None:
-        dialogue_product = self._dialogue_turn_factory.process_turn_of_dialogue()
-
-        if dialogue_product.has_ended():
+    def _process_end_of_dialogue(self, dialogue_product: DialogueProduct):
+        if dialogue_product.get_transcription().is_transcription_sufficient():
             self._summarize_dialogue_command_factory.create_summarize_dialogue_command(
                 dialogue_product.get_transcription()
             ).execute()
@@ -66,11 +77,22 @@ class ProduceDialogueCommand(Command):
                 dialogue_product.get_transcription()
             ).execute()
 
-            # Must remove the temporary dialogue.
-            self._filesystem_manager.remove_ongoing_dialogue(self._playthrough_name)
+            # Now do the same but with dilemmas
+            self._generate_interesting_dilemmas_command_factory.create_command(
+                dialogue_product.get_transcription()
+            ).execute()
 
-            # Let's advance time, why not.
-            self._time_manager.advance_time(TIME_ADVANCED_DUE_TO_DIALOGUE)
+        # Must remove the temporary dialogue.
+        self._filesystem_manager.remove_ongoing_dialogue(self._playthrough_name)
+
+        # Let's advance time, why not.
+        self._time_manager.advance_time(TIME_ADVANCED_DUE_TO_DIALOGUE)
+
+    def execute(self) -> None:
+        dialogue_product = self._dialogue_turn_factory.process_turn_of_dialogue()
+
+        if dialogue_product.has_ended():
+            self._process_end_of_dialogue(dialogue_product)
 
         else:
             # Must store the messages to the llm as well as the transcription as temporary.

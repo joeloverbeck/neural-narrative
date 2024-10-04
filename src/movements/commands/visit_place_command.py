@@ -43,35 +43,37 @@ class VisitPlaceCommand(Command):
             self._playthrough_name
         )
 
+    def _handle_place_is_not_visited(self):
+        # If the place hasn't been visited, then generally the character generation guidelines haven't been generated.
+        world_name = self._playthrough_manager.get_world_template()
+
+        places_templates_parameter = self._map_manager.fill_places_templates_parameter(
+            self._place_identifier
+        )
+
+        if not self._characters_manager.are_there_character_generation_guidelines_for_place(
+                world_name,
+                places_templates_parameter.get_region_template(),
+                places_templates_parameter.get_area_template(),
+                places_templates_parameter.get_location_template(),
+        ):
+            # We need to create the character generation guidelines for this location.
+            GenerateCharacterGenerationGuidelinesCommand(
+                self._playthrough_name,
+                self._place_identifier,
+                self._character_generation_guidelines_factory,
+            ).execute()
+
+        # Now set the place as visited.
+        self._map_manager.set_as_visited(self._place_identifier)
+
     def execute(self) -> None:
-        # Careful moving updating the current place, because generation of characters uses current place.
+        # Careful moving the following code, about updating the current place of the playthrough,
+        # because generation of characters uses whatever is the current place of the playthrough.
         self._playthrough_manager.update_current_place(self._place_identifier)
 
         if not self._map_manager.is_visited(self._place_identifier):
-            # If the place hasn't been visited, then generally the character generation guidelines haven't been generated.
-            world_name = self._playthrough_manager.get_world_template()
-
-            places_templates_parameter = (
-                self._map_manager.fill_places_templates_parameter(
-                    self._place_identifier
-                )
-            )
-
-            if not self._characters_manager.are_there_character_generation_guidelines_for_place(
-                    world_name,
-                    places_templates_parameter.get_region_template(),
-                    places_templates_parameter.get_area_template(),
-                    places_templates_parameter.get_location_template(),
-            ):
-                # We need to create the character generation guidelines for this location.
-                GenerateCharacterGenerationGuidelinesCommand(
-                    self._playthrough_name,
-                    self._place_identifier,
-                    self._character_generation_guidelines_factory,
-                ).execute()
-
-            # Now set the place as visited.
-            self._map_manager.set_as_visited(self._place_identifier)
+            self._handle_place_is_not_visited()
 
         # Advance time.
         self._time_manager.advance_time(TIME_ADVANCED_DUE_TO_EXITING_LOCATION)

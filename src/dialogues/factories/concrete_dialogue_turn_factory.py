@@ -19,6 +19,9 @@ from src.dialogues.products.concrete_dialogue_product import ConcreteDialoguePro
 from src.dialogues.transcription import Transcription
 from src.playthrough_manager import PlaythroughManager
 from src.prompting.abstracts.factory_products import LlmToolResponseProduct
+from src.prompting.products.concrete_llm_tool_response_product import (
+    ConcreteLlmToolResponseProduct,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -32,6 +35,7 @@ class ConcreteDialogueTurnFactory(DialogueTurnFactorySubject):
         playthrough_manager: PlaythroughManager = None,
     ):
         self._playthrough_name = dialogue_turn_factory_config.playthrough_name
+        self._participants = dialogue_turn_factory_config.participants
         self._involve_player_in_dialogue_strategy = (
             dialogue_turn_factory_strategies_config.involve_player_in_dialogue_strategy
         )
@@ -131,6 +135,19 @@ class ConcreteDialogueTurnFactory(DialogueTurnFactorySubject):
             self._messages_to_llm, self._transcription, has_ended=has_ended
         )
 
+    def _determine_next_speaker(self) -> LlmToolResponseProduct:
+        if not self._participants.has_only_two_participants_with_player(
+                self._playthrough_manager.get_player_identifier()
+        ):
+            return self._choose_next_speaker()
+        else:
+            return ConcreteLlmToolResponseProduct(
+                self._participants.get_other_participant_data(
+                    self._playthrough_manager.get_player_identifier()
+                ),
+                is_valid=True,
+            )
+
     def process_turn_of_dialogue(self) -> DialogueProduct:
         try:
             player_input_product = self._get_player_input()
@@ -138,13 +155,11 @@ class ConcreteDialogueTurnFactory(DialogueTurnFactorySubject):
             if player_input_product.is_goodbye():
                 return self._create_dialogue_product(has_ended=True)
 
-            speech_turn_choice_tool_response_product = self._choose_next_speaker()
+            response_product = self._determine_next_speaker()
 
-            self._validate_next_speaker(speech_turn_choice_tool_response_product)
+            self._validate_next_speaker(response_product)
 
-            self._process_speech_turn(
-                player_input_product, speech_turn_choice_tool_response_product
-            )
+            self._process_speech_turn(player_input_product, response_product)
 
             return self._create_dialogue_product(has_ended=False)
         except DialogueProcessingError as e:

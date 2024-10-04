@@ -16,7 +16,7 @@
     "file": {
       "class": "logging.FileHandler",
       "formatter": "standard",
-      "level": "DEBUG",
+      "level": "ERROR",
       "filename": "app_debug.log",
       "mode": "a"
     }

@@ -20,7 +20,7 @@ class FunctionCallSanitizer:
     REMOVE_ANY_EXTRA_SYMBOLS_BETWEEN_JSON_OBJECT_AND_FUNCTION_TAG = re.compile(
         r"}\s*>\s*</function>"
     )
-    REPLACE_INCORRECT_CLOSING_FUNCTION_TAG_REGEX = re.compile(r"{/function}")
+    REPLACE_INCORRECT_CLOSING_FUNCTION_TAG_REGEX = re.compile(r"\[/function]")
     REMOVE_EXTRA_CHARACTERS_AFTER_JSON_REGEX = re.compile(r"(}.*?)(</function>)")
     FIX_CLOSING_FUNCTION_TAG_WITHOUT_LT_OR_SLASH = re.compile(r"(?<!<)(?<!</)function>")
 
@@ -56,7 +56,7 @@ class FunctionCallSanitizer:
             function_call,
         )
 
-        # Step 4: Fix the case where the tool call ends with '}}<function>' instead of '}</function>'
+        # Step 4: Fix the case where the tool call ends with '"}}<function>' instead of '}</function>'
         function_call = function_call.replace('"}}<function>', "}</function>")
 
         # Step 5: Ensure the closing tag starts with '<'
@@ -111,24 +111,24 @@ class FunctionCallSanitizer:
             function_call,
         )
 
-        # Step 13: Replace incorrect closing function tags '{/function}' with '</function>'
+        # Step 13: Replace incorrect closing function tags like '[/function]' with '</function>'
         function_call = re.sub(
             FunctionCallSanitizer.REPLACE_INCORRECT_CLOSING_FUNCTION_TAG_REGEX,
             "</function>",
             function_call,
         )
 
-        # Step 14: Remove any extra characters after the JSON object before the closing </function> tag
-        function_call = re.sub(
-            FunctionCallSanitizer.REMOVE_EXTRA_CHARACTERS_AFTER_JSON_REGEX,
-            r"}\2",
-            function_call,
-        )
-
-        # Step 15: Fix closing function tag without proper opening symbols
+        # Step 14: Fix closing function tag without proper opening symbols
         function_call = re.sub(
             FunctionCallSanitizer.FIX_CLOSING_FUNCTION_TAG_WITHOUT_LT_OR_SLASH,
             r"</function>",
+            function_call,
+        )
+
+        # Step 15: Remove any extra characters after the JSON object before the closing </function> tag
+        function_call = re.sub(
+            FunctionCallSanitizer.REMOVE_EXTRA_CHARACTERS_AFTER_JSON_REGEX,
+            r"}\2",
             function_call,
         )
 
