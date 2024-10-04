@@ -18,9 +18,6 @@ from src.dialogues.composers.dialogue_turn_factory_composer import (
 from src.dialogues.factories.dialogue_summary_provider_factory import (
     DialogueSummaryProviderFactory,
 )
-from src.dialogues.factories.generate_interesting_situations_command_factory import (
-    GenerateInterestingSituationsCommandFactory,
-)
 from src.dialogues.factories.introduce_player_input_into_dialogue_command_factory import (
     IntroducePlayerInputIntoDialogueCommandFactory,
 )
@@ -36,6 +33,12 @@ from src.dialogues.strategies.concrete_involve_player_in_dialogue_strategy impor
     ConcreteInvolvePlayerInDialogueStrategy,
 )
 from src.dialogues.transcription import Transcription
+from src.events.factories.generate_interesting_dilemmas_command_factory import (
+    GenerateInterestingDilemmasCommandFactory,
+)
+from src.events.factories.generate_interesting_situations_command_factory import (
+    GenerateInterestingSituationsCommandFactory,
+)
 from src.prompting.factories.openrouter_llm_client_factory import (
     OpenRouterLlmClientFactory,
 )
@@ -129,11 +132,17 @@ class LaunchDialogueCommand(Command):
         )
 
         produce_tool_response_strategy_factory = ProduceToolResponseStrategyFactory(
-            llm_client, self._config_manager.get_heavy_llm()
+            llm_client, self._config_manager.get_light_llm()
         )
 
         generate_interesting_situations_command_factory = (
             GenerateInterestingSituationsCommandFactory(
+                self._playthrough_name, produce_tool_response_strategy_factory
+            )
+        )
+
+        generate_interesting_dilemmas_command_factory = (
+            GenerateInterestingDilemmasCommandFactory(
                 self._playthrough_name, produce_tool_response_strategy_factory
             )
         )
@@ -146,6 +155,7 @@ class LaunchDialogueCommand(Command):
             summarize_dialogue_command_factory,
             store_dialogues_command_factory,
             generate_interesting_situations_command_factory,
+            generate_interesting_dilemmas_command_factory,
         )
 
         involve_player_in_dialogue_strategy.attach(self._dialogue_observer)

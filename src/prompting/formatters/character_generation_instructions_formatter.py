@@ -47,7 +47,7 @@ class CharacterGenerationInstructionsFormatter:
         )
 
         if not self._characters_manager.are_there_character_generation_guidelines_for_place(
-                world_name, region_name, area_name, location_name
+            world_name, region_name, area_name, location_name
         ):
             raise ValueError(
                 f"No character generation guidelines exist for key '{key}'."

@@ -1,0 +1,52 @@
+<!-- templates/event-inspiration.html -->
+{% extends "base.html" %}
+
+{% block title %}Event Inspiration{% endblock %}
+
+{% block styles %}
+{{ super() }}
+<link href="{{ url_for('static', filename='event-inspiration.css') }}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block content %}
+<h1>Event Inspiration</h1>
+
+<div class="event-section">
+    <h2>Interesting Situations</h2>
+    <div class="event-grid">
+        {% for situation in interesting_situations %}
+        <div class="event-card">
+            <p>{{ situation }}</p>
+            <form method="post">
+                <input type="hidden" name="action" value="remove_situation">
+                <input type="hidden" name="situation_index" value="{{ loop.index0 }}">
+                <input class="remove-button" type="submit" value="Remove">
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="event-section">
+    <h2>Interesting Dilemmas</h2>
+    <div class="event-grid">
+        {% for dilemma in interesting_dilemmas %}
+        <div class="event-card">
+            <p>{{ dilemma }}</p>
+            <form method="post">
+                <input type="hidden" name="action" value="remove_dilemma">
+                <input type="hidden" name="dilemma_index" value="{{ loop.index0 }}">
+                <input class="remove-button" type="submit" value="Remove">
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="return-section">
+    <form action="{{ url_for('location-hub') }}" method="get">
+        <input class="action-button" type="submit" value="Return to Location Hub">
+    </form>
+</div>
+
+{% endblock %}

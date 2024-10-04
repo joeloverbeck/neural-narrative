@@ -65,6 +65,9 @@ CHARACTER_GENERATION_GUIDELINES_TOOL_FILE: str = (
 INTERESTING_SITUATIONS_GENERATION_TOOL_FILE: str = (
     "data/prompting/interesting_situations_generation_tool.json"
 )
+INTERESTING_DILEMMAS_GENERATION_TOOL_FILE: str = (
+    "data/prompting/interesting_dilemmas_generation_tool.json"
+)
 
 CHARACTER_GENERATION_INSTRUCTIONS_FILE: str = (
     "data/prompting/character_generation_prompt.txt"
@@ -84,6 +87,9 @@ CHARACTER_GENERATION_GUIDELINES_PROMPT_FILE: str = (
 )
 INTERESTING_SITUATIONS_GENERATION_PROMPT_FILE: str = (
     "data/prompting/interesting_situations_generation_prompt.txt"
+)
+INTERESTING_DILEMMAS_GENERATION_PROMPT_FILE: str = (
+    "data/prompting/interesting_dilemmas_generation_prompt.txt"
 )
 
 OPENROUTER_API_URL: str = "https://openrouter.ai/api/v1"

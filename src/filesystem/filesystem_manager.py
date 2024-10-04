@@ -95,6 +95,17 @@ class FilesystemManager:
             return json.load(f)
 
     @staticmethod
+    def remove_item_from_file(file_path, index):
+        """Remove a line at a specific index from a file."""
+        if os.path.exists(file_path):
+            with open(file_path, "r", encoding="utf-8") as file:
+                lines = [line.rstrip("\n") for line in file if line.strip()]
+            if 0 <= index < len(lines):
+                del lines[index]
+                with open(file_path, "w", encoding="utf-8") as file:
+                    file.write("\n".join(lines))
+
+    @staticmethod
     def does_file_path_exist(file_path):
         return os.path.exists(file_path)
 
@@ -192,6 +203,15 @@ class FilesystemManager:
         return os.path.join(
             self.get_file_path_to_playthrough_folder(playthrough_name),
             "interesting_situations.txt",
+        )
+
+    def get_file_path_to_interesting_dilemmas(self, playthrough_name: str) -> str:
+        if not playthrough_name:
+            raise ValueError("playthrough_name should not be empty.")
+
+        return os.path.join(
+            self.get_file_path_to_playthrough_folder(playthrough_name),
+            "interesting_dilemmas.txt",
         )
 
     @staticmethod

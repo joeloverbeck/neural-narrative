@@ -1,0 +1,22 @@
+{
+  "type": "function",
+  "function": {
+    "name": "generate_interesting_dilemmas",
+    "description": "generate a list of at least five intriguing moral and ethical dilemmas that could stem from the provided conversation. Do not under any circumstances include the provided dialogue.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "interesting_dilemmas": {
+          "type": "array",
+          "description": "A list of at least five intriguing moral and ethical dilemmas that could stem from the provided conversation. Follow the provided instructions.",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "interesting_dilemmas"
+      ]
+    }
+  }
+}

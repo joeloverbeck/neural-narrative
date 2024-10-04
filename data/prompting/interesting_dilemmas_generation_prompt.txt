@@ -1,0 +1,6 @@
+Given the following transcription of a dialogue, analyze it and generate a list of at least five intriguing moral and ethical dilemmas that could stem from this conversation.
+These dilemmas should present the player with difficult choices between equally compelling options, highlighting moral ambiguity and challenging their values.
+They should force the player to make tough decisions that affect their moral alignment and have far-reaching consequences.
+Consider the characters' motivations, relationships, and any hints or clues in the dialogue to create these dilemmas.
+Each dilemma should be described in one or two sentences. Do not precede each dilemma with a number (it shouldn't be a numbered list). Do not, under any circumstance, repeat the dialogue in your answer.
+{transcription}
