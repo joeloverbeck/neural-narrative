@@ -12,7 +12,7 @@ class ConcretePromptFormatterForDialogueStrategy(PromptFormatterForDialogueStrat
         self,
         playthrough_name: str,
         participants: Participants,
-            purpose: str,
+        purpose: str,
         character_data: dict,
         memories: str,
         prompt_file: str,

@@ -10,12 +10,12 @@ class Participants:
         return self._participants
 
     def add_participant(
-            self,
-            identifier: str,
-            name: str,
-            description: str,
-            personality: str,
-            equipment: str,
+        self,
+        identifier: str,
+        name: str,
+        description: str,
+        personality: str,
+        equipment: str,
     ):
         if not identifier:
             raise ValueError("identifier must not be empty.")

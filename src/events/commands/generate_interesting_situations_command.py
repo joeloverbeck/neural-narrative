@@ -11,10 +11,10 @@ logger = logging.getLogger(__name__)
 
 class GenerateInterestingSituationsCommand(Command):
     def __init__(
-            self,
-            playthrough_name: str,
-            interesting_situations_factory: InterestingSituationsFactory,
-            filesystem_manager: FilesystemManager = None,
+        self,
+        playthrough_name: str,
+        interesting_situations_factory: InterestingSituationsFactory,
+        filesystem_manager: FilesystemManager = None,
     ):
         self._playthrough_name = playthrough_name
         self._interesting_situations_factory = interesting_situations_factory

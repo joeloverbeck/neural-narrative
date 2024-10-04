@@ -6,9 +6,9 @@ class ConcreteRandomPlaceTypeMapEntryCreationResult(
     RandomPlaceTypeMapEntryCreationResult
 ):
     def __init__(
-            self,
-            random_place_type_map_entry_creation_result_type: RandomPlaceTypeMapEntryCreationResultType,
-            error: str = None,
+        self,
+        random_place_type_map_entry_creation_result_type: RandomPlaceTypeMapEntryCreationResultType,
+        error: str = None,
     ):
         self._random_place_type_map_entry_creation_result_type = (
             random_place_type_map_entry_creation_result_type

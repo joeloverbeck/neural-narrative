@@ -14,16 +14,16 @@ from src.filesystem.filesystem_manager import FilesystemManager
 
 class HandlePossibleExistenceOfOngoingConversationCommand(Command):
     def __init__(
-            self,
-            playthrough_name: str,
-            player_identifier: str,
-            participants: Participants,
-            messages_to_llm: MessagesToLlm,
-            transcription: Transcription,
-            load_data_from_ongoing_dialogue_command_factory: LoadDataFromOngoingDialogueCommandFactory,
-            choose_participants_strategy: ChooseParticipantsStrategy,
-            filesystem_manager: FilesystemManager = None,
-            dialogue_manager: DialogueManager = None,
+        self,
+        playthrough_name: str,
+        player_identifier: str,
+        participants: Participants,
+        messages_to_llm: MessagesToLlm,
+        transcription: Transcription,
+        load_data_from_ongoing_dialogue_command_factory: LoadDataFromOngoingDialogueCommandFactory,
+        choose_participants_strategy: ChooseParticipantsStrategy,
+        filesystem_manager: FilesystemManager = None,
+        dialogue_manager: DialogueManager = None,
     ):
         if not playthrough_name:
             raise ValueError("playthrough_name must not be empty.")
@@ -52,7 +52,7 @@ class HandlePossibleExistenceOfOngoingConversationCommand(Command):
         )
 
         if os.path.exists(
-                ongoing_dialogue_path
+            ongoing_dialogue_path
         ) and "participants" in self._filesystem_manager.load_existing_or_new_json_file(
             ongoing_dialogue_path
         ):

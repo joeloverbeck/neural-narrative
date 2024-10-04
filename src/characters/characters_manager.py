@@ -167,7 +167,7 @@ class CharactersManager:
 
     @staticmethod
     def create_key_for_character_generation_guidelines(
-            world: str, region: str, area: str, location: str = None
+        world: str, region: str, area: str, location: str = None
     ) -> str:
         if not world:
             raise ValueError("world can't be empty.")
@@ -183,7 +183,7 @@ class CharactersManager:
         )
 
     def load_character_generation_guidelines(
-            self, world: str, region: str, area: str, location: str = None
+        self, world: str, region: str, area: str, location: str = None
     ) -> List[str]:
         if not world:
             raise ValueError("world can't be empty.")
@@ -208,12 +208,12 @@ class CharactersManager:
         return guidelines_file[key]
 
     def save_character_generation_guidelines(
-            self,
-            world: str,
-            region: str,
-            area: str,
-            guidelines: List[str],
-            location: str = None,
+        self,
+        world: str,
+        region: str,
+        area: str,
+        guidelines: List[str],
+        location: str = None,
     ):
         if not world:
             raise ValueError("world can't be empty.")
@@ -238,7 +238,7 @@ class CharactersManager:
         )
 
     def are_there_character_generation_guidelines_for_place(
-            self, world: str, region: str, area: str, location: str = None
+        self, world: str, region: str, area: str, location: str = None
     ) -> bool:
         if not world:
             raise ValueError("world can't be empty.")
@@ -252,8 +252,8 @@ class CharactersManager:
         )
 
         return (
-                self.create_key_for_character_generation_guidelines(
-                    world, region, area, location
-                )
-                in guidelines_file
+            self.create_key_for_character_generation_guidelines(
+                world, region, area, location
+            )
+            in guidelines_file
         )

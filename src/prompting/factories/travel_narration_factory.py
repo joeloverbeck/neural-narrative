@@ -19,14 +19,14 @@ class TravelNarrationFactory(BaseToolResponseProvider):
     """
 
     def __init__(
-            self,
-            playthrough_name: str,
-            destination_identifier: str,
-            produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
-            characters_manager: CharactersManager = None,
-            playthrough_manager: PlaythroughManager = None,
-            filesystem_manager: FilesystemManager = None,
-            map_manager: MapManager = None,
+        self,
+        playthrough_name: str,
+        destination_identifier: str,
+        produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
+        characters_manager: CharactersManager = None,
+        playthrough_manager: PlaythroughManager = None,
+        filesystem_manager: FilesystemManager = None,
+        map_manager: MapManager = None,
     ):
         super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
 

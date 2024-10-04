@@ -31,7 +31,7 @@ class GeneratePlaceCommand(Command):
         father_place_template_type: TemplateType,
         interface_manager: InterfaceManager = None,
         filesystem_manager: FilesystemManager = None,
-            config_manager: ConfigManager = None,
+        config_manager: ConfigManager = None,
     ):
         self._place_template_type = place_template_type
         self._father_place_template_type = father_place_template_type

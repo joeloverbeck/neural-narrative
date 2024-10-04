@@ -12,11 +12,11 @@ from src.prompting.products.concrete_initial_prompting_messages_product import (
 
 class DialogueInitialPromptingMessagesProvider(InitialPromptingMessagesProvider):
     def __init__(
-            self,
-            participants: Participants,
-            character_data: dict,
-            memories: str,
-            speech_turn_dialogue_system_content_for_prompt_provider_factory: SpeechTurnDialogueSystemContentForPromptProviderFactory,
+        self,
+        participants: Participants,
+        character_data: dict,
+        memories: str,
+        speech_turn_dialogue_system_content_for_prompt_provider_factory: SpeechTurnDialogueSystemContentForPromptProviderFactory,
     ):
         if not participants.enough_participants():
             raise ValueError("Not enough participants.")

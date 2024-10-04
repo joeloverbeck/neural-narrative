@@ -12,7 +12,7 @@ class VisitPlaceCommandFactory:
     def __init__(
         self,
         playthrough_name: str,
-            produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
+        produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
     ):
         self._playthrough_name = playthrough_name
         self._produce_tool_response_strategy_factory = (

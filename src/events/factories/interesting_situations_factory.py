@@ -15,10 +15,10 @@ from src.prompting.providers.base_tool_response_provider import BaseToolResponse
 
 class InterestingSituationsFactory(BaseToolResponseProvider):
     def __init__(
-            self,
-            transcription: Transcription,
-            produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
-            filesystem_manager: FilesystemManager = None,
+        self,
+        transcription: Transcription,
+        produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
+        filesystem_manager: FilesystemManager = None,
     ):
         super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
 

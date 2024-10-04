@@ -46,7 +46,7 @@ class ConsoleInterfaceManager:
                 print(f"{prompt_text} cannot be empty. Please try again.")
 
     def create_places_templates_parameter_for_character_generation(
-            self,
+        self,
     ) -> PlacesTemplatesParameter:
         PrintPlaceTemplateListCommand(TemplateType.REGION).execute()
 

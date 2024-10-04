@@ -25,11 +25,11 @@ from src.tools import generate_tool_prompt
 
 class ConcreteDialogueSummaryProvider(DialogueSummaryProvider):
     def __init__(
-            self,
-            llm_client: LlmClient,
-            model: str,
-            transcription: Transcription,
-            max_retries: int = MAX_RETRIES,
+        self,
+        llm_client: LlmClient,
+        model: str,
+        transcription: Transcription,
+        max_retries: int = MAX_RETRIES,
     ):
         assert llm_client
         assert model

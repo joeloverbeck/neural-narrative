@@ -15,11 +15,11 @@ from src.maps.map_manager import MapManager
 
 class CreateInitialMapCommand(Command):
     def __init__(
-            self,
-            playthrough_name: str,
-            world_template: str,
-            random_place_template_based_on_categories_factory: RandomPlaceTemplateBasedOnCategoriesFactory,
-            map_manager: MapManager = None,
+        self,
+        playthrough_name: str,
+        world_template: str,
+        random_place_template_based_on_categories_factory: RandomPlaceTemplateBasedOnCategoriesFactory,
+        map_manager: MapManager = None,
     ):
         if not playthrough_name:
             raise ValueError("'playthrough_name' can't be empty.")
@@ -51,8 +51,8 @@ class CreateInitialMapCommand(Command):
         ).create_random_place_type_map_entry()
 
         if (
-                result.get_result_type()
-                == RandomPlaceTypeMapEntryCreationResultType.FAILURE
+            result.get_result_type()
+            == RandomPlaceTypeMapEntryCreationResultType.FAILURE
         ):
             raise ValueError(
                 f"Was unable to create a map entry for a region: {result.get_error()}"
@@ -76,8 +76,8 @@ class CreateInitialMapCommand(Command):
         ).create_random_place_type_map_entry()
 
         if (
-                result.get_result_type()
-                == RandomPlaceTypeMapEntryCreationResultType.FAILURE
+            result.get_result_type()
+            == RandomPlaceTypeMapEntryCreationResultType.FAILURE
         ):
             raise ValueError(
                 f"Was unable to create a map entry for an area: {result.get_error()}"
@@ -100,8 +100,8 @@ class CreateInitialMapCommand(Command):
         ).create_random_place_type_map_entry()
 
         if (
-                result.get_result_type()
-                == RandomPlaceTypeMapEntryCreationResultType.FAILURE
+            result.get_result_type()
+            == RandomPlaceTypeMapEntryCreationResultType.FAILURE
         ):
             raise ValueError(
                 f"Was unable to create a map entry for a location: {result.get_error()}"

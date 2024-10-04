@@ -268,7 +268,7 @@ class MapManager:
             )
 
     def fill_places_templates_parameter(
-            self, place_identifier: str
+        self, place_identifier: str
     ) -> PlacesTemplatesParameter:
         if not place_identifier:
             raise ValueError("place_identifier can't be empty.")
@@ -376,7 +376,7 @@ class MapManager:
         ]
 
     def does_area_have_cardinal_connection(
-            self, area_identifier: str, cardinal_direction: CardinalDirection
+        self, area_identifier: str, cardinal_direction: CardinalDirection
     ):
         if not area_identifier:
             raise ValueError("area_identifier can't be empty.")
@@ -394,7 +394,7 @@ class MapManager:
         return cardinal_direction.value in area_entry
 
     def get_cardinal_connections(
-            self, area_identifier: str
+        self, area_identifier: str
     ) -> Dict[str, Optional[Dict[str, str]]]:
         """
         Retrieve the cardinal connections for a given area.
@@ -453,10 +453,10 @@ class MapManager:
         return result
 
     def create_cardinal_connection(
-            self,
-            cardinal_direction: CardinalDirection,
-            origin_identifier: str,
-            destination_identifier: str,
+        self,
+        cardinal_direction: CardinalDirection,
+        origin_identifier: str,
+        destination_identifier: str,
     ):
         if not origin_identifier:
             raise ValueError("origin_identifier can't be empty.")
@@ -476,7 +476,7 @@ class MapManager:
 
     @staticmethod
     def get_opposite_cardinal_direction(
-            cardinal_direction: CardinalDirection,
+        cardinal_direction: CardinalDirection,
     ) -> CardinalDirection:
         if cardinal_direction == CardinalDirection.NORTH:
             return CardinalDirection.SOUTH
@@ -505,10 +505,10 @@ class MapManager:
         # If it turns out that the place_identifier about to be added is already one of the locations,
         # something has gone wrong up to this point.
         if (
-                place_identifier
-                in map_file[self._playthrough_manager.get_current_place_identifier()][
-            "locations"
-        ]
+            place_identifier
+            in map_file[self._playthrough_manager.get_current_place_identifier()][
+                "locations"
+            ]
         ):
             raise ValueError(
                 f"Place identifier '{place_identifier}' already present in the locations of the current area."

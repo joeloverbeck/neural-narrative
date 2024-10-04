@@ -32,14 +32,14 @@ class ProduceDialogueCommand(Command):
         self,
         playthrough_name: str,
         participants: Participants,
-            purpose: str,
-            dialogue_turn_factory: DialogueTurnFactory,
+        purpose: str,
+        dialogue_turn_factory: DialogueTurnFactory,
         summarize_dialogue_command_factory: SummarizeDialogueCommandFactory,
         store_dialogues_command_factory: StoreDialoguesCommandFactory,
-            generate_interesting_situations_command_factory: GenerateInterestingSituationsCommandFactory,
-            generate_interesting_dilemmas_command_factory: GenerateInterestingDilemmasCommandFactory,
-            filesystem_manager: Optional[FilesystemManager] = None,
-            time_manager: Optional[TimeManager] = None,
+        generate_interesting_situations_command_factory: GenerateInterestingSituationsCommandFactory,
+        generate_interesting_dilemmas_command_factory: GenerateInterestingDilemmasCommandFactory,
+        filesystem_manager: Optional[FilesystemManager] = None,
+        time_manager: Optional[TimeManager] = None,
     ):
         if not playthrough_name:
             raise ValueError("playthrough_name can't be empty.")

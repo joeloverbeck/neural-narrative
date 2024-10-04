@@ -26,26 +26,26 @@ def test_concrete_dialogue_turn_factory_initialization():
     # Assert that attributes are set correctly
     assert factory._playthrough_name == dialogue_turn_factory_config.playthrough_name
     assert (
-            factory._involve_player_in_dialogue_strategy
-            == dialogue_turn_factory_strategies_config.involve_player_in_dialogue_strategy
+        factory._involve_player_in_dialogue_strategy
+        == dialogue_turn_factory_strategies_config.involve_player_in_dialogue_strategy
     )
     assert (
-            factory._speech_turn_choice_tool_response_provider_factory
-            == dialogue_turn_factory_factories_config.speech_turn_choice_tool_response_provider_factory
+        factory._speech_turn_choice_tool_response_provider_factory
+        == dialogue_turn_factory_factories_config.speech_turn_choice_tool_response_provider_factory
     )
     assert (
-            factory._determine_system_message_for_speech_turn_strategy
-            == dialogue_turn_factory_strategies_config.determine_system_message_for_speech_turn_strategy
+        factory._determine_system_message_for_speech_turn_strategy
+        == dialogue_turn_factory_strategies_config.determine_system_message_for_speech_turn_strategy
     )
     assert (
-            factory._determine_user_messages_for_speech_turn_strategy_factory
-            == dialogue_turn_factory_factories_config.determine_user_messages_for_speech_turn_strategy_factory
+        factory._determine_user_messages_for_speech_turn_strategy_factory
+        == dialogue_turn_factory_factories_config.determine_user_messages_for_speech_turn_strategy_factory
     )
     assert factory._messages_to_llm == dialogue_turn_factory_config.messages_to_llm
     assert factory._transcription == dialogue_turn_factory_config.transcription
     assert (
-            factory._create_speech_turn_data_command_factory
-            == dialogue_turn_factory_factories_config.create_speech_turn_data_command_factory
+        factory._create_speech_turn_data_command_factory
+        == dialogue_turn_factory_factories_config.create_speech_turn_data_command_factory
     )
     assert factory._playthrough_manager == playthrough_manager
     assert factory._observers == []
@@ -93,7 +93,7 @@ def test_notify_observers():
     "src.dialogues.factories.concrete_dialogue_turn_factory.ConcreteDialogueTurnFactory._get_player_input"
 )
 def test_process_turn_of_dialogue_player_says_goodbye(
-        mock_get_player_input, mock_create_dialogue_product
+    mock_get_player_input, mock_create_dialogue_product
 ):
     # Mock player input to simulate goodbye
     player_input_product = MagicMock()
@@ -134,11 +134,11 @@ def test_process_turn_of_dialogue_player_says_goodbye(
     "src.dialogues.factories.concrete_dialogue_turn_factory.ConcreteDialogueTurnFactory._get_player_input"
 )
 def test_process_turn_of_dialogue_normal_flow(
-        mock_get_player_input,
-        mock_choose_next_speaker,
-        mock_validate_next_speaker,
-        mock_process_speech_turn,
-        mock_create_dialogue_product,
+    mock_get_player_input,
+    mock_choose_next_speaker,
+    mock_validate_next_speaker,
+    mock_process_speech_turn,
+    mock_create_dialogue_product,
 ):
     # Mock player input
     player_input_product = MagicMock()

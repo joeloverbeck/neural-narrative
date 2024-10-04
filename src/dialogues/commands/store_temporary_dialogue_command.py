@@ -7,13 +7,13 @@ from src.filesystem.filesystem_manager import FilesystemManager
 
 class StoreTemporaryDialogueCommand(Command):
     def __init__(
-            self,
-            playthrough_name: str,
-            participants: Participants,
-            purpose: str,
-            messages_to_llm: MessagesToLlm,
-            transcription: Transcription,
-            filesystem_manager: FilesystemManager = None,
+        self,
+        playthrough_name: str,
+        participants: Participants,
+        purpose: str,
+        messages_to_llm: MessagesToLlm,
+        transcription: Transcription,
+        filesystem_manager: FilesystemManager = None,
     ):
         if not playthrough_name:
             raise ValueError("playthrough_name can't be empty.")

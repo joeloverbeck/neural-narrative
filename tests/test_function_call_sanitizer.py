@@ -7,16 +7,16 @@ from src.prompting.function_call_sanitizer import FunctionCallSanitizer
     "response, expected_response",
     [
         (
-                '    <function=test> {"arg": 1}  </function>  ',
-                '<function=test>{"arg": 1}</function>',
+            '    <function=test> {"arg": 1}  </function>  ',
+            '<function=test>{"arg": 1}</function>',
         ),
         (
-                '\n<function=test> {"arg": 1}\n</function>\n',
-                '<function=test>{"arg": 1}</function>',
+            '\n<function=test> {"arg": 1}\n</function>\n',
+            '<function=test>{"arg": 1}</function>',
         ),
         (
-                '<function=test> {"arg": 1}}</function>',
-                '<function=test>{"arg": 1}</function>',
+            '<function=test> {"arg": 1}}</function>',
+            '<function=test>{"arg": 1}</function>',
         ),
     ],
 )
