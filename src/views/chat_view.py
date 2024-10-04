@@ -34,7 +34,7 @@ class ChatView(MethodView):
 
         # There is a playthrough_name in session, but the purpose may not be there.
         if not purpose and playthrough_manager.has_ongoing_dialogue(playthrough_name):
-            session["purpose"] = ongoing_dialogue_file["purpose"]
+            session["purpose"] = ongoing_dialogue_file.get("purpose", None)
 
         dialogue = session.get("dialogue", [])
 

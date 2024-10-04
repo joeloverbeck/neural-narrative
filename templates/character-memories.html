@@ -22,8 +22,8 @@
     <select id="character_selector" name="character_identifier" onchange="this.form.submit()">
         <option value="">-- Select a character --</option>
         {% for character in all_characters %}
-        <option %} %}selected{% and character.identifier==selected_character.identifier endif
-                if selected_character value="{{ character.identifier }}" {%>
+        <option %} %}selected{% and character.identifier== endif if
+                selected_character selected_character.identifier value="{{ character.identifier }}" {%>
             {{ character.name }}
         </option>
         {% endfor %}

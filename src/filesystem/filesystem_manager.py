@@ -1,7 +1,7 @@
 import json
 import os
 import sys
-from typing import List
+from typing import List, Any
 
 from src.constants import (
     CHARACTERS_FOLDER_NAME,
@@ -29,43 +29,45 @@ from src.constants import (
 class FilesystemManager:
     @staticmethod
     def read_file(file_path):
-        with open(file_path, "r") as file:
+        with open(file_path, "r", encoding="utf-8") as file:
             return file.read().strip()
 
     @staticmethod
     def read_json_file(file_path: str) -> dict:
         """Load JSON data from a file."""
-        with open(file_path, "r") as file:
+        with open(file_path, "r", encoding="utf-8") as file:
             return json.load(file)
 
     @staticmethod
-    def create_empty_file_if_not_exists(file_path: str):
+    def create_empty_file_if_not_exists(file_path: str) -> None:
+        """Create an empty file if it does not exist."""
         if not os.path.exists(file_path):
-            # Create an empty file
-            with open(file_path, "w") as f:
-                pass  # This will create the empty file
+            with open(file_path, "w", encoding="utf-8") as f:
+                pass  # This will create an empty file
 
     @staticmethod
-    def append_to_file(file_path, contents: str):
-        with open(file_path, "a") as file:
+    def append_to_file(file_path: str, contents: str) -> None:
+        """Append the given contents to the file."""
+        with open(file_path, "a", encoding="utf-8") as file:
             file.write(contents)
 
     @staticmethod
-    def write_file(file_path, contents: str):
-        """This function removes the previous contents of the file."""
-        with open(file_path, "w") as file:
+    def write_file(file_path: str, contents: str) -> None:
+        """Write contents to a file, overwriting any existing data."""
+        with open(file_path, "w", encoding="utf-8") as file:
             file.write(contents)
 
     @staticmethod
-    def write_binary_file(file_path, contents: bytes):
+    def write_binary_file(file_path: str, contents: bytes) -> None:
+        """Write binary contents to a file."""
         with open(file_path, "wb") as f:
             f.write(contents)
 
     @staticmethod
-    def save_json_file(json_data, file_path):
-        # Write the updated data back to the file
-        with open(file_path, "w") as f:
-            json.dump(json_data, f, indent=4)
+    def save_json_file(json_data: Any, file_path: str) -> None:
+        """Serialize json_data to a JSON-formatted file with proper encoding."""
+        with open(file_path, "w", encoding="utf-8") as f:
+            json.dump(json_data, f, indent=4, ensure_ascii=False)
 
     @staticmethod
     def load_existing_or_new_json_file(file_path: str):
