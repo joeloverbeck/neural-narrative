@@ -2,6 +2,12 @@ import logging
 from typing import Optional
 
 from src.abstracts.command import Command
+from src.constants import (
+    WORLD_TEMPLATES_FILE,
+    LOCATIONS_TEMPLATES_FILE,
+    AREAS_TEMPLATES_FILE,
+    REGIONS_TEMPLATES_FILE,
+)
 from src.enums import TemplateType
 from src.filesystem.filesystem_manager import FilesystemManager
 
@@ -32,26 +38,22 @@ class StoreGeneratedPlaceCommand(Command):
         file_path: Optional[str]
 
         if self._template_type == TemplateType.WORLD:
-            file_path = self._filesystem_manager.get_file_path_to_worlds_template_file()
+            file_path = WORLD_TEMPLATES_FILE
             current_places_template_file = (
                 self._filesystem_manager.load_existing_or_new_json_file(file_path)
             )
         elif self._template_type == TemplateType.REGION:
-            file_path = (
-                self._filesystem_manager.get_file_path_to_regions_template_file()
-            )
+            file_path = REGIONS_TEMPLATES_FILE
             current_places_template_file = (
                 self._filesystem_manager.load_existing_or_new_json_file(file_path)
             )
         elif self._template_type == TemplateType.AREA:
-            file_path = self._filesystem_manager.get_file_path_to_areas_template_file()
+            file_path = AREAS_TEMPLATES_FILE
             current_places_template_file = (
                 self._filesystem_manager.load_existing_or_new_json_file(file_path)
             )
         elif self._template_type == TemplateType.LOCATION:
-            file_path = (
-                self._filesystem_manager.get_file_path_to_locations_template_file()
-            )
+            file_path = LOCATIONS_TEMPLATES_FILE
             current_places_template_file = (
                 self._filesystem_manager.load_existing_or_new_json_file(file_path)
             )

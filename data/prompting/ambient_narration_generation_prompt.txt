@@ -1,0 +1,10 @@
+Based on the information provided, write a couple of sentences of ambient narration, in the present tense, that enhances the scene without introducing new characters or interfering with the ongoing dialogue.
+The narration should incorporate elements of the surroundings to ground the dialogue and add verisimilitude.
+The narration should be dynamic, instead of still descriptions of the surroundings. If the description of the setting offers details of the outside and the inside, use your judgement when assuming whether the characters are inside or outside.
+Do not repeat elements of the setting description verbatim: just use them as inspiration to do something original.
+Do not repeat previous lines of narration present in the transcription.
+Setting Description: {setting_description}
+Time of Day: {hour} {time_of_day}
+Player Personality: {personality}
+Ongoing Dialogue:
+{transcription}

@@ -1,0 +1,19 @@
+{
+  "type": "function",
+  "function": {
+    "name": "generate_ambient_narration",
+    "description": "write a couple of sentences of ambient narration that enhances the scene without introducing new characters or interfering with the ongoing dialogue.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "ambient_narration": {
+          "type": "string",
+          "description": "The couple of sentences of ambient narration. Follow the provided instructions."
+        }
+      },
+      "required": [
+        "ambient_narration"
+      ]
+    }
+  }
+}

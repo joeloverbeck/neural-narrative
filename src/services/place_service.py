@@ -1,8 +1,12 @@
 from src.config.config_manager import ConfigManager
-from src.enums import PlaceType
+from src.enums import PlaceType, TemplateType
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.factories.visit_place_command_factory import VisitPlaceCommandFactory
 from src.maps.map_manager import MapManager
+from src.maps.strategies.fathered_place_generation_strategy import (
+    FatheredPlaceGenerationStrategy,
+)
+from src.maps.strategies.world_generation_strategy import WorldGenerationStrategy
 from src.playthrough_manager import PlaythroughManager
 from src.prompting.factories.concrete_filtered_place_description_generation_factory import (
     ConcreteFilteredPlaceDescriptionGenerationFactory,
@@ -30,7 +34,7 @@ class PlaceService:
             playthrough_manager.get_player_identifier(),
             playthrough_manager.get_current_place_identifier(),
             strategy_factory,
-        ).generate_filtered_place_description()
+        ).generate_product()
 
         if description_product.is_valid():
             return description_product.get()
@@ -63,6 +67,45 @@ class PlaceService:
             playthrough_name
         )
         visit_command_factory.create_visit_place_command(location_identifier).execute()
+
+    @staticmethod
+    def generate_world(world_notion: str):
+        filesystem_manager = FilesystemManager()
+
+        llm_client = OpenRouterLlmClientFactory().create_llm_client()
+
+        produce_tool_response_strategy_factory = ProduceToolResponseStrategyFactory(
+            llm_client, ConfigManager().get_heavy_llm()
+        )
+
+        world_generation_strategy = WorldGenerationStrategy(
+            world_notion,
+            produce_tool_response_strategy_factory,
+            filesystem_manager=filesystem_manager,
+        )
+
+        world_generation_strategy.generate_place()
+
+    @staticmethod
+    def generate_region(world_name, region_notion=""):
+        strategy = FatheredPlaceGenerationStrategy(
+            TemplateType.REGION, world_name, region_notion
+        )
+        strategy.generate_place()
+
+    @staticmethod
+    def generate_area(region_name, area_notion=""):
+        strategy = FatheredPlaceGenerationStrategy(
+            TemplateType.AREA, region_name, area_notion
+        )
+        strategy.generate_place()
+
+    @staticmethod
+    def generate_location(area_name, location_notion=""):
+        strategy = FatheredPlaceGenerationStrategy(
+            TemplateType.LOCATION, area_name, location_notion
+        )
+        strategy.generate_place()
 
     def _create_visit_place_command_factory(self, playthrough_name):
         strategy_factory = ProduceToolResponseStrategyFactory(

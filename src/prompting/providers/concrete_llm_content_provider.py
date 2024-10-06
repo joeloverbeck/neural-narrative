@@ -103,6 +103,13 @@ class ConcreteLlmContentProvider(LlmContentProvider):
                     raise ValueError(
                         "The LLM returned empty content. That may mean that the context is too long."
                     )
+                elif (
+                    ai_completion_product.get_error()
+                    == AiCompletionErrorType.PAYMENT_REQUIRED
+                ):
+                    raise ValueError(
+                        f"The LLM won't produce content because you've run out of credits. Details: {ai_completion_product.get_error_details()}"
+                    )
                 else:
                     logger.warning(
                         f"Attempt {self._retry_count}/{self._max_retries} failed due to an unhandled reason. Retrying..."

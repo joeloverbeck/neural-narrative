@@ -48,7 +48,7 @@ class ConcreteDialogueSummaryProvider(DialogueSummaryProvider):
         messages_to_llm.add_message(
             "system",
             filesystem_manager.read_file(SUMMARIZE_DIALOGUE_PROMPT_FILE)
-            + f"\n\nHere's the dialogue to summarize:\n{self._transcription.get()}"
+            + f"\n\nHere's the dialogue to summarize:\n{self._transcription.get_prettified_transcription()}"
             + generate_tool_prompt(
                 filesystem_manager.read_json_file(DIALOGUE_SUMMARIZATION_TOOL_FILE),
                 filesystem_manager.read_file(TOOL_INSTRUCTIONS_FILE),

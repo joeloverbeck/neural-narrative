@@ -1,3 +1,6 @@
+from src.characters.factories.character_description_provider_factory import (
+    CharacterDescriptionProviderFactory,
+)
 from src.images.abstracts.abstract_factories import GeneratedImageFactory
 from src.images.commands.generate_character_image_command import (
     GenerateCharacterImageCommand,
@@ -10,6 +13,7 @@ class GenerateCharacterImageCommandFactory:
     def __init__(
         self,
         playthrough_name: str,
+        character_description_provider_factory: CharacterDescriptionProviderFactory,
         generated_image_factory: GeneratedImageFactory,
         url_content_factory: UrlContentFactory,
     ):
@@ -17,6 +21,9 @@ class GenerateCharacterImageCommandFactory:
             raise ValueError("playthrough_name can't be empty.")
 
         self._playthrough_name = playthrough_name
+        self._character_description_provider_factory = (
+            character_description_provider_factory
+        )
         self._generated_image_factory = generated_image_factory
         self._url_content_factory = url_content_factory
 
@@ -28,6 +35,7 @@ class GenerateCharacterImageCommandFactory:
         return GenerateCharacterImageCommand(
             self._playthrough_name,
             character_identifier,
+            self._character_description_provider_factory,
             self._generated_image_factory,
             self._url_content_factory,
         )

@@ -1,6 +1,5 @@
 from src.abstracts.command import Command
 from src.characters.characters_manager import CharactersManager
-from src.characters.enums import CharacterGenerationType
 from src.characters.factories.generate_character_command_factory import (
     GenerateCharacterCommandFactory,
 )
@@ -12,6 +11,7 @@ class GeneratePlayerCharacterCommand(Command):
     def __init__(
         self,
         playthrough_name: str,
+        user_content: str,
         generate_character_command_factory: GenerateCharacterCommandFactory,
         map_manager: MapManager = None,
         playthrough_manager: PlaythroughManager = None,
@@ -21,6 +21,7 @@ class GeneratePlayerCharacterCommand(Command):
             raise ValueError("playthrough_name can't be empty.")
 
         self._playthrough_name = playthrough_name
+        self._user_content = user_content
         self._generate_character_command_factory = generate_character_command_factory
 
         self._map_manager = map_manager or MapManager(self._playthrough_name)
@@ -36,13 +37,11 @@ class GeneratePlayerCharacterCommand(Command):
             self._playthrough_manager.get_current_place_identifier()
         )
 
-        print("about to create player char.")
-
         # Now should create the player character.
         self._generate_character_command_factory.create_generate_character_command(
             places_parameter,
             place_character_at_current_place=False,
-            character_generation_type=CharacterGenerationType.PLAYER_GUIDED_CONSOLE,
+            user_content=self._user_content,
         ).execute()
 
         self._playthrough_manager.update_player_identifier(

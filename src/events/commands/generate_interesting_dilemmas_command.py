@@ -23,7 +23,7 @@ class GenerateInterestingDilemmasCommand(Command):
     def execute(self) -> None:
 
         interesting_dilemmas_product = (
-            self._interesting_dilemmas_factory.generate_interesting_dilemmas()
+            self._interesting_dilemmas_factory.generate_product()
         )
 
         if not interesting_dilemmas_product.is_valid():

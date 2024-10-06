@@ -2,6 +2,10 @@ from src.characters.characters_manager import CharactersManager
 from src.constants import (
     CHARACTER_GENERATOR_TOOL_FILE,
     CHARACTER_GENERATION_INSTRUCTIONS_FILE,
+    WORLD_TEMPLATES_FILE,
+    LOCATIONS_TEMPLATES_FILE,
+    AREAS_TEMPLATES_FILE,
+    REGIONS_TEMPLATES_FILE,
 )
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.places_templates_parameter import PlacesTemplatesParameter
@@ -25,7 +29,6 @@ from src.prompting.providers.base_tool_response_provider import BaseToolResponse
 class CharacterGenerationToolResponseProvider(
     BaseToolResponseProvider, ToolResponseProvider
 ):
-
     def __init__(
         self,
         playthrough_name: str,
@@ -50,49 +53,44 @@ class CharacterGenerationToolResponseProvider(
             self._playthrough_name
         )
 
+    def get_formatted_prompt(self) -> str:
+        templates = self._load_templates()
+
+        location_name, location_description = self._get_location_details(
+            templates["locations_templates"]
+        )
+
+        instructions = CharacterGenerationInstructionsFormatter(
+            self._playthrough_name,
+            location_name,
+            location_description,
+            templates,
+            self._places_parameter,
+        ).format()
+
+        return instructions
+
+    def get_tool_file(self) -> str:
+        return CHARACTER_GENERATOR_TOOL_FILE
+
+    def get_user_content(self) -> str:
+        user_content_product = (
+            self._user_content_for_character_generation_factory.create_user_content_for_character_generation()
+        )
+
+        if not user_content_product.is_valid():
+            raise ValueError(
+                f"Unable to create user content for character generation: {user_content_product.get_error()}"
+            )
+
+        return user_content_product.get()
+
+    def create_product(self, arguments: dict):
+        return ConcreteLlmToolResponseProduct(arguments, is_valid=True)
+
     def create_llm_response(self) -> LlmToolResponseProduct:
         try:
-            templates = self._load_templates()
-
-            location_name, location_description = self._get_location_details(
-                templates["locations_templates"]
-            )
-
-            instructions = CharacterGenerationInstructionsFormatter(
-                self._playthrough_name,
-                location_name,
-                location_description,
-                templates,
-                self._places_parameter,
-            ).format()
-
-            # Generate system content
-            tool_data = self._read_tool_file(CHARACTER_GENERATOR_TOOL_FILE)
-            tool_instructions = self._read_tool_instructions()
-            tool_prompt = self._generate_tool_prompt(tool_data, tool_instructions)
-            system_content = self._generate_system_content(instructions, tool_prompt)
-
-            user_content_product = (
-                self._user_content_for_character_generation_factory.create_user_content_for_character_generation()
-            )
-
-            if not user_content_product.is_valid():
-                return ConcreteLlmToolResponseProduct(
-                    {},
-                    is_valid=False,
-                    error=(
-                        "Was unable to create the user content for character generation: "
-                        f"{user_content_product.get_error()}"
-                    ),
-                )
-
-            # Produce tool response
-            tool_response = self._produce_tool_response(
-                system_content, user_content_product.get()
-            )
-
-            return ConcreteLlmToolResponseProduct(tool_response, is_valid=True)
-
+            return self.generate_product()
         except Exception as e:
             return ConcreteLlmToolResponseProduct(
                 {},
@@ -108,16 +106,16 @@ class CharacterGenerationToolResponseProvider(
             )
         )
         worlds_templates = self._filesystem_manager.load_existing_or_new_json_file(
-            self._filesystem_manager.get_file_path_to_worlds_template_file()
+            WORLD_TEMPLATES_FILE
         )
         regions_templates = self._filesystem_manager.load_existing_or_new_json_file(
-            self._filesystem_manager.get_file_path_to_regions_template_file()
+            REGIONS_TEMPLATES_FILE
         )
         areas_templates = self._filesystem_manager.load_existing_or_new_json_file(
-            self._filesystem_manager.get_file_path_to_areas_template_file()
+            AREAS_TEMPLATES_FILE
         )
         locations_templates = self._filesystem_manager.load_existing_or_new_json_file(
-            self._filesystem_manager.get_file_path_to_locations_template_file()
+            LOCATIONS_TEMPLATES_FILE
         )
         character_generation_instructions = self._filesystem_manager.read_file(
             CHARACTER_GENERATION_INSTRUCTIONS_FILE

@@ -3,6 +3,9 @@ import sys
 from src.characters.commands.generate_player_character_command import (
     GeneratePlayerCharacterCommand,
 )
+from src.characters.factories.character_description_provider_factory import (
+    CharacterDescriptionProviderFactory,
+)
 from src.characters.factories.generate_character_command_factory import (
     GenerateCharacterCommandFactory,
 )
@@ -75,8 +78,15 @@ def main():
 
         url_content_factory = ConcreteUrlContentFactory()
 
+        character_description_provider_factory = CharacterDescriptionProviderFactory(
+            produce_tool_response_strategy_factory
+        )
+
         generate_character_image_command_factory = GenerateCharacterImageCommandFactory(
-            playthrough_name, generated_image_factory, url_content_factory
+            playthrough_name,
+            character_description_provider_factory,
+            generated_image_factory,
+            url_content_factory,
         )
 
         generate_character_command_factory = GenerateCharacterCommandFactory(
@@ -87,7 +97,9 @@ def main():
         )
 
         create_player_character_command = GeneratePlayerCharacterCommand(
-            playthrough_name, generate_character_command_factory
+            playthrough_name,
+            input("Enter your notions for how the player character should be: "),
+            generate_character_command_factory,
         )
 
         visit_place_command_factory = VisitPlaceCommandFactory(

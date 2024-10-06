@@ -110,6 +110,10 @@ class LocationHubView(MethodView):
     @staticmethod
     def handle_describe_place(playthrough_name):
         description = PlaceService().describe_place(playthrough_name)
+
+        # Add the place description to the adventure.
+        PlaythroughManager(playthrough_name).add_to_adventure(description + "\n")
+
         session["place_description"] = description
         return redirect(url_for("location-hub"))
 
@@ -187,10 +191,10 @@ class LocationHubView(MethodView):
         ).create_random_place_type_map_entry()
 
         if (
-                result.get_result_type()
-                == RandomPlaceTypeMapEntryCreationResultType.FAILURE
-                or result.get_result_type()
-                == RandomPlaceTypeMapEntryCreationResultType.NO_AVAILABLE_TEMPLATES
+            result.get_result_type()
+            == RandomPlaceTypeMapEntryCreationResultType.FAILURE
+            or result.get_result_type()
+            == RandomPlaceTypeMapEntryCreationResultType.NO_AVAILABLE_TEMPLATES
         ):
             session["no_available_templates"] = result.get_error()
         else:

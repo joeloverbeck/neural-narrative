@@ -156,3 +156,10 @@ class PlaythroughManager:
         logger.info(
             f"Updated playthrough current place to '{new_current_place_identifier}'."
         )
+
+    def add_to_adventure(self, entry: str):
+        file_path = self._filesystem_manager.get_file_path_to_adventure(
+            self._playthrough_name
+        )
+
+        self._filesystem_manager.append_to_file(file_path, entry + "\n")

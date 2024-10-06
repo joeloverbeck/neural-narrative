@@ -3,7 +3,13 @@ import shutil
 
 from src.abstracts.command import Command
 from src.characters.characters_manager import CharactersManager
-from src.constants import DEFAULT_IMAGE_FILE
+from src.characters.factories.character_description_provider_factory import (
+    CharacterDescriptionProviderFactory,
+)
+from src.constants import (
+    DEFAULT_IMAGE_FILE,
+    IMAGE_GENERATION_PROMPT_FILE,
+)
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.images.abstracts.abstract_factories import GeneratedImageFactory
 from src.requests.abstracts.abstract_factories import UrlContentFactory
@@ -17,6 +23,7 @@ class GenerateCharacterImageCommand(Command):
         self,
         playthrough_name: str,
         character_identifier: str,
+        character_description_provider_factory: CharacterDescriptionProviderFactory,
         generated_image_factory: GeneratedImageFactory,
         url_content_factory: UrlContentFactory,
         characters_manager: CharactersManager = None,
@@ -31,6 +38,9 @@ class GenerateCharacterImageCommand(Command):
 
         self._playthrough_name = playthrough_name
         self._character_identifier = character_identifier
+        self._character_description_provider_factory = (
+            character_description_provider_factory
+        )
         self._generated_image_factory = generated_image_factory
         self._url_content_factory = url_content_factory
         self._character_manager = characters_manager or CharactersManager(
@@ -45,16 +55,15 @@ class GenerateCharacterImageCommand(Command):
             self._character_identifier
         )
 
-        prompt = (
-            "Create a close-up portrait, as it could appear in a painting or a photo ID, of the following character:\n"
-            f"Name: {character_data['name']}\n"
-            f"Description: {character_data['description']}\n"
-            f"Personality: {character_data['personality']}\n"
-            f"Equipment belonging to {character_data['name']}: {character_data['equipment']}\n"
-            "Note: the equipment is only listed to influence the portrait of the character. "
-            "Do not depict equipment separately to the character. Don't generate text."
-            "The resulting image should resemble a photo or portrait made of a candid moment."
+        character_description_product = (
+            self._character_description_provider_factory.create_provider(
+                character_data
+            ).generate_product()
         )
+
+        prompt = self._filesystem_manager.read_file(
+            IMAGE_GENERATION_PROMPT_FILE
+        ).format(character_description=character_description_product.get())
 
         target_image_path = self._filesystem_manager.get_file_path_to_character_image(
             self._playthrough_name, self._character_identifier

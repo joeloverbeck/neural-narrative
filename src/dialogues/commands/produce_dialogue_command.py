@@ -72,15 +72,23 @@ class ProduceDialogueCommand(Command):
                 dialogue_product.get_transcription()
             ).execute()
 
-            # Must coax the LLM into creating interesting situations.
-            self._generate_interesting_situations_command_factory.create_generate_interesting_situations_command(
-                dialogue_product.get_transcription()
-            ).execute()
+            # The two following may fail because the LLM has done something wonky, and in that case,
+            # it's not really that much of a big deal.
+            try:
+                # Must coax the LLM into creating interesting situations.
+                self._generate_interesting_situations_command_factory.create_generate_interesting_situations_command(
+                    dialogue_product.get_transcription()
+                ).execute()
 
-            # Now do the same but with dilemmas
-            self._generate_interesting_dilemmas_command_factory.create_command(
-                dialogue_product.get_transcription()
-            ).execute()
+                # Now do the same but with dilemmas
+                self._generate_interesting_dilemmas_command_factory.create_command(
+                    dialogue_product.get_transcription()
+                ).execute()
+            except ValueError as e:
+                logger.error(
+                    "Was unable to generate either interesting situations or dilemmas. Error: %s",
+                    e,
+                )
 
         # Must remove the temporary dialogue.
         self._filesystem_manager.remove_ongoing_dialogue(self._playthrough_name)

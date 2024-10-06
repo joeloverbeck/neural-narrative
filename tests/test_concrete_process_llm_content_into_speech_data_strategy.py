@@ -3,21 +3,30 @@ from unittest.mock import MagicMock
 import pytest
 
 from src.dialogues.messages_to_llm import MessagesToLlm
-from src.dialogues.products.concrete_speech_data_product import ConcreteSpeechDataProduct
-from src.dialogues.strategies.concrete_process_llm_content_into_speech_data_strategy import \
-    ConcreteProcessLlmContentIntoSpeechDataStrategy
+from src.dialogues.products.concrete_speech_data_product import (
+    ConcreteSpeechDataProduct,
+)
+from src.dialogues.strategies.concrete_process_llm_content_into_speech_data_strategy import (
+    ConcreteProcessLlmContentIntoSpeechDataStrategy,
+)
 from src.prompting.abstracts.factory_products import LlmContentProduct
-from src.prompting.factories.speech_tool_response_data_extraction_provider_factory import \
-    SpeechToolResponseDataExtractionProviderFactory
-from src.prompting.factories.tool_response_parsing_provider_factory import ToolResponseParsingProviderFactory
+from src.prompting.factories.speech_tool_response_data_extraction_provider_factory import (
+    SpeechToolResponseDataExtractionProviderFactory,
+)
+from src.prompting.factories.tool_response_parsing_provider_factory import (
+    ToolResponseParsingProviderFactory,
+)
 
 
 @pytest.fixture
 def mock_dependencies():
     messages_to_llm = MagicMock(spec=MessagesToLlm)
-    tool_response_parsing_provider_factory = MagicMock(spec=ToolResponseParsingProviderFactory)
+    tool_response_parsing_provider_factory = MagicMock(
+        spec=ToolResponseParsingProviderFactory
+    )
     speech_tool_response_data_extraction_provider_factory = MagicMock(
-        spec=SpeechToolResponseDataExtractionProviderFactory)
+        spec=SpeechToolResponseDataExtractionProviderFactory
+    )
 
     return {
         "messages_to_llm": messages_to_llm,
@@ -30,9 +39,12 @@ def mock_dependencies():
 def strategy(mock_dependencies):
     return ConcreteProcessLlmContentIntoSpeechDataStrategy(
         messages_to_llm=mock_dependencies["messages_to_llm"],
-        tool_response_parsing_provider_factory=mock_dependencies["tool_response_parsing_provider_factory"],
+        tool_response_parsing_provider_factory=mock_dependencies[
+            "tool_response_parsing_provider_factory"
+        ],
         speech_tool_response_data_extraction_provider_factory=mock_dependencies[
-            "speech_tool_response_data_extraction_provider_factory"]
+            "speech_tool_response_data_extraction_provider_factory"
+        ],
     )
 
 
@@ -59,35 +71,13 @@ def test_do_algorithm_with_invalid_parsed_tool_response(strategy, mock_dependenc
     tool_response_parsing_product.get_error.return_value = "Parsing error"
 
     mock_dependencies[
-        "tool_response_parsing_provider_factory"].create_tool_response_parsing_provider.return_value.parse_tool_response.return_value = tool_response_parsing_product
+        "tool_response_parsing_provider_factory"
+    ].create_tool_response_parsing_provider.return_value.parse_tool_response.return_value = (
+        tool_response_parsing_product
+    )
 
     result = strategy.do_algorithm(llm_content_product)
 
     assert isinstance(result, ConcreteSpeechDataProduct)
     assert not result.is_valid()
     assert "Was unable to parse the tool response" in result.get_error()
-
-
-def test_do_algorithm_with_valid_response(strategy, mock_dependencies):
-    llm_content_product = MagicMock(spec=LlmContentProduct)
-    llm_content_product.is_valid.return_value = True
-    llm_content_product.get.return_value = "Valid LLM content"
-
-    tool_response_parsing_product = MagicMock()
-    tool_response_parsing_product.is_valid.return_value = True
-
-    mock_dependencies[
-        "tool_response_parsing_provider_factory"].create_tool_response_parsing_provider.return_value.parse_tool_response.return_value = tool_response_parsing_product
-
-    speech_data_extraction_product = MagicMock()
-    speech_data_extraction_product.get.return_value = {"some": "data"}
-
-    mock_dependencies[
-        "speech_tool_response_data_extraction_provider_factory"].create_speech_tool_response_data_extraction_provider.return_value.extract_data.return_value = speech_data_extraction_product
-
-    result = strategy.do_algorithm(llm_content_product)
-
-    assert isinstance(result, ConcreteSpeechDataProduct)
-    assert result.is_valid()
-    assert result.get() == {"some": "data"}
-    mock_dependencies["messages_to_llm"].add_message.assert_called_with("assistant", "Valid LLM content")

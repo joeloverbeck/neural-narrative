@@ -3,12 +3,12 @@ from src.characters.characters_manager import CharactersManager
 from src.characters.commands.generate_character_generation_guidelines_command import (
     GenerateCharacterGenerationGuidelinesCommand,
 )
+from src.characters.factories.character_generation_guidelines_factory import (
+    CharacterGenerationGuidelinesFactory,
+)
 from src.constants import TIME_ADVANCED_DUE_TO_EXITING_LOCATION
 from src.maps.map_manager import MapManager
 from src.playthrough_manager import PlaythroughManager
-from src.prompting.factories.character_generation_guidelines_factory import (
-    CharacterGenerationGuidelinesFactory,
-)
 from src.time.time_manager import TimeManager
 
 

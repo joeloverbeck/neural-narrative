@@ -2,4 +2,5 @@ Given the following transcription of a dialogue, analyze it and generate a list 
 These situations should involve unexpected twists, conflicts, or developments that would engage the player.
 Consider the characters' motivations, relationships, and any hints or clues in the dialogue to create these scenarios.
 Each situation should be described in one or two sentences. Do not precede each situation with a number (it shouldn't be a numbered list).
+Important: do not, under any circumstance, respond by repeating the dialogue provided.
 {transcription}

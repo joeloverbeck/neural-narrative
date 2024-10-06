@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block styles %}
+{{ super() }}
+<link href="{{ url_for('static', filename='story-hub.css') }}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block title %}
+Story Hub
+{% endblock %}
+
+{% block content %}
+<div class="story-hub-container">
+    <h1>Story Hub</h1>
+    {% if concepts %}
+    <div class="concepts-list">
+        {% for concept in concepts %}
+        <form action="{{ url_for('story-hub') }}" method="post" class="concept-form">
+            <input type="hidden" name="action" value="delete_concept">
+            <input type="hidden" name="concept_index" value="{{ loop.index0 }}">
+            <button type="submit" class="concept">
+                <p>{{ concept }}</p>
+            </button>
+        </form>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p>No concepts generated yet.</p>
+    {% endif %}
+    <form action="{{ url_for('story-hub') }}" method="post">
+        <input type="hidden" name="action" value="generate_concepts">
+        <input type="submit" value="Generate Concepts">
+    </form>
+    <div class="buttons">
+        <a href="{{ url_for('event-inspiration') }}" class="button">Event Inspiration</a>
+        <a href="{{ url_for('location-hub') }}" class="button">Location Hub</a>
+    </div>
+</div>
+
+<!-- JavaScript for the fade-out effect -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const conceptForms = document.querySelectorAll('.concept-form');
+        conceptForms.forEach(function(form) {
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const conceptButton = form.querySelector('.concept');
+                conceptButton.classList.add('fade-out');
+                setTimeout(function() {
+                    form.submit();
+                }, 500); // Wait for the animation to complete
+            });
+        });
+    });
+</script>
+{% endblock %}

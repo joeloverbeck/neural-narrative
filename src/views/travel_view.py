@@ -6,6 +6,7 @@ from src.constants import (
     TIME_ADVANCED_DUE_TO_TRAVELING,
 )
 from src.maps.map_manager import MapManager
+from src.playthrough_manager import PlaythroughManager
 from src.prompting.factories.openrouter_llm_client_factory import (
     OpenRouterLlmClientFactory,
 )
@@ -37,12 +38,15 @@ class TravelView(MethodView):
             playthrough_name,
             destination_identifier,
             produce_tool_response_strategy_factory,
-        ).generate_travel_narration()
+        ).generate_product()
 
         if not product.is_valid():
             return redirect(url_for("location-hub"))
 
         travel_narration = product.get()
+
+        # Add the travel narration to the adventure.
+        PlaythroughManager(playthrough_name).add_to_adventure(travel_narration + "\n")
 
         destination_place_data = MapManager(playthrough_name).get_place_full_data(
             destination_identifier

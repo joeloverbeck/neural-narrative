@@ -1,3 +1,6 @@
+from abc import abstractmethod
+from typing import Optional
+
 from src.constants import TOOL_INSTRUCTIONS_FILE
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.prompting.factories.produce_tool_response_strategy_factory import (
@@ -56,9 +59,61 @@ class BaseToolResponseProvider:
         strategy = (
             self._produce_tool_response_strategy_factory.create_produce_tool_response_strategy()
         )
+
         return strategy.produce_tool_response(system_content, user_content)
 
     @staticmethod
     def _extract_arguments(tool_response: dict) -> dict:
         """Extracts arguments from the tool response."""
         return tool_response.get("arguments", {})
+
+    def generate_product(self):
+        # Prepare the prompt
+        formatted_prompt = self.get_formatted_prompt()
+        if formatted_prompt is None:
+            prompt_file = self.get_prompt_file()
+            prompt_kwargs = self.get_prompt_kwargs()
+            prompt_template = self._read_prompt_file(prompt_file)
+            formatted_prompt = self._format_prompt(prompt_template, **prompt_kwargs)
+
+        # Generate system content
+        tool_file = self.get_tool_file()
+        tool_data = self._read_tool_file(tool_file)
+        tool_instructions = self._read_tool_instructions()
+        tool_prompt = self._generate_tool_prompt(tool_data, tool_instructions)
+        system_content = self._generate_system_content(formatted_prompt, tool_prompt)
+
+        # User content
+        user_content = self.get_user_content()
+
+        # Produce tool response
+        tool_response = self._produce_tool_response(system_content, user_content)
+
+        # Extract arguments
+        arguments = self._extract_arguments(tool_response)
+
+        # Create and return the product
+        product = self.create_product(arguments)
+
+        return product
+
+    @abstractmethod
+    def get_tool_file(self) -> str:
+        pass
+
+    @abstractmethod
+    def get_user_content(self) -> str:
+        pass
+
+    @abstractmethod
+    def create_product(self, arguments: dict):
+        pass
+
+    def get_prompt_file(self) -> Optional[str]:
+        return None
+
+    def get_prompt_kwargs(self) -> dict:
+        return {}
+
+    def get_formatted_prompt(self) -> Optional[str]:
+        return None

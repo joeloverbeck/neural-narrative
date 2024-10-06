@@ -5,16 +5,13 @@ from src.characters.characters_manager import CharactersManager
 from src.characters.factories.store_generated_character_command_factory import (
     StoreGeneratedCharacterCommandFactory,
 )
+from src.characters.providers.character_generation_tool_response_provider import (
+    CharacterGenerationToolResponseProvider,
+)
 from src.images.factories.generate_character_image_command_factory import (
     GenerateCharacterImageCommandFactory,
 )
 from src.movements.movement_manager import MovementManager
-from src.prompting.providers.character_generation_tool_response_provider import (
-    CharacterGenerationToolResponseProvider,
-)
-from src.prompting.providers.character_tool_response_data_extraction_provider import (
-    CharacterToolResponseDataExtractionProvider,
-)
 
 logger = logging.getLogger(__name__)
 
@@ -63,15 +60,8 @@ class GenerateCharacterCommand(Command):
             )
             return
 
-        # Extract character data using the function provided
-        character_data: dict = (
-            CharacterToolResponseDataExtractionProvider(llm_tool_response_product.get())
-            .extract_data()
-            .get()
-        )
-
         self._store_generate_character_command_factory.create_store_generated_character_command(
-            character_data
+            llm_tool_response_product.get()
         ).execute()
 
         # Now that the character is stored, we need to retrieve the latest character identifier,

@@ -1,5 +1,6 @@
 import logging
 import logging.config
+import os
 import random
 
 from src.abstracts.command import Command
@@ -8,6 +9,7 @@ from src.constants import (
     DEFAULT_PLAYER_IDENTIFIER,
     DEFAULT_CURRENT_PLACE,
     DEFAULT_IDENTIFIER,
+    WORLD_TEMPLATES_FILE,
 )
 from src.exceptions import (
     WorldTemplateNotFoundException,
@@ -38,7 +40,7 @@ class CreatePlaythroughMetadataCommand(Command):
 
     def execute(self) -> None:
         # Check if the folder already exists
-        if self._filesystem_manager.does_file_path_exist(
+        if os.path.exists(
             self._filesystem_manager.get_file_path_to_playthrough_folder(
                 self._playthrough_name
             )
@@ -49,7 +51,7 @@ class CreatePlaythroughMetadataCommand(Command):
 
         # Checks here if there is such a world template:
         worlds_file = self._filesystem_manager.load_existing_or_new_json_file(
-            self._filesystem_manager.get_file_path_to_worlds_template_file()
+            WORLD_TEMPLATES_FILE
         )
 
         if self._world_template not in worlds_file:
@@ -58,7 +60,7 @@ class CreatePlaythroughMetadataCommand(Command):
             )
 
         # Create the playthrough folder
-        self._filesystem_manager.create_folders_along_file_path(
+        os.makedirs(
             self._filesystem_manager.get_file_path_to_playthrough_folder(
                 self._playthrough_name
             )

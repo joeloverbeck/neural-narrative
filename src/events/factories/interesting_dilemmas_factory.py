@@ -21,33 +21,24 @@ class InterestingDilemmasFactory(BaseToolResponseProvider):
         filesystem_manager: Optional[FilesystemManager] = None,
     ):
         super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
-
         self._transcription = transcription
 
-    def generate_interesting_dilemmas(self) -> InterestingDilemmasProduct:
-        # Prepare the prompt
-        prompt_template = self._read_prompt_file(
-            INTERESTING_DILEMMAS_GENERATION_PROMPT_FILE
+    def get_prompt_file(self) -> str:
+        return INTERESTING_DILEMMAS_GENERATION_PROMPT_FILE
+
+    def get_prompt_kwargs(self) -> dict:
+        return {"transcription": self._transcription.get()}
+
+    def get_tool_file(self) -> str:
+        return INTERESTING_DILEMMAS_GENERATION_TOOL_FILE
+
+    def get_user_content(self) -> str:
+        return (
+            "Write a list of at least five intriguing moral and ethical dilemmas that "
+            "could stem from this conversation, as per the above instructions."
         )
-        formatted_prompt = self._format_prompt(
-            prompt_template, transcription=self._transcription.get()
-        )
 
-        # Generate system content
-        tool_data = self._read_tool_file(INTERESTING_DILEMMAS_GENERATION_TOOL_FILE)
-        tool_instructions = self._read_tool_instructions()
-        tool_prompt = self._generate_tool_prompt(tool_data, tool_instructions)
-        system_content = self._generate_system_content(formatted_prompt, tool_prompt)
-
-        # User content
-        user_content = "Write a list of at least five intriguing moral and ethical dilemmas that could stem from this conversation, as per the above instructions."
-
-        # Produce tool response
-        tool_response = self._produce_tool_response(system_content, user_content)
-
-        # Extract arguments
-        arguments = self._extract_arguments(tool_response)
-
+    def create_product(self, arguments: dict):
         return InterestingDilemmasProduct(
             arguments.get("interesting_dilemmas"), is_valid=True
         )
