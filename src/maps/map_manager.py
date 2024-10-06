@@ -2,6 +2,12 @@ import logging
 import random
 from typing import List, Dict, Optional
 
+from src.constants import (
+    WORLD_TEMPLATES_FILE,
+    LOCATIONS_TEMPLATES_FILE,
+    AREAS_TEMPLATES_FILE,
+    REGIONS_TEMPLATES_FILE,
+)
 from src.enums import PlaceType
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.identifiers_manager import IdentifiersManager
@@ -47,21 +53,19 @@ class MapManager:
 
     def _load_template_file(self, place_type: PlaceType) -> Dict:
         """Load the template file based on place type."""
-        file_path_getter = {
-            PlaceType.WORLD: self._filesystem_manager.get_file_path_to_worlds_template_file,
-            PlaceType.REGION: self._filesystem_manager.get_file_path_to_regions_template_file,
-            PlaceType.AREA: self._filesystem_manager.get_file_path_to_areas_template_file,
-            PlaceType.LOCATION: self._filesystem_manager.get_file_path_to_locations_template_file,
+        file_path = {
+            PlaceType.WORLD: WORLD_TEMPLATES_FILE,
+            PlaceType.REGION: REGIONS_TEMPLATES_FILE,
+            PlaceType.AREA: AREAS_TEMPLATES_FILE,
+            PlaceType.LOCATION: LOCATIONS_TEMPLATES_FILE,
         }.get(place_type)
 
-        if not file_path_getter:
+        if not file_path:
             raise ValueError(
                 f"Template file for place type '{place_type.value}' not found."
             )
 
-        return self._filesystem_manager.load_existing_or_new_json_file(
-            file_path_getter()
-        )
+        return self._filesystem_manager.load_existing_or_new_json_file(file_path)
 
     @staticmethod
     def _get_place(place_identifier: str, map_file: Dict) -> Dict:
@@ -144,12 +148,46 @@ class MapManager:
 
     def get_world_description(self):
         worlds_templates_file = self._filesystem_manager.load_existing_or_new_json_file(
-            self._filesystem_manager.get_file_path_to_worlds_template_file()
+            WORLD_TEMPLATES_FILE
         )
 
         return worlds_templates_file[self._playthrough_manager.get_world_template()][
             "description"
         ]
+
+    def get_place_description(self, place_identifier: str) -> str:
+        """
+        Retrieve the description of a place given its identifier, regardless of its type.
+
+        Args:
+            place_identifier (str): The identifier of the place.
+
+        Returns:
+            str: The description of the place.
+
+        Raises:
+            ValueError: If the place identifier is invalid, or if the description is not found.
+        """
+        if not place_identifier:
+            raise ValueError("place_identifier can't be empty.")
+
+        map_file = self._load_map_file()
+        place = self._get_place(place_identifier, map_file)
+        place_template = self._get_place_template(place)
+        place_type = self.determine_place_type(place_identifier)
+        templates = self._load_template_file(place_type)
+        template_data = templates.get(place_template)
+
+        if not template_data:
+            raise ValueError(
+                f"Template '{place_template}' not found in {place_type.value} templates."
+            )
+
+        description = template_data.get("description")
+        if not description:
+            raise ValueError(f"No description found in template '{place_template}'.")
+
+        return description
 
     def get_father_identifier(self, place_identifier: str) -> str:
         """
@@ -216,6 +254,17 @@ class MapManager:
 
         return PlaceType(place.get("type"))
 
+    def determine_place_type(self, place_identifier: str) -> PlaceType:
+        map_file = self._load_map_file()
+        place = self._get_place(place_identifier, map_file)
+        place_type_str = place.get("type")
+        try:
+            return PlaceType(place_type_str)
+        except ValueError:
+            raise ValueError(
+                f"Unknown place type '{place_type_str}' for place ID '{place_identifier}'."
+            )
+
     def get_place_categories(
         self, place_template: str, place_type: PlaceType
     ) -> List[str]:
@@ -255,17 +304,6 @@ class MapManager:
         place = self._get_place(max_id_str, map_file)
         place_template = self._get_place_template(place)
         return max_id_str, place_template
-
-    def determine_place_type(self, place_identifier: str) -> PlaceType:
-        map_file = self._load_map_file()
-        place = self._get_place(place_identifier, map_file)
-        place_type_str = place.get("type")
-        try:
-            return PlaceType(place_type_str)
-        except ValueError:
-            raise ValueError(
-                f"Unknown place type '{place_type_str}' for place ID '{place_identifier}'."
-            )
 
     def fill_places_templates_parameter(
         self, place_identifier: str

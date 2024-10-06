@@ -50,7 +50,6 @@ class ChatView(MethodView):
         )
 
     def post(self):
-        # Handle POST request
         playthrough_name = session.get("playthrough_name")
         dialogue_participants = session.get("participants")
         purpose = session.get("purpose", "")
@@ -59,32 +58,44 @@ class ChatView(MethodView):
             return redirect(url_for("index"))
 
         dialogue = session.get("dialogue", [])
+        action = request.form.get("action")
         user_input = request.form.get("user_input")
 
-        if not user_input:
-            flash("Please enter a message.")
+        if action == "Send":
+            if not user_input:
+                flash("Please enter a message.")
+                return redirect(url_for("chat"))
+
+            dialogue_service = DialogueService()
+
+            messages, is_goodbye = dialogue_service.process_user_input(user_input)
+
+            if is_goodbye:
+                session.pop("playthrough_name", None)
+                session.pop("participants", None)
+                session.pop("dialogue", None)
+                session.pop("purpose", None)
+                return redirect(url_for("story-hub"))
+
+            dialogue.extend(messages)
+            if len(dialogue) > MAX_DIALOGUE_ENTRIES_FOR_WEB:
+                dialogue = dialogue[-MAX_DIALOGUE_ENTRIES_FOR_WEB:]
+
+            session["dialogue"] = dialogue
+
             return redirect(url_for("chat"))
 
-        # Process the dialogue
-        dialogue_service = DialogueService(
-            playthrough_name, dialogue_participants, purpose
-        )
+        elif action == "Ambient narration":
+            ambient_message = DialogueService().process_ambient_message()
 
-        messages, is_goodbye = dialogue_service.process_user_input(user_input)
+            # Add the message to dialogue
+            dialogue.append(ambient_message)
+            if len(dialogue) > MAX_DIALOGUE_ENTRIES_FOR_WEB:
+                dialogue = dialogue[-MAX_DIALOGUE_ENTRIES_FOR_WEB:]
 
-        if is_goodbye:
-            session.pop("playthrough_name", None)
-            session.pop("participants", None)
-            session.pop("dialogue", None)
-            session.pop("purpose", None)
+            session["dialogue"] = dialogue
+            return redirect(url_for("chat"))
 
-            return redirect(url_for("index"))
-
-        # Update dialogue
-        dialogue.extend(messages)
-        if len(dialogue) > MAX_DIALOGUE_ENTRIES_FOR_WEB:
-            dialogue = dialogue[-MAX_DIALOGUE_ENTRIES_FOR_WEB:]
-
-        session["dialogue"] = dialogue
-
-        return redirect(url_for("chat"))
+        else:
+            flash("Unknown action.")
+            return redirect(url_for("chat"))

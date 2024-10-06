@@ -1,5 +1,6 @@
 from typing import List
 
+from src.constants import CHARACTER_GENERATION_GUIDELINES_FILE
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.identifiers_manager import IdentifiersManager
 from src.playthrough_manager import PlaythroughManager
@@ -193,7 +194,7 @@ class CharactersManager:
             raise ValueError("area can't be empty.")
 
         guidelines_file = self._filesystem_manager.load_existing_or_new_json_file(
-            self._filesystem_manager.get_file_path_to_character_generation_guidelines_file()
+            CHARACTER_GENERATION_GUIDELINES_FILE
         )
 
         key = self.create_key_for_character_generation_guidelines(
@@ -223,7 +224,7 @@ class CharactersManager:
             raise ValueError("area can't be empty.")
 
         guidelines_file = self._filesystem_manager.load_existing_or_new_json_file(
-            self._filesystem_manager.get_file_path_to_character_generation_guidelines_file()
+            CHARACTER_GENERATION_GUIDELINES_FILE
         )
 
         guidelines_file[
@@ -234,7 +235,7 @@ class CharactersManager:
 
         self._filesystem_manager.save_json_file(
             guidelines_file,
-            self._filesystem_manager.get_file_path_to_character_generation_guidelines_file(),
+            CHARACTER_GENERATION_GUIDELINES_FILE,
         )
 
     def are_there_character_generation_guidelines_for_place(
@@ -248,7 +249,7 @@ class CharactersManager:
             raise ValueError("area can't be empty.")
 
         guidelines_file = self._filesystem_manager.load_existing_or_new_json_file(
-            self._filesystem_manager.get_file_path_to_character_generation_guidelines_file()
+            CHARACTER_GENERATION_GUIDELINES_FILE
         )
 
         return (

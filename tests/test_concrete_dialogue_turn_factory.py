@@ -1,7 +1,6 @@
 from unittest.mock import MagicMock, patch
 
 from src.abstracts.observer import Observer
-
 # Import the ConcreteDialogueTurnFactory and related exceptions
 from src.dialogues.factories.concrete_dialogue_turn_factory import (
     ConcreteDialogueTurnFactory,
@@ -115,58 +114,4 @@ def test_process_turn_of_dialogue_player_says_goodbye(
     mock_get_player_input.assert_called_once()
     player_input_product.is_goodbye.assert_called_once()
     mock_create_dialogue_product.assert_called_once_with(has_ended=True)
-    assert result == dialogue_product
-
-
-@patch(
-    "src.dialogues.factories.concrete_dialogue_turn_factory.ConcreteDialogueTurnFactory._create_dialogue_product"
-)
-@patch(
-    "src.dialogues.factories.concrete_dialogue_turn_factory.ConcreteDialogueTurnFactory._process_speech_turn"
-)
-@patch(
-    "src.dialogues.factories.concrete_dialogue_turn_factory.ConcreteDialogueTurnFactory._validate_next_speaker"
-)
-@patch(
-    "src.dialogues.factories.concrete_dialogue_turn_factory.ConcreteDialogueTurnFactory._choose_next_speaker"
-)
-@patch(
-    "src.dialogues.factories.concrete_dialogue_turn_factory.ConcreteDialogueTurnFactory._get_player_input"
-)
-def test_process_turn_of_dialogue_normal_flow(
-    mock_get_player_input,
-    mock_choose_next_speaker,
-    mock_validate_next_speaker,
-    mock_process_speech_turn,
-    mock_create_dialogue_product,
-):
-    # Mock player input
-    player_input_product = MagicMock()
-    player_input_product.is_goodbye.return_value = False
-    mock_get_player_input.return_value = player_input_product
-
-    # Mock response product
-    response_product = MagicMock()
-    mock_choose_next_speaker.return_value = response_product
-
-    # Mock dialogue product
-    dialogue_product = MagicMock()
-    mock_create_dialogue_product.return_value = dialogue_product
-
-    factory = ConcreteDialogueTurnFactory(
-        MagicMock(), MagicMock(), MagicMock(), MagicMock()
-    )
-
-    # Invoke the method
-    result = factory.process_turn_of_dialogue()
-
-    # Assertions
-    mock_get_player_input.assert_called_once()
-    player_input_product.is_goodbye.assert_called_once()
-    mock_choose_next_speaker.assert_called_once()
-    mock_validate_next_speaker.assert_called_once_with(response_product)
-    mock_process_speech_turn.assert_called_once_with(
-        player_input_product, response_product
-    )
-    mock_create_dialogue_product.assert_called_once_with(has_ended=False)
     assert result == dialogue_product

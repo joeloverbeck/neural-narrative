@@ -11,18 +11,12 @@ from src.constants import (
     PLAYTHROUGH_METADATA_FILE,
     MEMORIES_FILE,
     DIALOGUES_FILE,
-    WORLD_TEMPLATES_FILE,
-    LOCATIONS_TEMPLATES_FILE,
     MAP_FILE,
-    AREAS_TEMPLATES_FILE,
-    REGIONS_TEMPLATES_FILE,
     LOGGING_CONFIG_FILE,
     OPENAI_SECRET_KEY_FILE,
     IMAGES_FOLDER_NAME,
     OPENAI_PROJECT_KEY_FILE,
     ONGOING_DIALOGUE_FOLDER_NAME,
-    CONFIG_FILE,
-    CHARACTER_GENERATION_GUIDELINES_FILE,
 )
 
 
@@ -87,11 +81,11 @@ class FilesystemManager:
 
         # If the file doesn't exist, create it and write an empty dictionary to it
         if not os.path.exists(file_path):
-            with open(file_path, "w") as f:
+            with open(file_path, "w", encoding="utf-8") as f:
                 json.dump({}, f)
 
         # Load the existing data from the file
-        with open(file_path, "r") as f:
+        with open(file_path, "r", encoding="utf-8") as f:
             return json.load(f)
 
     @staticmethod
@@ -104,10 +98,6 @@ class FilesystemManager:
                 del lines[index]
                 with open(file_path, "w", encoding="utf-8") as file:
                     file.write("\n".join(lines))
-
-    @staticmethod
-    def does_file_path_exist(file_path):
-        return os.path.exists(file_path)
 
     def load_openrouter_secret_key(self):
         try:
@@ -143,10 +133,6 @@ class FilesystemManager:
             sys.exit(f"An unexpected error occurred: {str(e)}")
 
     @staticmethod
-    def get_file_path_to_config_file():
-        return CONFIG_FILE
-
-    @staticmethod
     def get_file_path_to_playthroughs_folder():
         # Ensure the playthroughs folder exists
         if not os.path.exists(PLAYTHROUGHS_FOLDER):
@@ -169,10 +155,6 @@ class FilesystemManager:
 
     def playthrough_exists(self, playthrough_name):
         return playthrough_name in self.get_playthrough_names()
-
-    @staticmethod
-    def create_folders_along_file_path(file_path):
-        os.makedirs(file_path)
 
     def get_file_path_to_playthrough_folder(self, playthrough_name: str):
         return os.path.join(
@@ -232,26 +214,27 @@ class FilesystemManager:
         if os.path.exists(file_path):
             os.remove(file_path)
 
-    @staticmethod
-    def get_file_path_to_worlds_template_file():
-        return WORLD_TEMPLATES_FILE
-
-    @staticmethod
-    def get_file_path_to_locations_template_file():
-        return LOCATIONS_TEMPLATES_FILE
-
-    @staticmethod
-    def get_file_path_to_areas_template_file():
-        return AREAS_TEMPLATES_FILE
-
-    @staticmethod
-    def get_file_path_to_regions_template_file():
-        return REGIONS_TEMPLATES_FILE
-
     def get_file_path_to_playthrough_metadata(self, playthrough_name: str):
         return os.path.join(
             self.get_file_path_to_playthrough_folder(playthrough_name),
             PLAYTHROUGH_METADATA_FILE,
+        )
+
+    def get_file_path_to_adventure(self, playthrough_name: str):
+        if not playthrough_name:
+            raise ValueError("playthrough_name can't be empty.")
+
+        return os.path.join(
+            self.get_file_path_to_playthrough_folder(playthrough_name),
+            "adventure.txt",
+        )
+
+    def get_file_path_to_concepts(self, playthrough_name: str):
+        if not playthrough_name:
+            raise ValueError("playthrough_name can't be empty.")
+
+        return os.path.join(
+            self.get_file_path_to_playthrough_folder(playthrough_name), "concepts.txt"
         )
 
     def get_file_path_to_map(self, playthrough_name: str):
@@ -265,10 +248,6 @@ class FilesystemManager:
             playthrough_name,
             CHARACTERS_FOLDER_NAME,
         )
-
-    @staticmethod
-    def get_file_path_to_character_generation_guidelines_file():
-        return CHARACTER_GENERATION_GUIDELINES_FILE
 
     @staticmethod
     def get_file_path_to_character_images(playthrough_name: str) -> str:

@@ -2,11 +2,11 @@ import logging
 
 from src.abstracts.command import Command
 from src.characters.characters_manager import CharactersManager
-from src.maps.map_manager import MapManager
-from src.playthrough_manager import PlaythroughManager
-from src.prompting.factories.character_generation_guidelines_factory import (
+from src.characters.factories.character_generation_guidelines_factory import (
     CharacterGenerationGuidelinesFactory,
 )
+from src.maps.map_manager import MapManager
+from src.playthrough_manager import PlaythroughManager
 
 logger = logging.getLogger(__name__)
 
@@ -66,9 +66,7 @@ class GenerateCharacterGenerationGuidelinesCommand(Command):
             )
             return
 
-        result = (
-            self._character_generation_guidelines_factory.generate_character_generation_guidelines()
-        )
+        result = self._character_generation_guidelines_factory.generate_product()
 
         if not result.is_valid():
             raise ValueError(

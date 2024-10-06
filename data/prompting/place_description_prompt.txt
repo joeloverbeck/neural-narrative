@@ -13,3 +13,6 @@ Speech patterns: {player_speech_patterns}
 Equipment: {player_equipment}
 Memories:
 {player_memories}
+Important:
+- The description of the place should at the most be five sentences long.
+- It should seem like the player is giving his impression of the place after they have wandered around for a while.

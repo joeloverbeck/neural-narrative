@@ -12,3 +12,6 @@ class AiCompletionProduct(Protocol):
 
     def get_error(self) -> AiCompletionErrorType:
         pass
+
+    def get_error_details(self) -> str:
+        pass

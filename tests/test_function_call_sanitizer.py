@@ -117,3 +117,176 @@ def test_function_call_sanitizer_handles_incorrect_closing_tag():
     # Additional checks can be added to verify the content of 'interesting_situations'
     assert isinstance(json_data["interesting_situations"], list)
     assert len(json_data["interesting_situations"]) > 0
+
+
+def test_sanitize_replaces_self_closing_function_tag_at_end():
+    input_function_call = '<function=generate_story_concepts>{"concepts": ["Story1", "Story2"]}<function/>'
+    expected_output = '<function=generate_story_concepts>{"concepts": ["Story1", "Story2"]}</function>'
+
+    sanitizer = FunctionCallSanitizer(input_function_call)
+    sanitized_output = sanitizer.sanitize()
+
+    assert sanitized_output == expected_output
+
+
+def test_sanitize_does_not_replace_self_closing_function_tag_in_middle():
+    input_function_call = '<function=generate_story_concepts><function/>{"concepts": ["Story1", "Story2"]}</function>'
+    expected_output = input_function_call  # Should remain unchanged
+
+    sanitizer = FunctionCallSanitizer(input_function_call)
+    sanitized_output = sanitizer.sanitize()
+
+    assert sanitized_output == expected_output
+
+
+def test_sanitize_does_not_modify_correct_closing_tag():
+    input_function_call = '<function=generate_story_concepts>{"concepts": ["Story1", "Story2"]}</function>'
+    expected_output = input_function_call  # Should remain unchanged
+
+    sanitizer = FunctionCallSanitizer(input_function_call)
+    sanitized_output = sanitizer.sanitize()
+
+    assert sanitized_output == expected_output
+
+
+def test_sanitize_fixes_closing_tag_without_lt():
+    input_function_call = (
+        '<function=generate_story_concepts>{"concepts": ["Story1", "Story2"]}/function>'
+    )
+    expected_output = '<function=generate_story_concepts>{"concepts": ["Story1", "Story2"]}</function>'
+
+    sanitizer = FunctionCallSanitizer(input_function_call)
+    sanitized_output = sanitizer.sanitize()
+
+    assert sanitized_output == expected_output
+
+
+def test_sanitize_large_input_with_self_closing_tag_at_end():
+    input_function_call = '<function=generate_story_concepts>{"concepts": ["In a world ravaged by a catastrophic virus, Mikel, a cunning survivor, discovers an ancient artifact in the Sepulchre of Forgotten Shadows that holds the key to humanity\'s survival. As he navigates the treacherous landscape of Iberia Mortis, Mikel must confront the infected, forge uneasy alliances, and decide between saving himself or sacrificing everything for the greater good. This thrilling post-apocalyptic adventure explores themes of redemption, sacrifice, and the indomitable human spirit.", "In the ruins of Donostia, Mikel stumbles upon a secret community hidden within the Sepulchre of Forgotten Shadows. As he delves deeper into this mysterious society, Mikel discovers an ancient ritual that could turn the tide against the infected. With time running out and the fate of humanity hanging in the balance, Mikel must decide whether to seize this dark power for himself or risk everything to protect the last remnants of civilization.", "When a devastating plague threatens to wipe out the few remaining survivors in Iberia Mortis, Mikel embarks on a perilous journey to find a cure. His search leads him to the Sepulchre of Forgotten Shadows, where he uncovers a long-forgotten prophecy about a chosen one who will rise from the ashes of humanity to defeat the infected. As Mikel struggles to accept his destiny, he must rally the people of Donostia and unite the warring factions of Iberia Mortis in a desperate final stand against the encroaching darkness.", "In a world where the lines between the living and the dead are blurred, Mikel discovers a hidden sanctuary within the Sepulchre of Forgotten Shadows. As he explores this haven from the horrors of Iberia Mortis, Mikel meets an enigmatic woman who shares his gift for manipulation and survival. Together, they form an unlikely alliance to uncover the truth behind the virus and investigate the dark secrets that haunt the Sepulchre\'s depths. This chilling post-apocalyptic thriller delves into themes of trust, betrayal, and the price of survival in a world gone mad.", "In the lawless ruins of Donostia, Mikel thrives as a charismatic leader of a band of survivors who have taken refuge in the Sepulchre of Forgotten Shadows. But when a mysterious stranger arrives bearing news of a cure for the virus, Mikel\'s leadership is challenged, and dark secrets from his past begin to surface. As tensions rise and the infected close in, Mikel must confront his own demons and decide whether to protect his newfound family or seize the opportunity to escape the horrors of Iberia Mortis once and for all. This gritty post-apocalyptic drama explores power dynamics, loyalty, and the struggle for identity in a world without rules."]}<function/>'
+
+    expected_output = input_function_call.replace("<function/>", "</function>")
+
+    sanitizer = FunctionCallSanitizer(input_function_call)
+    sanitized_output = sanitizer.sanitize()
+
+    assert sanitized_output.endswith("</function>")
+    assert "<function/>" not in sanitized_output
+
+
+def test_incorrect_closing_tag_replaced():
+    function_call = '<function=some_function>{"key": "value"}<function>'
+    expected_output = '<function=some_function>{"key": "value"}</function>'
+    sanitizer = FunctionCallSanitizer(function_call)
+    sanitized_output = sanitizer.sanitize()
+    assert sanitized_output == expected_output
+
+
+def test_correct_function_call_unchanged():
+    function_call = '<function=some_function>{"key": "value"}</function>'
+    sanitizer = FunctionCallSanitizer(function_call)
+    sanitized_output = sanitizer.sanitize()
+    assert sanitized_output == function_call
+
+
+def test_incorrect_closing_tag_square_brackets():
+    function_call = '<function=some_function>{"key": "value"}[/function]'
+    expected_output = '<function=some_function>{"key": "value"}</function>'
+    sanitizer = FunctionCallSanitizer(function_call)
+    sanitized_output = sanitizer.sanitize()
+    assert sanitized_output == expected_output
+
+
+def test_extra_closing_braces_before_closing_tag():
+    function_call = '<function=some_function>{"key": "value"}}}</function>'
+    expected_output = '<function=some_function>{"key": "value"}</function>'
+    sanitizer = FunctionCallSanitizer(function_call)
+    sanitized_output = sanitizer.sanitize()
+    assert sanitized_output == expected_output
+
+
+def test_single_quotes_replaced_with_double_quotes():
+    function_call = "<function=some_function>{'key': 'value'}</function>"
+    expected_output = '<function=some_function>{"key":"value"}</function>'
+    sanitizer = FunctionCallSanitizer(function_call)
+    sanitized_output = sanitizer.sanitize()
+    assert sanitized_output == expected_output
+
+
+def test_self_closing_function_tag_at_end_replaced():
+    function_call = '<function=some_function>{"key": "value"}<function />'
+    expected_output = '<function=some_function>{"key": "value"}</function>'
+    sanitizer = FunctionCallSanitizer(function_call)
+    sanitized_output = sanitizer.sanitize()
+    assert sanitized_output == expected_output
+
+
+def test_remove_extra_spaces_between_tags():
+    function_call = '   <function=some_function>   {"key": "value"}   </function>   '
+    expected_output = '<function=some_function>{"key": "value"}</function>'
+    sanitizer = FunctionCallSanitizer(function_call)
+    sanitized_output = sanitizer.sanitize()
+    assert sanitized_output == expected_output
+
+
+def test_remove_line_breaks():
+    function_call = '<function=some_function>\n{"key": "value"}\n</function>'
+    expected_output = '<function=some_function>{"key": "value"}</function>'
+    sanitizer = FunctionCallSanitizer(function_call)
+    sanitized_output = sanitizer.sanitize()
+    assert sanitized_output == expected_output
+
+
+def test_incorrect_closing_tag_with_extra_characters():
+    function_call = '<function=some_function>{"key": "value"}some_extra_text</function>'
+    expected_output = '<function=some_function>{"key": "value"}</function>'
+    sanitizer = FunctionCallSanitizer(function_call)
+    sanitized_output = sanitizer.sanitize()
+    assert sanitized_output == expected_output
+
+
+def test_missing_opening_function_tag():
+    function_call = '{"key": "value"}</function>'
+    expected_output = '{"key": "value"}</function>'
+    sanitizer = FunctionCallSanitizer(function_call)
+    sanitized_output = sanitizer.sanitize()
+    assert sanitized_output == function_call  # Should remain unchanged
+
+
+def test_missing_closing_function_tag():
+    function_call = '<function=some_function>{"key": "value"}'
+    expected_output = '<function=some_function>{"key": "value"}</function>'
+    sanitizer = FunctionCallSanitizer(function_call)
+    sanitized_output = sanitizer.sanitize()
+    assert sanitized_output == expected_output  # Should add closing tag
+
+
+def test_start_and_end_tags_replaced():
+    function_call = '<{start_tag}=some_function>{"key": "value"}{end_tag}'
+    expected_output = '<function name="some_function">{"key": "value"}</function>'
+    sanitizer = FunctionCallSanitizer(function_call)
+    sanitized_output = sanitizer.sanitize()
+    assert sanitized_output == expected_output
+
+
+def test_fix_closing_function_tag_without_lt_or_slash():
+    function_call = '<function=some_function>{"key": "value"}function>'
+    expected_output = '<function=some_function>{"key": "value"}</function>'
+    sanitizer = FunctionCallSanitizer(function_call)
+    sanitized_output = sanitizer.sanitize()
+    assert sanitized_output == expected_output
+
+
+def test_no_match_inside_function_name():
+    function_call = '<function=some_function_name>{"key": "value"}<function>'
+    expected_output = '<function=some_function_name>{"key": "value"}</function>'
+    sanitizer = FunctionCallSanitizer(function_call)
+    sanitized_output = sanitizer.sanitize()
+    assert sanitized_output == expected_output
+
+
+def test_closing_tag_without_lt_or_slash():
+    function_call = '<function=some_function>{"key": "value"}function>'
+    expected_output = '<function=some_function>{"key": "value"}</function>'
+    sanitizer = FunctionCallSanitizer(function_call)
+    sanitized_output = sanitizer.sanitize()
+    assert sanitized_output == expected_output

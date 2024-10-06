@@ -1,0 +1,22 @@
+{
+  "type": "function",
+  "function": {
+    "name": "generate_story_concepts",
+    "description": "generate five magnificent concepts for full stories.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "concepts": {
+          "type": "array",
+          "description": "Five magnificent concepts for full stories. Follow the provided instructions.",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "concepts"
+      ]
+    }
+  }
+}

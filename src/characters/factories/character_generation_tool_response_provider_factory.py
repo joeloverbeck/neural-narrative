@@ -1,12 +1,12 @@
+from src.characters.providers.character_generation_tool_response_provider import (
+    CharacterGenerationToolResponseProvider,
+)
 from src.maps.places_templates_parameter import PlacesTemplatesParameter
 from src.prompting.abstracts.abstract_factories import (
     UserContentForCharacterGenerationFactory,
 )
 from src.prompting.factories.produce_tool_response_strategy_factory import (
     ProduceToolResponseStrategyFactory,
-)
-from src.prompting.providers.character_generation_tool_response_provider import (
-    CharacterGenerationToolResponseProvider,
 )
 
 

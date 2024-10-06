@@ -15,14 +15,16 @@ MAX_RETRIES_WHEN_FAILED_TO_RETURN_FUNCTION_CALL: int = 3
 REQUEST_OK: int = 200
 TOO_MANY_REQUESTS_ERROR_NUMBER: int = 429
 UNAUTHORIZED_ERROR_NUMBER: int = 401
+PAYMENT_REQUIRED: int = 402
 WAIT_TIME_WHEN_TOO_MANY_REQUESTS_ERROR: int = 10
 WAIT_TIME_WHEN_UNAUTHORIZED_ERROR: int = 10
 WAIT_TIME_WHEN_EMPTY_CONTENT: int = 5
 WAIT_TIME_WHEN_MALFORMED_COMPLETION: int = 5
 
+# Base files and folders
+
 CONFIG_FILE: str = "config.json"
 LOGGING_CONFIG_FILE: str = "data/logging/logging_config.json"
-
 PLAYTHROUGHS_FOLDER: str = "playthroughs"
 CHARACTERS_FOLDER_NAME: str = "characters"
 IMAGES_FOLDER_NAME: str = "images"
@@ -42,10 +44,14 @@ OPENROUTER_SECRET_KEY_FILE: str = "OPENROUTER_SECRET_KEY.txt"
 OPENAI_SECRET_KEY_FILE: str = "OPENAI_SECRET_KEY.txt"
 OPENAI_PROJECT_KEY_FILE: str = "OPENAI_PROJECT_KEY.txt"
 
+# Templates
+
 WORLD_TEMPLATES_FILE: str = "data/templates/worlds.json"
 REGIONS_TEMPLATES_FILE: str = "data/templates/regions.json"
 AREAS_TEMPLATES_FILE: str = "data/templates/areas.json"
 LOCATIONS_TEMPLATES_FILE: str = "data/templates/locations.json"
+
+# Tools
 
 CHARACTER_GENERATOR_TOOL_FILE: str = "data/prompting/character_generation_tool.json"
 SPEECH_GENERATOR_TOOL_FILE: str = "data/prompting/speech_generator_tool.json"
@@ -68,6 +74,15 @@ INTERESTING_SITUATIONS_GENERATION_TOOL_FILE: str = (
 INTERESTING_DILEMMAS_GENERATION_TOOL_FILE: str = (
     "data/prompting/interesting_dilemmas_generation_tool.json"
 )
+CHARACTER_DESCRIPTION_GENERATION_TOOL_FILE: str = (
+    "data/prompting/character_description_generation_tool.json"
+)
+CONCEPTS_GENERATION_TOOL_FILE: str = "data/prompting/concepts_generation_tool.json"
+AMBIENT_NARRATION_GENERATION_TOOL_FILE: str = (
+    "data/prompting/ambient_narration_generation_tool.json"
+)
+
+# Prompts
 
 CHARACTER_GENERATION_INSTRUCTIONS_FILE: str = (
     "data/prompting/character_generation_prompt.txt"
@@ -91,8 +106,18 @@ INTERESTING_SITUATIONS_GENERATION_PROMPT_FILE: str = (
 INTERESTING_DILEMMAS_GENERATION_PROMPT_FILE: str = (
     "data/prompting/interesting_dilemmas_generation_prompt.txt"
 )
+IMAGE_GENERATION_PROMPT_FILE: str = "data/prompting/image_generation_prompt.txt"
+CHARACTER_DESCRIPTION_GENERATION_PROMPT_FILE: str = (
+    "data/prompting/character_description_generation_prompt.txt"
+)
+CONCEPTS_GENERATION_PROMPT_FILE: str = "data/prompting/concepts_generation_prompt.txt"
+AMBIENT_NARRATION_GENERATION_PROMPT_FILE: str = (
+    "data/prompting/ambient_narration_generation_prompt.txt"
+)
 
 OPENROUTER_API_URL: str = "https://openrouter.ai/api/v1"
+
+# LLMs
 
 HERMES_405B = "nousresearch/hermes-3-llama-3.1-405b"
 HERMES_405B_FREE = "nousresearch/hermes-3-llama-3.1-405b:free"

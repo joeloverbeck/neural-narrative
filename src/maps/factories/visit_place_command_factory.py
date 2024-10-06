@@ -1,7 +1,7 @@
-from src.movements.commands.visit_place_command import VisitPlaceCommand
-from src.prompting.factories.character_generation_guidelines_factory import (
+from src.characters.factories.character_generation_guidelines_factory import (
     CharacterGenerationGuidelinesFactory,
 )
+from src.movements.commands.visit_place_command import VisitPlaceCommand
 from src.prompting.factories.produce_tool_response_strategy_factory import (
     ProduceToolResponseStrategyFactory,
 )

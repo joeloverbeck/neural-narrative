@@ -1,10 +1,12 @@
 import logging
+from typing import Optional
 
 from src.abstracts.command import Command
 from src.characters.characters_manager import CharactersManager
 from src.dialogues.participants import Participants
 from src.dialogues.transcription import Transcription
 from src.filesystem.filesystem_manager import FilesystemManager
+from src.playthrough_manager import PlaythroughManager
 
 logger = logging.getLogger(__name__)
 
@@ -15,8 +17,9 @@ class StoreDialoguesCommand(Command):
         playthrough_name: str,
         participants: Participants,
         transcription: Transcription,
-        filesystem_manager: FilesystemManager = None,
-        characters_manager: CharactersManager = None,
+        filesystem_manager: Optional[FilesystemManager] = None,
+        characters_manager: Optional[CharactersManager] = None,
+        playthrough_manager: Optional[PlaythroughManager] = None,
     ):
         if not participants.enough_participants():
             raise ValueError("Not enough participants.")
@@ -27,6 +30,9 @@ class StoreDialoguesCommand(Command):
 
         self._filesystem_manager = filesystem_manager or FilesystemManager()
         self._characters_manager = characters_manager or CharactersManager(
+            self._playthrough_name
+        )
+        self._playthrough_manager = playthrough_manager or PlaythroughManager(
             self._playthrough_name
         )
 
@@ -53,12 +59,11 @@ class StoreDialoguesCommand(Command):
             logger.error("Won't save an empty or insufficient dialogue.")
             return
 
-        prettified_dialogue = ""
-
-        for speech_turn in self._transcription.get():
-            prettified_dialogue += f"{speech_turn}\n"
-
-        prettified_dialogue += "\n"
-
         for participant in self._participants.get_participant_keys():
-            self._store_dialogue_for_participant(participant, prettified_dialogue)
+            self._store_dialogue_for_participant(
+                participant, self._transcription.get_prettified_transcription()
+            )
+
+        self._playthrough_manager.add_to_adventure(
+            self._transcription.get_prettified_transcription()
+        )

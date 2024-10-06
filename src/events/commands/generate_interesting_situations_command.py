@@ -24,7 +24,7 @@ class GenerateInterestingSituationsCommand(Command):
     def execute(self) -> None:
 
         interesting_situations_product = (
-            self._interesting_situations_factory.generate_interesting_situations()
+            self._interesting_situations_factory.generate_product()
         )
 
         if not interesting_situations_product.is_valid():
@@ -32,6 +32,10 @@ class GenerateInterestingSituationsCommand(Command):
                 "Was unable to generate interesting situations. Error: %s",
                 interesting_situations_product.error(),
             )
+            return
+
+        if not interesting_situations_product.get():
+            logger.error("No interesting situations have been generated.")
             return
 
         # Generated interesting situations. Must save them.

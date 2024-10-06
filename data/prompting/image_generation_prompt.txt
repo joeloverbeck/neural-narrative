@@ -1,0 +1,6 @@
+Create a close-up portrait, as it could appear in a painting or a photo ID, of the following character:
+{character_description}
+Important:
+- Do not depict any items separately from the character.
+- Do not include any text, labels, or captions in the image.
+- The resulting image should resemble a photo or portrait captured in a candid moment.

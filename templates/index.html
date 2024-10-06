@@ -26,4 +26,116 @@ Select Playthrough
     <p class="no-playthroughs">No playthroughs available.</p>
     {% endif %}
 </div>
+
+<!-- Create Playthrough -->
+<div class="index-container">
+    <h1>Create Playthrough</h1>
+    <form action="/" method="post" class="create-playthrough-form">
+        <input type="hidden" name="form_type" value="create_playthrough">
+
+        <label for="playthrough_name">Playthrough Name:</label>
+        <input type="text" id="playthrough_name_for_creation" name="playthrough_name" required>
+
+        <label for="world_name_create">Select World:</label>
+        <select id="world_name_create" name="world_name" required onchange="updateDescription('world_create')">
+            {% for key, value in worlds.items() %}
+            <option value="{{ key }}" data-description="{{ value['description'] }}">{{ key }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="player_notion">Your Notions for the Player Character (optional):</label>
+        <textarea id="player_notion" name="player_notion" rows="4" cols="50"></textarea>
+
+        <input type="submit" value="Create Playthrough" class="next-button">
+    </form>
+</div>
+
+
+<div class="index-container">
+    <h1>Generate World</h1>
+    <form action="/" method="post" class="generate-world-form">
+        <input type="hidden" name="form_type" value="generate_world">
+        <label class="world-label" for="world_notion">Enter your notions about the world:</label>
+        <textarea id="world_notion" name="world_notion" rows="4" cols="50" required></textarea>
+        <input class="next-button" type="submit" value="Generate">
+    </form>
+</div>
+
+<!-- Generate Region -->
+<div class="index-container">
+    <h1>Generate Region</h1>
+    <form action="/" method="post" class="generate-region-form">
+        <input type="hidden" name="form_type" value="generate_region">
+        <label for="world_name">Select the world:</label>
+        <select id="world_name" name="world_name" required onchange="updateDescription('world')">
+            {% for key,value in worlds.items() %}
+            <option value="{{ key }}" data-description="{{ value['description'] }}">{{ key }}</option>
+            {% endfor %}
+        </select>
+        <div id="world_description" class="description-box">
+            <h3>World Description</h3>
+            <p></p>
+        </div>
+        <label for="region_notion">Enter your notions about the region (optional):</label>
+        <textarea id="region_notion" name="region_notion" rows="4" cols="50"></textarea>
+        <input type="submit" value="Generate">
+    </form>
+</div>
+
+<!-- Generate Area -->
+<div class="index-container">
+    <h1>Generate Area</h1>
+    <form action="/" method="post" class="generate-area-form">
+        <input type="hidden" name="form_type" value="generate_area">
+        <label for="region_name">Select the region:</label>
+        <select id="region_name" name="region_name" required onchange="updateDescription('region')">
+            {% for key,value in regions.items() %}
+            <option value="{{ key }}" data-description="{{ value['description'] }}">{{ key }}</option>
+            {% endfor %}
+        </select>
+        <div id="region_description" class="description-box">
+            <h3>Region Description</h3>
+            <p></p>
+        </div>
+        <label for="area_notion">Enter your notions about the area (optional):</label>
+        <textarea id="area_notion" name="area_notion" rows="4" cols="50"></textarea>
+        <input type="submit" value="Generate">
+    </form>
+</div>
+
+<!-- Generate Location -->
+<div class="index-container">
+    <h1>Generate Location</h1>
+    <form action="/" method="post" class="generate-location-form">
+        <input type="hidden" name="form_type" value="generate_location">
+        <label for="area_name">Select the area:</label>
+        <select id="area_name" name="area_name" required onchange="updateDescription('area')">
+            {% for key,value in areas.items() %}
+            <option value="{{ key }}" data-description="{{ value['description'] }}">{{ key }}</option>
+            {% endfor %}
+        </select>
+        <div id="area_description" class="description-box">
+            <h3>Area Description</h3>
+            <p></p>
+        </div>
+        <label for="location_notion">Enter your notions about the location (optional):</label>
+        <textarea id="location_notion" name="location_notion" rows="4" cols="50"></textarea>
+        <input type="submit" value="Generate">
+    </form>
+</div>
+
+<script>
+    function updateDescription(type) {
+        var select = document.getElementById(type + '_name');
+        var selectedOption = select.options[select.selectedIndex];
+        var description = selectedOption.getAttribute('data-description');
+        var descriptionElement = document.getElementById(type + '_description').querySelector('p');
+        descriptionElement.innerText = description;
+    }
+    window.onload = function() {
+        updateDescription('world');
+        updateDescription('region');
+        updateDescription('area');
+    }
+</script>
 {% endblock %}

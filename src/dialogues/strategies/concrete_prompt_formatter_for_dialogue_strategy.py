@@ -1,3 +1,4 @@
+from src.constants import WORLD_TEMPLATES_FILE
 from src.dialogues.abstracts.strategies import PromptFormatterForDialogueStrategy
 from src.dialogues.participants import Participants
 from src.filesystem.filesystem_manager import FilesystemManager
@@ -84,7 +85,7 @@ class ConcretePromptFormatterForDialogueStrategy(PromptFormatterForDialogueStrat
         time_manager = TimeManager(self._playthrough_name)
 
         worlds_template = self._filesystem_manager.load_existing_or_new_json_file(
-            self._filesystem_manager.get_file_path_to_worlds_template_file()
+            WORLD_TEMPLATES_FILE
         )
 
         participant_details = self._format_participant_details()

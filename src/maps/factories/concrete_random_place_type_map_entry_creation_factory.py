@@ -1,5 +1,10 @@
 from typing import Dict
 
+from src.constants import (
+    LOCATIONS_TEMPLATES_FILE,
+    AREAS_TEMPLATES_FILE,
+    REGIONS_TEMPLATES_FILE,
+)
 from src.enums import PlaceType
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.abstracts.abstract_factories import (
@@ -89,19 +94,12 @@ class ConcreteRandomPlaceTypeMapEntryCreationFactory(
 
     def _get_template_file_path(self) -> str:
         place_type_to_method = {
-            PlaceType.REGION: self._filesystem_manager.get_file_path_to_regions_template_file,
-            PlaceType.AREA: self._filesystem_manager.get_file_path_to_areas_template_file,
-            PlaceType.LOCATION: self._filesystem_manager.get_file_path_to_locations_template_file,
+            PlaceType.REGION: REGIONS_TEMPLATES_FILE,
+            PlaceType.AREA: AREAS_TEMPLATES_FILE,
+            PlaceType.LOCATION: LOCATIONS_TEMPLATES_FILE,
         }
 
-        method = place_type_to_method.get(self._place_type)
-
-        if not method:
-            raise NotImplementedError(
-                f"Creation of map entries for '{self._place_type.value}' is not supported."
-            )
-
-        return method()
+        return place_type_to_method.get(self._place_type)
 
     def _load_and_filter_templates(self, template_file_path: str) -> Dict:
         templates = self._filesystem_manager.load_existing_or_new_json_file(

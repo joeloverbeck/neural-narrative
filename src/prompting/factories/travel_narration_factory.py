@@ -46,7 +46,10 @@ class TravelNarrationFactory(BaseToolResponseProvider):
         )
         self._map_manager = map_manager or MapManager(playthrough_name)
 
-    def generate_travel_narration(self) -> TravelNarrationProduct:
+    def get_prompt_file(self) -> str:
+        return TRAVEL_NARRATION_PROMPT_FILE
+
+    def get_prompt_kwargs(self) -> dict:
         player_identifier = self._playthrough_manager.get_player_identifier()
         player_data = self._characters_manager.load_character_data(player_identifier)
         player_data["memories"] = self._characters_manager.load_character_memories(
@@ -65,43 +68,35 @@ class TravelNarrationFactory(BaseToolResponseProvider):
 
         followers_information = self._get_followers_information()
 
-        # Prepare the prompt
-        prompt_template = self._read_prompt_file(TRAVEL_NARRATION_PROMPT_FILE)
-        formatted_prompt = self._format_prompt(
-            prompt_template,
-            origin_area_template=self._map_manager.get_current_place_template(),
-            origin_area_description=current_place_data["area_data"]["description"],
-            destination_area_template=destination_place_data["area_data"]["name"],
-            destination_area_description=destination_place_data["area_data"][
+        return {
+            "origin_area_template": self._map_manager.get_current_place_template(),
+            "origin_area_description": current_place_data["area_data"]["description"],
+            "destination_area_template": destination_place_data["area_data"]["name"],
+            "destination_area_description": destination_place_data["area_data"][
                 "description"
             ],
-            player_name=player_data["name"],
-            player_description=player_data["description"],
-            player_personality=player_data["personality"],
-            player_profile=player_data["profile"],
-            player_likes=player_data["likes"],
-            player_dislikes=player_data["dislikes"],
-            player_speech_patterns=player_data["speech patterns"],
-            player_equipment=player_data["equipment"],
-            player_memories=player_data["memories"],
-            followers_information=followers_information,
+            "player_name": player_data["name"],
+            "player_description": player_data["description"],
+            "player_personality": player_data["personality"],
+            "player_profile": player_data["profile"],
+            "player_likes": player_data["likes"],
+            "player_dislikes": player_data["dislikes"],
+            "player_speech_patterns": player_data["speech patterns"],
+            "player_equipment": player_data["equipment"],
+            "player_memories": player_data["memories"],
+            "followers_information": followers_information,
+        }
+
+    def get_tool_file(self) -> str:
+        return TRAVEL_NARRATION_TOOL_FILE
+
+    def get_user_content(self) -> str:
+        return (
+            "Write the narration of the travel from the origin area to the destination area, "
+            "filtered through the first-person perspective of the player, as per the above instructions."
         )
 
-        # Generate system content
-        tool_data = self._read_tool_file(TRAVEL_NARRATION_TOOL_FILE)
-        tool_instructions = self._read_tool_instructions()
-        tool_prompt = self._generate_tool_prompt(tool_data, tool_instructions)
-        system_content = self._generate_system_content(formatted_prompt, tool_prompt)
-
-        # User content
-        user_content = "Write the narration of the travel from the origin area to the destination area, filtered through the first-person perspective of the player, as per the above instructions."
-
-        # Produce tool response
-        tool_response = self._produce_tool_response(system_content, user_content)
-
-        # Extract arguments
-        arguments = self._extract_arguments(tool_response)
-
+    def create_product(self, arguments: dict):
         return TravelNarrationProduct(
             travel_narration=arguments.get("narration", "The travel was uneventful."),
             is_valid=True,

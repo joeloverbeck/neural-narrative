@@ -1,3 +1,5 @@
+from typing import Optional
+
 from src.abstracts.command import Command
 from src.dialogues.messages_to_llm import MessagesToLlm
 from src.dialogues.participants import Participants
@@ -13,7 +15,7 @@ class StoreTemporaryDialogueCommand(Command):
         purpose: str,
         messages_to_llm: MessagesToLlm,
         transcription: Transcription,
-        filesystem_manager: FilesystemManager = None,
+        filesystem_manager: Optional[FilesystemManager] = None,
     ):
         if not playthrough_name:
             raise ValueError("playthrough_name can't be empty.")

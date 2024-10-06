@@ -3,6 +3,11 @@ from typing import Optional
 
 from src.abstracts.command import Command
 from src.config.config_manager import ConfigManager
+from src.constants import (
+    WORLD_TEMPLATES_FILE,
+    AREAS_TEMPLATES_FILE,
+    REGIONS_TEMPLATES_FILE,
+)
 from src.enums import TemplateType
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.interfaces.abstracts.interface_manager import InterfaceManager
@@ -10,9 +15,6 @@ from src.interfaces.console_interface_manager import ConsoleInterfaceManager
 from src.maps.commands.store_generated_place_command import StoreGeneratedPlaceCommand
 from src.prompting.factories.openrouter_llm_client_factory import (
     OpenRouterLlmClientFactory,
-)
-from src.prompting.factories.place_tool_response_data_extraction_factory import (
-    PlaceToolResponseDataExtractionFactory,
 )
 from src.prompting.factories.produce_tool_response_strategy_factory import (
     ProduceToolResponseStrategyFactory,
@@ -29,12 +31,19 @@ class GeneratePlaceCommand(Command):
         self,
         place_template_type: TemplateType,
         father_place_template_type: TemplateType,
+        father_place_name: str,
+        notion: str,
         interface_manager: InterfaceManager = None,
         filesystem_manager: FilesystemManager = None,
         config_manager: ConfigManager = None,
     ):
+        if not father_place_name:
+            raise ValueError("father_place_name can't be empty.")
+
         self._place_template_type = place_template_type
         self._father_place_template_type = father_place_template_type
+        self._father_place_name = father_place_name
+        self._notion = notion
 
         # sanity check
         if (
@@ -64,33 +73,24 @@ class GeneratePlaceCommand(Command):
         self._config_manager = config_manager or ConfigManager()
 
     def execute(self) -> None:
-        logger.info(
-            "This command generates one %s for an existing %s.",
-            self._place_template_type.value,
-            self._father_place_template_type.value,
-        )
-        chosen_place_identifier = self._interface_manager.prompt_for_input(
-            f"For which {self._father_place_template_type.value} do you want to create the {self._place_template_type.value}?: "
-        )
-
         father_place_templates: Optional[dict]
 
         if self._father_place_template_type == TemplateType.WORLD:
             father_place_templates = (
                 self._filesystem_manager.load_existing_or_new_json_file(
-                    self._filesystem_manager.get_file_path_to_worlds_template_file()
+                    WORLD_TEMPLATES_FILE
                 )
             )
         elif self._father_place_template_type == TemplateType.REGION:
             father_place_templates = (
                 self._filesystem_manager.load_existing_or_new_json_file(
-                    self._filesystem_manager.get_file_path_to_regions_template_file()
+                    REGIONS_TEMPLATES_FILE
                 )
             )
         elif self._father_place_template_type == TemplateType.AREA:
             father_place_templates = (
                 self._filesystem_manager.load_existing_or_new_json_file(
-                    self._filesystem_manager.get_file_path_to_areas_template_file()
+                    AREAS_TEMPLATES_FILE
                 )
             )
         else:
@@ -98,9 +98,9 @@ class GeneratePlaceCommand(Command):
                 f"Wasn't programmed to load the templates for template type '{self._place_template_type}'."
             )
 
-        if chosen_place_identifier not in father_place_templates:
+        if self._father_place_name not in father_place_templates:
             raise ValueError(
-                f"There isn't a {self._place_template_type} template named '{chosen_place_identifier}'"
+                f"There isn't a {self._place_template_type} template named '{self._father_place_name}'"
             )
 
         llm_client = OpenRouterLlmClientFactory().create_llm_client()
@@ -110,10 +110,11 @@ class GeneratePlaceCommand(Command):
         )
 
         llm_tool_response_product = PlaceGenerationToolResponseProvider(
-            chosen_place_identifier,
+            self._father_place_name,
             self._place_template_type,
+            self._notion,
             produce_tool_response_strategy_factory,
-        ).create_llm_response()
+        ).generate_product()
 
         if not llm_tool_response_product.is_valid():
             raise ValueError(
@@ -121,18 +122,14 @@ class GeneratePlaceCommand(Command):
             )
 
         # Extract area data using the function provided
-        place_data = (
-            PlaceToolResponseDataExtractionFactory(llm_tool_response_product.get())
-            .extract_data()
-            .get()
-        )
+        place_data = llm_tool_response_product.get()
 
         # Make them lowercase.
         place_data.update(
             {
                 "categories": [
                     category.lower()
-                    for category in father_place_templates[chosen_place_identifier][
+                    for category in father_place_templates[self._father_place_name][
                         "categories"
                     ]
                 ]

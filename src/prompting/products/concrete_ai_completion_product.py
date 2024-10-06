@@ -2,7 +2,11 @@ from typing import Optional
 
 from openai.types.chat import ChatCompletion
 
-from src.constants import TOO_MANY_REQUESTS_ERROR_NUMBER, UNAUTHORIZED_ERROR_NUMBER
+from src.constants import (
+    TOO_MANY_REQUESTS_ERROR_NUMBER,
+    UNAUTHORIZED_ERROR_NUMBER,
+    PAYMENT_REQUIRED,
+)
 from src.enums import AiCompletionErrorType
 from src.prompting.abstracts.ai_completion_product import AiCompletionProduct
 
@@ -13,22 +17,40 @@ class ConcreteAiCompletionProduct(AiCompletionProduct):
         # the class will establish what the problem is, if any.
         self._content = None
         self._error = None
+        self._error_details = ""
 
         if not completion:
             self._is_valid = False
             self._error = AiCompletionErrorType.MALFORMED_COMPLETION
-        elif completion.choices and completion.choices[0] and completion.choices[0].message and completion.choices[
-            0].message.content:
+        elif (
+            completion.choices
+            and completion.choices[0]
+            and completion.choices[0].message
+            and completion.choices[0].message.content
+        ):
             self._is_valid = True
 
             # Store the content
             self._content = completion.choices[0].message.content
-        elif hasattr(completion, 'error') and completion.error['code'] == TOO_MANY_REQUESTS_ERROR_NUMBER:
+        elif (
+            hasattr(completion, "error")
+            and completion.error["code"] == TOO_MANY_REQUESTS_ERROR_NUMBER
+        ):
             self._is_valid = False
             self._error = AiCompletionErrorType.TOO_MANY_REQUESTS
-        elif hasattr(completion, 'error') and completion.error['code'] == UNAUTHORIZED_ERROR_NUMBER:
+        elif (
+            hasattr(completion, "error")
+            and completion.error["code"] == UNAUTHORIZED_ERROR_NUMBER
+        ):
             self._is_valid = False
             self._error = AiCompletionErrorType.UNAUTHORIZED
+        elif (
+            hasattr(completion, "error")
+            and completion.error["code"] == PAYMENT_REQUIRED
+        ):
+            self._is_valid = False
+            self._error = AiCompletionErrorType.PAYMENT_REQUIRED
+            self._error_details = completion.error["message"]
         elif not completion.choices:
             self._is_valid = False
             self._error = AiCompletionErrorType.MALFORMED_COMPLETION
@@ -49,3 +71,6 @@ class ConcreteAiCompletionProduct(AiCompletionProduct):
 
     def get_error(self) -> AiCompletionErrorType:
         return self._error
+
+    def get_error_details(self) -> str:
+        return self._error_details

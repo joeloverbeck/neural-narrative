@@ -12,7 +12,7 @@ class FunctionCallSanitizer:
     )
     REMOVE_SPACES_BETWEEN_THE_CLOSING_FUNCTION_TAG_REGEX = re.compile(r"\s+</function>")
     REPLACE_SINGLE_QUOTES_WITH_DOUBLE_QUOTES_REGEX = re.compile(
-        r"(?<=[:\[{,])\s*'([^']*)'\s*(?=[,}\]])"
+        r"(?<=[:\[{,])\s*'([^']*)'\s*(?=[:},\]])"
     )
     INSERT_LINE_BREAK_AFTER_PERIOD_WITH_NO_SPACE_FOLLOWED_BY_LETTER_REGEX = re.compile(
         r"\.(?=\w)"
@@ -22,7 +22,15 @@ class FunctionCallSanitizer:
     )
     REPLACE_INCORRECT_CLOSING_FUNCTION_TAG_REGEX = re.compile(r"\[/function]")
     REMOVE_EXTRA_CHARACTERS_AFTER_JSON_REGEX = re.compile(r"(}.*?)(</function>)")
-    FIX_CLOSING_FUNCTION_TAG_WITHOUT_LT_OR_SLASH = re.compile(r"(?<!<)(?<!</)function>")
+    FIX_CLOSING_FUNCTION_TAG_WITHOUT_LT_OR_SLASH = re.compile(
+        r"(?<!<)(?<!</)(?<!\w)function>"
+    )
+    REPLACE_SELF_CLOSING_FUNCTION_TAG_AT_END_REGEX = re.compile(r"<function\s*/>\s*$")
+    REPLACE_START_TAG_REGEX = re.compile(r"<\{start_tag}=(.*?)>")
+    REPLACE_END_TAG_REGEX = re.compile(r"\{end_tag}")
+    REPLACE_INCORRECT_CLOSING_FUNCTION_TAG_AT_END_REGEX = re.compile(
+        r"}\s*<function>\s*$"
+    )
 
     def __init__(self, function_call: str):
         if not function_call:
@@ -131,5 +139,36 @@ class FunctionCallSanitizer:
             r"}\2",
             function_call,
         )
+
+        # Step 16: Replace self-closing function tag at the end with proper closing tag '</function>'
+        function_call = re.sub(
+            FunctionCallSanitizer.REPLACE_SELF_CLOSING_FUNCTION_TAG_AT_END_REGEX,
+            "</function>",
+            function_call,
+        )
+
+        # Step 17: Replace <{start_tag}=function_name> with <function name="function_name">
+        function_call = re.sub(
+            FunctionCallSanitizer.REPLACE_START_TAG_REGEX,
+            r'<function name="\1">',
+            function_call,
+        )
+        # Step 18: Replace {end_tag} with </function>
+        function_call = re.sub(
+            FunctionCallSanitizer.REPLACE_END_TAG_REGEX,
+            r"</function>",
+            function_call,
+        )
+
+        # Step 19: Replace incorrect closing tag '...}<function>' with '...}</function>'
+        function_call = re.sub(
+            FunctionCallSanitizer.REPLACE_INCORRECT_CLOSING_FUNCTION_TAG_AT_END_REGEX,
+            "}</function>",
+            function_call,
+        )
+
+        # Step 20: Ensure that the function call ends with '</function>'
+        if not function_call.endswith("</function>"):
+            function_call += "</function>"
 
         return function_call

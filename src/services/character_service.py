@@ -1,6 +1,15 @@
 from src.characters.commands.generate_character_command import GenerateCharacterCommand
+from src.characters.factories.character_description_provider_factory import (
+    CharacterDescriptionProviderFactory,
+)
+from src.characters.factories.guidelines_based_user_content_for_character_generation_factory import (
+    GuidelinesBasedUserContentForCharacterGenerationFactory,
+)
 from src.characters.factories.store_generated_character_command_factory import (
     StoreGeneratedCharacterCommandFactory,
+)
+from src.characters.providers.character_generation_tool_response_provider import (
+    CharacterGenerationToolResponseProvider,
 )
 from src.config.config_manager import ConfigManager
 from src.images.factories.generate_character_image_command_factory import (
@@ -12,18 +21,12 @@ from src.images.factories.openai_generated_image_factory import (
 from src.maps.map_manager import MapManager
 from src.movements.movement_manager import MovementManager
 from src.playthrough_manager import PlaythroughManager
-from src.prompting.factories.guidelines_based_user_content_for_character_generation_factory import (
-    GuidelinesBasedUserContentForCharacterGenerationFactory,
-)
 from src.prompting.factories.openai_llm_client_factory import OpenAILlmClientFactory
 from src.prompting.factories.openrouter_llm_client_factory import (
     OpenRouterLlmClientFactory,
 )
 from src.prompting.factories.produce_tool_response_strategy_factory import (
     ProduceToolResponseStrategyFactory,
-)
-from src.prompting.providers.character_generation_tool_response_provider import (
-    CharacterGenerationToolResponseProvider,
 )
 from src.requests.factories.ConcreteUrlContentFactory import ConcreteUrlContentFactory
 
@@ -87,8 +90,15 @@ class CharacterService:
 
         url_content_factory = ConcreteUrlContentFactory()
 
+        character_description_provider_factory = CharacterDescriptionProviderFactory(
+            produce_tool_response_strategy_factory
+        )
+
         generate_character_image_command_factory = GenerateCharacterImageCommandFactory(
-            playthrough_name, generated_image_factory, url_content_factory
+            playthrough_name,
+            character_description_provider_factory,
+            generated_image_factory,
+            url_content_factory,
         )
 
         # Generate the character

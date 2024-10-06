@@ -26,4 +26,5 @@ class AiCompletionErrorType(Enum):
     UNAUTHORIZED = "unauthorized"
     EMPTY_CONTENT = "empty_content"
     MALFORMED_COMPLETION = "malformed_completion"
+    PAYMENT_REQUIRED = "payment_required"
     UNHANDLED = "unhandled"

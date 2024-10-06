@@ -1,14 +1,15 @@
+import os
 import sys
 
 from src.characters.commands.generate_character_generation_guidelines_command import (
     GenerateCharacterGenerationGuidelinesCommand,
 )
+from src.characters.factories.character_generation_guidelines_factory import (
+    CharacterGenerationGuidelinesFactory,
+)
 from src.config.config_manager import ConfigManager
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.interfaces.console_interface_manager import ConsoleInterfaceManager
-from src.prompting.factories.character_generation_guidelines_factory import (
-    CharacterGenerationGuidelinesFactory,
-)
 from src.prompting.factories.openrouter_llm_client_factory import (
     OpenRouterLlmClientFactory,
 )
@@ -26,7 +27,7 @@ def main():
 
     filesystem_manager = FilesystemManager()
 
-    if not filesystem_manager.does_file_path_exist(
+    if not os.path.exists(
         filesystem_manager.get_file_path_to_playthrough_folder(playthrough_name)
     ):
         print(f"There is no playthrough named '{playthrough_name}'")
