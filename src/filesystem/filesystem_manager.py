@@ -26,6 +26,13 @@ class FilesystemManager:
         with open(file_path, "r", encoding="utf-8") as file:
             return file.read().strip()
 
+    def read_file_lines(self, file_path) -> List[str]:
+        if os.path.exists(file_path):
+            concepts_content = self.read_file(file_path)
+            return concepts_content.strip().split("\n") if concepts_content else []
+        else:
+            return []
+
     @staticmethod
     def read_json_file(file_path: str) -> dict:
         """Load JSON data from a file."""
@@ -201,7 +208,7 @@ class FilesystemManager:
         errors_folder = "errors"
 
         if not errors_folder:
-            os.makedirs(errors_folder)
+            os.makedirs(errors_folder, exist_ok=True)
 
         return os.path.join(errors_folder, "empty_content_context.json")
 

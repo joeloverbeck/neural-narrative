@@ -36,9 +36,11 @@ class LocationHubView(MethodView):
         characters_at_current_place = (
             characters_manager.get_characters_at_current_place()
         )
-        WebService.format_image_urls_of_characters(characters_at_current_place)
+        web_service = WebService()
+
+        web_service.format_image_urls_of_characters(characters_at_current_place)
         followers = characters_manager.get_followers()
-        WebService.format_image_urls_of_characters(followers)
+        web_service.format_image_urls_of_characters(followers)
         map_manager = MapManager(playthrough_name)
         current_place_type = map_manager.get_current_place_type()
         locations_present = None

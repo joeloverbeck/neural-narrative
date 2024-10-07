@@ -1,0 +1,19 @@
+{
+  "type": "function",
+  "function": {
+    "name": "generate_self_reflection",
+    "description": "write a meaningful and compelling first-person self-reflection from the character's perspective.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "self_reflection": {
+          "type": "string",
+          "description": "The meaningful and compelling first-person self-reflection. Follow the provided instructions."
+        }
+      },
+      "required": [
+        "self_reflection"
+      ]
+    }
+  }
+}

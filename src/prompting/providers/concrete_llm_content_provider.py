@@ -94,10 +94,18 @@ class ConcreteLlmContentProvider(LlmContentProvider):
                         f"Attempt {self._retry_count}/{self._max_retries} failed due to empty content returned by LLM. Retrying in {WAIT_TIME_WHEN_EMPTY_CONTENT}..."
                     )
 
+                    empty_content_context_file_path = (
+                        self._filesystem_manager.get_file_path_to_empty_content_context_file()
+                    )
+
+                    self._filesystem_manager.create_empty_file_if_not_exists(
+                        empty_content_context_file_path
+                    )
+
                     # Store the messages for testing purposes.
                     self._filesystem_manager.save_json_file(
                         self._messages_to_llm.get(),
-                        self._filesystem_manager.get_file_path_to_empty_content_context_file(),
+                        empty_content_context_file_path,
                     )
 
                     raise ValueError(

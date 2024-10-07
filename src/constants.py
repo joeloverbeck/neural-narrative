@@ -81,6 +81,12 @@ CONCEPTS_GENERATION_TOOL_FILE: str = "data/prompting/concepts_generation_tool.js
 AMBIENT_NARRATION_GENERATION_TOOL_FILE: str = (
     "data/prompting/ambient_narration_generation_tool.json"
 )
+SELF_REFLECTION_GENERATION_TOOL_FILE: str = (
+    "data/prompting/self_reflection_generation_tool.json"
+)
+GOAL_RESOLUTION_GENERATION_TOOL_FILE: str = (
+    "data/prompting/goal_resolution_generation_tool.json"
+)
 
 # Prompts
 
@@ -113,6 +119,12 @@ CHARACTER_DESCRIPTION_GENERATION_PROMPT_FILE: str = (
 CONCEPTS_GENERATION_PROMPT_FILE: str = "data/prompting/concepts_generation_prompt.txt"
 AMBIENT_NARRATION_GENERATION_PROMPT_FILE: str = (
     "data/prompting/ambient_narration_generation_prompt.txt"
+)
+SELF_REFLECTION_GENERATION_PROMPT_FILE: str = (
+    "data/prompting/self_reflection_generation_prompt.txt"
+)
+GOAL_RESOLUTION_GENERATION_PROMPT_FILE: str = (
+    "data/prompting/goal_resolution_generation_prompt.txt"
 )
 
 OPENROUTER_API_URL: str = "https://openrouter.ai/api/v1"

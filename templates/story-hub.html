@@ -11,44 +11,140 @@ Story Hub
 
 {% block content %}
 <div class="story-hub-container">
-    <h1>Story Hub</h1>
-    {% if concepts %}
-    <div class="concepts-list">
-        {% for concept in concepts %}
-        <form action="{{ url_for('story-hub') }}" method="post" class="concept-form">
-            <input type="hidden" name="action" value="delete_concept">
-            <input type="hidden" name="concept_index" value="{{ loop.index0 }}">
-            <button type="submit" class="concept">
-                <p>{{ concept }}</p>
-            </button>
-        </form>
-        {% endfor %}
+    <h1 class="page-title"><i class="fas fa-feather-alt" aria-hidden="true"></i> <span>Story Hub</span></h1>
+
+    <!-- Concepts Section -->
+    <div class="collapsible-section">
+        <button class="collapsible">
+            <i class="fas fa-lightbulb"></i> Concepts
+        </button>
+        <div class="content">
+            {% if concepts %}
+            <div class="concepts-list">
+                {% for concept in concepts %}
+                <form action="{{ url_for('story-hub') }}" method="post" class="item-form">
+                    <input type="hidden" name="action" value="delete_concept">
+                    <input type="hidden" name="item_index" value="{{ loop.index0 }}">
+                    <button type="submit" class="concept">
+                        <p>{{ concept }}</p>
+                    </button>
+                </form>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p>No concepts generated yet.</p>
+            {% endif %}
+            <form action="{{ url_for('story-hub') }}" method="post">
+                <input type="hidden" name="action" value="generate_concepts">
+                <input type="submit" value="Generate Concepts">
+            </form>
+        </div>
     </div>
-    {% else %}
-    <p>No concepts generated yet.</p>
-    {% endif %}
-    <form action="{{ url_for('story-hub') }}" method="post">
-        <input type="hidden" name="action" value="generate_concepts">
-        <input type="submit" value="Generate Concepts">
-    </form>
+
+    <!-- Interesting Situations Section -->
+    <div class="collapsible-section">
+        <button class="collapsible">
+            <i class="fas fa-exclamation-circle"></i> Interesting Situations
+        </button>
+        <div class="content">
+            {% if interesting_situations %}
+            <div class="concepts-list">
+                {% for situation in interesting_situations %}
+                <form action="{{ url_for('story-hub') }}" method="post" class="item-form">
+                    <input type="hidden" name="action" value="delete_situation">
+                    <input type="hidden" name="item_index" value="{{ loop.index0 }}">
+                    <button type="submit" class="concept">
+                        <p>{{ situation }}</p>
+                    </button>
+                </form>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p>No interesting situations generated yet.</p>
+            {% endif %}
+            <form action="{{ url_for('story-hub') }}" method="post">
+                <input type="hidden" name="action" value="generate_situations">
+                <input type="submit" value="Generate Interesting Situations">
+            </form>
+        </div>
+    </div>
+
+    <!-- Interesting Dilemmas Section -->
+    <div class="collapsible-section">
+        <button class="collapsible">
+            <i class="fas fa-question-circle"></i> Interesting Dilemmas
+        </button>
+        <div class="content">
+            {% if interesting_dilemmas %}
+            <div class="concepts-list">
+                {% for dilemma in interesting_dilemmas %}
+                <form action="{{ url_for('story-hub') }}" method="post" class="item-form">
+                    <input type="hidden" name="action" value="delete_dilemma">
+                    <input type="hidden" name="item_index" value="{{ loop.index0 }}">
+                    <button type="submit" class="concept">
+                        <p>{{ dilemma }}</p>
+                    </button>
+                </form>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p>No interesting dilemmas generated yet.</p>
+            {% endif %}
+            <form action="{{ url_for('story-hub') }}" method="post">
+                <input type="hidden" name="action" value="generate_dilemmas">
+                <input type="submit" value="Generate Interesting Dilemmas">
+            </form>
+        </div>
+    </div>
+
+    <!-- Navigation Buttons -->
     <div class="buttons">
-        <a href="{{ url_for('event-inspiration') }}" class="button">Event Inspiration</a>
-        <a href="{{ url_for('location-hub') }}" class="button">Location Hub</a>
+        <!-- Navigation Buttons -->
+        <a href="{{ url_for('index') }}" class="button">
+            <i class="fas fa-globe"></i> Home
+        </a>
+        <a href="{{ url_for('characters-hub') }}" class="button">
+            <i class="fas fa-users"></i> Characters Hub
+        </a>
+        <a href="{{ url_for('location-hub') }}" class="button">
+            <i class="fas fa-map-marker-alt"></i> Location Hub
+        </a>
+        <a href="{{ url_for('participants') }}" class="button">
+            <i class="fas fa-comments"></i> Chat
+        </a>
+        <a href="{{ url_for('goal-resolution') }}" class="button">
+            <i class="fas fa-flag-checkered"></i> Goal Resolution
+        </a>
     </div>
 </div>
 
-<!-- JavaScript for the fade-out effect -->
+<!-- JavaScript for the fade-out effect and collapsible sections -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const conceptForms = document.querySelectorAll('.concept-form');
-        conceptForms.forEach(function(form) {
+        // Fade-out effect for items
+        const itemForms = document.querySelectorAll('.item-form');
+        itemForms.forEach(function(form) {
             form.addEventListener('submit', function(event) {
                 event.preventDefault();
-                const conceptButton = form.querySelector('.concept');
-                conceptButton.classList.add('fade-out');
+                const itemButton = form.querySelector('.concept');
+                itemButton.classList.add('fade-out');
                 setTimeout(function() {
                     form.submit();
-                }, 500); // Wait for the animation to complete
+                }, 500);
+            });
+        });
+
+        // Collapsible sections
+        const collapsibles = document.querySelectorAll('.collapsible');
+        collapsibles.forEach(function(collapsible) {
+            collapsible.addEventListener('click', function() {
+                this.classList.toggle('active');
+                const content = this.nextElementSibling;
+                if (content.style.display === 'block') {
+                    content.style.display = 'none';
+                } else {
+                    content.style.display = 'block';
+                }
             });
         });
     });

@@ -1,6 +1,19 @@
-Given the following transcription of a dialogue, analyze it and generate a list of at least five very interesting and intriguing situations that could stem from this conversation.
+Given the following information about the player character, possible followers of the player, and their collective memories, analyze them and generate a list of at least five very interesting and intriguing situations that could stem from that information.
 These situations should involve unexpected twists, conflicts, or developments that would engage the player.
 Consider the characters' motivations, relationships, and any hints or clues in the dialogue to create these scenarios.
-Each situation should be described in one or two sentences. Do not precede each situation with a number (it shouldn't be a numbered list).
-Important: do not, under any circumstance, respond by repeating the dialogue provided.
-{transcription}
+Each situation should be described in two or three sentences. Do not precede each situation with a number (it shouldn't be a numbered list).
+Inputs:
+- Player and Followers Information:
+Name: {player_name}
+Description: {player_description}
+Personality: {player_personality}
+Profile: {player_profile}
+Likes: {player_likes}
+Dislikes: {player_dislikes}
+Speech patterns: {player_speech_patterns}
+Equipment: {player_equipment}
+-----
+{followers_information}
+Memories:
+{combined_memories}
+Important: you are prohibited from repeating verbatim any of the player and followers information, as well as the memories.

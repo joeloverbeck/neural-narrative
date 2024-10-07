@@ -52,7 +52,7 @@ class GenerateInterestingSituationsCommand(Command):
         )
 
         logger.info(
-            "Generated interesting situations from dialogue at '%s'",
+            "Generated interesting situations at '%s'",
             self._filesystem_manager.get_file_path_to_interesting_situations(
                 self._playthrough_name
             ),

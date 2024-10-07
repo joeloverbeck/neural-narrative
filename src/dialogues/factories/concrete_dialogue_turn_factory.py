@@ -166,6 +166,10 @@ class ConcreteDialogueTurnFactory(DialogueTurnFactorySubject):
             # Handle specific dialogue processing errors
             logger.error("Error processing dialogue turn: %s", e)
             raise
+        except FileNotFoundError as e:
+            raise DialogueProcessingError(
+                "Was unable to find a file. Error: %s", e
+            ) from e
         except Exception as e:
             # Handle unexpected exceptions
             raise DialogueProcessingError("An unexpected error occurred: %s", e) from e

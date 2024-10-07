@@ -1,0 +1,30 @@
+<!-- templates/characters-hub.html -->
+{% extends "base.html" %}
+
+{% block title %}Characters Hub{% endblock %}
+
+{% block styles %}
+{{ super() }}
+<link href="{{ url_for('static', filename='characters-hub.css') }}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Characters Hub</h1>
+<div class="characters-hub-container">
+    <div class="player-character">
+        <img alt="{{ player_character.name }}" src="{{ player_character.image_url }}">
+        <h2>{{ player_character.name }}</h2>
+    </div>
+    <div class="action-buttons-container">
+        <form action="{{ url_for('character-generation') }}" method="get">
+            <input class="action-button" type="submit" value="Generate Character">
+        </form>
+        <form action="{{ url_for('character-memories') }}" method="get">
+            <input class="action-button" type="submit" value="Character Memories">
+        </form>
+        <form action="{{ url_for('story-hub') }}" method="get">
+            <input class="action-button" type="submit" value="Return to Story Hub">
+        </form>
+    </div>
+</div>
+{% endblock %}

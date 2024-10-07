@@ -36,12 +36,19 @@
     <input name="character_identifier" type="hidden" value="{{ selected_character.identifier }}">
     <input name="action" type="hidden" value="save_memories">
     <textarea cols="100" name="character_memories" rows="20">{{ character_memories }}</textarea><br>
-    <input type="submit" value="Save Memories">
+    <input type="submit" value="Save memories">
+</form>
+
+<!-- Form for producing self-reflection -->
+<form method="post">
+    <input name="character_identifier" type="hidden" value="{{ selected_character.identifier }}">
+    <input name="action" type="hidden" value="produce_self_reflection">
+    <input type="submit" value="Self-Reflection">
 </form>
 {% endif %}
 
-<form action="{{ url_for('location-hub') }}" method="get">
-    <input class="action-button" type="submit" value="Return to location hub">
+<form action="{{ url_for('characters-hub') }}" method="get">
+    <input class="action-button" type="submit" value="Return to characters hub">
 </form>
 {% endblock %}
 

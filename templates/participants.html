@@ -26,8 +26,6 @@
                     <img alt="{{ character.name }}" src="{{ character.image_url }}" width="150">
                     <div class="character-details">
                         <h2>{{ character.name }}</h2>
-                        <p><strong>Description:</strong> {{ character.description }}</p>
-                        <p><strong>Equipment:</strong> {{ character.equipment }}</p>
                     </div>
                 </div>
             </label>
@@ -46,4 +44,7 @@
 {% else %}
 <p>No characters are present at your current location.</p>
 {% endif %}
+<form action="{{ url_for('story-hub') }}" method="get">
+    <input class="action-button" type="submit" value="Story Hub">
+</form>
 {% endblock %}

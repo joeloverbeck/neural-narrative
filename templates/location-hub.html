@@ -82,19 +82,18 @@
 <div class="available-actions-section">
     <h2>General Actions</h2>
     <div class="action-grid">
-        <form action="{{ url_for('character-generation') }}" method="get">
-            <input class="action-button" type="submit" value="Generate character">
-        </form>
-        <form action="{{ url_for('character-memories') }}" method="get">
-            <input class="action-button" type="submit" value="Character memories">
-        </form>
-        <form method="post">
-            <input name="action" type="hidden" value="Proceed to Chat">
-            <input class="action-button" type="submit" value="Chat">
-        </form>
         <form method="post">
             <input name="action" type="hidden" value="Advance Time">
             <input class="action-button" type="submit" value="Advance time 5 hours">
+        </form>
+        <form action="{{ url_for('participants') }}" method="get">
+            <input class="action-button" type="submit" value="Chat">
+        </form>
+        <form action="{{ url_for('story-hub') }}" method="get">
+            <input class="action-button" type="submit" value="Story Hub">
+        </form>
+        <form action="{{ url_for('goal-resolution') }}" method="get">
+            <input class="action-button" type="submit" value="Goal resolution">
         </form>
     </div>
 </div>
@@ -106,16 +105,11 @@
     <div class="characters-list">
         {% for character in characters %}
         <div class="character card">
-            <label>
-                <div class="character-content">
-                    <input name="add_followers" type="checkbox" value="{{ character.identifier }}">
-                    <img alt="{{ character.name }}" src="{{ character.image_url }}" width="150">
-                    <div class="character-details">
-                        <h2>{{ character.name }}</h2>
-                        <p><strong>Description:</strong> {{ character.description }}</p>
-                        <p><strong>Equipment:</strong> {{ character.equipment }}</p>
-                    </div>
-                </div>
+            <input id="char-{{ character.identifier }}" name="add_followers" type="checkbox"
+                   value="{{ character.identifier }}">
+            <label for="char-{{ character.identifier }}">
+                <img alt="{{ character.name }}" src="{{ character.image_url }}">
+                <div class="character-name">{{ character.name }}</div>
             </label>
         </div>
         {% endfor %}
@@ -126,6 +120,7 @@
 <p>No characters are present at this location.</p>
 {% endif %}
 
+
 <!-- Form to remove followers and leave them at the current location -->
 {% if followers %}
 <h3>Your Followers:</h3>
@@ -133,16 +128,11 @@
     <div class="characters-list">
         {% for follower in followers %}
         <div class="character card">
-            <label>
-                <div class="character-content">
-                    <input name="remove_followers" type="checkbox" value="{{ follower.identifier }}">
-                    <img alt="{{ follower.name }}" src="{{ follower.image_url }}" width="150">
-                    <div class="character-details">
-                        <h2>{{ follower.name }}</h2>
-                        <p><strong>Description:</strong> {{ follower.description }}</p>
-                        <p><strong>Equipment:</strong> {{ follower.equipment }}</p>
-                    </div>
-                </div>
+            <input id="follower-{{ follower.identifier }}" name="remove_followers" type="checkbox"
+                   value="{{ follower.identifier }}">
+            <label for="follower-{{ follower.identifier }}">
+                <img alt="{{ follower.name }}" src="{{ follower.image_url }}">
+                <div class="character-name">{{ follower.name }}</div>
             </label>
         </div>
         {% endfor %}

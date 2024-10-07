@@ -2,6 +2,17 @@ from flask import session, redirect, url_for, render_template, request
 from flask.views import MethodView
 
 from src.characters.characters_manager import CharactersManager
+from src.characters.commands.produce_self_reflection_command import (
+    ProduceSelfReflectionCommand,
+)
+from src.characters.factories.self_reflection_factory import SelfReflectionFactory
+from src.config.config_manager import ConfigManager
+from src.prompting.factories.openrouter_llm_client_factory import (
+    OpenRouterLlmClientFactory,
+)
+from src.prompting.factories.produce_tool_response_strategy_factory import (
+    ProduceToolResponseStrategyFactory,
+)
 
 
 class CharacterMemoriesView(MethodView):
@@ -64,6 +75,29 @@ class CharacterMemoriesView(MethodView):
 
             # Optionally, add a success message to the session
             session["memories_saved_message"] = "Memories saved successfully."
+        elif action == "produce_self_reflection" and character_identifier:
+            # Instantiate and execute the command
+            produce_tool_response_strategy_factory = ProduceToolResponseStrategyFactory(
+                OpenRouterLlmClientFactory().create_llm_client(),
+                ConfigManager().get_heavy_llm(),
+            )
+
+            command = ProduceSelfReflectionCommand(
+                playthrough_name,
+                character_identifier,
+                SelfReflectionFactory(
+                    playthrough_name,
+                    character_identifier,
+                    produce_tool_response_strategy_factory,
+                ),
+            )
+
+            command.execute()
+
+            # Add a success message
+            session["memories_saved_message"] = (
+                "Self-reflection produced and added to memories."
+            )
 
         return redirect(
             url_for("character-memories", character_identifier=character_identifier)
