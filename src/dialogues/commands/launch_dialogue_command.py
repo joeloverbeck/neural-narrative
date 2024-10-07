@@ -33,17 +33,8 @@ from src.dialogues.strategies.concrete_involve_player_in_dialogue_strategy impor
     ConcreteInvolvePlayerInDialogueStrategy,
 )
 from src.dialogues.transcription import Transcription
-from src.events.factories.generate_interesting_dilemmas_command_factory import (
-    GenerateInterestingDilemmasCommandFactory,
-)
-from src.events.factories.generate_interesting_situations_command_factory import (
-    GenerateInterestingSituationsCommandFactory,
-)
 from src.prompting.factories.openrouter_llm_client_factory import (
     OpenRouterLlmClientFactory,
-)
-from src.prompting.factories.produce_tool_response_strategy_factory import (
-    ProduceToolResponseStrategyFactory,
 )
 
 
@@ -131,22 +122,6 @@ class LaunchDialogueCommand(Command):
             self._playthrough_name, self._participants
         )
 
-        produce_tool_response_strategy_factory = ProduceToolResponseStrategyFactory(
-            llm_client, self._config_manager.get_light_llm()
-        )
-
-        generate_interesting_situations_command_factory = (
-            GenerateInterestingSituationsCommandFactory(
-                self._playthrough_name, produce_tool_response_strategy_factory
-            )
-        )
-
-        generate_interesting_dilemmas_command_factory = (
-            GenerateInterestingDilemmasCommandFactory(
-                self._playthrough_name, produce_tool_response_strategy_factory
-            )
-        )
-
         produce_dialogue_command = ProduceDialogueCommand(
             self._playthrough_name,
             self._participants,
@@ -154,8 +129,6 @@ class LaunchDialogueCommand(Command):
             dialogue_turn_factory,
             summarize_dialogue_command_factory,
             store_dialogues_command_factory,
-            generate_interesting_situations_command_factory,
-            generate_interesting_dilemmas_command_factory,
         )
 
         involve_player_in_dialogue_strategy.attach(self._dialogue_observer)

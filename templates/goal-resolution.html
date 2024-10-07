@@ -1,0 +1,48 @@
+<!-- templates/goal-resolution.html -->
+{% extends 'base.html' %}
+
+{% block styles %}
+{{ super() }}
+<link href="{{ url_for('static', filename='goal-resolution.css') }}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block title %}
+Goal Resolution
+{% endblock %}
+
+{% block content %}
+<div class="goal-resolution-container">
+    <h1>Goal Resolution</h1>
+    <p class="current-place">Current Place: {{ current_place }}</p>
+
+    {% if result %}
+    <div class="goal-result">
+        <h2>Goal Resolution Result</h2>
+        <div class="success-determination">
+            {% if result.success_determination.strip().upper() == 'YES' %}
+            <p class="success">YES</p>
+            {% else %}
+            <p class="failure">NO</p>
+            {% endif %}
+        </div>
+        <div class="narration">
+            <h3>Narration</h3>
+            <p>{{ result.narration }}</p>
+        </div>
+        <div class="resolution">
+            <h3>Resolution</h3>
+            <p>{{ result.resolution }}</p>
+        </div>
+        <form action="{{ url_for('goal-resolution') }}" method="get">
+            <input type="submit" value="Start Over">
+        </form>
+    </div>
+    {% else %}
+    <form action="{{ url_for('goal-resolution') }}" method="post" class="goal-form">
+        <label for="goal">Enter Goal to Resolve:</label>
+        <input type="text" id="goal" name="goal" required>
+        <input type="submit" value="Resolve Goal">
+    </form>
+    {% endif %}
+</div>
+{% endblock %}

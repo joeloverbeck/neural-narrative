@@ -51,7 +51,7 @@ class GenerateInterestingDilemmasCommand(Command):
         )
 
         logger.info(
-            "Generated interesting dilemmas from dialogue at '%s'",
+            "Generated interesting dilemmas at '%s'",
             self._filesystem_manager.get_file_path_to_interesting_dilemmas(
                 self._playthrough_name
             ),

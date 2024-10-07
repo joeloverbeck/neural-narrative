@@ -1,6 +1,9 @@
 from flask import redirect, url_for, session, render_template, request
 from flask.views import MethodView
 
+from src.characters.factories.party_data_for_prompt_factory import (
+    PartyDataForPromptFactory,
+)
 from src.config.config_manager import ConfigManager
 from src.constants import (
     TIME_ADVANCED_DUE_TO_TRAVELING,
@@ -34,10 +37,13 @@ class TravelView(MethodView):
             ConfigManager().get_heavy_llm(),
         )
 
+        party_data_for_prompt_factory = PartyDataForPromptFactory(playthrough_name)
+
         product = TravelNarrationFactory(
             playthrough_name,
             destination_identifier,
             produce_tool_response_strategy_factory,
+            party_data_for_prompt_factory,
         ).generate_product()
 
         if not product.is_valid():

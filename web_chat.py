@@ -5,8 +5,9 @@ from flask import Flask
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.views.character_generation_view import CharacterGenerationView
 from src.views.character_memories_view import CharacterMemoriesView
+from src.views.characters_hub_view import CharactersHubView
 from src.views.chat_view import ChatView
-from src.views.event_inspiration_view import EventInspirationView
+from src.views.goal_resolution_view import GoalResolutionView
 from src.views.index_view import IndexView
 from src.views.location_hub_view import LocationHubView
 from src.views.participants_view import ParticipantsView
@@ -22,6 +23,9 @@ app.secret_key = b"neural-narrative"
 # Register the view
 app.add_url_rule("/", view_func=IndexView.as_view("index"))
 app.add_url_rule("/story-hub", view_func=StoryHubView.as_view("story-hub"))
+app.add_url_rule(
+    "/characters-hub", view_func=CharactersHubView.as_view("characters-hub")
+)
 app.add_url_rule("/location-hub", view_func=LocationHubView.as_view("location-hub"))
 app.add_url_rule("/travel", view_func=TravelView.as_view("travel"))
 app.add_url_rule("/participants", view_func=ParticipantsView.as_view("participants"))
@@ -36,7 +40,7 @@ app.add_url_rule(
     methods=["GET", "POST"],
 )
 app.add_url_rule(
-    "/event-inspiration", view_func=EventInspirationView.as_view("event-inspiration")
+    "/goal-resolution", view_func=GoalResolutionView.as_view("goal-resolution")
 )
 
 if __name__ == "__main__":

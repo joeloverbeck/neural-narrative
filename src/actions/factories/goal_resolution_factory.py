@@ -1,12 +1,13 @@
 from typing import Optional
 
-from src.characters.characters_manager import CharactersManager
-from src.constants import (
-    AMBIENT_NARRATION_GENERATION_PROMPT_FILE,
-    AMBIENT_NARRATION_GENERATION_TOOL_FILE,
+from src.actions.products.goal_resolution_product import GoalResolutionProduct
+from src.characters.factories.party_data_for_prompt_factory import (
+    PartyDataForPromptFactory,
 )
-from src.dialogues.products.ambient_narration_product import AmbientNarrationProduct
-from src.dialogues.transcription import Transcription
+from src.constants import (
+    GOAL_RESOLUTION_GENERATION_TOOL_FILE,
+    GOAL_RESOLUTION_GENERATION_PROMPT_FILE,
+)
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.map_manager import MapManager
 from src.playthrough_manager import PlaythroughManager
@@ -17,62 +18,59 @@ from src.prompting.providers.base_tool_response_provider import BaseToolResponse
 from src.time.time_manager import TimeManager
 
 
-class AmbientNarrationProvider(BaseToolResponseProvider):
+class GoalResolutionFactory(BaseToolResponseProvider):
     def __init__(
         self,
         playthrough_name: str,
-        transcription: Transcription,
+        goal: str,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
+        party_data_for_prompt_factory: PartyDataForPromptFactory,
         filesystem_manager: Optional[FilesystemManager] = None,
         time_manager: Optional[TimeManager] = None,
         map_manager: Optional[MapManager] = None,
         playthrough_manager: Optional[PlaythroughManager] = None,
-        characters_manager: Optional[CharactersManager] = None,
     ):
         super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
 
-        if not playthrough_name:
-            raise ValueError("playthrough_name can't be empty.")
-
         self._playthrough_name = playthrough_name
-        self._transcription = transcription
+        self._goal = goal
+        self._party_data_for_prompt_factory = party_data_for_prompt_factory
 
         self._time_manager = time_manager or TimeManager(self._playthrough_name)
         self._map_manager = map_manager or MapManager(self._playthrough_name)
         self._playthrough_manager = playthrough_manager or PlaythroughManager(
             self._playthrough_name
         )
-        self._characters_manager = characters_manager or CharactersManager(
-            self._playthrough_name
-        )
-
-    def get_prompt_file(self) -> str:
-        return AMBIENT_NARRATION_GENERATION_PROMPT_FILE
 
     def get_tool_file(self) -> str:
-        return AMBIENT_NARRATION_GENERATION_TOOL_FILE
+        return GOAL_RESOLUTION_GENERATION_TOOL_FILE
 
     def get_user_content(self) -> str:
-        return "Write two or three sentences of ambient narration, as per the provided instructions."
+        return "Write a compelling and vivid narration, in third-person and past tense, of how the characters attempt to achieve the given goal. Follow the provided instructions."
 
     def create_product(self, arguments: dict):
-        return AmbientNarrationProduct(
-            arguments.get("ambient_narration"), is_valid=True
+        return GoalResolutionProduct(
+            arguments.get("narration"),
+            arguments.get("success_determination"),
+            arguments.get("resolution"),
+            is_valid=True,
         )
 
     def get_prompt_kwargs(self) -> dict:
-        setting_description = self._map_manager.get_place_description(
-            self._playthrough_manager.get_current_place_identifier()
-        )
-
-        personality = self._characters_manager.load_character_data(
-            self._playthrough_manager.get_player_identifier()
-        ).get("personality")
-
-        return {
-            "setting_description": setting_description,
+        prompt_data = {
+            "goal": self._goal,
             "hour": self._time_manager.get_hour(),
             "time_of_day": self._time_manager.get_time_of_the_day(),
-            "personality": personality,
-            "transcription": self._transcription.get_prettified_transcription(),
+            "place_description": self._map_manager.get_place_description(
+                self._playthrough_manager.get_current_place_identifier()
+            ),
         }
+
+        party_data = self._party_data_for_prompt_factory.get_party_data_for_prompt()
+
+        prompt_data.update(party_data)
+
+        return prompt_data
+
+    def get_prompt_file(self) -> Optional[str]:
+        return GOAL_RESOLUTION_GENERATION_PROMPT_FILE

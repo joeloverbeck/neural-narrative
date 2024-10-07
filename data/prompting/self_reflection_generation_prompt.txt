@@ -1,0 +1,15 @@
+Based on the following set of memories from the character {name}, write a first-person self-reflection from {name}'s perspective.
+The reflection should be meaningful and compelling, exploring {name}'s thoughts, feelings, and insights about that person's experiences.
+Consider how these events have affected {name}, the lessons learned, how {name}'s relationships have evolved, and how {name} now perceives themselves and the world.
+The reflection should be introspective and deepen the understanding of {name}'s character.
+Character Bio:
+Name: {name}
+Description: {description}
+Personality: {personality}
+Profile: {profile}
+Likes: {likes}
+Dislikes: {dislikes}
+Speech Patterns: {speech_patterns}
+Equipment: {equipment}
+Memories:
+{memories}

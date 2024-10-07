@@ -35,9 +35,12 @@ class WebMessageDataProducerForSpeechTurnStrategy(
         ):
             alignment = "right"
 
+        name = speech_data_product.get()["name"]
+        narration_text = speech_data_product.get()["narration_text"]
+
         return {
             "alignment": alignment,
-            "sender_name": speech_data_product.get()["name"],
+            "sender_name": name,
             "sender_photo_url": image_url,
-            "message_text": f"*{speech_data_product.get()['narration_text']}* {speech_data_product.get()['speech']} ",
+            "message_text": f"*{narration_text}* {speech_data_product.get()['speech']} ",
         }

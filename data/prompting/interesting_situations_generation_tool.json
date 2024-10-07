@@ -2,13 +2,13 @@
   "type": "function",
   "function": {
     "name": "generate_interesting_situations",
-    "description": "generate a list of at least five very interesting and intriguing situations that could stem from the provided conversation. Do not under any circumstances include the provided dialogue.",
+    "description": "generate a list of at least five very interesting and intriguing situations that could stem from the provided information.",
     "parameters": {
       "type": "object",
       "properties": {
         "interesting_situations": {
           "type": "array",
-          "description": "A list of at least five very interesting and intriguing situations that could stem from the provided conversation. Follow the provided instructions.",
+          "description": "A list of at least five very interesting and intriguing situations that could stem from the provided information. Follow the provided instructions.",
           "items": {
             "type": "string"
           }

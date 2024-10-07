@@ -65,8 +65,22 @@ class CreateSpeechTurnDataCommand(Command, Subject):
             speech_data_product.get()["narration_text"] = f"Looks confused."
             speech_data_product.get()["speech"] = "I don't know what to say."
 
+        narration_text = speech_data_product.get()["narration_text"]
+
+        if not narration_text:
+            logger.warning(
+                f"Speech turn didn't produce narration text. Content: {speech_data_product.get()}"
+            )
+
+        name = speech_data_product.get()["name"]
+
+        if not narration_text or narration_text.lower() == "none":
+            speech_data_product.get()[
+                "narration_text"
+            ] = f"{name} takes a moment to speak."
+
         self._transcription.add_speech_turn(
-            speech_data_product.get()["name"],
+            name,
             f"*{speech_data_product.get()['narration_text']}* {speech_data_product.get()['speech']}",
         )
 

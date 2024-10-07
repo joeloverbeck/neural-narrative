@@ -17,7 +17,7 @@ class ParticipantsView(MethodView):
         # First load the characters at the current place
         characters = characters_manager.get_characters_at_current_place_plus_followers()
 
-        WebService.format_image_urls_of_characters(characters)
+        WebService().format_image_urls_of_characters(characters)
 
         # After retrieving the characters list
         if not characters:
@@ -44,7 +44,7 @@ class ParticipantsView(MethodView):
                 characters_manager.get_characters_at_current_place_plus_followers()
             )
 
-            WebService.format_image_urls_of_characters(characters)
+            WebService().format_image_urls_of_characters(characters)
 
             return render_template(
                 "participants.html", characters=characters, error=error

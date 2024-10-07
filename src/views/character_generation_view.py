@@ -2,8 +2,23 @@ from flask import session, redirect, url_for, render_template, request
 from flask.views import MethodView
 
 from src.characters.characters_manager import CharactersManager
+from src.characters.commands.generate_character_generation_guidelines_command import (
+    GenerateCharacterGenerationGuidelinesCommand,
+)
+from src.characters.factories.character_generation_guidelines_factory import (
+    CharacterGenerationGuidelinesFactory,
+)
+from src.config.config_manager import ConfigManager
+from src.constants import CHARACTER_GENERATION_GUIDELINES_FILE
+from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.map_manager import MapManager
 from src.playthrough_manager import PlaythroughManager
+from src.prompting.factories.openrouter_llm_client_factory import (
+    OpenRouterLlmClientFactory,
+)
+from src.prompting.factories.produce_tool_response_strategy_factory import (
+    ProduceToolResponseStrategyFactory,
+)
 from src.services.character_service import CharacterService
 from src.services.web_service import WebService
 
@@ -24,11 +39,50 @@ class CharacterGenerationView(MethodView):
 
         # Load the guidelines
         characters_manager = CharactersManager(playthrough_name)
+
+        world_template = playthrough_manager.get_world_template()
+        region_template = places_templates_parameter.get_region_template()
+        area_template = places_templates_parameter.get_area_template()
+        location_template = places_templates_parameter.get_location_template()
+
+        filesystem_manager = FilesystemManager()
+
+        character_generation_guidelines = (
+            filesystem_manager.load_existing_or_new_json_file(
+                CHARACTER_GENERATION_GUIDELINES_FILE
+            )
+        )
+
+        # First ensure that the guidelines exist.
+        if (
+            not characters_manager.create_key_for_character_generation_guidelines(
+                world_template, region_template, area_template, location_template
+            )
+            in character_generation_guidelines
+        ):
+            # Need to create the guidelines.
+            character_generation_guidelines_factory = (
+                CharacterGenerationGuidelinesFactory(
+                    playthrough_name,
+                    playthrough_manager.get_current_place_identifier(),
+                    ProduceToolResponseStrategyFactory(
+                        OpenRouterLlmClientFactory().create_llm_client(),
+                        ConfigManager().get_heavy_llm(),
+                    ),
+                )
+            )
+
+            GenerateCharacterGenerationGuidelinesCommand(
+                playthrough_name,
+                playthrough_manager.get_current_place_identifier(),
+                character_generation_guidelines_factory,
+            ).execute()
+
         guidelines = characters_manager.load_character_generation_guidelines(
-            playthrough_manager.get_world_template(),
-            places_templates_parameter.get_region_template(),
-            places_templates_parameter.get_area_template(),
-            places_templates_parameter.get_location_template(),
+            world_template,
+            region_template,
+            area_template,
+            location_template,
         )
 
         # Get any messages

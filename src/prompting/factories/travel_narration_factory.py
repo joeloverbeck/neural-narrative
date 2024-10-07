@@ -1,4 +1,7 @@
 from src.characters.characters_manager import CharactersManager
+from src.characters.factories.party_data_for_prompt_factory import (
+    PartyDataForPromptFactory,
+)
 from src.constants import (
     TRAVEL_NARRATION_PROMPT_FILE,
     TRAVEL_NARRATION_TOOL_FILE,
@@ -23,6 +26,7 @@ class TravelNarrationFactory(BaseToolResponseProvider):
         playthrough_name: str,
         destination_identifier: str,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
+        party_data_for_prompt_factory: PartyDataForPromptFactory,
         characters_manager: CharactersManager = None,
         playthrough_manager: PlaythroughManager = None,
         filesystem_manager: FilesystemManager = None,
@@ -37,6 +41,7 @@ class TravelNarrationFactory(BaseToolResponseProvider):
 
         self._playthrough_name = playthrough_name
         self._destination_identifier = destination_identifier
+        self._party_data_for_prompt_factory = party_data_for_prompt_factory
 
         self._characters_manager = characters_manager or CharactersManager(
             playthrough_name
@@ -50,12 +55,6 @@ class TravelNarrationFactory(BaseToolResponseProvider):
         return TRAVEL_NARRATION_PROMPT_FILE
 
     def get_prompt_kwargs(self) -> dict:
-        player_identifier = self._playthrough_manager.get_player_identifier()
-        player_data = self._characters_manager.load_character_data(player_identifier)
-        player_data["memories"] = self._characters_manager.load_character_memories(
-            player_identifier
-        )
-
         current_place_identifier = (
             self._playthrough_manager.get_current_place_identifier()
         )
@@ -66,26 +65,20 @@ class TravelNarrationFactory(BaseToolResponseProvider):
             self._destination_identifier
         )
 
-        followers_information = self._get_followers_information()
-
-        return {
+        prompt_data = {
             "origin_area_template": self._map_manager.get_current_place_template(),
             "origin_area_description": current_place_data["area_data"]["description"],
             "destination_area_template": destination_place_data["area_data"]["name"],
             "destination_area_description": destination_place_data["area_data"][
                 "description"
             ],
-            "player_name": player_data["name"],
-            "player_description": player_data["description"],
-            "player_personality": player_data["personality"],
-            "player_profile": player_data["profile"],
-            "player_likes": player_data["likes"],
-            "player_dislikes": player_data["dislikes"],
-            "player_speech_patterns": player_data["speech patterns"],
-            "player_equipment": player_data["equipment"],
-            "player_memories": player_data["memories"],
-            "followers_information": followers_information,
         }
+
+        prompt_data.update(
+            self._party_data_for_prompt_factory.get_party_data_for_prompt()
+        )
+
+        return prompt_data
 
     def get_tool_file(self) -> str:
         return TRAVEL_NARRATION_TOOL_FILE
@@ -101,27 +94,3 @@ class TravelNarrationFactory(BaseToolResponseProvider):
             travel_narration=arguments.get("narration", "The travel was uneventful."),
             is_valid=True,
         )
-
-    def _get_followers_information(self) -> str:
-        followers_info = ""
-        follower_ids = self._playthrough_manager.get_followers()
-        followers_data = self._characters_manager.get_full_data_of_characters(
-            follower_ids
-        )
-
-        for follower in followers_data:
-            memories = self._characters_manager.load_character_memories(
-                follower["identifier"]
-            )
-            followers_info += (
-                f"Follower name: {follower['name']}\n"
-                f"Description: {follower['description']}\n"
-                f"Personality: {follower['personality']}\n"
-                f"Profile: {follower['profile']}\n"
-                f"Likes: {follower['likes']}\n"
-                f"Dislikes: {follower['dislikes']}\n"
-                f"Speech patterns: {follower['speech patterns']}\n"
-                f"Equipment: {follower['equipment']}\n"
-                f"Memories:\n{memories}\n\n"
-            )
-        return followers_info

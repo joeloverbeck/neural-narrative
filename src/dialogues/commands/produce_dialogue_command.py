@@ -15,12 +15,6 @@ from src.dialogues.factories.summarize_dialogue_command_factory import (
     SummarizeDialogueCommandFactory,
 )
 from src.dialogues.participants import Participants
-from src.events.factories.generate_interesting_dilemmas_command_factory import (
-    GenerateInterestingDilemmasCommandFactory,
-)
-from src.events.factories.generate_interesting_situations_command_factory import (
-    GenerateInterestingSituationsCommandFactory,
-)
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.time.time_manager import TimeManager
 
@@ -36,8 +30,6 @@ class ProduceDialogueCommand(Command):
         dialogue_turn_factory: DialogueTurnFactory,
         summarize_dialogue_command_factory: SummarizeDialogueCommandFactory,
         store_dialogues_command_factory: StoreDialoguesCommandFactory,
-        generate_interesting_situations_command_factory: GenerateInterestingSituationsCommandFactory,
-        generate_interesting_dilemmas_command_factory: GenerateInterestingDilemmasCommandFactory,
         filesystem_manager: Optional[FilesystemManager] = None,
         time_manager: Optional[TimeManager] = None,
     ):
@@ -52,12 +44,6 @@ class ProduceDialogueCommand(Command):
         self._dialogue_turn_factory = dialogue_turn_factory
         self._summarize_dialogue_command_factory = summarize_dialogue_command_factory
         self._store_dialogues_command_factory = store_dialogues_command_factory
-        self._generate_interesting_situations_command_factory = (
-            generate_interesting_situations_command_factory
-        )
-        self._generate_interesting_dilemmas_command_factory = (
-            generate_interesting_dilemmas_command_factory
-        )
 
         self._filesystem_manager = filesystem_manager or FilesystemManager()
         self._time_manager = time_manager or TimeManager(self._playthrough_name)
@@ -71,24 +57,6 @@ class ProduceDialogueCommand(Command):
             self._store_dialogues_command_factory.create_store_dialogues_command(
                 dialogue_product.get_transcription()
             ).execute()
-
-            # The two following may fail because the LLM has done something wonky, and in that case,
-            # it's not really that much of a big deal.
-            try:
-                # Must coax the LLM into creating interesting situations.
-                self._generate_interesting_situations_command_factory.create_generate_interesting_situations_command(
-                    dialogue_product.get_transcription()
-                ).execute()
-
-                # Now do the same but with dilemmas
-                self._generate_interesting_dilemmas_command_factory.create_command(
-                    dialogue_product.get_transcription()
-                ).execute()
-            except ValueError as e:
-                logger.error(
-                    "Was unable to generate either interesting situations or dilemmas. Error: %s",
-                    e,
-                )
 
         # Must remove the temporary dialogue.
         self._filesystem_manager.remove_ongoing_dialogue(self._playthrough_name)
