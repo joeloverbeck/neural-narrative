@@ -17,4 +17,4 @@ Equipment: {player_equipment}
 {followers_information}
 Memories:
 {combined_memories}
-Important: you are prohibited from repeating verbatim any of the player and followers information, as well as the memories.
+Important: you are prohibited from repeating verbatim any of the player and followers information, as well as the memories. Do not write any preamble, just do as ordered.

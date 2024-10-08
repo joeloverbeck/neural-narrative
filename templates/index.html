@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block styles %}
-{{super()}}
+{{ super() }}
 <link href="{{ url_for('static', filename='index.css') }}" rel="stylesheet" type="text/css">
 {% endblock %}
 
@@ -11,119 +11,180 @@ Select Playthrough
 
 {% block content %}
 <div class="index-container">
-    <h1>Welcome to the Neural Narrative</h1>
+    <h1 class="page-title"><i class="fas fa-feather-alt" aria-hidden="true"></i> Neural Narrative</h1>
+
+    <!-- Select Playthrough Section -->
     {% if playthrough_names %}
-    <form action="/" class="playthrough-form" method="post">
-        <label class="playthrough-label" for="playthrough_name">Select your playthrough:</label>
-        <select class="playthrough-select" id="playthrough_name" name="playthrough_name" required>
-            {% for name in playthrough_names %}
-            <option value="{{ name }}">{{ name }}</option>
-            {% endfor %}
-        </select>
-        <input class="next-button" type="submit" value="Next">
-    </form>
+    <div class="collapsible-section">
+        <button class="collapsible active">
+            <i class="fas fa-gamepad"></i> Select Playthrough
+        </button>
+        <div class="content">
+            <form action="/" class="playthrough-form" method="post">
+                <label class="playthrough-label" for="playthrough_name">Select your playthrough:</label>
+                <select class="playthrough-select" id="playthrough_name" name="playthrough_name" required>
+                    {% for name in playthrough_names %}
+                    <option value="{{ name }}">{{ name }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="action-button">
+                    <i class="fas fa-arrow-right"></i> Next
+                </button>
+            </form>
+        </div>
+    </div>
     {% else %}
     <p class="no-playthroughs">No playthroughs available.</p>
     {% endif %}
-</div>
 
-<!-- Create Playthrough -->
-<div class="index-container">
-    <h1>Create Playthrough</h1>
-    <form action="/" method="post" class="create-playthrough-form">
-        <input type="hidden" name="form_type" value="create_playthrough">
+    <!-- Create Playthrough Section -->
+    <div class="collapsible-section">
+        <button class="collapsible">
+            <i class="fas fa-plus-circle"></i> Create Playthrough
+        </button>
+        <div class="content">
+            <form action="/" method="post" class="create-playthrough-form">
+                <input type="hidden" name="form_type" value="create_playthrough">
 
-        <label for="playthrough_name">Playthrough Name:</label>
-        <input type="text" id="playthrough_name_for_creation" name="playthrough_name" required>
+                <label for="playthrough_name">Playthrough Name:</label>
+                <input type="text" id="playthrough_name_for_creation" name="playthrough_name" required>
 
-        <label for="world_name_create">Select World:</label>
-        <select id="world_name_create" name="world_name" required onchange="updateDescription('world_create')">
-            {% for key, value in worlds.items() %}
-            <option value="{{ key }}" data-description="{{ value['description'] }}">{{ key }}</option>
-            {% endfor %}
-        </select>
+                <label for="world_name_create">Select World:</label>
+                <select id="world_name_create" name="world_name" required onchange="updateDescription('world_create')">
+                    {% for key, value in worlds.items() %}
+                    <option value="{{ key }}" data-description="{{ value['description'] }}">{{ key }}</option>
+                    {% endfor %}
+                </select>
 
-        <label for="player_notion">Your Notions for the Player Character (optional):</label>
-        <textarea id="player_notion" name="player_notion" rows="4" cols="50"></textarea>
+                <label for="player_notion">Your Notions for the Player Character (optional):</label>
+                <textarea id="player_notion" name="player_notion" rows="4" cols="50"></textarea>
 
-        <input type="submit" value="Create Playthrough" class="next-button">
-    </form>
-</div>
-
-
-<div class="index-container">
-    <h1>Generate World</h1>
-    <form action="/" method="post" class="generate-world-form">
-        <input type="hidden" name="form_type" value="generate_world">
-        <label class="world-label" for="world_notion">Enter your notions about the world:</label>
-        <textarea id="world_notion" name="world_notion" rows="4" cols="50" required></textarea>
-        <input class="next-button" type="submit" value="Generate">
-    </form>
-</div>
-
-<!-- Generate Region -->
-<div class="index-container">
-    <h1>Generate Region</h1>
-    <form action="/" method="post" class="generate-region-form">
-        <input type="hidden" name="form_type" value="generate_region">
-        <label for="world_name">Select the world:</label>
-        <select id="world_name" name="world_name" required onchange="updateDescription('world')">
-            {% for key,value in worlds.items() %}
-            <option value="{{ key }}" data-description="{{ value['description'] }}">{{ key }}</option>
-            {% endfor %}
-        </select>
-        <div id="world_description" class="description-box">
-            <h3>World Description</h3>
-            <p></p>
+                <button type="submit" class="action-button">
+                    <i class="fas fa-plus-circle"></i> Create Playthrough
+                </button>
+            </form>
         </div>
-        <label for="region_notion">Enter your notions about the region (optional):</label>
-        <textarea id="region_notion" name="region_notion" rows="4" cols="50"></textarea>
-        <input type="submit" value="Generate">
-    </form>
-</div>
+    </div>
 
-<!-- Generate Area -->
-<div class="index-container">
-    <h1>Generate Area</h1>
-    <form action="/" method="post" class="generate-area-form">
-        <input type="hidden" name="form_type" value="generate_area">
-        <label for="region_name">Select the region:</label>
-        <select id="region_name" name="region_name" required onchange="updateDescription('region')">
-            {% for key,value in regions.items() %}
-            <option value="{{ key }}" data-description="{{ value['description'] }}">{{ key }}</option>
-            {% endfor %}
-        </select>
-        <div id="region_description" class="description-box">
-            <h3>Region Description</h3>
-            <p></p>
+    <!-- Generate World Section -->
+    <div class="collapsible-section">
+        <button class="collapsible">
+            <i class="fas fa-globe"></i> Generate World
+        </button>
+        <div class="content">
+            <form action="/" method="post" class="generate-world-form">
+                <input type="hidden" name="form_type" value="generate_world">
+                <label class="world-label" for="world_notion">Enter your notions about the world:</label>
+                <textarea id="world_notion" name="world_notion" rows="4" cols="50" required></textarea>
+                <button type="submit" class="action-button">
+                    <i class="fas fa-cogs"></i> Generate World
+                </button>
+            </form>
         </div>
-        <label for="area_notion">Enter your notions about the area (optional):</label>
-        <textarea id="area_notion" name="area_notion" rows="4" cols="50"></textarea>
-        <input type="submit" value="Generate">
-    </form>
-</div>
+    </div>
 
-<!-- Generate Location -->
-<div class="index-container">
-    <h1>Generate Location</h1>
-    <form action="/" method="post" class="generate-location-form">
-        <input type="hidden" name="form_type" value="generate_location">
-        <label for="area_name">Select the area:</label>
-        <select id="area_name" name="area_name" required onchange="updateDescription('area')">
-            {% for key,value in areas.items() %}
-            <option value="{{ key }}" data-description="{{ value['description'] }}">{{ key }}</option>
-            {% endfor %}
-        </select>
-        <div id="area_description" class="description-box">
-            <h3>Area Description</h3>
-            <p></p>
+    <!-- Generate Region Section -->
+    <div class="collapsible-section">
+        <button class="collapsible">
+            <i class="fas fa-map"></i> Generate Region
+        </button>
+        <div class="content">
+            <form action="/" method="post" class="generate-region-form">
+                <input type="hidden" name="form_type" value="generate_region">
+                <label for="world_name">Select the world:</label>
+                <select id="world_name" name="world_name" required onchange="updateDescription('world')">
+                    {% for key,value in worlds.items() %}
+                    <option value="{{ key }}" data-description="{{ value['description'] }}">{{ key }}</option>
+                    {% endfor %}
+                </select>
+                <div id="world_description" class="description-box">
+                    <h3>World Description</h3>
+                    <p></p>
+                </div>
+                <label for="region_notion">Enter your notions about the region (optional):</label>
+                <textarea id="region_notion" name="region_notion" rows="4" cols="50"></textarea>
+                <button type="submit" class="action-button">
+                    <i class="fas fa-cogs"></i> Generate Region
+                </button>
+            </form>
         </div>
-        <label for="location_notion">Enter your notions about the location (optional):</label>
-        <textarea id="location_notion" name="location_notion" rows="4" cols="50"></textarea>
-        <input type="submit" value="Generate">
-    </form>
+    </div>
+
+    <!-- Generate Area Section -->
+    <div class="collapsible-section">
+        <button class="collapsible">
+            <i class="fas fa-map-marker-alt"></i> Generate Area
+        </button>
+        <div class="content">
+            <form action="/" method="post" class="generate-area-form">
+                <input type="hidden" name="form_type" value="generate_area">
+                <label for="region_name">Select the region:</label>
+                <select id="region_name" name="region_name" required onchange="updateDescription('region')">
+                    {% for key,value in regions.items() %}
+                    <option value="{{ key }}" data-description="{{ value['description'] }}">{{ key }}</option>
+                    {% endfor %}
+                </select>
+                <div id="region_description" class="description-box">
+                    <h3>Region Description</h3>
+                    <p></p>
+                </div>
+                <label for="area_notion">Enter your notions about the area (optional):</label>
+                <textarea id="area_notion" name="area_notion" rows="4" cols="50"></textarea>
+                <button type="submit" class="action-button">
+                    <i class="fas fa-cogs"></i> Generate Area
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Generate Location Section -->
+    <div class="collapsible-section">
+        <button class="collapsible">
+            <i class="fas fa-location-arrow"></i> Generate Location
+        </button>
+        <div class="content">
+            <form action="/" method="post" class="generate-location-form">
+                <input type="hidden" name="form_type" value="generate_location">
+                <label for="area_name">Select the area:</label>
+                <select id="area_name" name="area_name" required onchange="updateDescription('area')">
+                    {% for key,value in areas.items() %}
+                    <option value="{{ key }}" data-description="{{ value['description'] }}">{{ key }}</option>
+                    {% endfor %}
+                </select>
+                <div id="area_description" class="description-box">
+                    <h3>Area Description</h3>
+                    <p></p>
+                </div>
+                <label for="location_notion">Enter your notions about the location (optional):</label>
+                <textarea id="location_notion" name="location_notion" rows="4" cols="50"></textarea>
+                <button type="submit" class="action-button">
+                    <i class="fas fa-cogs"></i> Generate Location
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div class="buttons">
+        <a href="{{ url_for('story-hub') }}" class="button">
+            <i class="fas fa-feather-alt"></i> Story Hub
+        </a>
+        <a href="{{ url_for('characters-hub') }}" class="button">
+            <i class="fas fa-users"></i> Characters Hub
+        </a>
+        <a href="{{ url_for('location-hub') }}" class="button">
+            <i class="fas fa-map-marker-alt"></i> Location Hub
+        </a>
+        <a href="{{ url_for('chat') }}" class="button">
+            <i class="fas fa-comments"></i> Chat
+        </a>
+        <a href="{{ url_for('goal-resolution') }}" class="button">
+            <i class="fas fa-flag-checkered"></i> Goal Resolution
+        </a>
+    </div>
 </div>
 
+<!-- JavaScript for collapsible sections -->
 <script>
     function updateDescription(type) {
         var select = document.getElementById(type + '_name');
@@ -137,5 +198,25 @@ Select Playthrough
         updateDescription('region');
         updateDescription('area');
     }
+
+    // Collapsible sections
+    const collapsibles = document.querySelectorAll('.collapsible');
+    collapsibles.forEach(function(collapsible) {
+        collapsible.addEventListener('click', function() {
+            this.classList.toggle('active');
+            const content = this.nextElementSibling;
+            if (content.style.display === 'block') {
+                content.style.display = 'none';
+            } else {
+                content.style.display = 'block';
+            }
+        });
+
+        // On load: Display content for any collapsible that has 'active' class
+        if (collapsible.classList.contains('active')) {
+            const content = collapsible.nextElementSibling;
+            content.style.display = 'block'; // Show content if 'active' is already present
+        }
+    });
 </script>
 {% endblock %}

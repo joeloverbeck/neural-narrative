@@ -25,7 +25,8 @@ Story Hub
                 <form action="{{ url_for('story-hub') }}" method="post" class="item-form">
                     <input type="hidden" name="action" value="delete_concept">
                     <input type="hidden" name="item_index" value="{{ loop.index0 }}">
-                    <button type="submit" class="concept">
+                    <button type="submit" class="post-it">
+                        <i class="fas fa-thumbtack"></i> <!-- Pin Icon -->
                         <p>{{ concept }}</p>
                     </button>
                 </form>
@@ -36,7 +37,9 @@ Story Hub
             {% endif %}
             <form action="{{ url_for('story-hub') }}" method="post">
                 <input type="hidden" name="action" value="generate_concepts">
-                <input type="submit" value="Generate Concepts">
+                <button type="submit" class="action-button">
+                    <i class="fas fa-lightbulb"></i> Generate Concepts
+                </button>
             </form>
         </div>
     </div>
@@ -53,7 +56,8 @@ Story Hub
                 <form action="{{ url_for('story-hub') }}" method="post" class="item-form">
                     <input type="hidden" name="action" value="delete_situation">
                     <input type="hidden" name="item_index" value="{{ loop.index0 }}">
-                    <button type="submit" class="concept">
+                    <button type="submit" class="post-it">
+                        <i class="fas fa-thumbtack"></i> <!-- Pin Icon -->
                         <p>{{ situation }}</p>
                     </button>
                 </form>
@@ -64,7 +68,9 @@ Story Hub
             {% endif %}
             <form action="{{ url_for('story-hub') }}" method="post">
                 <input type="hidden" name="action" value="generate_situations">
-                <input type="submit" value="Generate Interesting Situations">
+                <button type="submit" class="action-button">
+                    <i class="fas fa-exclamation-circle"></i> Generate Interesting Situations
+                </button>
             </form>
         </div>
     </div>
@@ -81,7 +87,8 @@ Story Hub
                 <form action="{{ url_for('story-hub') }}" method="post" class="item-form">
                     <input type="hidden" name="action" value="delete_dilemma">
                     <input type="hidden" name="item_index" value="{{ loop.index0 }}">
-                    <button type="submit" class="concept">
+                    <button type="submit" class="post-it">
+                        <i class="fas fa-thumbtack"></i> <!-- Pin Icon -->
                         <p>{{ dilemma }}</p>
                     </button>
                 </form>
@@ -92,7 +99,9 @@ Story Hub
             {% endif %}
             <form action="{{ url_for('story-hub') }}" method="post">
                 <input type="hidden" name="action" value="generate_dilemmas">
-                <input type="submit" value="Generate Interesting Dilemmas">
+                <button type="submit" class="action-button">
+                    <i class="fas fa-question-circle"></i> Generate Interesting Dilemmas
+                </button>
             </form>
         </div>
     </div>
@@ -109,7 +118,7 @@ Story Hub
         <a href="{{ url_for('location-hub') }}" class="button">
             <i class="fas fa-map-marker-alt"></i> Location Hub
         </a>
-        <a href="{{ url_for('participants') }}" class="button">
+        <a href="{{ url_for('chat') }}" class="button">
             <i class="fas fa-comments"></i> Chat
         </a>
         <a href="{{ url_for('goal-resolution') }}" class="button">
@@ -126,7 +135,7 @@ Story Hub
         itemForms.forEach(function(form) {
             form.addEventListener('submit', function(event) {
                 event.preventDefault();
-                const itemButton = form.querySelector('.concept');
+                const itemButton = form.querySelector('.post-it');
                 itemButton.classList.add('fade-out');
                 setTimeout(function() {
                     form.submit();

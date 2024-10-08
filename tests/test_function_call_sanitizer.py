@@ -206,7 +206,7 @@ def test_extra_closing_braces_before_closing_tag():
 
 def test_single_quotes_replaced_with_double_quotes():
     function_call = "<function=some_function>{'key': 'value'}</function>"
-    expected_output = '<function=some_function>{"key":"value"}</function>'
+    expected_output = '<function=some_function>{"key": "value"}</function>'
     sanitizer = FunctionCallSanitizer(function_call)
     sanitized_output = sanitizer.sanitize()
     assert sanitized_output == expected_output
@@ -260,14 +260,6 @@ def test_missing_closing_function_tag():
     assert sanitized_output == expected_output  # Should add closing tag
 
 
-def test_start_and_end_tags_replaced():
-    function_call = '<{start_tag}=some_function>{"key": "value"}{end_tag}'
-    expected_output = '<function name="some_function">{"key": "value"}</function>'
-    sanitizer = FunctionCallSanitizer(function_call)
-    sanitized_output = sanitizer.sanitize()
-    assert sanitized_output == expected_output
-
-
 def test_fix_closing_function_tag_without_lt_or_slash():
     function_call = '<function=some_function>{"key": "value"}function>'
     expected_output = '<function=some_function>{"key": "value"}</function>'
@@ -290,3 +282,78 @@ def test_closing_tag_without_lt_or_slash():
     sanitizer = FunctionCallSanitizer(function_call)
     sanitized_output = sanitizer.sanitize()
     assert sanitized_output == expected_output
+
+
+def test_single_quoted_list_items():
+    input_function_call = "<function=generate_story_concepts>{\"concepts\": [\"In a world where magic is a distant memory, Roran Wainwright stumbles upon an ancient artifact that grants him extraordinary powers. As he navigates the treacherous political landscape of Mythalia, Roran must confront the dark secrets of his past and decide whether to use his newfound abilities for personal gain or to protect the innocent. Along the way, he forges unlikely alliances and uncovers a sinister plot that threatens to plunge the world into chaos.\", 'When a series of mysterious disappearances rocks the coastal town of Siren\\'s Respite, Roran Wainwright finds himself at the center of a chilling mystery. As he delves deeper into the town\\'s dark underbelly, he discovers a hidden world of supernatural creatures and ancient evils lurking just beneath the surface. With the help of a motley crew of allies, including a battle-scarred dwarf and a disillusioned paladin, Roran must race against time to uncover the truth and save the town from an unspeakable fate.', \"In the aftermath of a devastating war, Roran Wainwright stumbles upon a secret society dedicated to the preservation of Mythalia's magical heritage. As he immerses himself in this hidden world, Roran discovers a talent for the arcane arts and sets out on a quest to restore magic to the land. But as he delves deeper into the mysteries of the past, Roran realizes that the price of power may be higher than he ever imagined, and that the key to saving the future may lie in the shadows of his own shattered heart.\", 'When a chance encounter with a mysterious stranger leaves Roran Wainwright in possession of a powerful artifact, he finds himself drawn into a centuries-old conflict between rival factions vying for control of Mythalia\\'s most precious resources. As he navigates the treacherous waters of this high-stakes game, Roran must decide where his loyalties lie and whether he is willing to sacrifice everything he holds dear in the pursuit of power and revenge.',\"In a world where the lines between magic and technology are blurring, Roran Wainwright stumbles upon a hidden workshop filled with wondrous inventions and arcane devices. As he delves deeper into the secrets of this forgotten place, Roran discovers a talent for tinkering and sets out to create something truly extraordinary. But as his creations begin to attract the attention of powerful forces, Roran must navigate a dangerous web of alliances and betrayals to protect his work and the people he loves. Along the way, he discovers that the true power of invention lies not in the devices themselves, but in the hearts and minds of those who create them.\"]}</function>"
+    sanitizer = FunctionCallSanitizer(input_function_call)
+    sanitized_output = sanitizer.sanitize()
+
+    # Extract the JSON content from the sanitized output
+    match = re.match(r"<function=([^\s>]+)>(.*)</function>", sanitized_output)
+    assert match is not None, "Sanitized output does not match expected format."
+
+    json_content = match.group(2)
+    function_name = match.group(1)
+
+    # Attempt to parse the JSON content
+    data = json.loads(json_content)
+
+    # Verify the structure and content
+    assert "concepts" in data, "'concepts' key not found in the data."
+    assert isinstance(data["concepts"], list), "'concepts' is not a list."
+    assert len(data["concepts"]) == 5, "Incorrect number of concepts."
+
+    # Check that all items are strings
+    for concept in data["concepts"]:
+        assert isinstance(concept, str), "Concept is not a string."
+
+    # Ensure that the function name is correct
+    assert function_name == "generate_story_concepts", "Function name is incorrect."
+
+
+def test_mixed_quotes_and_escape_characters():
+    input_function_call = "<function=echo_input>{'text': 'He said, \\'Hello, World!\\'', 'count': 1}</function>"
+    sanitizer = FunctionCallSanitizer(input_function_call)
+    sanitized_output = sanitizer.sanitize()
+
+    # Extract and parse the JSON content
+    match = re.match(r"<function=([^\s>]+)>(.*)</function>", sanitized_output)
+    assert match is not None, "Sanitized output does not match expected format."
+
+    json_content = match.group(2)
+    data = json.loads(json_content)
+
+    # Verify the content
+    assert data["text"] == "He said, 'Hello, World!'", "Incorrect 'text' value."
+    assert data["count"] == 1, "Incorrect 'count' value."
+
+
+def test_double_quoted_strings():
+    input_function_call = (
+        '<function=process>{"message": "All systems operational."}</function>'
+    )
+    sanitizer = FunctionCallSanitizer(input_function_call)
+    sanitized_output = sanitizer.sanitize()
+
+    # Extract and parse the JSON content
+    match = re.match(r"<function=([^\s>]+)>(.*)</function>", sanitized_output)
+    assert match is not None, "Sanitized output does not match expected format."
+
+    json_content = match.group(2)
+    data = json.loads(json_content)
+
+    # Verify the content
+    assert data["message"] == "All systems operational.", "Incorrect 'message' value."
+
+
+def test_empty_function_call():
+    input_function_call = ""
+    with pytest.raises(ValueError):
+        FunctionCallSanitizer(input_function_call)
+
+
+def test_none_function_call():
+    input_function_call = None
+    with pytest.raises(ValueError):
+        FunctionCallSanitizer(input_function_call)

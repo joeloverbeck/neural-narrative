@@ -73,8 +73,12 @@ class StoryHubView(MethodView):
                 ConfigManager().get_heavy_llm(),
             )
 
+            party_data_for_prompty_factory = PartyDataForPromptFactory(playthrough_name)
+
             concepts_factory = ConceptsFactory(
-                playthrough_name, produce_tool_response_strategy_factory
+                playthrough_name,
+                produce_tool_response_strategy_factory,
+                party_data_for_prompty_factory,
             )
 
             command = GenerateConceptsCommand(playthrough_name, concepts_factory)

@@ -1,4 +1,3 @@
-<!-- templates/characters-hub.html -->
 {% extends "base.html" %}
 
 {% block title %}Characters Hub{% endblock %}
@@ -9,22 +8,63 @@
 {% endblock %}
 
 {% block content %}
-<h1 class="page-title">Characters Hub</h1>
 <div class="characters-hub-container">
-    <div class="player-character">
-        <img alt="{{ player_character.name }}" src="{{ player_character.image_url }}">
-        <h2>{{ player_character.name }}</h2>
+    <h1 class="page-title"><i class="fas fa-users"></i> Characters Hub</h1>
+
+    <!-- Player Character Section -->
+    <div class="player-character-section">
+        <div class="character player-character">
+            <img alt="{{ player_character.name }}" src="{{ player_character.image_url }}">
+            <h2 class="character-name">{{ player_character.name }}</h2>
+        </div>
     </div>
-    <div class="action-buttons-container">
-        <form action="{{ url_for('character-generation') }}" method="get">
-            <input class="action-button" type="submit" value="Generate Character">
-        </form>
-        <form action="{{ url_for('character-memories') }}" method="get">
-            <input class="action-button" type="submit" value="Character Memories">
-        </form>
-        <form action="{{ url_for('story-hub') }}" method="get">
-            <input class="action-button" type="submit" value="Return to Story Hub">
-        </form>
+
+    <!-- Non-player Characters Section -->
+    {% if non_player_characters %}
+    <div class="collapsible-section">
+        <button class="collapsible">
+            <i class="fas fa-users"></i> Non-player Characters
+        </button>
+        <div class="content">
+            <div class="characters-list">
+                {% for character in non_player_characters %}
+                <div class="character">
+                    <img alt="{{ character.name }}" src="{{ character.image_url }}">
+                    <h2 class="character-name">{{ character.name }}</h2>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Action Buttons -->
+    <div class="buttons">
+        <a href="{{ url_for('character-generation') }}" class="button">
+            <i class="fas fa-plus-circle"></i> Generate Character
+        </a>
+        <a href="{{ url_for('character-memories') }}" class="button">
+            <i class="fas fa-brain"></i> Character Memories
+        </a>
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div class="buttons">
+        <a href="{{ url_for('index') }}" class="button">
+            <i class="fas fa-globe"></i> Home
+        </a>
+        <a href="{{ url_for('story-hub') }}" class="button">
+            <i class="fas fa-feather-alt"></i> Story Hub
+        </a>
+        <a href="{{ url_for('location-hub') }}" class="button">
+            <i class="fas fa-map-marker-alt"></i> Location Hub
+        </a>
+        <a href="{{ url_for('chat') }}" class="button">
+            <i class="fas fa-comments"></i> Chat
+        </a>
+        <a href="{{ url_for('goal-resolution') }}" class="button">
+            <i class="fas fa-flag-checkered"></i> Goal Resolution
+        </a>
     </div>
 </div>
 {% endblock %}

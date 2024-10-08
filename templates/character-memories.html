@@ -8,47 +8,116 @@
 {% endblock %}
 
 {% block content %}
-<h1>Edit Character Memories</h1>
+<div class="character-memories-container">
+    <h1 class="page-title"><i class="fas fa-brain"></i> Character Memories</h1>
 
-<!-- Display success message if memories were saved -->
-{% if session.get('memories_saved_message') %}
-<div class="success-message">
-    {{ session.pop('memories_saved_message') }}
+    <!-- Display success message if memories were saved -->
+    {% if session.get('memories_saved_message') %}
+    <div class="message">
+        {{ session.pop('memories_saved_message') }}
+    </div>
+    {% endif %}
+
+    <!-- Select Character Section -->
+    <div class="collapsible-section">
+        <button class="collapsible active">
+            <i class="fas fa-user"></i> Select a Character
+        </button>
+        <div class="content">
+            <form action="{{ url_for('character-memories') }}" method="get" class="select-character-form">
+                <label for="character_selector">Select a character:</label>
+                <select id="character_selector" name="character_identifier" onchange="this.form.submit()">
+                    <option value="">-- Select a character --</option>
+                    {% for character in all_characters %}
+                    <option value="{{ character.identifier }}" {% if character.selected %}selected{% endif %}>
+                        {{ character.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </form>
+        </div>
+    </div>
+
+    {% if selected_character %}
+    <!-- Edit Memories Section -->
+    <div class="collapsible-section">
+        <button class="collapsible">
+            <i class="fas fa-book"></i> Memories of {{ selected_character.name }}
+        </button>
+        <div class="content">
+            <form method="post" class="edit-memories-form">
+                <input name="character_identifier" type="hidden" value="{{ selected_character.identifier }}">
+                <input name="action" type="hidden" value="save_memories">
+                <label for="character_memories">Memories:</label>
+                <textarea id="character_memories" name="character_memories"
+                          rows="20">{{ character_memories }}</textarea>
+                <button type="submit" class="action-button">
+                    <i class="fas fa-save"></i> Save Memories
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Produce Self-Reflection Section -->
+    <div class="collapsible-section">
+        <button class="collapsible">
+            <i class="fas fa-user-circle"></i> Self-Reflection
+        </button>
+        <div class="content">
+            <form method="post" class="self-reflection-form">
+                <input name="character_identifier" type="hidden" value="{{ selected_character.identifier }}">
+                <input name="action" type="hidden" value="produce_self_reflection">
+                <button type="submit" class="action-button">
+                    <i class="fas fa-sync-alt"></i> Produce Self-Reflection
+                </button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Navigation Buttons -->
+    <div class="buttons">
+        <a href="{{ url_for('characters-hub') }}" class="button">
+            <i class="fas fa-users"></i> Characters Hub
+        </a>
+        <a href="{{ url_for('index') }}" class="button">
+            <i class="fas fa-globe"></i> Home
+        </a>
+        <a href="{{ url_for('story-hub') }}" class="button">
+            <i class="fas fa-feather-alt"></i> Story Hub
+        </a>
+        <a href="{{ url_for('location-hub') }}" class="button">
+            <i class="fas fa-map-marker-alt"></i> Location Hub
+        </a>
+        <a href="{{ url_for('participants') }}" class="button">
+            <i class="fas fa-comments"></i> Chat
+        </a>
+        <a href="{{ url_for('goal-resolution') }}" class="button">
+            <i class="fas fa-flag-checkered"></i> Goal Resolution
+        </a>
+    </div>
 </div>
-{% endif %}
 
-<form action="{{ url_for('character-memories') }}" method="get">
-    <label for="character_selector">Select a character:</label>
-    <select id="character_selector" name="character_identifier" onchange="this.form.submit()">
-        <option value="">-- Select a character --</option>
-        {% for character in all_characters %}
-        <option value="{{ character.identifier }}" {% if character.selected %}selected{% endif %}>
-            {{ character.name }}
-        </option>
-        {% endfor %}
-    </select>
-</form>
+<!-- JavaScript for collapsible sections -->
+<script>
+    // Collapsible sections
+    const collapsibles = document.querySelectorAll('.collapsible');
+    collapsibles.forEach(function(collapsible) {
+        collapsible.addEventListener('click', function() {
+            this.classList.toggle('active');
+            const content = this.nextElementSibling;
+            if (content.style.display === 'block') {
+                content.style.display = 'none';
+            } else {
+                content.style.display = 'block';
+            }
+        });
 
-{% if selected_character %}
-<h2>Memories of {{ selected_character.name }}</h2>
-
-<form method="post">
-    <input name="character_identifier" type="hidden" value="{{ selected_character.identifier }}">
-    <input name="action" type="hidden" value="save_memories">
-    <textarea cols="100" name="character_memories" rows="20">{{ character_memories }}</textarea><br>
-    <input type="submit" value="Save memories">
-</form>
-
-<!-- Form for producing self-reflection -->
-<form method="post">
-    <input name="character_identifier" type="hidden" value="{{ selected_character.identifier }}">
-    <input name="action" type="hidden" value="produce_self_reflection">
-    <input type="submit" value="Self-Reflection">
-</form>
-{% endif %}
-
-<form action="{{ url_for('characters-hub') }}" method="get">
-    <input class="action-button" type="submit" value="Return to characters hub">
-</form>
+        // On load: Display content for any collapsible that has 'active' class
+        if (collapsible.classList.contains('active')) {
+            const content = collapsible.nextElementSibling;
+            content.style.display = 'block'; // Show content if 'active' is already present
+        }
+    });
+</script>
 {% endblock %}
-
