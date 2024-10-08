@@ -1,4 +1,3 @@
-<!-- templates/chat.html -->
 {% extends 'base.html' %}
 
 {% block title %}Chat{% endblock %}
@@ -9,75 +8,97 @@
 {% endblock %}
 
 {% block content %}
-<h1>Chat with Participants</h1>
+<div class="chat-container">
+    <h1 class="page-title"><i class="fas fa-comments"></i> Chat</h1>
 
-
-<!-- Wrap both current time and place labels in a flex container -->
-<div class="info-bar">
-    <div class="current-time">
-        Time: {{ current_time }}
-    </div>
-    <div class="current-place">
-        Place: {{ current_place_template }}
-    </div>
-</div>
-
-<div class="chat-window" id="chat-window">
-    {% for message in dialogue %}
-    {% if message.alignment == 'center' %}
-    <div class="ambient-message">
-        <div class="ambient-message-text">{{ message.message_text }}</div>
-    </div>
-    {% else %}
-    <div class="chat-bubble {{ message.alignment }}">
-        <img alt="{{ message.sender_name }}" class="avatar" src="{{ message.sender_photo_url }}">
-        <div class="message-content">
-            <div class="sender-label">{{ message.sender_name }}</div>
-            <div class="message-text">{{ message.message_text }}</div>
+    <!-- Info Bar -->
+    <div class="info-bar">
+        <div class="current-time">
+            Time: {{ current_time }}
+        </div>
+        <div class="current-place">
+            Place: {{ current_place_template }}
         </div>
     </div>
-    {% endif %}
-    {% endfor %}
+
+    <!-- Chat Window -->
+    <div class="chat-window" id="chat-window">
+        {% for message in dialogue %}
+        {% if message.alignment == 'center' %}
+        <div class="ambient-message">
+            <div class="ambient-message-text">{{ message.message_text }}</div>
+        </div>
+        {% else %}
+        <div class="chat-bubble {{ message.alignment }}">
+            <img alt="{{ message.sender_name }}" class="avatar" src="{{ message.sender_photo_url }}">
+            <div class="message-content">
+                <div class="sender-label">{{ message.sender_name }}</div>
+                <div class="message-text">{{ message.message_text }}</div>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+
+    <!-- Chat Form -->
+    <form method="post" class="chat-form">
+        <input id="user-input" name="user_input" placeholder="Type your message here..." type="text">
+        <div class="form-buttons">
+            <button type="submit" name="action" value="Send" class="action-button">
+                <i class="fas fa-paper-plane"></i> Send
+            </button>
+            <button type="submit" name="action" value="Ambient narration" class="action-button">
+                <i class="fas fa-magic"></i> Ambient Narration
+            </button>
+        </div>
+    </form>
+
+    <!-- Navigation Buttons -->
+    <div class="buttons">
+        <a href="{{ url_for('index') }}" class="button">
+            <i class="fas fa-globe"></i> Home
+        </a>
+        <a href="{{ url_for('story-hub') }}" class="button">
+            <i class="fas fa-feather-alt"></i> Story Hub
+        </a>
+        <a href="{{ url_for('characters-hub') }}" class="button">
+            <i class="fas fa-users"></i> Characters Hub
+        </a>
+        <a href="{{ url_for('location-hub') }}" class="button">
+            <i class="fas fa-map-marker-alt"></i> Location Hub
+        </a>
+        <a href="{{ url_for('goal-resolution') }}" class="button">
+            <i class="fas fa-flag-checkered"></i> Goal Resolution
+        </a>
+    </div>
 </div>
 
-<form method="post">
-    <input id="user-input" name="user_input" placeholder="Type your message here..." type="text">
-    <input type="submit" name="action" value="Send">
-    <input type="submit" name="action" value="Ambient narration">
-</form>
-
+<!-- JavaScript -->
 <script>
-    // Ensure that the DOM is fully loaded before running the script
     document.addEventListener('DOMContentLoaded', function () {
-        // Focus the input field with id 'user-input'
         var inputField = document.getElementById('user-input');
         if (inputField) {
-            inputField.focus();  // Automatically focus the input field
+            inputField.focus();
         }
 
-        // Ensure the chat window scrolls to the bottom
         var chatWindow = document.getElementById('chat-window');
         if (chatWindow) {
             chatWindow.scrollTop = chatWindow.scrollHeight;
         }
     });
 
-document.addEventListener('DOMContentLoaded', function () {
-    var messageTexts = document.querySelectorAll('.message-text');
+    document.addEventListener('DOMContentLoaded', function () {
+        var messageTexts = document.querySelectorAll('.message-text');
 
-    messageTexts.forEach(function (messageText) {
-        var content = messageText.innerHTML;
+        messageTexts.forEach(function (messageText) {
+            var content = messageText.innerHTML;
 
-        // Insert a div with a class for styling after the first narration, and trim the whitespace after it
-        var updatedContent = content.replace(/^\*(.*?)\*\s*(.*)/, '<span class="narration">$1</span><div class="narration-break"></div>$2');
+            var updatedContent = content.replace(/^\*(.*?)\*\s*(.*)/, '<span class="narration">$1</span><div class="narration-break"></div>$2');
 
-        // For other narrations in the message, wrap them without adding a line break
-        updatedContent = updatedContent.replace(/\*(.*?)\*/g, '<span class="narration">$1</span>');
+            updatedContent = updatedContent.replace(/\*(.*?)\*/g, '<span class="narration">$1</span>');
 
-        // Update the HTML of the message-text div with the new content
-        messageText.innerHTML = updatedContent;
+            messageText.innerHTML = updatedContent;
+        });
     });
-
-});
 </script>
 {% endblock %}

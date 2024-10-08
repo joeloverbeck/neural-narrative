@@ -15,4 +15,7 @@ class ConcretePlayerInputProduct(PlayerInputProduct):
         return self._player_input.lower() == "quit"
 
     def is_silent(self) -> bool:
-        return self._player_input.lower() == "silent"
+        return (
+            self._player_input.lower() == "silent"
+            or self._player_input.lower() == "listen"
+        )

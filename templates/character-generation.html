@@ -1,51 +1,107 @@
-<!-- templates/character-generation.html -->
 {% extends "base.html" %}
 
 {% block title %}Character Generation{% endblock %}
 
 {% block styles %}
-{{super()}}
+{{ super() }}
 <link href="{{ url_for('static', filename='character-generation.css') }}" rel="stylesheet" type="text/css">
 {% endblock %}
 
 {% block content %}
 
-<h1>Character Generation</h1>
+<div class="character-generation-container">
+    <h1 class="page-title"><i class="fas fa-user-plus"></i> Character Generation</h1>
 
-{% if character_generation_message %}
-<div class="message">
-    <p>{{ character_generation_message }}</p>
-</div>
-{% endif %}
+    {% if character_generation_message %}
+    <div class="message">
+        <p>{{ character_generation_message }}</p>
+    </div>
+    {% endif %}
 
-<div class="guidelines-list">
-    <h2>Select a guideline:</h2>
-    <div class="guidelines-grid">
-        {% for guideline in guidelines %}
-        <div class="guideline-item card" onclick='fillGuideline({{ guideline|tojson }});'>
-            <p>{{ guideline }}</p>
+    <!-- Select Guideline Section -->
+    <div class="collapsible-section">
+        <button class="collapsible">
+            <i class="fas fa-list"></i> Select a Guideline
+        </button>
+        <div class="content">
+            <div class="guidelines-grid">
+                {% for guideline in guidelines %}
+                <div class="post-it card" onclick='fillGuideline({{ guideline|tojson }});'>
+                    <i class="fas fa-thumbtack"></i> <!-- Pin Icon -->
+                    <p>{{ guideline }}</p>
+                </div>
+                {% endfor %}
+            </div>
         </div>
-        {% endfor %}
+    </div>
+
+    <!-- Guideline Textbox Section -->
+    <div class="collapsible-section">
+        <button class="collapsible active">
+            <i class="fas fa-edit"></i> Guideline
+        </button>
+        <div class="content">
+            <form method="post" class="guideline-form">
+                <label for="guideline_text">Guideline:</label>
+                <textarea id="guideline_text" name="guideline_text" rows="10">{{ selected_guideline }}</textarea>
+                <input name="action" type="hidden" value="Generate Character">
+                <button type="submit" class="action-button">
+                    <i class="fas fa-magic"></i> Generate Character
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div class="buttons">
+        <a href="{{ url_for('characters-hub') }}" class="button">
+            <i class="fas fa-users"></i> Characters Hub
+        </a>
+        <a href="{{ url_for('index') }}" class="button">
+            <i class="fas fa-globe"></i> Home
+        </a>
+        <a href="{{ url_for('story-hub') }}" class="button">
+            <i class="fas fa-feather-alt"></i> Story Hub
+        </a>
+        <a href="{{ url_for('location-hub') }}" class="button">
+            <i class="fas fa-map-marker-alt"></i> Location Hub
+        </a>
+        <a href="{{ url_for('participants') }}" class="button">
+            <i class="fas fa-comments"></i> Chat
+        </a>
+        <a href="{{ url_for('goal-resolution') }}" class="button">
+            <i class="fas fa-flag-checkered"></i> Goal Resolution
+        </a>
     </div>
 </div>
 
-<div class="guideline-textbox">
-    <h2>Guideline:</h2>
-    <form method="post">
-        <textarea cols="50" id="guideline_text" name="guideline_text" rows="10">{{ selected_guideline }}</textarea>
-        <br>
-        <input name="action" type="hidden" value="Generate Character">
-        <input type="submit" value="Generate Character">
-    </form>
-    <form action="{{ url_for('characters-hub') }}" method="get">
-        <input class="action-button" type="submit" value="Return to characters hub">
-    </form>
-</div>
-
+<!-- JavaScript for collapsible sections and filling guideline -->
 <script>
     function fillGuideline(guideline) {
         document.getElementById('guideline_text').value = guideline;
     }
+
+    // Collapsible sections
+    const collapsibles = document.querySelectorAll('.collapsible');
+    collapsibles.forEach(function(collapsible) {
+        collapsible.addEventListener('click', function() {
+            this.classList.toggle('active');
+            const content = this.nextElementSibling;
+            if (content.style.display === 'block') {
+                content.style.display = 'none';
+            } else {
+                content.style.display = 'block';
+            }
+        });
+
+        // On load: Display content for any collapsible that has 'active' class
+        if (collapsible.classList.contains('active')) {
+            const content = collapsible.nextElementSibling;
+            content.style.display = 'block'; // Show content if 'active' is already present
+        }
+    });
+
+
 </script>
 
 {% endblock %}

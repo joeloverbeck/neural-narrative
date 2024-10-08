@@ -1,146 +1,230 @@
-<!-- templates/location-hub.html -->
 {% extends "base.html" %}
 
 {% block title %}Location Hub{% endblock %}
 
 {% block styles %}
-{{super()}}
+{{ super() }}
 <link href="{{ url_for('static', filename='location-hub.css') }}" rel="stylesheet" type="text/css">
 {% endblock %}
 
 {% block content %}
-<h1>{{ current_place }}, {{ current_hour }} {{ current_time_of_day }}</h1>
+<div class="location-hub-container">
+    <h1 class="page-title"><i class="fas fa-map-marker-alt"></i> {{ current_place }}, {{ current_hour }} {{
+        current_time_of_day }}</h1>
 
-<!-- Describe Place Section -->
-{% if place_description %}
-<div class="place-description">
-    <p>{{ place_description }}</p>
-</div>
-{% endif %}
-
-<div class="available-actions-section">
-    <h2>Place Actions</h2>
-    <!-- Exploration message -->
-    {% if exploration_result_message %}
-    <p>{{ exploration_result_message }}</p>
+    <!-- Place Description Section -->
+    {% if place_description %}
+    <div class="collapsible-section">
+        <button class="collapsible">
+            <i class="fas fa-info-circle"></i> Place Description
+        </button>
+        <div class="content">
+            <div class="place-description">
+                <p>{{ place_description }}</p>
+            </div>
+        </div>
+    </div>
     {% endif %}
-    <div class="action-grid">
-        <form method="post">
-            <input name="action" type="hidden" value="Describe Place">
-            <input class="action-button" type="submit" value="Describe current place">
-        </form>
 
-        {% if current_place_type.value == "location" %}
-        <form method="post">
-            <input name="action" type="hidden" value="Exit Location">
-            <input class="action-button" type="submit" value="Exit current place">
-        </form>
-        {% endif %}
+    <!-- Place Actions Section -->
+    <div class="collapsible-section">
+        <button class="collapsible active">
+            <i class="fas fa-map-signs"></i> Place Actions
+        </button>
+        <div class="content">
+            <!-- Exploration message -->
+            {% if exploration_result_message %}
+            <div class="message">
+                <p>{{ exploration_result_message }}</p>
+            </div>
+            {% endif %}
 
-        <!-- Button for searching for locations -->
-        {% if current_place_type.value == "area" %}
-        <form method="post">
-            <input name="action" type="hidden" value="Search For Location">
-            <input class="action-button" type="submit" value="Search for location">
-        </form>
-        {% endif %}
+            <div class="buttons">
+                <form method="post" class="action-form">
+                    <input name="action" type="hidden" value="Describe Place">
+                    <button type="submit" class="action-button">
+                        <i class="fas fa-info-circle"></i> Describe current place
+                    </button>
+                </form>
 
-        <!-- Buttons for visiting locations -->
-        {% if locations_present %}
-        {% for location in locations_present %}
-        <form method="post">
-            <input name="action" type="hidden" value="Visit Location">
-            <input name="location_identifier" type="hidden" value="{{ location.identifier }}">
-            <input class="action-button" type="submit" value="Visit {{ location.place_template }}">
-        </form>
-        {% endfor %}
-        {% endif %}
+                {% if current_place_type.value == "location" %}
+                <form method="post" class="action-form">
+                    <input name="action" type="hidden" value="Exit Location">
+                    <button type="submit" class="action-button">
+                        <i class="fas fa-sign-out-alt"></i> Exit current place
+                    </button>
+                </form>
+                {% endif %}
 
-        <!-- Buttons for exploring cardinal directions -->
-        {% if cardinal_connections %}
-        {% for key, value in cardinal_connections.items() %}
-        {% if not value %}
-        <form method="post">
-            <input name="action" type="hidden" value="Explore Cardinal Direction">
-            <input name="cardinal_direction" type="hidden" value="{{ key }}">
-            <input class="action-button" type="submit" value="Explore {{ key }}">
-        </form>
-        {% endif %}
-        {% if value %}
-        <form method="post">
-            <input name="action" type="hidden" value="Travel In Cardinal Direction">
-            <input name="destination_identifier" type="hidden" value="{{ value.get('identifier') }}">
-            <input class="action-button" type="submit" value="Travel {{ key }} to {{ value.get('place_template') }}">
-        </form>
-        {% endif %}
-        {% endfor %}
-        {% endif %}
+                {% if current_place_type.value == "area" %}
+                <form method="post" class="action-form">
+                    <input name="action" type="hidden" value="Search For Location">
+                    <button type="submit" class="action-button">
+                        <i class="fas fa-search-location"></i> Search for location
+                    </button>
+                </form>
+                {% endif %}
 
+                {% if locations_present %}
+                {% for location in locations_present %}
+                <form method="post" class="action-form">
+                    <input name="action" type="hidden" value="Visit Location">
+                    <input name="location_identifier" type="hidden" value="{{ location.identifier }}">
+                    <button type="submit" class="action-button">
+                        <i class="fas fa-door-open"></i> Visit {{ location.place_template }}
+                    </button>
+                </form>
+                {% endfor %}
+                {% endif %}
+
+                {% if cardinal_connections %}
+                {% for key, value in cardinal_connections.items() %}
+                {% if not value %}
+                <form method="post" class="action-form">
+                    <input name="action" type="hidden" value="Explore Cardinal Direction">
+                    <input name="cardinal_direction" type="hidden" value="{{ key }}">
+                    <button type="submit" class="action-button">
+                        <i class="fas fa-compass"></i> Explore {{ key }}
+                    </button>
+                </form>
+                {% endif %}
+                {% if value %}
+                <form method="post" class="action-form">
+                    <input name="action" type="hidden" value="Travel In Cardinal Direction">
+                    <input name="destination_identifier" type="hidden" value="{{ value.get('identifier') }}">
+                    <button type="submit" class="action-button">
+                        <i class="fas fa-location-arrow"></i> Travel {{ key }} to {{ value.get('place_template') }}
+                    </button>
+                </form>
+                {% endif %}
+                {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- General Actions Section -->
+    <div class="collapsible-section">
+        <button class="collapsible">
+            <i class="fas fa-globe"></i> General Actions
+        </button>
+        <div class="content">
+            <div class="buttons">
+                <form method="post" class="action-form">
+                    <input name="action" type="hidden" value="Advance Time">
+                    <button type="submit" class="action-button">
+                        <i class="fas fa-clock"></i> Advance time 5 hours
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Characters at Location Section -->
+    {% if characters %}
+    <div class="collapsible-section">
+        <button class="collapsible">
+            <i class="fas fa-users"></i> Characters at this Location
+        </button>
+        <div class="content">
+            <form method="post">
+                <!-- Add the action input field -->
+                <input type="hidden" name="action" value="Add To Followers">
+                <div class="characters-list">
+                    {% for character in characters %}
+                    <div class="character">
+                        <input id="char-{{ character.identifier }}" name="add_followers" type="checkbox"
+                               value="{{ character.identifier }}">
+                        <label for="char-{{ character.identifier }}">
+                            <img alt="{{ character.name }}" src="{{ character.image_url }}">
+                            <div class="character-name">{{ character.name }}</div>
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
+                <button type="submit" class="action-button">
+                    <i class="fas fa-user-plus"></i> Add to Followers
+                </button>
+            </form>
+        </div>
+    </div>
+    {% else %}
+    <p class="no-characters">No characters are present at this location.</p>
+    {% endif %}
+
+    <!-- Followers Section -->
+    {% if followers %}
+    <div class="collapsible-section">
+        <button class="collapsible">
+            <i class="fas fa-user-friends"></i> Your Followers
+        </button>
+        <div class="content">
+            <form method="post">
+                <!-- Add the action input field -->
+                <input type="hidden" name="action" value="Remove From Followers">
+                <div class="characters-list">
+                    {% for follower in followers %}
+                    <div class="character">
+                        <input id="follower-{{ follower.identifier }}" name="remove_followers" type="checkbox"
+                               value="{{ follower.identifier }}">
+                        <label for="follower-{{ follower.identifier }}">
+                            <img alt="{{ follower.name }}" src="{{ follower.image_url }}">
+                            <div class="character-name">{{ follower.name }}</div>
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
+                <button type="submit" class="action-button">
+                    <i class="fas fa-user-minus"></i> Remove from Followers
+                </button>
+            </form>
+        </div>
+    </div>
+    {% else %}
+    <p class="no-followers">You have no followers.</p>
+    {% endif %}
+
+    <!-- Navigation Buttons -->
+    <div class="buttons">
+        <a href="{{ url_for('index') }}" class="button">
+            <i class="fas fa-globe"></i> Home
+        </a>
+        <a href="{{ url_for('characters-hub') }}" class="button">
+            <i class="fas fa-users"></i> Characters Hub
+        </a>
+        <a href="{{ url_for('story-hub') }}" class="button">
+            <i class="fas fa-feather-alt"></i> Story Hub
+        </a>
+        <a href="{{ url_for('chat') }}" class="button">
+            <i class="fas fa-comments"></i> Chat
+        </a>
+        <a href="{{ url_for('goal-resolution') }}" class="button">
+            <i class="fas fa-flag-checkered"></i> Goal Resolution
+        </a>
     </div>
 </div>
 
-<div class="available-actions-section">
-    <h2>General Actions</h2>
-    <div class="action-grid">
-        <form method="post">
-            <input name="action" type="hidden" value="Advance Time">
-            <input class="action-button" type="submit" value="Advance time 5 hours">
-        </form>
-        <form action="{{ url_for('participants') }}" method="get">
-            <input class="action-button" type="submit" value="Chat">
-        </form>
-        <form action="{{ url_for('story-hub') }}" method="get">
-            <input class="action-button" type="submit" value="Story Hub">
-        </form>
-        <form action="{{ url_for('goal-resolution') }}" method="get">
-            <input class="action-button" type="submit" value="Goal resolution">
-        </form>
-    </div>
-</div>
+<!-- JavaScript for collapsible sections -->
+<script>
+    // Collapsible sections
+    const collapsibles = document.querySelectorAll('.collapsible');
+    collapsibles.forEach(function(collapsible) {
+        collapsible.addEventListener('click', function() {
+            this.classList.toggle('active');
+            const content = this.nextElementSibling;
+            if (content.style.display === 'block') {
+                content.style.display = 'none';
+            } else {
+                content.style.display = 'block';
+            }
+        });
 
-<!-- Form to add characters at the current place to followers -->
-{% if characters %}
-<h3>Characters at this Location:</h3>
-<form method="post">
-    <div class="characters-list">
-        {% for character in characters %}
-        <div class="character card">
-            <input id="char-{{ character.identifier }}" name="add_followers" type="checkbox"
-                   value="{{ character.identifier }}">
-            <label for="char-{{ character.identifier }}">
-                <img alt="{{ character.name }}" src="{{ character.image_url }}">
-                <div class="character-name">{{ character.name }}</div>
-            </label>
-        </div>
-        {% endfor %}
-    </div>
-    <input name="action" type="submit" value="Add to Followers">
-</form>
-{% else %}
-<p>No characters are present at this location.</p>
-{% endif %}
-
-
-<!-- Form to remove followers and leave them at the current location -->
-{% if followers %}
-<h3>Your Followers:</h3>
-<form method="post">
-    <div class="characters-list">
-        {% for follower in followers %}
-        <div class="character card">
-            <input id="follower-{{ follower.identifier }}" name="remove_followers" type="checkbox"
-                   value="{{ follower.identifier }}">
-            <label for="follower-{{ follower.identifier }}">
-                <img alt="{{ follower.name }}" src="{{ follower.image_url }}">
-                <div class="character-name">{{ follower.name }}</div>
-            </label>
-        </div>
-        {% endfor %}
-    </div>
-    <input name="action" type="submit" value="Remove from Followers">
-</form>
-{% else %}
-<p>You have no followers.</p>
-{% endif %}
+        // On load: Display content for any collapsible that has 'active' class
+        if (collapsible.classList.contains('active')) {
+            const content = collapsible.nextElementSibling;
+            content.style.display = 'block'; // Show content if 'active' is already present
+        }
+    });
+</script>
 
 {% endblock %}

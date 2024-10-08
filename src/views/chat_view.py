@@ -20,6 +20,12 @@ class ChatView(MethodView):
             return redirect(url_for("index"))
 
         playthrough_manager = PlaythroughManager(playthrough_name)
+
+        if not dialogue_participants and not playthrough_manager.has_ongoing_dialogue(
+            playthrough_name
+        ):
+            return redirect(url_for("participants"))
+
         filesystem_manager = FilesystemManager()
 
         ongoing_dialogue_file = filesystem_manager.load_existing_or_new_json_file(
@@ -27,9 +33,7 @@ class ChatView(MethodView):
         )
 
         # There is a playthrough_name in session, but the participants may not be there.
-        if not dialogue_participants and playthrough_manager.has_ongoing_dialogue(
-            playthrough_name
-        ):
+        if not dialogue_participants:
             session["participants"] = ongoing_dialogue_file["participants"]
 
         # There is a playthrough_name in session, but the purpose may not be there.
@@ -71,7 +75,6 @@ class ChatView(MethodView):
             messages, is_goodbye = dialogue_service.process_user_input(user_input)
 
             if is_goodbye:
-                session.pop("playthrough_name", None)
                 session.pop("participants", None)
                 session.pop("dialogue", None)
                 session.pop("purpose", None)

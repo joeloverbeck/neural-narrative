@@ -10,16 +10,19 @@ World Description: {world_description}
 Region Description: {region_description}
 Area Description: {area_description}
 {location_description}
-Player Character Data:
-- Name: {name}
-- Physical Description: {description}
-- Personality: {personality}
-- Profile: {profile}
-- Likes: {likes}
-- Dislikes: {dislikes}
-- Equipment: {equipment}
-- Memories:
-{memories}
+- Player and Followers Information:
+Name: {player_name}
+Description: {player_description}
+Personality: {player_personality}
+Profile: {player_profile}
+Likes: {player_likes}
+Dislikes: {player_dislikes}
+Speech patterns: {player_speech_patterns}
+Equipment: {player_equipment}
+-----
+{followers_information}
+Memories:
+{combined_memories}
 Important:
 - Please ensure each story concept creatively incorporates these elements to craft engaging and imaginative narratives.
 - Aim for diversity in genres, themes, and conflicts across the ten concepts, but ensure that they incorporate the provided player character, and are influenced by the provided place descriptions.

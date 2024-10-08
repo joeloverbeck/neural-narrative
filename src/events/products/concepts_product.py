@@ -5,9 +5,6 @@ class ConceptsProduct:
     def __init__(
         self, concepts: List[str], is_valid: bool, error: Optional[str] = None
     ):
-        if not concepts:
-            raise ValueError("concepts can't be empty.")
-
         self._concepts = concepts
         self._is_valid = is_valid
         self._error = error
