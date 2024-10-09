@@ -83,6 +83,7 @@ class GoalResolutionView(MethodView):
             player_data["description"],
             player_data["personality"],
             player_data["equipment"],
+            player_data["voice_model"],
         )
 
         # Now do the same for the followers.
@@ -93,6 +94,7 @@ class GoalResolutionView(MethodView):
                 follower["description"],
                 follower["personality"],
                 follower["equipment"],
+                follower["voice_model"],
             )
 
         goal_resolution_algorithm = ProduceGoalResolutionAlgorithm(

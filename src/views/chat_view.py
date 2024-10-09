@@ -56,7 +56,6 @@ class ChatView(MethodView):
     def post(self):
         playthrough_name = session.get("playthrough_name")
         dialogue_participants = session.get("participants")
-        purpose = session.get("purpose", "")
 
         if not playthrough_name or not dialogue_participants:
             return redirect(url_for("index"))

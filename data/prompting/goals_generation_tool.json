@@ -1,0 +1,39 @@
+{
+  "type": "function",
+  "function": {
+    "name": "generate_goals",
+    "description": "generate a list of five intriguing and engaging short-term goals for the player to pursue.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "goal_1": {
+          "type": "string",
+          "description": "An intriguing and engaging short-term goal for the player to pursue. Follow the provided instructions."
+        },
+        "goal_2": {
+          "type": "string",
+          "description": "An intriguing and engaging short-term goal for the player to pursue. Follow the provided instructions."
+        },
+        "goal_3": {
+          "type": "string",
+          "description": "An intriguing and engaging short-term goal for the player to pursue. Follow the provided instructions."
+        },
+        "goal_4": {
+          "type": "string",
+          "description": "An intriguing and engaging short-term goal for the player to pursue. Follow the provided instructions."
+        },
+        "goal_5": {
+          "type": "string",
+          "description": "An intriguing and engaging short-term goal for the player to pursue. Follow the provided instructions."
+        }
+      },
+      "required": [
+        "goal_1",
+        "goal_2",
+        "goal_3",
+        "goal_4",
+        "goal_5"
+      ]
+    }
+  }
+}

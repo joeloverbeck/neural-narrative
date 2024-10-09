@@ -2,20 +2,62 @@
   "type": "function",
   "function": {
     "name": "generate_guidelines_for_generating_characters",
-    "description": "generate about twenty entries that are guidelines for the breadth of characters that would be fitting to create for the provided combination of places.",
+    "description": "generate about ten entries that are guidelines for the breadth of characters that would be fitting to create for the provided combination of places.",
     "parameters": {
       "type": "object",
       "properties": {
-        "guidelines": {
+        "guideline_1": {
           "type": "array",
-          "description": "Write about twenty entries that are guidelines for creating interesting characters based on the above combination of places. Each guideline should be about two or three sentences. Follow the provided instructions for what elements each guideline should include.",
-          "items": {
-            "type": "string"
-          }
+          "description": "A guideline for creating interesting characters based on the above combination of places. The guideline should be about two or three sentences. Follow the provided instructions for what elements the guideline should include."
+        },
+        "guideline_2": {
+          "type": "array",
+          "description": "A guideline for creating interesting characters based on the above combination of places. The guideline should be about two or three sentences. Follow the provided instructions for what elements the guideline should include."
+        },
+        "guideline_3": {
+          "type": "array",
+          "description": "A guideline for creating interesting characters based on the above combination of places. The guideline should be about two or three sentences. Follow the provided instructions for what elements the guideline should include."
+        },
+        "guideline_4": {
+          "type": "array",
+          "description": "A guideline for creating interesting characters based on the above combination of places. The guideline should be about two or three sentences. Follow the provided instructions for what elements the guideline should include."
+        },
+        "guideline_5": {
+          "type": "array",
+          "description": "A guideline for creating interesting characters based on the above combination of places. The guideline should be about two or three sentences. Follow the provided instructions for what elements the guideline should include."
+        },
+        "guideline_6": {
+          "type": "array",
+          "description": "A guideline for creating interesting characters based on the above combination of places. The guideline should be about two or three sentences. Follow the provided instructions for what elements the guideline should include."
+        },
+        "guideline_7": {
+          "type": "array",
+          "description": "A guideline for creating interesting characters based on the above combination of places. The guideline should be about two or three sentences. Follow the provided instructions for what elements the guideline should include."
+        },
+        "guideline_8": {
+          "type": "array",
+          "description": "A guideline for creating interesting characters based on the above combination of places. The guideline should be about two or three sentences. Follow the provided instructions for what elements the guideline should include."
+        },
+        "guideline_9": {
+          "type": "array",
+          "description": "A guideline for creating interesting characters based on the above combination of places. The guideline should be about two or three sentences. Follow the provided instructions for what elements the guideline should include."
+        },
+        "guideline_10": {
+          "type": "array",
+          "description": "A guideline for creating interesting characters based on the above combination of places. The guideline should be about two or three sentences. Follow the provided instructions for what elements the guideline should include."
         }
       },
       "required": [
-        "guidelines"
+        "guideline_1",
+        "guideline_2",
+        "guideline_3",
+        "guideline_4",
+        "guideline_5",
+        "guideline_6",
+        "guideline_7",
+        "guideline_8",
+        "guideline_9",
+        "guideline_10"
       ]
     }
   }

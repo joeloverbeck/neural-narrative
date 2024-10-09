@@ -1,0 +1,163 @@
+{
+  "npcmmel": [
+    "MALE",
+    "ADULT",
+    "CONFIDENT",
+    "STEADY",
+    "SMOOTH",
+    "CLEAR",
+    "FORMAL",
+    "CHARMING",
+    "NO SPECIAL EFFECTS"
+  ],
+  "npcmlucasmiller": [
+    "MALE",
+    "ADULT",
+    "CALM",
+    "FAST-PACED",
+    "SMOOTH",
+    "CASUAL",
+    "KIND",
+    "NO SPECIAL EFFECTS"
+  ],
+  "robotmsnanny": [
+    "FEMALE",
+    "YOUNG ADULT",
+    "STEADY",
+    "WARM",
+    "CASUAL",
+    "MELODIC",
+    "YOUTHFUL",
+    "NO SPECIAL EFFECTS"
+  ],
+  "npcma951": [
+    "MALE",
+    "ADULT",
+    "ANXIOUS",
+    "SLOW",
+    "AIRY",
+    "SKEPTICAL",
+    "NO SPECIAL EFFECTS"
+  ],
+  "npcfphyllisdaily": [
+    "FEMALE",
+    "ADULT",
+    "STOIC",
+    "SLOW",
+    "MONOTONE",
+    "INSTRUCTIONAL",
+    "CALCULATING",
+    "NO SPECIAL EFFECTS"
+  ],
+  "femalechild": [
+    "FEMALE",
+    "CHILDLIKE",
+    "PLAYFUL",
+    "STEADY",
+    "AIRY",
+    "MELODIC",
+    "INNOCENT",
+    "NO SPECIAL EFFECTS"
+  ],
+  "femaleyoungeager": [
+    "FEMALE",
+    "YOUNG ADULT",
+    "HOPEFUL",
+    "FAST-PACED",
+    "CLEAR",
+    "INTENSE",
+    "OPTIMISTIC",
+    "NO SPECIAL EFFECTS"
+  ],
+  "femalevampire": [
+    "FEMALE",
+    "MIDDLE-AGED",
+    "ARROGANT",
+    "STEADY",
+    "SMOOTH",
+    "AUTHORITATIVE",
+    "CYNICAL",
+    "NO SPECIAL EFFECTS"
+  ],
+  "femalekhajiit": [
+    "FEMALE",
+    "ADULT",
+    "CALM",
+    "STEADY",
+    "GRAVELLY",
+    "CASUAL",
+    "PHILOSOPHICAL",
+    "NO SPECIAL EFFECTS"
+  ],
+  "femaleuniqueghost": [
+    "FEMALE",
+    "YOUNG ADULT",
+    "RESIGNED",
+    "STEADY",
+    "ETHEREAL",
+    "MELODIC",
+    "INNOCENT",
+    "GHOSTLY"
+  ],
+  "femaleghoul": [
+    "FEMALE",
+    "ADULT",
+    "MENACING",
+    "STEADY",
+    "RASPY",
+    "INTENSE",
+    "ENERGETIC",
+    "NO SPECIAL EFFECTS"
+  ],
+  "femaleboston": [
+    "FEMALE",
+    "ADULT",
+    "CALM",
+    "DRAWLING",
+    "SOFT-SPOKEN",
+    "WARM",
+    "FLIRTATIOUS",
+    "SULTRY",
+    "NO SPECIAL EFFECTS"
+  ],
+  "npcfcolette": [
+    "FEMALE",
+    "YOUNG ADULT",
+    "CONFIDENT",
+    "STEADY",
+    "GRAVELLY",
+    "INSTRUCTIONAL",
+    "CHARMING",
+    "NO SPECIAL EFFECTS"
+  ],
+  "florentius": [
+    "MALE",
+    "ADULT",
+    "CONFIDENT",
+    "STEADY",
+    "CRISP",
+    "INTENSE",
+    "BRAVE",
+    "NO SPECIAL EFFECTS"
+  ],
+  "npcmstorytimesimon": [
+    "MALE",
+    "YOUNG ADULT",
+    "NERVOUS",
+    "SLOW",
+    "NASAL",
+    "INSTRUCTIONAL",
+    "SKEPTICAL",
+    "NO SPECIAL EFFECTS"
+  ],
+  "modyn": [
+    "MALE",
+    "ADULT",
+    "MENACING",
+    "STEADY",
+    "CLEAR",
+    "AUTHORITATIVE",
+    "NOBLE",
+    "NO SPECIAL EFFECTS"
+  ]
+}

@@ -21,16 +21,13 @@ class CreateSpeechTurnDataCommand(Command, Subject):
         self,
         messages_to_llm: MessagesToLlm,
         transcription: Transcription,
-        speech_turn_choice_tool_response_product: LlmToolResponseProduct,
+        speech_turn_choice_response: LlmToolResponseProduct,
         llm_speech_data_provider_factory: LlmSpeechDataProviderFactory,
         message_data_producer_for_speech_turn_strategy: MessageDataProducerForSpeechTurnStrategy,
     ):
-
         self._messages_to_llm = messages_to_llm
         self._transcription = transcription
-        self._speech_turn_choice_tool_response_product = (
-            speech_turn_choice_tool_response_product
-        )
+        self._speech_turn_choice_response = speech_turn_choice_response
         self._llm_speech_data_provider_factory = llm_speech_data_provider_factory
         self._message_data_producer_for_speech_turn_strategy = (
             message_data_producer_for_speech_turn_strategy
@@ -86,6 +83,6 @@ class CreateSpeechTurnDataCommand(Command, Subject):
 
         self.notify(
             self._message_data_producer_for_speech_turn_strategy.produce_message_data(
-                self._speech_turn_choice_tool_response_product, speech_data_product
+                self._speech_turn_choice_response, speech_data_product
             )
         )

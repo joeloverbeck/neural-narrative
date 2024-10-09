@@ -29,6 +29,9 @@ from src.prompting.factories.produce_tool_response_strategy_factory import (
     ProduceToolResponseStrategyFactory,
 )
 from src.requests.factories.ConcreteUrlContentFactory import ConcreteUrlContentFactory
+from src.voices.algorithms.match_voice_data_to_voice_model_algorithm import (
+    MatchVoiceDataToVoiceModelAlgorithm,
+)
 
 
 class CharacterService:
@@ -80,8 +83,14 @@ class CharacterService:
             )
         )
 
+        match_voice_data_to_voice_model_algorithm = (
+            MatchVoiceDataToVoiceModelAlgorithm()
+        )
+
         store_generate_character_command_factory = (
-            StoreGeneratedCharacterCommandFactory(playthrough_name)
+            StoreGeneratedCharacterCommandFactory(
+                playthrough_name, match_voice_data_to_voice_model_algorithm
+            )
         )
 
         generated_image_factory = OpenAIGeneratedImageFactory(

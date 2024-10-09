@@ -1,5 +1,7 @@
 import logging
+from typing import Optional
 
+from src.characters.characters_manager import CharactersManager
 from src.dialogues.factories.character_choice_dialogue_initial_prompting_messages_provider_factory import (
     CharacterChoiceDialogueInitialPromptingMessagesProviderFactory,
 )
@@ -30,7 +32,8 @@ class SpeechTurnChoiceToolResponseProvider(ToolResponseProvider):
         character_choice_dialogue_initial_prompting_messages_provider_factory: CharacterChoiceDialogueInitialPromptingMessagesProviderFactory,
         llm_content_provider_factory: CharacterChoiceDialogueLlmContentProviderFactory,
         handle_parsed_tool_response_for_dialogue_character_choice_strategy_factory: HandleParsedToolResponseForDialogueCharacterChoiceStrategyFactory,
-        playthrough_manager: PlaythroughManager = None,
+        playthrough_manager: Optional[PlaythroughManager] = None,
+        characters_manager: Optional[CharactersManager] = None,
     ):
         if not participants.enough_participants():
             raise ValueError("Not enough participants.")
@@ -47,6 +50,9 @@ class SpeechTurnChoiceToolResponseProvider(ToolResponseProvider):
         )
 
         self._playthrough_manager = playthrough_manager or PlaythroughManager(
+            self._playthrough_name
+        )
+        self._characters_manager = characters_manager or CharactersManager(
             self._playthrough_name
         )
 
@@ -76,5 +82,12 @@ class SpeechTurnChoiceToolResponseProvider(ToolResponseProvider):
             raise ValueError(
                 f"Failed to choose the next speaker: {parsed_tool_response.get_error()}"
             )
+
+        # The tool response should contain "identifier", so we can get the proper "voice_model"
+        parsed_tool_response.get()["voice_model"] = (
+            self._characters_manager.get_voice_model(
+                parsed_tool_response.get()["identifier"]
+            )
+        )
 
         return parsed_tool_response

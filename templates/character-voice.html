@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+
+{% block title %}Character Voice{% endblock %}
+
+{% block styles %}
+{{ super() }}
+<link href="{{ url_for('static', filename='character-voice.css') }}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block content %}
+<div class="character-voice-container">
+    <h1 class="page-title"><i class="fas fa-microphone"></i> Character Voice</h1>
+
+    <!-- Display success message if voice model was changed -->
+    {% if session.get('voice_model_changed_message') %}
+    <div class="message">
+        {{ session.pop('voice_model_changed_message') }}
+    </div>
+    {% endif %}
+
+    <!-- Select Character Section -->
+    <div class="collapsible-section">
+        <button class="collapsible active">
+            <i class="fas fa-user"></i> Select a Character
+        </button>
+        <div class="content">
+            <form action="{{ url_for('character-voice') }}" method="get" class="select-character-form">
+                <label for="character_selector">Select a character:</label>
+                <select id="character_selector" name="character_identifier" onchange="this.form.submit()">
+                    <option value="">-- Select a character --</option>
+                    {% for character in all_characters %}
+                    <option value="{{ character.identifier }}" {% if character.selected %}selected{% endif %}>
+                        {{ character.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </form>
+        </div>
+    </div>
+
+    {% if selected_character %}
+    <!-- Display Assigned Voice Model -->
+    <div class="assigned-voice-model">
+        <h2>Assigned Voice Model: {{ selected_voice_model }}</h2>
+    </div>
+
+    <!-- Filter Voice Models Section -->
+    <div class="collapsible-section">
+        <button class="collapsible">
+            <i class="fas fa-filter"></i> Filter Voice Models
+        </button>
+        <div class="content">
+            <form action="{{ url_for('character-voice') }}" method="get" class="filter-voice-models-form">
+                <input name="character_identifier" type="hidden" value="{{ selected_character.identifier }}">
+                <label>Select tags to filter:</label>
+                <div class="categories-container">
+                    {% for category, tags in categories_tags.items() %}
+                    <fieldset>
+                        <legend>{{ category.replace('_', ' ').title() }}</legend>
+                        <div class="tags-container">
+                            {% for tag in tags %}
+                            <input type="checkbox" name="tags" value="{{ tag }}" id="tag_{{ tag }}" {% if tag in
+                                   selected_tags %}checked{% endif %}>
+                            <label for="tag_{{ tag }}">{{ tag }}</label>
+                            {% endfor %}
+                        </div>
+                    </fieldset>
+                    {% endfor %}
+                </div>
+                <button type="submit" class="action-button">
+                    <i class="fas fa-filter"></i> Apply Filters
+                </button>
+            </form>
+        </div>
+    </div>
+
+    {% if voice_models %}
+    <!-- Select Voice Model Section -->
+    <div class="collapsible-section">
+        <button class="collapsible">
+            <i class="fas fa-microphone"></i> Select Voice Model
+        </button>
+        <div class="content">
+            <form method="post" class="select-voice-model-form">
+                <input name="character_identifier" type="hidden" value="{{ selected_character.identifier }}">
+                <div class="voice-models-container">
+                    {% for vm_name, tags in voice_models.items() %}
+                    <div class="voice-model-card">
+                        <input type="radio" name="voice_model" value="{{ vm_name }}" id="vm_{{ loop.index }}" {% if
+                               vm_name== selected_voice_model %}checked{% endif %}>
+                        <label for="vm_{{ loop.index }}">
+                            <div class="voice-model-header">
+                                <h3>{{ vm_name }}</h3>
+                            </div>
+                            <div class="voice-model-tags">
+                                {% for tag in tags %}
+                                <span class="tag">{{ tag }}</span>
+                                {% endfor %}
+                            </div>
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
+                <button type="submit" class="action-button">
+                    <i class="fas fa-save"></i> Change Voice Model
+                </button>
+            </form>
+        </div>
+    </div>
+    {% else %}
+    <div class="no-voice-models-message">
+        <p>Please select tags to filter and display voice models.</p>
+    </div>
+    {% endif %}
+    {% endif %}
+
+    <!-- Navigation Buttons -->
+    <div class="buttons">
+        <a href="{{ url_for('characters-hub') }}" class="button">
+            <i class="fas fa-users"></i> Characters Hub
+        </a>
+        <a href="{{ url_for('index') }}" class="button">
+            <i class="fas fa-globe"></i> Home
+        </a>
+        <a href="{{ url_for('story-hub') }}" class="button">
+            <i class="fas fa-feather-alt"></i> Story Hub
+        </a>
+        <a href="{{ url_for('location-hub') }}" class="button">
+            <i class="fas fa-map-marker-alt"></i> Location Hub
+        </a>
+        <a href="{{ url_for('participants') }}" class="button">
+            <i class="fas fa-comments"></i> Chat
+        </a>
+        <a href="{{ url_for('goal-resolution') }}" class="button">
+            <i class="fas fa-flag-checkered"></i> Goal Resolution
+        </a>
+    </div>
+</div>
+
+<!-- JavaScript for collapsible sections -->
+<script>
+    // Collapsible sections
+    const collapsibles = document.querySelectorAll('.collapsible');
+    collapsibles.forEach(function(collapsible) {
+        collapsible.addEventListener('click', function() {
+            this.classList.toggle('active');
+            const content = this.nextElementSibling;
+            if (content.style.display === 'block') {
+                content.style.display = 'none';
+            } else {
+                content.style.display = 'block';
+            }
+        });
+
+        // On load: Display content for any collapsible that has 'active' class
+        if (collapsible.classList.contains('active')) {
+            const content = collapsible.nextElementSibling;
+            content.style.display = 'block'; // Show content if 'active' is already present
+        }
+    });
+</script>
+{% endblock %}

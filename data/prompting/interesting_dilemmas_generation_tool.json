@@ -6,16 +6,33 @@
     "parameters": {
       "type": "object",
       "properties": {
-        "interesting_dilemmas": {
-          "type": "array",
-          "description": "A list of at least five intriguing moral and ethical dilemmas that could stem from the provided information. Follow the provided instructions.",
-          "items": {
-            "type": "string"
-          }
+        "interesting_dilemma_1": {
+          "type": "string",
+          "description": "An intriguing moral and ethical dilemma that could stem from the provided information. Follow the provided instructions."
+        },
+        "interesting_dilemma_2": {
+          "type": "string",
+          "description": "An intriguing moral and ethical dilemma that could stem from the provided information. Follow the provided instructions."
+        },
+        "interesting_dilemma_3": {
+          "type": "string",
+          "description": "An intriguing moral and ethical dilemma that could stem from the provided information. Follow the provided instructions."
+        },
+        "interesting_dilemma_4": {
+          "type": "string",
+          "description": "An intriguing moral and ethical dilemma that could stem from the provided information. Follow the provided instructions."
+        },
+        "interesting_dilemma_5": {
+          "type": "string",
+          "description": "An intriguing moral and ethical dilemma that could stem from the provided information. Follow the provided instructions."
         }
       },
       "required": [
-        "interesting_dilemmas"
+        "interesting_dilemma_1",
+        "interesting_dilemma_2",
+        "interesting_dilemma_3",
+        "interesting_dilemma_4",
+        "interesting_dilemma_5"
       ]
     }
   }

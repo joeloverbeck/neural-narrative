@@ -23,6 +23,7 @@ def test_prevent_llm_replaces_player_identifier():
         description="The brave adventurer",
         personality="Courageous",
         equipment="Sword and Shield",
+        voice_model="default_model",
     )
     participants.add_participant(
         identifier="2",
@@ -30,6 +31,7 @@ def test_prevent_llm_replaces_player_identifier():
         description="A friendly villager",
         personality="Helpful",
         equipment="Basket of goods",
+        voice_model="default_model",
     )
     participants.add_participant(
         identifier="3",
@@ -37,6 +39,7 @@ def test_prevent_llm_replaces_player_identifier():
         description="A shrewd merchant",
         personality="Greedy",
         equipment="Bag of coins",
+        voice_model="default_model",
     )
 
     # Instantiate the strategy class
@@ -88,6 +91,7 @@ def test_prevent_llm_does_not_change_non_player_identifier():
         description="The brave adventurer",
         personality="Courageous",
         equipment="Sword and Shield",
+        voice_model="default_model",
     )
     participants.add_participant(
         identifier="2",
@@ -95,6 +99,7 @@ def test_prevent_llm_does_not_change_non_player_identifier():
         description="A friendly villager",
         personality="Helpful",
         equipment="Basket of goods",
+        voice_model="default_model",
     )
 
     # Instantiate the strategy class
@@ -138,6 +143,7 @@ def test_prevent_llm_raises_error_with_only_player():
         description="The brave adventurer",
         personality="Courageous",
         equipment="Sword and Shield",
+        voice_model="default_model",
     )
 
     # Instantiate the strategy class
@@ -179,6 +185,7 @@ def test_prevent_llm_replaces_with_only_one_other_participant():
         description="The brave adventurer",
         personality="Courageous",
         equipment="Sword and Shield",
+        voice_model="default_model",
     )
     participants.add_participant(
         identifier="2",
@@ -186,6 +193,7 @@ def test_prevent_llm_replaces_with_only_one_other_participant():
         description="A friendly villager",
         personality="Helpful",
         equipment="Basket of goods",
+        voice_model="default_model",
     )
 
     # Instantiate the strategy class
@@ -232,6 +240,7 @@ def test_prevent_llm_handles_missing_player_in_participants():
         description="A friendly villager",
         personality="Helpful",
         equipment="Basket of goods",
+        voice_model="default_model",
     )
     participants.add_participant(
         identifier="3",
@@ -239,6 +248,7 @@ def test_prevent_llm_handles_missing_player_in_participants():
         description="A shrewd merchant",
         personality="Greedy",
         equipment="Bag of coins",
+        voice_model="default_model",
     )
 
     # Instantiate the strategy class
@@ -314,6 +324,7 @@ def test_prevent_llm_with_mismatched_identifier_types():
         description="The brave adventurer",
         personality="Courageous",
         equipment="Sword and Shield",
+        voice_model="default_model",
     )
     participants.add_participant(
         identifier="2",  # str
@@ -321,6 +332,7 @@ def test_prevent_llm_with_mismatched_identifier_types():
         description="A friendly villager",
         personality="Helpful",
         equipment="Basket of goods",
+        voice_model="default_model",
     )
 
     # Instantiate the strategy class
@@ -372,6 +384,7 @@ def test_prevent_llm_with_player_identifier_as_stringified_int():
         description="The brave adventurer",
         personality="Courageous",
         equipment="Sword and Shield",
+        voice_model="default_model",
     )
     participants.add_participant(
         identifier="2",  # str
@@ -379,6 +392,7 @@ def test_prevent_llm_with_player_identifier_as_stringified_int():
         description="A friendly villager",
         personality="Helpful",
         equipment="Basket of goods",
+        voice_model="default_model",
     )
 
     # Instantiate the strategy class
@@ -430,6 +444,7 @@ def test_prevent_llm_with_numeric_player_identifier_and_string_function_argument
         description="The brave adventurer",
         personality="Courageous",
         equipment="Sword and Shield",
+        voice_model="default_model",
     )
     participants.add_participant(
         identifier="2",
@@ -437,6 +452,7 @@ def test_prevent_llm_with_numeric_player_identifier_and_string_function_argument
         description="A friendly villager",
         personality="Helpful",
         equipment="Basket of goods",
+        voice_model="default_model",
     )
 
     # Instantiate the strategy class

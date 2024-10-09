@@ -32,6 +32,7 @@ class DialogueManager:
                 character_data["description"],
                 character_data["personality"],
                 character_data["equipment"],
+                character_data["voice_model"],
             )
 
         if player_identifier:
@@ -46,4 +47,5 @@ class DialogueManager:
                 character_data["description"],
                 character_data["personality"],
                 character_data["equipment"],
+                character_data["voice_model"],
             )

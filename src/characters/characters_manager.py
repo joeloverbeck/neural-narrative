@@ -125,6 +125,16 @@ class CharactersManager:
 
         return self._filesystem_manager.read_file(file_path)
 
+    def get_voice_model(self, character_identifier: str) -> str:
+        character_data = self.load_character_data(character_identifier)
+
+        if "voice_model" not in character_data:
+            raise ValueError(
+                f"Found a character without 'voice_model':\n{character_data}"
+            )
+
+        return character_data["voice_model"]
+
     def get_all_characters(self) -> List[dict]:
         """Returns a list of all characters with their identifiers and names."""
         characters_file = self._filesystem_manager.load_existing_or_new_json_file(

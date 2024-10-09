@@ -3,6 +3,8 @@ import os
 from flask import session, redirect, url_for, render_template, request
 from flask.views import MethodView
 
+from src.actions.commands.GenerateGoalsCommand import GenerateGoalsCommand
+from src.actions.factories.goals_factory import GoalsFactory
 from src.characters.factories.party_data_for_prompt_factory import (
     PartyDataForPromptFactory,
 )
@@ -20,6 +22,9 @@ from src.events.factories.interesting_situations_factory import (
     InterestingSituationsFactory,
 )
 from src.filesystem.filesystem_manager import FilesystemManager
+from src.maps.factories.place_descriptions_for_prompt_factory import (
+    PlaceDescriptionsForPromptFactory,
+)
 from src.prompting.factories.openrouter_llm_client_factory import (
     OpenRouterLlmClientFactory,
 )
@@ -51,11 +56,17 @@ class StoryHubView(MethodView):
             filesystem_manager.get_file_path_to_interesting_dilemmas(playthrough_name)
         )
 
+        # Load Goals
+        goals = filesystem_manager.read_file_lines(
+            filesystem_manager.get_file_path_to_goals(playthrough_name)
+        )
+
         return render_template(
             "story-hub.html",
             concepts=concepts,
             interesting_situations=interesting_situations,
             interesting_dilemmas=interesting_dilemmas,
+            goals=goals,
         )
 
     def post(self):
@@ -75,9 +86,14 @@ class StoryHubView(MethodView):
 
             party_data_for_prompty_factory = PartyDataForPromptFactory(playthrough_name)
 
+            place_descriptions_for_prompt_factory = PlaceDescriptionsForPromptFactory(
+                playthrough_name
+            )
+
             concepts_factory = ConceptsFactory(
                 playthrough_name,
                 produce_tool_response_strategy_factory,
+                place_descriptions_for_prompt_factory,
                 party_data_for_prompty_factory,
             )
 
@@ -114,12 +130,17 @@ class StoryHubView(MethodView):
                 ConfigManager().get_heavy_llm(),
             )
 
-            party_data_for_prompty_factory = PartyDataForPromptFactory(playthrough_name)
+            party_data_for_prompt_factory = PartyDataForPromptFactory(playthrough_name)
+
+            place_descriptions_for_prompt_factory = PlaceDescriptionsForPromptFactory(
+                playthrough_name
+            )
 
             interesting_situations_factory = InterestingSituationsFactory(
                 playthrough_name,
                 produce_tool_response_strategy_factory,
-                party_data_for_prompty_factory,
+                place_descriptions_for_prompt_factory,
+                party_data_for_prompt_factory,
             )
 
             GenerateInterestingSituationsCommand(
@@ -144,11 +165,16 @@ class StoryHubView(MethodView):
                 ConfigManager().get_heavy_llm(),
             )
 
+            places_descriptions_for_prompt_factory = PlaceDescriptionsForPromptFactory(
+                playthrough_name
+            )
+
             party_data_for_prompt_factory = PartyDataForPromptFactory(playthrough_name)
 
             interesting_dilemmas_factory = InterestingDilemmasFactory(
                 playthrough_name,
                 produce_tool_response_strategy_factory,
+                places_descriptions_for_prompt_factory,
                 party_data_for_prompt_factory,
             )
 
@@ -165,6 +191,36 @@ class StoryHubView(MethodView):
                 ),
                 index,
             )
+
+            return redirect(url_for("story-hub"))
+        elif action == "delete_goal":
+            index = int(request.form.get("item_index"))
+            filesystem_manager.remove_item_from_file(
+                filesystem_manager.get_file_path_to_goals(playthrough_name),
+                index,
+            )
+
+            return redirect(url_for("story-hub"))
+        elif action == "generate_goals":
+            produce_tool_response_strategy_factory = ProduceToolResponseStrategyFactory(
+                OpenRouterLlmClientFactory().create_llm_client(),
+                ConfigManager().get_heavy_llm(),
+            )
+
+            places_descriptions_for_prompt_factory = PlaceDescriptionsForPromptFactory(
+                playthrough_name
+            )
+
+            party_data_for_prompt_factory = PartyDataForPromptFactory(playthrough_name)
+
+            goals_factory = GoalsFactory(
+                playthrough_name,
+                produce_tool_response_strategy_factory,
+                places_descriptions_for_prompt_factory,
+                party_data_for_prompt_factory,
+            )
+
+            GenerateGoalsCommand(playthrough_name, goals_factory).execute()
 
             return redirect(url_for("story-hub"))
         else:

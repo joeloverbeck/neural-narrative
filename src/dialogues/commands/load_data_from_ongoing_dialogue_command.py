@@ -41,6 +41,7 @@ class LoadDataFromOngoingDialogueCommand(Command):
                 participant["description"],
                 participant["personality"],
                 participant["equipment"],
+                participant["voice_model"],
             )
 
         for message in ongoing_dialogue_file["messages_to_llm"]:
