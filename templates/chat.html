@@ -25,11 +25,11 @@
     <div class="chat-window" id="chat-window">
         {% for message in dialogue %}
         {% if message.alignment == 'center' %}
-        <div class="ambient-message">
+        <div class="ambient-message" data-file-url="{{ message.file_url }}">
             <div class="ambient-message-text">{{ message.message_text }}</div>
         </div>
         {% else %}
-        <div class="chat-bubble {{ message.alignment }}">
+        <div class="chat-bubble {{ message.alignment }}" data-file-url="{{ message.file_url }}">
             <img alt="{{ message.sender_name }}" class="avatar" src="{{ message.sender_photo_url }}">
             <div class="message-content">
                 <div class="sender-label">{{ message.sender_name }}</div>
@@ -75,18 +75,49 @@
 
 <!-- JavaScript -->
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var inputField = document.getElementById('user-input');
-        if (inputField) {
-            inputField.focus();
-        }
+    const getAllAttributes = el => el
+      .getAttributeNames()
+      .reduce((obj, name) => ({
+        ...obj,
+        [name]: el.getAttribute(name)
+      }), {})
 
-        var chatWindow = document.getElementById('chat-window');
-        if (chatWindow) {
+    document.addEventListener('DOMContentLoaded', function () {
+        // Function to scroll the chat window to the bottom
+        function scrollToBottom() {
+            const chatWindow = document.getElementById('chat-window');
             chatWindow.scrollTop = chatWindow.scrollHeight;
         }
+
+        // Call scrollToBottom after the page loads
+        scrollToBottom();
+
+        // Function to handle click events on chat bubbles
+        function handleChatBubbleClick(event) {
+            var fileUrl = event.currentTarget.getAttribute('data-file-url');
+
+            if (fileUrl) {
+                var audio = new Audio(fileUrl);
+                audio.play();
+            }
+        }
+
+        // Attach event listeners to chat bubbles and ambient messages
+        var chatBubbles = document.querySelectorAll('.chat-bubble, .ambient-message');
+        chatBubbles.forEach(function(chatBubble) {
+            chatBubble.addEventListener('click', handleChatBubbleClick);
+            // Change cursor to pointer
+            chatBubble.style.cursor = 'pointer';
+        });
+
+        // Call scrollToBottom whenever a new message is added to the chat
+        const chatForm = document.querySelector('.chat-form');
+        chatForm.addEventListener('submit', function() {
+            setTimeout(scrollToBottom, 100); // Delay to wait for the message to be added
+        });
     });
 
+    // Existing code for message text formatting
     document.addEventListener('DOMContentLoaded', function () {
         var messageTexts = document.querySelectorAll('.message-text');
 

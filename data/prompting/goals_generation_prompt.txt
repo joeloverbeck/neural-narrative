@@ -1,0 +1,28 @@
+Using the following descriptions of the game world, region, area, location, and the player's character (including any followers), generate a list of five intriguing and engaging short-term goals for the player to pursue. Each goal should meet the following criteria:
+Relevance: Align with the player's character's background, skills, or current situation.
+Conflict and Challenge: Include obstacles that require strategy, problem-solving, or moral choices.
+Rewards: Offer meaningful incentives such as rare items, valuable information, or relationship improvements with key NPCs.
+Mystery and Intrigue: Contain elements of mystery, secrets to uncover, or unexpected twists.
+Urgency and Consequences: Be time-sensitive or have significant consequences for success or failure.
+Connection to Larger Story Arcs: Tie into overarching narratives or themes within the game world.
+Diversity: Present a variety of tasks that cater to different play styles (combat, exploration, diplomacy, etc.).
+Engaging Characters and Locations: Involve interesting NPCs and take place in immersive settings from the provided descriptions.
+Please provide clear and concise descriptions for each goal, ensuring they inspire the player to take action.
+Provided Elements:
+- World Description: {world_description}
+- Region Description: {region_description}
+- Area Description: {area_description}
+{location_description}
+Player and Followers Information:
+- Name: {player_name}
+- Description: {player_description}
+- Personality: {player_personality}
+- Profile: {player_profile}
+- Likes: {player_likes}
+- Dislikes: {player_dislikes}
+- Speech patterns: {player_speech_patterns}
+- Equipment: {player_equipment}
+-----
+{followers_information}
+Memories:
+{combined_memories}

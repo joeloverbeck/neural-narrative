@@ -16,6 +16,7 @@ class Participants:
         description: str,
         personality: str,
         equipment: str,
+        voice_model: str,
     ):
         if not identifier:
             raise ValueError("identifier must not be empty.")
@@ -38,6 +39,8 @@ class Participants:
             raise ValueError("personality must not be empty.")
         if not equipment:
             raise ValueError("equipment must not be empty.")
+        if not voice_model:
+            raise ValueError("voice_model can't be empty.")
 
         # Correct way to update the dictionary
         self._participants[identifier] = {
@@ -45,6 +48,7 @@ class Participants:
             "description": description,
             "personality": personality,
             "equipment": equipment,
+            "voice_model": voice_model,
         }
 
     def enough_participants(self):
@@ -75,4 +79,5 @@ class Participants:
                 return {
                     "identifier": identifier,
                     "name": self._participants[identifier]["name"],
+                    "voice_model": self._participants[identifier]["voice_model"],
                 }

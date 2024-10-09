@@ -8,7 +8,6 @@ from src.dialogues.factories.llm_speech_data_provider_factory import (
 from src.dialogues.messages_to_llm import MessagesToLlm
 from src.dialogues.transcription import Transcription
 from src.prompting.abstracts.factory_products import LlmToolResponseProduct
-from tests.test_concrete_llm_content_factory import messages_to_llm
 
 
 class CreateSpeechTurnDataCommandFactory:
@@ -28,12 +27,16 @@ class CreateSpeechTurnDataCommandFactory:
         )
 
     def create_command(
-        self, speech_turn_choice_tool_response_product: LlmToolResponseProduct
+        self,
+        speech_turn_choice_response: LlmToolResponseProduct,
     ) -> CreateSpeechTurnDataCommand:
+        if "voice_model" not in speech_turn_choice_response.get():
+            raise ValueError("voice_model can't be empty.")
+
         return CreateSpeechTurnDataCommand(
             self._messages_to_llm,
             self._transcription,
-            speech_turn_choice_tool_response_product,
+            speech_turn_choice_response,
             self._llm_speech_data_provider_factory,
             self._message_data_producer_for_speech_turn_strategy,
         )

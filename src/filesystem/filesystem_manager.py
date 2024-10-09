@@ -1,6 +1,7 @@
 import json
 import os
 import sys
+from datetime import datetime
 from typing import List, Any
 
 from src.constants import (
@@ -17,6 +18,7 @@ from src.constants import (
     IMAGES_FOLDER_NAME,
     OPENAI_PROJECT_KEY_FILE,
     ONGOING_DIALOGUE_FOLDER_NAME,
+    RUNPOD_SECRET_KEY_FILE,
 )
 
 
@@ -117,6 +119,39 @@ class FilesystemManager:
         except Exception as e:
             sys.exit(f"An unexpected error occurred: {str(e)}")
 
+    def load_runpod_secret_key(self) -> str:
+        try:
+            # Attempt to load the secret key
+            return self.read_file(RUNPOD_SECRET_KEY_FILE)
+        except FileNotFoundError:
+            sys.exit(
+                f"Error: File '{RUNPOD_SECRET_KEY_FILE}'not found. Please check the file path."
+            )
+        except Exception as e:
+            sys.exit(f"An unexpected error occurred: {str(e)}")
+
+    @staticmethod
+    def get_file_path_for_voice_line(
+        character_name: str, voice_model: str
+    ) -> (str, str):
+        if not character_name:
+            raise ValueError("character_name can't be empty.")
+        if not voice_model:
+            raise ValueError("voice_model can't be empty.")
+
+        # Generate a timestamp for the filename
+        timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+
+        # Generate a unique filename to prevent overwriting
+        file_name = f"{timestamp}-{character_name}-{voice_model}.wav"
+
+        folder_path = "static/voice_lines"
+
+        # Ensure the 'voice_lines' directory exists
+        os.makedirs(folder_path, exist_ok=True)
+
+        return file_name, os.path.join(folder_path, file_name)
+
     def load_openai_secret_key(self):
         try:
             # Attempt to load the secret key
@@ -203,14 +238,22 @@ class FilesystemManager:
             "interesting_dilemmas.txt",
         )
 
+    def get_file_path_to_goals(self, playthrough_name: str) -> str:
+        if not playthrough_name:
+            raise ValueError("playthrough_name can't be empty.")
+
+        return os.path.join(
+            self.get_file_path_to_playthrough_folder(playthrough_name), "goals.txt"
+        )
+
     @staticmethod
     def get_file_path_to_empty_content_context_file() -> str:
-        errors_folder = "errors"
+        file_path = "errors/empty_content_context.txt"
 
-        if not errors_folder:
-            os.makedirs(errors_folder, exist_ok=True)
+        if not os.path.exists(file_path):
+            os.makedirs(file_path, exist_ok=True)
 
-        return os.path.join(errors_folder, "empty_content_context.json")
+        return file_path
 
     def remove_ongoing_dialogue(self, playthrough_name: str):
         if not playthrough_name:

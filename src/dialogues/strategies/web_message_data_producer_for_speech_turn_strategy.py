@@ -19,28 +19,35 @@ class WebMessageDataProducerForSpeechTurnStrategy(
 
     def produce_message_data(
         self,
-        speech_turn_choice_tool_response_product: LlmToolResponseProduct,
+        speech_turn_choice_response: LlmToolResponseProduct,
         speech_data_product: SpeechDataProduct,
     ) -> dict[str, str]:
+        if not "voice_model" in speech_turn_choice_response.get():
+            raise ValueError(
+                "voice_model should be in the speech turn choice response."
+            )
+
         image_url = self._filesystem_manager.get_file_path_to_character_image_for_web(
             self._playthrough_name,
-            speech_turn_choice_tool_response_product.get()["identifier"],
+            speech_turn_choice_response.get()["identifier"],
         )
         # Could be that the AI has produced by "mistake" text spoken by the player. It's very notorious in the web version.
         alignment = "left"  # for other characters
 
-        if (
-            self._player_identifier
-            == speech_turn_choice_tool_response_product.get()["identifier"]
-        ):
+        speaker_identifier = speech_turn_choice_response.get()["identifier"]
+
+        if self._player_identifier == speaker_identifier:
             alignment = "right"
 
         name = speech_data_product.get()["name"]
         narration_text = speech_data_product.get()["narration_text"]
+
+        voice_model = speech_turn_choice_response.get()["voice_model"]
 
         return {
             "alignment": alignment,
             "sender_name": name,
             "sender_photo_url": image_url,
             "message_text": f"*{narration_text}* {speech_data_product.get()['speech']} ",
+            "voice_model": voice_model,
         }

@@ -83,18 +83,24 @@ class CharacterGenerationGuidelinesFactory(BaseToolResponseProvider):
 
     def get_user_content(self) -> str:
         return (
-            "Write about twenty entries that are guidelines for creating interesting "
+            "Write about ten entries that are guidelines for creating interesting "
             "characters based on the above combination of places. Be careful about following "
             "the provided instructions."
         )
 
     def create_product(self, arguments: dict):
-        if not arguments.get("guidelines"):
-            return CharacterGenerationGuidelinesProduct(
-                [],
-                is_valid=False,
-                error="LLM returned empty or invalid list of guidelines.",
-            )
         return CharacterGenerationGuidelinesProduct(
-            arguments.get("guidelines"), is_valid=True
+            [
+                arguments.get("guideline_1"),
+                arguments.get("guideline_2"),
+                arguments.get("guideline_3"),
+                arguments.get("guideline_4"),
+                arguments.get("guideline_5"),
+                arguments.get("guideline_6"),
+                arguments.get("guideline_7"),
+                arguments.get("guideline_8"),
+                arguments.get("guideline_9"),
+                arguments.get("guideline_10"),
+            ],
+            is_valid=True,
         )

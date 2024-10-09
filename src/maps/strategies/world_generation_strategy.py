@@ -71,7 +71,7 @@ class WorldGenerationStrategy(PlaceGenerationStrategy):
         world_data = {
             "name": arguments.get("name"),
             "description": arguments.get("description"),
-            "categories": arguments.get("categories"),
+            "categories": [arguments.get("category_1"), arguments.get("category_2")],
         }
 
         logger.info(f"World produced:\n{world_data}")

@@ -96,10 +96,15 @@ class ConcreteDialogueTurnFactory(DialogueTurnFactorySubject):
 
         return response_product
 
-    def _validate_next_speaker(self, response_product: LlmToolResponseProduct) -> None:
+    def _validate_next_speaker(
+        self, speech_turn_choice_response: LlmToolResponseProduct
+    ) -> None:
         """Validate that the next speaker is not the player."""
+        if "voice_model" not in speech_turn_choice_response.get():
+            raise ValueError("voice_model can't be empty.")
+
         if (
-            response_product.get()["identifier"]
+            speech_turn_choice_response.get()["identifier"]
             == self._playthrough_manager.get_player_identifier()
         ):
             raise InvalidNextSpeakerError("Next speaker cannot be the player.")
@@ -107,21 +112,24 @@ class ConcreteDialogueTurnFactory(DialogueTurnFactorySubject):
     def _process_speech_turn(
         self,
         player_input_product: PlayerInputProduct,
-        response_product: LlmToolResponseProduct,
+        speech_turn_choice_response: LlmToolResponseProduct,
     ):
+        if "voice_model" not in speech_turn_choice_response.get():
+            raise ValueError("voice_model can't be empty.")
+
         """Process the speech turn for the given speaker."""
         self._determine_system_message_for_speech_turn_strategy.do_algorithm(
-            response_product
+            speech_turn_choice_response
         )
 
         user_messages_strategy = self._determine_user_messages_for_speech_turn_strategy_factory.create_strategy(
             player_input_product, self._messages_to_llm
         )
 
-        user_messages_strategy.do_algorithm(response_product)
+        user_messages_strategy.do_algorithm(speech_turn_choice_response)
 
         command = self._create_speech_turn_data_command_factory.create_command(
-            response_product
+            speech_turn_choice_response
         )
 
         for observer in self._observers:
@@ -155,11 +163,11 @@ class ConcreteDialogueTurnFactory(DialogueTurnFactorySubject):
             if player_input_product.is_goodbye():
                 return self._create_dialogue_product(has_ended=True)
 
-            response_product = self._determine_next_speaker()
+            speech_turn_choice_response = self._determine_next_speaker()
 
-            self._validate_next_speaker(response_product)
+            self._validate_next_speaker(speech_turn_choice_response)
 
-            self._process_speech_turn(player_input_product, response_product)
+            self._process_speech_turn(player_input_product, speech_turn_choice_response)
 
             return self._create_dialogue_product(has_ended=False)
         except DialogueProcessingError as e:

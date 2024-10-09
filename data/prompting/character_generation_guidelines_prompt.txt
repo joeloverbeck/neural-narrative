@@ -8,7 +8,7 @@ Given the following description of an area inside {region_name}, named {area_nam
 {area_description}
 ----
 {location_segment}
-Your task is the following: influenced by the above combination of places, write about twenty entries that are guidelines for creating interesting characters based on the above combination of places. Those guidelines for character creation should fit the following categories: {categories}. Each guideline should be about two or three sentences that feature the following:
+Your task is the following: influenced by the above combination of places, write about ten entries that are guidelines for creating interesting characters based on the above combination of places. Those guidelines for character creation should fit the following categories: {categories}. Each guideline should be about two or three sentences that feature the following:
 - Specify the character's species or race, including any unique traits or abilities relevant to the setting.
 - Specify the character's approximate age.
 - Highlight key aspects of their personality, such as being brave, cunning, compassionate, or conflicted.

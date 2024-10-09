@@ -106,6 +106,37 @@ Story Hub
         </div>
     </div>
 
+    <!-- Goals Section -->
+    <div class="collapsible-section">
+        <button class="collapsible">
+            <i class="fas fa-flag-checkered"></i> Goals
+        </button>
+        <div class="content">
+            {% if goals %}
+            <div class="concepts-list">
+                {% for goal in goals %}
+                <form action="{{ url_for('story-hub') }}" method="post" class="item-form">
+                    <input type="hidden" name="action" value="delete_goal">
+                    <input type="hidden" name="item_index" value="{{ loop.index0 }}">
+                    <button type="submit" class="post-it">
+                        <i class="fas fa-thumbtack"></i> <!-- Pin Icon -->
+                        <p>{{ goal }}</p>
+                    </button>
+                </form>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p>No goals generated yet.</p>
+            {% endif %}
+            <form action="{{ url_for('story-hub') }}" method="post">
+                <input type="hidden" name="action" value="generate_goals">
+                <button type="submit" class="action-button">
+                    <i class="fas fa-flag-checkered"></i> Generate Goals
+                </button>
+            </form>
+        </div>
+    </div>
+
     <!-- Navigation Buttons -->
     <div class="buttons">
         <!-- Navigation Buttons -->

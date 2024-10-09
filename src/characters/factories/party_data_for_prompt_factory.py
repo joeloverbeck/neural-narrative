@@ -32,14 +32,14 @@ class PartyDataForPromptFactory:
 
         for follower in self._get_followers_data():
             followers_info += (
-                f"Follower name: {follower['name']}\n"
-                f"Description: {follower['description']}\n"
-                f"Personality: {follower['personality']}\n"
-                f"Profile: {follower['profile']}\n"
-                f"Likes: {follower['likes']}\n"
-                f"Dislikes: {follower['dislikes']}\n"
-                f"Speech patterns: {follower['speech patterns']}\n"
-                f"Equipment: {follower['equipment']}\n-----\n"
+                f"- Follower name: {follower['name']}\n"
+                f"- Description: {follower['description']}\n"
+                f"- Personality: {follower['personality']}\n"
+                f"- Profile: {follower['profile']}\n"
+                f"- Likes: {follower['likes']}\n"
+                f"- Dislikes: {follower['dislikes']}\n"
+                f"- Speech patterns: {follower['speech patterns']}\n"
+                f"- Equipment: {follower['equipment']}\n-----\n"
             )
 
         return followers_info

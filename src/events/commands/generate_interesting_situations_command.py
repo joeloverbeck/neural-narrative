@@ -39,10 +39,11 @@ class GenerateInterestingSituationsCommand(Command):
             return
 
         # Generated interesting situations. Must save them.
-        interesting_situations = ""
+        interesting_situations = "\n"
 
         for interesting_situation in interesting_situations_product.get():
-            interesting_situations += interesting_situation + "\n"
+            if interesting_situation:
+                interesting_situations += interesting_situation + "\n"
 
         self._filesystem_manager.append_to_file(
             self._filesystem_manager.get_file_path_to_interesting_situations(

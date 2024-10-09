@@ -30,7 +30,7 @@ class GenerateConceptsCommand(Command):
             logger.error("Failed to generate concepts. Error: %s", product.get_error())
             return
 
-        prettified_concepts = ""
+        prettified_concepts = "\n"
 
         for concept in product.get():
             prettified_concepts += concept + "\n"

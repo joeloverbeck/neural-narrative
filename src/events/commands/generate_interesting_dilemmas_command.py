@@ -38,7 +38,7 @@ class GenerateInterestingDilemmasCommand(Command):
             return
 
         # Generated interesting dilemmas. Must save them.
-        interesting_dilemmas = ""
+        interesting_dilemmas = "\n"
 
         for interesting_dilemma in interesting_dilemmas_product.get():
             interesting_dilemmas += interesting_dilemma + "\n"

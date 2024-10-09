@@ -6,16 +6,33 @@
     "parameters": {
       "type": "object",
       "properties": {
-        "concepts": {
-          "type": "array",
-          "description": "Five magnificent concepts for full stories. Follow the provided instructions.",
-          "items": {
-            "type": "string"
-          }
+        "concept_1": {
+          "type": "string",
+          "description": "A magnificent concept for a full story. Follow the provided instructions."
+        },
+        "concept_2": {
+          "type": "string",
+          "description": "A magnificent concept for a full story. Follow the provided instructions."
+        },
+        "concept_3": {
+          "type": "string",
+          "description": "A magnificent concept for a full story. Follow the provided instructions."
+        },
+        "concept_4": {
+          "type": "string",
+          "description": "A magnificent concept for a full story. Follow the provided instructions."
+        },
+        "concept_5": {
+          "type": "string",
+          "description": "A magnificent concept for a full story. Follow the provided instructions."
         }
       },
       "required": [
-        "concepts"
+        "concept_1",
+        "concept_2",
+        "concept_3",
+        "concept_4",
+        "concept_5"
       ]
     }
   }

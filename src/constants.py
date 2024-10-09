@@ -1,6 +1,8 @@
 DEFAULT_PLAYER_IDENTIFIER = "-1"
 DEFAULT_CURRENT_PLACE = "-1"
 DEFAULT_IDENTIFIER = "0"
+DEFAULT_VOICE_MODEL = "malewarlock"
+NARRATOR_VOICE_MODEL = "tulius"
 
 MAX_DIALOGUE_ENTRIES_FOR_WEB = 10
 
@@ -25,6 +27,7 @@ WAIT_TIME_WHEN_MALFORMED_COMPLETION: int = 5
 
 CONFIG_FILE: str = "config.json"
 LOGGING_CONFIG_FILE: str = "data/logging/logging_config.json"
+VOICE_MODELS_FILE: str = "data/voices/voice_models.json"
 PLAYTHROUGHS_FOLDER: str = "playthroughs"
 CHARACTERS_FOLDER_NAME: str = "characters"
 IMAGES_FOLDER_NAME: str = "images"
@@ -43,6 +46,7 @@ CHARACTER_GENERATION_GUIDELINES_FILE: str = (
 OPENROUTER_SECRET_KEY_FILE: str = "OPENROUTER_SECRET_KEY.txt"
 OPENAI_SECRET_KEY_FILE: str = "OPENAI_SECRET_KEY.txt"
 OPENAI_PROJECT_KEY_FILE: str = "OPENAI_PROJECT_KEY.txt"
+RUNPOD_SECRET_KEY_FILE: str = "RUNPOD_SECRET_KEY.txt"
 
 # Templates
 
@@ -87,6 +91,7 @@ SELF_REFLECTION_GENERATION_TOOL_FILE: str = (
 GOAL_RESOLUTION_GENERATION_TOOL_FILE: str = (
     "data/prompting/goal_resolution_generation_tool.json"
 )
+GOALS_GENERATION_TOOL_FILE: str = "data/prompting/goals_generation_tool.json"
 
 # Prompts
 
@@ -126,6 +131,7 @@ SELF_REFLECTION_GENERATION_PROMPT_FILE: str = (
 GOAL_RESOLUTION_GENERATION_PROMPT_FILE: str = (
     "data/prompting/goal_resolution_generation_prompt.txt"
 )
+GOALS_GENERATION_PROMPT_FILE: str = "data/prompting/goals_generation_prompt.txt"
 
 OPENROUTER_API_URL: str = "https://openrouter.ai/api/v1"
 

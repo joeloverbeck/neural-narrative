@@ -14,18 +14,20 @@
           "type": "string",
           "description": "The description of the generated world. Follow the instructions provided to produce this description."
         },
-        "categories": {
-          "type": "array",
-          "description": "Given your created description, you should reduce this world to two fitting categories (such as high fantasy, dark fantasy, cyberpunk, horror, etc.).",
-          "items": {
-            "type": "string"
-          }
+        "category_1": {
+          "type": "string",
+          "description": "Given your created description, reduce this world to a fitting category (such as high fantasy, dark fantasy, cyberpunk, horror, etc.)."
+        },
+        "category_2": {
+          "type": "string",
+          "description": "Given your created description, reduce this world to another fitting category (such as high fantasy, dark fantasy, cyberpunk, horror, etc.)."
         }
       },
       "required": [
         "name",
         "description",
-        "categories"
+        "category_1",
+        "category_2"
       ]
     }
   }

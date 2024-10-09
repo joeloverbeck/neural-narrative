@@ -6,19 +6,19 @@ Using the following detailed descriptions, generate five magnificent concepts fo
 - Unique or unexpected elements that make the story stand out.
 - Emotional elements to engage the reader.
 Provided Elements:
-World Description: {world_description}
-Region Description: {region_description}
-Area Description: {area_description}
+- World Description: {world_description}
+- Region Description: {region_description}
+- Area Description: {area_description}
 {location_description}
-- Player and Followers Information:
-Name: {player_name}
-Description: {player_description}
-Personality: {player_personality}
-Profile: {player_profile}
-Likes: {player_likes}
-Dislikes: {player_dislikes}
-Speech patterns: {player_speech_patterns}
-Equipment: {player_equipment}
+Player and Followers Information:
+- Name: {player_name}
+- Description: {player_description}
+- Personality: {player_personality}
+- Profile: {player_profile}
+- Likes: {player_likes}
+- Dislikes: {player_dislikes}
+- Speech patterns: {player_speech_patterns}
+- Equipment: {player_equipment}
 -----
 {followers_information}
 Memories:
