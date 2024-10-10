@@ -1,11 +1,11 @@
-import os
 from typing import List
 
-from flask import session, url_for
+from flask import session
 
 from src.abstracts.observer import Observer
 from src.characters.characters_manager import CharactersManager
 from src.services.voices_services import VoicesServices
+from src.services.web_service import WebService
 
 
 class WebDialogueObserver(Observer):
@@ -23,9 +23,7 @@ class WebDialogueObserver(Observer):
         file_url = None
 
         if file_name:
-            file_url = url_for(
-                "static", filename="voice_lines/" + os.path.basename(file_name)
-            )
+            file_url = WebService.get_file_url("voice_lines", file_name)
 
         # Append the message with the file path
         self._messages.append(

@@ -15,6 +15,21 @@ from src.prompting.providers.base_tool_response_provider import BaseToolResponse
 
 
 class CharacterDescriptionProvider(BaseToolResponseProvider):
+    def __init__(
+        self,
+        character_data: dict,
+        produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
+        filesystem_manager: Optional[FilesystemManager] = None,
+    ):
+        super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
+
+        if not "health" in character_data:
+            raise ValueError(
+                "Health should be present in the dict with character data."
+            )
+
+        self._character_data = character_data
+
     def get_prompt_file(self) -> Optional[str]:
         return CHARACTER_DESCRIPTION_GENERATION_PROMPT_FILE
 
@@ -32,15 +47,6 @@ class CharacterDescriptionProvider(BaseToolResponseProvider):
             "name": self._character_data["name"],
             "description": self._character_data["description"],
             "personality": self._character_data["personality"],
+            "health": self._character_data["health"],
             "equipment": self._character_data["equipment"],
         }
-
-    def __init__(
-        self,
-        character_data: dict,
-        produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
-        filesystem_manager: Optional[FilesystemManager] = None,
-    ):
-        super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
-
-        self._character_data = character_data

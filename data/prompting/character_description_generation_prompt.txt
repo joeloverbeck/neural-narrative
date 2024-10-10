@@ -3,6 +3,7 @@ Character Data:
 Name: {name}
 Description: {description}
 Personality: {personality}
+Health: {health}
 Equipment: {equipment}
 Guidelines:
 Integrate Attributes Naturally: Weave the character's traits and equipment into the description in a way that feels organic and true to their identity.

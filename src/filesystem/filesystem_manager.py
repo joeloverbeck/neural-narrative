@@ -19,6 +19,7 @@ from src.constants import (
     OPENAI_PROJECT_KEY_FILE,
     ONGOING_DIALOGUE_FOLDER_NAME,
     RUNPOD_SECRET_KEY_FILE,
+    VOICE_LINES_FOLDER_PATH,
 )
 
 
@@ -145,12 +146,10 @@ class FilesystemManager:
         # Generate a unique filename to prevent overwriting
         file_name = f"{timestamp}-{character_name}-{voice_model}.wav"
 
-        folder_path = "static/voice_lines"
-
         # Ensure the 'voice_lines' directory exists
-        os.makedirs(folder_path, exist_ok=True)
+        os.makedirs(VOICE_LINES_FOLDER_PATH, exist_ok=True)
 
-        return file_name, os.path.join(folder_path, file_name)
+        return file_name, os.path.join(VOICE_LINES_FOLDER_PATH, file_name)
 
     def load_openai_secret_key(self):
         try:

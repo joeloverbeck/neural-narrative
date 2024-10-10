@@ -11,6 +11,9 @@ from src.characters.characters_manager import CharactersManager
 from src.characters.factories.party_data_for_prompt_factory import (
     PartyDataForPromptFactory,
 )
+from src.characters.factories.player_data_for_prompt_factory import (
+    PlayerDataForPromptFactory,
+)
 from src.characters.factories.store_character_memory_command_factory import (
     StoreCharacterMemoryCommandFactory,
 )
@@ -55,7 +58,11 @@ class GoalResolutionView(MethodView):
             ConfigManager().get_heavy_llm(),
         )
 
-        party_data_for_prompt_factory = PartyDataForPromptFactory(playthrough_name)
+        player_data_for_prompt_factory = PlayerDataForPromptFactory(playthrough_name)
+
+        party_data_for_prompt_factory = PartyDataForPromptFactory(
+            playthrough_name, player_data_for_prompt_factory
+        )
         goal_resolution_factory = GoalResolutionFactory(
             playthrough_name,
             goal,

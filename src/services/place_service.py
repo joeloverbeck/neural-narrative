@@ -1,3 +1,9 @@
+from typing import Optional
+
+from src.characters.characters_manager import CharactersManager
+from src.characters.factories.player_data_for_prompt_factory import (
+    PlayerDataForPromptFactory,
+)
 from src.config.config_manager import ConfigManager
 from src.enums import PlaceType, TemplateType
 from src.filesystem.filesystem_manager import FilesystemManager
@@ -17,11 +23,34 @@ from src.prompting.factories.openrouter_llm_client_factory import (
 from src.prompting.factories.produce_tool_response_strategy_factory import (
     ProduceToolResponseStrategyFactory,
 )
+from src.services.voices_services import VoicesServices
+from src.services.web_service import WebService
 
 
 class PlaceService:
-    def __init__(self, config_manager: ConfigManager = None):
+    def __init__(
+        self,
+        config_manager: Optional[ConfigManager] = None,
+        voices_services: Optional[VoicesServices] = None,
+    ):
         self._config_manager = config_manager or ConfigManager()
+        self._voices_services = voices_services or VoicesServices()
+
+    def _generate_place_description_voice_line(
+        self, playthrough_name, description_text
+    ):
+
+        # Load the player's voice model.
+        player_data = CharactersManager(playthrough_name).load_character_data(
+            PlaythroughManager(playthrough_name).get_player_identifier()
+        )
+
+        file_name = self._voices_services.generate_voice_line(
+            player_data["name"], description_text, player_data["voice_model"]
+        )
+
+        # Generate the URL to access the audio file
+        return WebService.get_file_url("voice_lines", file_name)
 
     def describe_place(self, playthrough_name):
         playthrough_manager = PlaythroughManager(playthrough_name)
@@ -29,17 +58,28 @@ class PlaceService:
         strategy_factory = ProduceToolResponseStrategyFactory(
             llm_client, self._config_manager.get_heavy_llm()
         )
+
+        player_data_for_prompt_factory = PlayerDataForPromptFactory(playthrough_name)
+
         description_product = ConcreteFilteredPlaceDescriptionGenerationFactory(
             playthrough_name,
             playthrough_manager.get_player_identifier(),
             playthrough_manager.get_current_place_identifier(),
             strategy_factory,
+            player_data_for_prompt_factory,
         ).generate_product()
 
         if description_product.is_valid():
-            return description_product.get()
+            description = description_product.get()
         else:
-            return description_product.get_error()
+            return description_product.get_error(), None
+
+        # Generate the audio file for the description
+        voice_line_url = self._generate_place_description_voice_line(
+            playthrough_name, description
+        )
+
+        return description, voice_line_url
 
     def exit_location(self, playthrough_name):
         playthrough_manager = PlaythroughManager(playthrough_name)

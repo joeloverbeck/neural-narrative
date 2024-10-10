@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block title %}Research{% endblock %}
+
+{% block styles %}
+{{ super() }}
+<link href="{{ url_for('static', filename='research.css') }}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block content %}
+<div class="research-container">
+    <h1 class="page-title"><i class="fas fa-search"></i> Research</h1>
+    <p class="current-place">Current Place: {{ current_place }}</p>
+
+    {% if result %}
+    <!-- Research Result Section -->
+    <div class="collapsible-section">
+        <button class="collapsible">
+            <i class="fas fa-check"></i> Research Resolution Result
+        </button>
+        <div class="content">
+            <div class="research-result">
+                <div class="narration">
+                    <h3>Narration</h3>
+                    <p>{{ result.get_narrative() }}</p>
+                </div>
+                <div class="outcome">
+                    <h3>Outcome</h3>
+                    <p>{{ result.get_outcome() }}</p>
+                </div>
+                <div class="consequences">
+                    <h3>Consequences</h3>
+                    <p>{{ result.get_consequences() }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Character Modification Section -->
+    <div class="collapsible-section">
+        <button class="collapsible">
+            <i class="fas fa-user-edit"></i> Modify Characters
+        </button>
+        <div class="content">
+            <form action="{{ url_for('research') }}" method="post">
+                <input type="hidden" name="form_type" value="modify_characters">
+                {% for character in characters %}
+                <div class="character-modification">
+                    <h3>{{ character.name }}</h3>
+                    <label for="description_{{ character.identifier }}">Description:</label>
+                    <textarea id="description_{{ character.identifier }}" name="description_{{ character.identifier }}">{{ character.description }}</textarea>
+
+                    <label for="equipment_{{ character.identifier }}">Equipment:</label>
+                    <textarea id="equipment_{{ character.identifier }}" name="equipment_{{ character.identifier }}">{{ character.equipment }}</textarea>
+
+                    <label for="health_{{ character.identifier }}">Health:</label>
+                    <textarea id="health_{{ character.identifier }}" name="health_{{ character.identifier }}">{{ character.health }}</textarea>
+                </div>
+                {% endfor %}
+                <button type="submit" class="action-button">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+            </form>
+        </div>
+    </div>
+
+    {% else %}
+    <!-- Research Input Section -->
+    <div class="collapsible-section">
+        <button class="collapsible active">
+            <i class="fas fa-search"></i> Enter Research Goal
+        </button>
+        <div class="content" style="display: block;">
+            <form action="{{ url_for('research') }}" method="post" class="research-form">
+                <input type="hidden" name="form_type" value="resolve_research">
+                <label for="research_goal">Research Goal:</label>
+                <input type="text" id="research_goal" name="research_goal" required>
+                <button type="submit" class="action-button">
+                    <i class="fas fa-magic"></i> Resolve Research
+                </button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Navigation Buttons -->
+    <div class="buttons">
+        <a href="{{ url_for('index') }}" class="button">
+            <i class="fas fa-globe"></i> Home
+        </a>
+        <a href="{{ url_for('story-hub') }}" class="button">
+            <i class="fas fa-feather-alt"></i> Story Hub
+        </a>
+        <a href="{{ url_for('characters-hub') }}" class="button">
+            <i class="fas fa-users"></i> Characters Hub
+        </a>
+        <a href="{{ url_for('location-hub') }}" class="button">
+            <i class="fas fa-map-marker-alt"></i> Location Hub
+        </a>
+        <a href="{{ url_for('actions') }}" class="button">
+            <i class="fas fa-bolt"></i> Actions
+        </a>
+    </div>
+</div>
+
+<!-- JavaScript for collapsible sections -->
+<script>
+    // Collapsible sections
+    document.querySelectorAll('.collapsible').forEach(function(collapsible) {
+        collapsible.addEventListener('click', function() {
+            this.classList.toggle('active');
+            const content = this.nextElementSibling;
+            if (content.style.display === 'block') {
+                content.style.display = 'none';
+            } else {
+                content.style.display = 'block';
+            }
+        });
+        // Show content if 'active' is already present
+        if (collapsible.classList.contains('active')) {
+            const content = collapsible.nextElementSibling;
+            content.style.display = 'block';
+        }
+    });
+</script>
+{% endblock %}

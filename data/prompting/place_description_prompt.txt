@@ -3,15 +3,16 @@ You must describe the place from the first-person perspective of the player, fil
 It is {hour} {time_of_the_day}. Here's the original description of the current {place_type}, named {place_template}:
 {place_description}
 Here's the information about the player:
-Name: {player_name}
-Description: {player_description}
-Personality: {player_personality}
-Profile: {player_profile}
-Likes: {player_likes}
-Dislikes: {player_dislikes}
-Speech patterns: {player_speech_patterns}
-Equipment: {player_equipment}
-Memories:
+- Name: {player_name}
+- Description: {player_description}
+- Personality: {player_personality}
+- Profile: {player_profile}
+- Likes: {player_likes}
+- Dislikes: {player_dislikes}
+- Speech patterns: {player_speech_patterns}
+- Health: {player_health}
+- Equipment: {player_equipment}
+- Memories:
 {player_memories}
 Important:
 - The description of the place should at the most be five sentences long.

@@ -67,6 +67,7 @@ class SelfReflectionFactory(BaseToolResponseProvider):
             "likes": character_data["likes"],
             "dislikes": character_data["dislikes"],
             "speech_patterns": character_data["speech patterns"],
+            "health": character_data["health"],
             "equipment": character_data["equipment"],
             "memories": memories,
         }

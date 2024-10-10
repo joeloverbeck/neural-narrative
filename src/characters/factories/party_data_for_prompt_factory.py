@@ -1,6 +1,9 @@
 from typing import Optional, List
 
 from src.characters.characters_manager import CharactersManager
+from src.characters.factories.player_data_for_prompt_factory import (
+    PlayerDataForPromptFactory,
+)
 from src.playthrough_manager import PlaythroughManager
 
 
@@ -8,6 +11,7 @@ class PartyDataForPromptFactory:
     def __init__(
         self,
         playthrough_name: str,
+        player_data_for_prompt_factory: PlayerDataForPromptFactory,
         playthrough_manager: Optional[PlaythroughManager] = None,
         characters_manager: Optional[CharactersManager] = None,
     ):
@@ -15,6 +19,7 @@ class PartyDataForPromptFactory:
             raise ValueError("playthrough_name can't be empty.")
 
         self._playthrough_name = playthrough_name
+        self._player_data_for_prompt_factory = player_data_for_prompt_factory
 
         self._playthrough_manager = playthrough_manager or PlaythroughManager(
             self._playthrough_name
@@ -62,19 +67,9 @@ class PartyDataForPromptFactory:
         return unique_memories
 
     def get_party_data_for_prompt(self) -> dict:
-        player_identifier = self._playthrough_manager.get_player_identifier()
-        player_data = self._characters_manager.load_character_data(player_identifier)
-
-        # Load and process the player's memories
-        memories_str = self._characters_manager.load_character_memories(
-            player_identifier
+        player_data_for_prompt = (
+            self._player_data_for_prompt_factory.create_player_data_for_prompt()
         )
-        player_memories = [
-            memory.strip()
-            for memory in memories_str.strip().split("\n")
-            if memory.strip()
-        ]
-        player_data["memories"] = player_memories
 
         # Get followers data and their memories
         followers_data = self._get_followers_information()
@@ -82,21 +77,19 @@ class PartyDataForPromptFactory:
         followers_memories = self._get_followers_memories()
 
         combined_memories = self._get_combined_memories(
-            player_memories, followers_memories
+            player_data_for_prompt.get_player_memories(), followers_memories
         )
 
-        return {
-            "player_name": player_data["name"],
-            "player_description": player_data["description"],
-            "player_personality": player_data["personality"],
-            "player_profile": player_data["profile"],
-            "player_likes": player_data["likes"],
-            "player_dislikes": player_data["dislikes"],
-            "player_speech_patterns": player_data["speech patterns"],
-            "player_equipment": player_data["equipment"],
-            "followers_information": followers_data,
-            "combined_memories": combined_memories,
-        }
+        data_for_prompt = player_data_for_prompt.get_player_data_for_prompt()
+
+        data_for_prompt.update(
+            {
+                "followers_information": followers_data,
+                "combined_memories": combined_memories,
+            }
+        )
+
+        return data_for_prompt
 
     def _get_followers_memories(self):
         # Combine memories from player and followers, removing duplicates

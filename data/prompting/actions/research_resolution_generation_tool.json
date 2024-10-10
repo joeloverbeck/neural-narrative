@@ -1,0 +1,29 @@
+{
+  "type": "function",
+  "function": {
+    "name": "generate_research_resolution",
+    "description": "generate a detailed narrative describing the player's attempt at a Research action within a rich, immersive world.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "narrative": {
+          "type": "string",
+          "description": "A few descriptive paragraphs detailing the player's research endeavor."
+        },
+        "outcome": {
+          "type": "string",
+          "description": "The results of the research action based on the assessment."
+        },
+        "consequences": {
+          "type": "string",
+          "description": "The costs associated with the research action."
+        }
+      },
+      "required": [
+        "narrative",
+        "outcome",
+        "consequences"
+      ]
+    }
+  }
+}

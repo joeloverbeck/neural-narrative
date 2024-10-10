@@ -32,11 +32,11 @@ class GenerateGoalsCommand(Command):
 
         generated_goals = product.get()
 
-        goals = "\n"
+        goals = ""
 
         for goal in generated_goals:
             if goal:
-                goals += goal + "\n"
+                goals += "\n" + goal
 
         # At this point, we have our goals, so we save them.
         self._filesystem_manager.append_to_file(

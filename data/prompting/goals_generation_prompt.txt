@@ -21,6 +21,7 @@ Player and Followers Information:
 - Likes: {player_likes}
 - Dislikes: {player_dislikes}
 - Speech patterns: {player_speech_patterns}
+- Health: {player_health}
 - Equipment: {player_equipment}
 -----
 {followers_information}

@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict
 
 from src.constants import CHARACTER_GENERATION_GUIDELINES_FILE
 from src.filesystem.filesystem_manager import FilesystemManager
@@ -65,6 +65,84 @@ class CharactersManager:
         )
 
         return character_data
+
+    def save_character_data(
+        self, character_identifier: str, character_data: Dict[str, str]
+    ):
+        if not character_identifier:
+            raise ValueError("character_identifier can't be empty.")
+        if not character_data:
+            raise ValueError("character_data can't be empty.")
+
+        # Load the characters JSON file
+        characters_file = self._filesystem_manager.load_existing_or_new_json_file(
+            self._filesystem_manager.get_file_path_to_characters_file(
+                self._playthrough_name
+            )
+        )
+
+        # Return the character data for the given identifier
+        if character_identifier not in characters_file:
+            raise KeyError(
+                f"Character with identifier '{character_identifier}' not found."
+            )
+
+        # Can't store everything character_data contained into the JSON, in case
+        # it's carrying some weird shit.
+        if "name" in character_data:
+            characters_file[character_identifier]["name"] = character_data["name"]
+
+        if "description" in character_data:
+            characters_file[character_identifier]["description"] = character_data[
+                "description"
+            ]
+
+        if "personality" in character_data:
+            characters_file[character_identifier]["personality"] = character_data[
+                "personality"
+            ]
+
+        if "profile" in character_data:
+            characters_file[character_identifier]["profile"] = character_data["profile"]
+
+        if "likes" in character_data:
+            characters_file[character_identifier]["likes"] = character_data["likes"]
+
+        if "dislikes" in character_data:
+            characters_file[character_identifier]["dislikes"] = character_data[
+                "dislikes"
+            ]
+
+        if "first message" in character_data:
+            characters_file[character_identifier]["first message"] = character_data[
+                "first message"
+            ]
+
+        if "speech patterns" in character_data:
+            characters_file[character_identifier]["speech patterns"] = character_data[
+                "speech patterns"
+            ]
+
+        if "health" in character_data:
+            characters_file[character_identifier]["health"] = character_data["health"]
+
+        if "equipment" in character_data:
+            characters_file[character_identifier]["equipment"] = character_data[
+                "equipment"
+            ]
+
+        if "voice_model" in character_data:
+            characters_file[character_identifier]["voice_model"] = character_data[
+                "voice_model"
+            ]
+
+        # Now must save the JSON back to file.
+        self._filesystem_manager.save_json_file(
+            characters_file,
+            self._filesystem_manager.get_file_path_to_characters_file(
+                self._playthrough_name
+            ),
+        )
 
     def get_full_data_of_characters(
         self, character_identifiers: List[str]

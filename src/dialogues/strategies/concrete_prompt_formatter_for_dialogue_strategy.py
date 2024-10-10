@@ -114,6 +114,8 @@ class ConcretePromptFormatterForDialogueStrategy(PromptFormatterForDialogueStrat
             dislikes=self._character_data["dislikes"],
             first_message=self._character_data["first message"],
             speech_patterns=self._character_data["speech patterns"],
+            health=self._character_data["health"],
+            equipment=self._character_data["equipment"],
             dialogue_purpose=dialogue_purpose,
             memories=self._memories,
         )

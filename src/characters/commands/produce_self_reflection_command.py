@@ -50,7 +50,7 @@ class ProduceSelfReflectionCommand(Command):
                 self._character_identifier,
                 character_data["name"],
             ),
-            product.get() + "\n",
+            "\n" + product.get(),
         )
 
         logger.info("Generated the self-reflection.")

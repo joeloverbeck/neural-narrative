@@ -4,14 +4,15 @@ Here's the description of the area of origin, named {origin_area_template}: {ori
 Here's the description of the destination area, named {destination_area_template}: {destination_area_description}
 -----
 Here's the information about the player, from whose first-person perspective you must write the narration:
-Name: {player_name}
-Description: {player_description}
-Personality: {player_personality}
-Profile: {player_profile}
-Likes: {player_likes}
-Dislikes: {player_dislikes}
-Speech patterns: {player_speech_patterns}
-Equipment: {player_equipment}
+- Name: {player_name}
+- Description: {player_description}
+- Personality: {player_personality}
+- Profile: {player_profile}
+- Likes: {player_likes}
+- Dislikes: {player_dislikes}
+- Speech patterns: {player_speech_patterns}
+- Health: {player_health}
+- Equipment: {player_equipment}
 -----
 {followers_information}
 Memories:

@@ -38,6 +38,10 @@
           "type": "string",
           "description": "Four or five quotes in the character's voice, following the instructions about speech patterns."
         },
+        "health": {
+          "type": "string",
+          "description": "A textual measure of how healthy the character is. Examples: Full health. Another example: Broken arm. Another example: Chronic pain in knee, and heart issues."
+        },
         "equipment": {
           "type": "string",
           "description": "A list of all the equipment that the character has in his or her person. It includes clothing, jewelry, weapons, tools, etc."

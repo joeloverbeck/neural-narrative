@@ -30,10 +30,10 @@ class GenerateConceptsCommand(Command):
             logger.error("Failed to generate concepts. Error: %s", product.get_error())
             return
 
-        prettified_concepts = "\n"
+        prettified_concepts = ""
 
         for concept in product.get():
-            prettified_concepts += concept + "\n"
+            prettified_concepts += "\n" + concept
 
         # Got the concepts, now have to save them.
         self._filesystem_manager.append_to_file(
