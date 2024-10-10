@@ -40,7 +40,7 @@ class IndexView(MethodView):
         form_type = request.form.get("form_type")
 
         if form_type == "create_playthrough":
-            playthrough_name = request.form["playthrough_name_for_creation"]
+            playthrough_name = request.form["playthrough_name"]
             world_template = request.form["world_name"]
             player_notion = request.form.get("player_notion", "")
 

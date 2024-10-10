@@ -15,3 +15,4 @@ Character Bio:
 - Equipment: {equipment}
 - Memories:
 {memories}
+Important: the self-reflection should be at the most three paragraphs long.

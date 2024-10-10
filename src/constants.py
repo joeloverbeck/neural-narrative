@@ -58,7 +58,9 @@ LOCATIONS_TEMPLATES_FILE: str = "data/templates/locations.json"
 
 # Tools
 
-CHARACTER_GENERATOR_TOOL_FILE: str = "data/prompting/character_generation_tool.txt"
+CHARACTER_GENERATOR_TOOL_FILE: str = (
+    "data/prompting/characters/character_generation_tool.json"
+)
 SPEECH_GENERATOR_TOOL_FILE: str = "data/prompting/speech_generator_tool.json"
 SPEECH_TURN_TOOL_FILE: str = "data/prompting/speech_turn_tool.json"
 DIALOGUE_SUMMARIZATION_TOOL_FILE: str = (
@@ -71,7 +73,7 @@ LOCATION_GENERATION_TOOL_FILE: str = "data/prompting/location_generation_tool.js
 PLACE_DESCRIPTION_TOOL_FILE: str = "data/prompting/place_description_tool.json"
 TRAVEL_NARRATION_TOOL_FILE: str = "data/prompting/travel_narration_tool.json"
 CHARACTER_GENERATION_GUIDELINES_TOOL_FILE: str = (
-    "data/prompting/character_generation_guidelines_tool.json"
+    "data/prompting/characters/character_generation_guidelines_tool.json"
 )
 INTERESTING_SITUATIONS_GENERATION_TOOL_FILE: str = (
     "data/prompting/interesting_situations_generation_tool.json"
@@ -80,14 +82,14 @@ INTERESTING_DILEMMAS_GENERATION_TOOL_FILE: str = (
     "data/prompting/interesting_dilemmas_generation_tool.json"
 )
 CHARACTER_DESCRIPTION_GENERATION_TOOL_FILE: str = (
-    "data/prompting/character_description_generation_tool.json"
+    "data/prompting/characters/character_description_generation_tool.json"
 )
 CONCEPTS_GENERATION_TOOL_FILE: str = "data/prompting/concepts_generation_tool.json"
 AMBIENT_NARRATION_GENERATION_TOOL_FILE: str = (
     "data/prompting/ambient_narration_generation_tool.json"
 )
 SELF_REFLECTION_GENERATION_TOOL_FILE: str = (
-    "data/prompting/self_reflection_generation_tool.json"
+    "data/prompting/characters/self_reflection_generation_tool.json"
 )
 GOAL_RESOLUTION_GENERATION_TOOL_FILE: str = (
     "data/prompting/goal_resolution_generation_tool.json"
@@ -100,7 +102,7 @@ RESEARCH_RESOLUTION_GENERATION_TOOL_FILE: str = (
 # Prompts
 
 CHARACTER_GENERATION_INSTRUCTIONS_FILE: str = (
-    "data/prompting/character_generation_prompt.txt"
+    "data/prompting/characters/character_generation_prompt.txt"
 )
 TOOL_INSTRUCTIONS_FILE: str = "data/prompting/tool_instructions.txt"
 DIALOGUE_PROMPT_FILE: str = "data/prompting/dialogue_prompt.txt"
@@ -113,7 +115,7 @@ LOCATION_GENERATION_PROMPT_FILE: str = "data/prompting/location_generation_promp
 PLACE_DESCRIPTION_PROMPT_FILE: str = "data/prompting/place_description_prompt.txt"
 TRAVEL_NARRATION_PROMPT_FILE: str = "data/prompting/travel_narration_prompt.txt"
 CHARACTER_GENERATION_GUIDELINES_PROMPT_FILE: str = (
-    "data/prompting/character_generation_guidelines_prompt.txt"
+    "data/prompting/characters/character_generation_guidelines_prompt.txt"
 )
 INTERESTING_SITUATIONS_GENERATION_PROMPT_FILE: str = (
     "data/prompting/interesting_situations_generation_prompt.txt"
@@ -123,14 +125,14 @@ INTERESTING_DILEMMAS_GENERATION_PROMPT_FILE: str = (
 )
 IMAGE_GENERATION_PROMPT_FILE: str = "data/prompting/image_generation_prompt.txt"
 CHARACTER_DESCRIPTION_GENERATION_PROMPT_FILE: str = (
-    "data/prompting/character_description_generation_prompt.txt"
+    "data/prompting/characters/character_description_generation_prompt.txt"
 )
 CONCEPTS_GENERATION_PROMPT_FILE: str = "data/prompting/concepts_generation_prompt.txt"
 AMBIENT_NARRATION_GENERATION_PROMPT_FILE: str = (
     "data/prompting/ambient_narration_generation_prompt.txt"
 )
 SELF_REFLECTION_GENERATION_PROMPT_FILE: str = (
-    "data/prompting/self_reflection_generation_prompt.txt"
+    "data/prompting/characters/self_reflection_generation_prompt.txt"
 )
 GOAL_RESOLUTION_GENERATION_PROMPT_FILE: str = (
     "data/prompting/goal_resolution_generation_prompt.txt"

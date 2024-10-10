@@ -1,5 +1,3 @@
-import json
-
 from src.characters.characters_manager import CharactersManager
 from src.constants import (
     CHARACTER_GENERATOR_TOOL_FILE,
@@ -66,27 +64,47 @@ class CharacterGenerationToolResponseProvider(
         )
 
     def _read_and_format_tool_file(self, tool_file: str) -> dict:
-        """Reads the tool schema template file, formats it with the enums, and returns the tool data."""
-        tool_template_text = self._filesystem_manager.read_file(tool_file)
-
-        # Now format the template text with the enums
-        formatted_tool_text = tool_template_text.format(
-            VOICE_GENDERS=json.dumps(VOICE_GENDERS),
-            VOICE_AGES=json.dumps(VOICE_AGES),
-            VOICE_EMOTIONS=json.dumps(VOICE_EMOTIONS),
-            VOICE_TEMPOS=json.dumps(VOICE_TEMPOS),
-            VOICE_VOLUMES=json.dumps(VOICE_VOLUMES),
-            VOICE_TEXTURES=json.dumps(VOICE_TEXTURES),
-            VOICE_TONES=json.dumps(VOICE_TONES),
-            VOICE_STYLES=json.dumps(VOICE_STYLES),
-            VOICE_PERSONALITIES=json.dumps(VOICE_PERSONALITIES),
-            VOICE_SPECIAL_EFFECTS=json.dumps(VOICE_SPECIAL_EFFECTS),
+        template_copy = self._filesystem_manager.load_existing_or_new_json_file(
+            CHARACTER_GENERATOR_TOOL_FILE
         )
 
-        # Now parse the formatted_tool_text as JSON
-        tool_data = json.loads(formatted_tool_text)
+        try:
+            template_copy["function"]["parameters"]["properties"]["voice_gender"][
+                "enum"
+            ] = VOICE_GENDERS
+            template_copy["function"]["parameters"]["properties"]["voice_age"][
+                "enum"
+            ] = VOICE_AGES
+            template_copy["function"]["parameters"]["properties"]["voice_emotion"][
+                "enum"
+            ] = VOICE_EMOTIONS
+            template_copy["function"]["parameters"]["properties"]["voice_tempo"][
+                "enum"
+            ] = VOICE_TEMPOS
+            template_copy["function"]["parameters"]["properties"]["voice_volume"][
+                "enum"
+            ] = VOICE_VOLUMES
+            template_copy["function"]["parameters"]["properties"]["voice_texture"][
+                "enum"
+            ] = VOICE_TEXTURES
+            template_copy["function"]["parameters"]["properties"]["voice_tone"][
+                "enum"
+            ] = VOICE_TONES
+            template_copy["function"]["parameters"]["properties"]["voice_style"][
+                "enum"
+            ] = VOICE_STYLES
+            template_copy["function"]["parameters"]["properties"]["voice_personality"][
+                "enum"
+            ] = VOICE_PERSONALITIES
+            template_copy["function"]["parameters"]["properties"][
+                "voice_special_effects"
+            ]["enum"] = VOICE_SPECIAL_EFFECTS
+        except Exception as e:
+            raise ValueError(
+                f"Was unable to format the character generator tool file: {e}"
+            )
 
-        return tool_data
+        return template_copy
 
     def _read_tool_file(self, tool_file: str) -> dict:
         return self._read_and_format_tool_file(tool_file)
@@ -133,7 +151,7 @@ class CharacterGenerationToolResponseProvider(
             return ConcreteLlmToolResponseProduct(
                 {},
                 is_valid=False,
-                error=f"An error occurred while creating the LLM response: {str(e)}",
+                error=f"An error occurred while creating the LLM response: {e}",
             )
 
     def _load_templates(self) -> dict:

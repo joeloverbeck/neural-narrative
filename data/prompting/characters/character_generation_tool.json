@@ -34,9 +34,45 @@
           "type": "string",
           "description": "A single speech pattern example demonstrating how the character would greet someone they have never met before, a stranger, who may have greeted them with a simple \"Hello.\" Their response should be inconsequential, small talk (but not about the weather or the time of day, and absolutely not including any variation on \"What brings you here...\""
         },
-        "speech patterns": {
+        "speech_pattern_1": {
           "type": "string",
-          "description": "Four or five quotes in the character's voice, following the instructions about speech patterns."
+          "description": "A quote in the character's voice, following the instructions about sample utterances. Focus on creating a compelling, unique narrative voice for the character."
+        },
+        "speech_pattern_2": {
+          "type": "string",
+          "description": "A quote in the character's voice, following the instructions about sample utterances. Focus on creating a compelling, unique narrative voice for the character."
+        },
+        "speech_pattern_3": {
+          "type": "string",
+          "description": "A quote in the character's voice, following the instructions about sample utterances. Focus on creating a compelling, unique narrative voice for the character."
+        },
+        "speech_pattern_4": {
+          "type": "string",
+          "description": "A quote in the character's voice, following the instructions about sample utterances. Focus on creating a compelling, unique narrative voice for the character."
+        },
+        "speech_pattern_5": {
+          "type": "string",
+          "description": "A quote in the character's voice, following the instructions about sample utterances. Focus on creating a compelling, unique narrative voice for the character."
+        },
+        "speech_pattern_6": {
+          "type": "string",
+          "description": "A quote in the character's voice, following the instructions about sample utterances. Focus on creating a compelling, unique narrative voice for the character."
+        },
+        "speech_pattern_7": {
+          "type": "string",
+          "description": "A quote in the character's voice, following the instructions about sample utterances. Focus on creating a compelling, unique narrative voice for the character."
+        },
+        "speech_pattern_8": {
+          "type": "string",
+          "description": "A quote in the character's voice, following the instructions about sample utterances. Focus on creating a compelling, unique narrative voice for the character."
+        },
+        "speech_pattern_9": {
+          "type": "string",
+          "description": "A quote in the character's voice, following the instructions about sample utterances. Focus on creating a compelling, unique narrative voice for the character."
+        },
+        "speech_pattern_10": {
+          "type": "string",
+          "description": "A quote in the character's voice, following the instructions about sample utterances. Focus on creating a compelling, unique narrative voice for the character."
         },
         "health": {
           "type": "string",
@@ -48,52 +84,52 @@
         },
         "voice_gender": {
           "type": "string",
-          "enum": {{VOICE_GENDERS}},
+          "enum": null,
           "description": "The fitting gender for the voice this character would have."
         },
         "voice_age": {
           "type": "string",
-          "enum": {{VOICE_AGES}},
+          "enum": null,
           "description": "The fitting age for the voice this character would have."
         },
         "voice_emotion": {
           "type": "string",
-          "enum": {{VOICE_EMOTIONS}},
+          "enum": null,
           "description": "The fitting main emotion for the voice this character would have."
         },
         "voice_tempo": {
           "type": "string",
-          "enum": {{VOICE_TEMPOS}},
+          "enum": null,
           "description": "The fitting tempo for the voice this character would have."
         },
         "voice_volume": {
           "type": "string",
-          "enum": {{VOICE_VOLUMES}},
+          "enum": null,
           "description": "The fitting volume for the voice this character would have."
         },
         "voice_texture": {
           "type": "string",
-          "enum": {{VOICE_TEXTURES}},
+          "enum": null,
           "description": "The fitting texture for the voice this character would have."
         },
         "voice_tone": {
           "type": "string",
-          "enum": {{VOICE_TONE}},
+          "enum": null,
           "description": "The fitting tone for the voice this character would have."
         },
         "voice_style": {
           "type": "string",
-          "enum": {{VOICE_STYLES}},
+          "enum": null,
           "description": "The fitting style for the voice this character would have."
         },
         "voice_personality": {
           "type": "string",
-          "enum": {{VOICE_PERSONALITIES}},
+          "enum": null,
           "description": "The fitting personality for the voice this character would have."
         },
         "voice_special_effects": {
           "type": "string",
-          "enum": {{VOICE_SPECIAL_EFFECTS}},
+          "enum": null,
           "description": "The fitting special effects for the voice this character would have."
         }
       },
@@ -105,7 +141,16 @@
         "likes",
         "dislikes",
         "first message",
-        "speech patterns",
+        "speech_pattern_1",
+        "speech_pattern_2",
+        "speech_pattern_3",
+        "speech_pattern_4",
+        "speech_pattern_5",
+        "speech_pattern_6",
+        "speech_pattern_7",
+        "speech_pattern_8",
+        "speech_pattern_9",
+        "speech_pattern_10",
         "equipment",
         "voice_gender",
         "voice_age",
