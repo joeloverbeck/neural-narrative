@@ -1,0 +1,10 @@
+/* travel.css */
+.travel-narration {
+    background-color: #f0f8ff;
+    padding: 20px;
+    margin: 30px auto;
+    border-radius: 10px;
+    max-width: 800px;
+    font-size: 18px;
+    line-height: 1.6;
+}

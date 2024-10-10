@@ -1,0 +1,27 @@
+.success-message {
+    color: green;
+    margin: 10px 0;
+}
+
+/* Container styles */
+.character-memories-container {
+    margin-top: 20px;
+}
+
+#character_selector {
+    font-size: 16px;
+    padding: 5px;
+    margin-bottom: 20px;
+}
+
+textarea {
+    width: 100%;
+    font-size: 14px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+input[type="submit"] {
+    padding: 10px 20px;
+    font-size: 16px;
+}

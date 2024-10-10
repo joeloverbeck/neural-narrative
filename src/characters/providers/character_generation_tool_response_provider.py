@@ -1,3 +1,5 @@
+import json
+
 from src.characters.characters_manager import CharactersManager
 from src.constants import (
     CHARACTER_GENERATOR_TOOL_FILE,
@@ -6,6 +8,15 @@ from src.constants import (
     LOCATIONS_TEMPLATES_FILE,
     AREAS_TEMPLATES_FILE,
     REGIONS_TEMPLATES_FILE,
+    VOICE_GENDERS,
+    VOICE_AGES,
+    VOICE_EMOTIONS,
+    VOICE_TEMPOS,
+    VOICE_VOLUMES,
+    VOICE_TEXTURES,
+    VOICE_STYLES,
+    VOICE_PERSONALITIES,
+    VOICE_SPECIAL_EFFECTS,
 )
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.places_templates_parameter import PlacesTemplatesParameter
@@ -52,6 +63,31 @@ class CharacterGenerationToolResponseProvider(
         self._characters_manager = characters_manager or CharactersManager(
             self._playthrough_name
         )
+
+    def _read_and_format_tool_file(self, tool_file: str) -> dict:
+        """Reads the tool schema template file, formats it with the enums, and returns the tool data."""
+        tool_template_text = self._filesystem_manager.read_file(tool_file)
+
+        # Now format the template text with the enums
+        formatted_tool_text = tool_template_text.format(
+            VOICE_GENDERS=json.dumps(VOICE_GENDERS),
+            VOICE_AGES=json.dumps(VOICE_AGES),
+            VOICE_EMOTIONS=json.dumps(VOICE_EMOTIONS),
+            VOICE_TEMPOS=json.dumps(VOICE_TEMPOS),
+            VOICE_VOLUMES=json.dumps(VOICE_VOLUMES),
+            VOICE_TEXTURES=json.dumps(VOICE_TEXTURES),
+            VOICE_STYLES=json.dumps(VOICE_STYLES),
+            VOICE_PERSONALITIES=json.dumps(VOICE_PERSONALITIES),
+            VOICE_SPECIAL_EFFECTS=json.dumps(VOICE_SPECIAL_EFFECTS),
+        )
+
+        # Now parse the formatted_tool_text as JSON
+        tool_data = json.loads(formatted_tool_text)
+
+        return tool_data
+
+    def _read_tool_file(self, tool_file: str) -> dict:
+        return self._read_and_format_tool_file(tool_file)
 
     def get_formatted_prompt(self) -> str:
         templates = self._load_templates()

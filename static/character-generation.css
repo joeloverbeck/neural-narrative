@@ -1,0 +1,68 @@
+/* Container styles */
+.character-generation-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Guidelines grid */
+.guidelines-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+/* Message box */
+.message {
+    background-color: #d4edda;
+    border-left: 5px solid #28a745;
+    padding: 10px;
+    margin-bottom: 20px;
+    color: #155724;
+    max-width: 600px;
+    margin: 20px auto;
+    text-align: left;
+}
+
+/* Form styles */
+.guideline-form {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.guideline-form label {
+    font-size: 18px;
+    color: #555;
+    margin-bottom: 10px;
+    display: block;
+    text-align: left;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto 10px auto;
+}
+
+.guideline-form textarea {
+    width: 100%;
+    max-width: 600px;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    margin: 0 auto 10px auto;
+}
+
+.guideline-form textarea:focus {
+    outline: none;
+    border-color: #45a049;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .guideline-item {
+        width: 100%;
+    }
+    .guideline-form textarea {
+        width: 100%;
+    }
+}

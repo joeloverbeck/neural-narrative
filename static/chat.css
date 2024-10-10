@@ -1,0 +1,290 @@
+/* chat.css */
+
+.chat-window {
+    border: 1px solid #ccc;
+    padding: 15px;
+    height: 800px; /* Increase the height here */
+    width: 95%;    /* Keep the current width */
+    overflow-y: scroll;
+    margin-bottom: 20px;
+    background-color: #f5f5f5;
+    margin: 0 auto; /* Center the chat window horizontally */
+    border-radius: 10px;
+}
+
+/* Scrollbar Styles */
+.chat-window::-webkit-scrollbar {
+    width: 5px;
+}
+
+.chat-window::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 5px;
+}
+
+.chat-window::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
+}
+
+.chat-bubble {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 20px; /* Increased from 10px to 20px */
+}
+
+.chat-bubble.left {
+    flex-direction: row;
+}
+
+.chat-bubble.right {
+    flex-direction: row-reverse;
+}
+
+/* Ensure higher specificity for the right-aligned chat bubbles */
+.chat-bubble.right .message-content {
+    background-color: #D1D1FF; /* Light Purple */
+    color: #000000; /* Black Text */
+}
+
+/* Participant messages */
+.chat-bubble.left .message-content {
+    background-color: #f8d7da; /* Light red */
+}
+
+/* Make chat bubbles and ambient messages clickable */
+.message-content {
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.message-content:hover {
+    background-color: #e0e0e0; /* Change to a light gray on hover */
+}
+
+.ambient-message-text {
+    display: inline-block;
+    background-color: #FFFFE0; /* Light Yellow */
+    color: #555555; /* Dark Gray Text */
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-style: italic;
+    color: #555;
+}
+
+/* Player Messages */
+.chat-bubble.right .message-content {
+    background: linear-gradient(to bottom right, #D0E8FF, #A0C8FF); /* Blue Gradient */
+    color: #000000; /* Black Text */
+}
+
+/* Other Characters */
+.chat-bubble.left .message-content {
+    background: linear-gradient(to bottom right, #DFFFD0, #B8FF98); /* Green Gradient */
+    color: #000000; /* Black Text */
+}
+
+/* Ambient Narration */
+.ambient-message-text {
+    background: linear-gradient(to bottom right, #F0F0F0, #D0D0D0); /* Gray Gradient */
+    color: #555555; /* Dark Gray Text */
+    font-style: italic;
+}
+
+
+
+/* Narration text inside right-aligned bubbles */
+.chat-bubble.right .narration {
+    color: #003366 !important;  /* Darker blue for narration */
+}
+
+.chat-bubble.right .sender-label {
+    left: auto;
+    right: 10px;
+    text-align: right;
+}
+
+/* Adjust the chat bubble to accommodate the label */
+.chat-bubble .message-content {
+    background-color: #f0f0f0; /* Keep the bubble background */
+    padding: 21px;
+    border-radius: 20px;
+    position: relative;
+    margin-top: 11px; /* Add space for the label */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Slight shadow */
+}
+
+/* Adjust the container for the time and chat window */
+.chat-container {
+    margin-top: 20px;
+}
+
+.narration {
+    font-style: italic;
+    color: #003366;
+    font-size: 1em;  /* Standard size, avoid making it smaller */
+    font-weight: 500;  /* Medium weight for better readability */
+}
+
+.narration-break {
+    margin-top: 10px;  /* Adjust the space above the speech part */
+    margin-bottom: 10px;  /* Adjust the space below the narration */
+}
+
+.avatar {
+    width: 150px;  /* Further increase size */
+    height: 150px; /* Further increase size */
+    border-radius: 10%;
+    margin: 0 20px; /* Adjust margin for better spacing */
+}
+
+.sender-name {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.message-content {
+    display: flex;
+    flex-direction: column;
+    background-color: #f1f0f0;
+    max-width: 70%;
+    padding: 10px; /* padding-top: 25px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px */
+    border-radius: 10px;
+    position: relative;
+    /* Remove margin-top if you have it */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Slight shadow */
+}
+
+.message-content .sender-label {
+    font-weight: bold;
+    font-size: 1.1em;
+    margin-bottom: 5px;
+}
+
+
+/* Base styles for sender-label */
+.sender-label {
+    position: absolute;
+    top: -15px; /* Adjusted to sit within the padding */
+    left: 9px;  /* Keep left positioning for left-aligned bubbles */
+    /* For right-aligned bubbles, adjust as needed */
+    font-weight: bold;
+    font-size: 1.1em;
+    background-color: #fff;
+    padding: 3px 8px;
+    display: inline-block;
+    z-index: 10;
+    border-radius: 8px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+    margin-bottom: 5px; /* Adjust the value as needed */
+}
+
+.message {
+    margin-bottom: 10px;
+}
+
+.message-text {
+    white-space: pre-wrap;
+    /* Ensure it can expand as needed */
+    word-wrap: break-word;
+}
+
+.message:nth-child(odd) {
+    text-align: left;
+}
+
+.message:nth-child(even) {
+    text-align: right;
+}
+
+
+.current-time + .chat-window {
+    margin-top: 15px;  /* Add some space between the time and chat window */
+    border-top: 1px solid #ddd;  /* Optional: add a border to separate time from chat */
+}
+
+
+/* Optional: Add a horizontal rule or separator between the place and chat */
+.current-place + .chat-window {
+    margin-top: 15px; /* Add some space between the place and chat window */
+    border-top: 1px solid #ddd; /* Optional: add a border to separate place from chat */
+}
+
+/* Info Bar */
+.info-bar {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    padding: 5px 10px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+input[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+}
+
+input[type="text"] {
+    padding: 10px;
+    width: 80%;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    margin: 0 auto;
+}
+
+
+.ambient-message {
+    text-align: center;
+    margin: 20px 0;
+}
+
+/* Chat Form */
+.chat-form {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.chat-form input[type="text"] {
+    width: 80%;
+    max-width: 600px;
+    padding: 15px;
+    font-size: 16px;
+    border-radius: 30px;
+    border: 1px solid #ccc;
+    margin-bottom: 20px;
+}
+
+.chat-form input[type="text"]:focus {
+    outline: none;
+    border-color: #45a049;
+    box-shadow: 0 0 5px rgba(69, 160, 73, 0.5);
+}
+
+
+.form-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 600px) {
+    .chat-window {
+        height: 400px;
+    }
+
+    .chat-form input[type="text"] {
+        width: 100%;
+    }
+
+    .avatar {
+        width: 80px;
+        height: 80px;
+    }
+
+    .message-content {
+        max-width: 100%;
+    }
+}

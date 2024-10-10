@@ -48,160 +48,47 @@
         },
         "voice_gender": {
           "type": "string",
-          "enum": [
-            "MALE",
-            "FEMALE"
-          ],
+          "enum": {{VOICE_GENDERS}},
           "description": "The fitting gender for the voice this character would have."
         },
         "voice_age": {
           "type": "string",
-          "enum": [
-            "CHILDLIKE",
-            "TEENAGE",
-            "YOUNG ADULT",
-            "ADULT",
-            "MIDDLE-AGED",
-            "ELDERLY"
-          ],
+          "enum": {{VOICE_AGES}},
           "description": "The fitting age for the voice this character would have."
         },
         "voice_emotion": {
           "type": "string",
-          "enum": [
-            "CALM",
-            "HAPPY",
-            "SAD",
-            "ANGRY",
-            "MENACING",
-            "NERVOUS",
-            "MELANCHOLIC",
-            "JOYFUL",
-            "CONFIDENT",
-            "ARROGANT",
-            "ANXIOUS",
-            "AGGRESSIVE",
-            "HOPEFUL",
-            "STOIC",
-            "FRIGHTENED",
-            "SURPRISED",
-            "PLAYFUL",
-            "EXCITED",
-            "RESIGNED"
-          ],
+          "enum": {{VOICE_EMOTIONS}},
           "description": "The fitting main emotion for the voice this character would have."
         },
         "voice_tempo": {
           "type": "string",
-          "enum": [
-            "FAST-PACED",
-            "SLOW",
-            "STEADY",
-            "DRAWLING",
-            "RAPID-FIRE"
-          ],
+          "enum": {{VOICE_TEMPOS}},
           "description": "The fitting tempo for the voice this character would have."
         },
         "voice_volume": {
           "type": "string",
-          "enum": [
-            "WHISPERING",
-            "SOFT-SPOKEN",
-            "LOUD",
-            "BOOMING",
-            "QUIET"
-          ],
+          "enum": {{VOICE_VOLUMES}},
           "description": "The fitting volume for the voice this character would have."
         },
         "voice_texture": {
           "type": "string",
-          "enum": [
-            "GRAVELLY",
-            "SMOOTH",
-            "RASPY",
-            "NASAL",
-            "CRISP",
-            "MUFFLED",
-            "ETHEREAL",
-            "WHISPERY",
-            "CLEAR",
-            "BREATHLESS",
-            "HOARSE",
-            "WARM",
-            "COLD",
-            "METALLIC",
-            "MECHANICAL",
-            "AIRY",
-            "GUTTURAL"
-          ],
+          "enum": {{VOICE_TEXTURES}},
           "description": "The fitting texture for the voice this character would have."
         },
         "voice_style": {
           "type": "string",
-          "enum": [
-            "FORMAL",
-            "CASUAL",
-            "INTENSE",
-            "DRAMATIC",
-            "MONOTONE",
-            "FLIRTATIOUS",
-            "SARCASTIC",
-            "HUMOROUS",
-            "MELODIC",
-            "AUTHORITATIVE",
-            "NARRATIVE",
-            "INSTRUCTIONAL"
-          ],
+          "enum": {{VOICE_STYLES}},
           "description": "The fitting style for the voice this character would have."
         },
         "voice_personality": {
           "type": "string",
-          "enum": [
-            "INNOCENT",
-            "YOUTHFUL",
-            "SULTRY",
-            "HEROIC",
-            "VILLAINOUS",
-            "NOBLE",
-            "MYSTERIOUS",
-            "SLY",
-            "CHARMING",
-            "ENERGETIC",
-            "WITTY",
-            "CYNICAL",
-            "KIND",
-            "CALCULATING",
-            "WISE",
-            "ENTHUSIASTIC",
-            "MANIPULATIVE",
-            "ECCENTRIC",
-            "PHILOSOPHICAL",
-            "ADVENTUROUS",
-            "SKEPTICAL",
-            "BRAVE",
-            "SCHEMING",
-            "NAIVE",
-            "OPTIMISTIC",
-            "PESSIMISTIC",
-            "PARANOID"
-          ],
+          "enum": {{VOICE_PERSONALITIES}},
           "description": "The fitting personality for the voice this character would have."
         },
         "voice_special_effects": {
           "type": "string",
-          "enum": [
-            "NO SPECIAL EFFECTS",
-            "ROBOTIC",
-            "ALIEN",
-            "DEMON-LIKE",
-            "MAGICAL",
-            "DISTORTED",
-            "ECHOED",
-            "GHOSTLY",
-            "FUTURISTIC",
-            "RETRO",
-            "SYNTHESIZED"
-          ],
+          "enum": {{VOICE_SPECIAL_EFFECTS}},
           "description": "The fitting special effects for the voice this character would have."
         }
       },

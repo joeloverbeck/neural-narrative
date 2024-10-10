@@ -1,0 +1,43 @@
+/* characters-hub.css */
+
+/* Container styles */
+.characters-hub-container {
+    margin-top: 20px;
+}
+
+/* Character styles */
+
+.character .character-name {
+    font-size: 1.2em;
+    margin-top: 10px;
+    color: #333;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* Styles for player character */
+.player-character {
+    width: 400px;
+    margin: 0 auto; /* Center the player character horizontally */
+}
+
+.player-character img {
+    width: 400px; /* Significantly larger image */
+    height: auto;
+    border-radius: 10px; /* Optional: change to 10px for a softer corner */
+}
+
+.player-character .character-name {
+    font-size: 2em; /* Larger font size for the name */
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .player-character img {
+        width: 100%; /* Make image responsive on smaller screens */
+    }
+
+    .player-character .character-name {
+        font-size: 1.5em;
+    }
+}

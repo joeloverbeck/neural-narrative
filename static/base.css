@@ -1,0 +1,45 @@
+/* base.css */
+/* General styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 50px;
+    background: linear-gradient(120deg, #f0f0f0, #e0e0e0);
+}
+.container {
+    max-width: 1200px;
+    margin: auto;
+}
+h1 {
+    text-align: center;
+}
+form {
+    margin-top: 10px;
+    text-align: center;
+}
+input[type="submit"] {
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    margin: 0 auto;
+    display: block;
+}
+input[type="submit"]:hover {
+    background-color: #45a049;
+}
+.current-time,
+.current-place {
+    font-size: 16px;
+    color: #444;
+}
+.current-place {
+    text-align: right;
+}
+@media (max-width: 600px) {
+    .container {
+        max-width: 100%;
+        margin: 10px;
+    }
+    input[type="submit"] {
+        width: 100%;
+    }
+}

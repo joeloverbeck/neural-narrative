@@ -58,7 +58,7 @@ LOCATIONS_TEMPLATES_FILE: str = "data/templates/locations.json"
 
 # Tools
 
-CHARACTER_GENERATOR_TOOL_FILE: str = "data/prompting/character_generation_tool.json"
+CHARACTER_GENERATOR_TOOL_FILE: str = "data/prompting/character_generation_tool.txt"
 SPEECH_GENERATOR_TOOL_FILE: str = "data/prompting/speech_generator_tool.json"
 SPEECH_TURN_TOOL_FILE: str = "data/prompting/speech_turn_tool.json"
 DIALOGUE_SUMMARIZATION_TOOL_FILE: str = (
@@ -147,3 +147,114 @@ OPENROUTER_API_URL: str = "https://openrouter.ai/api/v1"
 HERMES_405B = "nousresearch/hermes-3-llama-3.1-405b"
 HERMES_405B_FREE = "nousresearch/hermes-3-llama-3.1-405b:free"
 HERMES_70B = "nousresearch/hermes-3-llama-3.1-70b"
+
+# Voice attributes
+
+VOICE_GENDERS = ["MALE", "FEMALE"]
+
+VOICE_AGES = ["CHILDLIKE", "TEENAGE", "YOUNG ADULT", "ADULT", "MIDDLE-AGED", "ELDERLY"]
+
+VOICE_EMOTIONS = [
+    "CALM",
+    "HAPPY",
+    "SAD",
+    "ANGRY",
+    "MENACING",
+    "NERVOUS",
+    "MELANCHOLIC",
+    "JOYFUL",
+    "CONFIDENT",
+    "ARROGANT",
+    "ANXIOUS",
+    "AGGRESSIVE",
+    "HOPEFUL",
+    "STOIC",
+    "FRIGHTENED",
+    "SURPRISED",
+    "PLAYFUL",
+    "EXCITED",
+    "RESIGNED",
+]
+
+VOICE_TEMPOS = ["FAST-PACED", "SLOW", "STEADY", "DRAWLING", "RAPID-FIRE"]
+
+VOICE_VOLUMES = ["WHISPERING", "SOFT-SPOKEN", "LOUD", "BOOMING", "QUIET"]
+
+VOICE_TEXTURES = [
+    "GRAVELLY",
+    "SMOOTH",
+    "RASPY",
+    "NASAL",
+    "CRISP",
+    "MUFFLED",
+    "ETHEREAL",
+    "WHISPERY",
+    "CLEAR",
+    "BREATHLESS",
+    "HOARSE",
+    "WARM",
+    "COLD",
+    "METALLIC",
+    "MECHANICAL",
+    "AIRY",
+    "GUTTURAL",
+]
+
+VOICE_STYLES = [
+    "FORMAL",
+    "CASUAL",
+    "INTENSE",
+    "DRAMATIC",
+    "MONOTONE",
+    "FLIRTATIOUS",
+    "SARCASTIC",
+    "HUMOROUS",
+    "MELODIC",
+    "AUTHORITATIVE",
+    "NARRATIVE",
+    "INSTRUCTIONAL",
+]
+
+VOICE_PERSONALITIES = [
+    "INNOCENT",
+    "YOUTHFUL",
+    "SULTRY",
+    "HEROIC",
+    "VILLAINOUS",
+    "NOBLE",
+    "MYSTERIOUS",
+    "SLY",
+    "CHARMING",
+    "ENERGETIC",
+    "WITTY",
+    "CYNICAL",
+    "KIND",
+    "CALCULATING",
+    "WISE",
+    "ENTHUSIASTIC",
+    "MANIPULATIVE",
+    "ECCENTRIC",
+    "PHILOSOPHICAL",
+    "ADVENTUROUS",
+    "SKEPTICAL",
+    "BRAVE",
+    "SCHEMING",
+    "NAIVE",
+    "OPTIMISTIC",
+    "PESSIMISTIC",
+    "PARANOID",
+]
+
+VOICE_SPECIAL_EFFECTS = [
+    "NO SPECIAL EFFECTS",
+    "ROBOTIC",
+    "ALIEN",
+    "DEMON-LIKE",
+    "MAGICAL",
+    "DISTORTED",
+    "ECHOED",
+    "GHOSTLY",
+    "FUTURISTIC",
+    "RETRO",
+    "SYNTHESIZED",
+]
