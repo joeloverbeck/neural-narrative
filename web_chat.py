@@ -1,18 +1,18 @@
 import logging.config
 
-from flask import Flask, request, jsonify
+from flask import Flask
 
 from src.filesystem.filesystem_manager import FilesystemManager
-from src.services.voices_services import VoicesServices
+from src.views.actions_view import ActionsView
 from src.views.character_generation_view import CharacterGenerationView
 from src.views.character_memories_view import CharacterMemoriesView
 from src.views.character_voice_view import CharacterVoiceView
 from src.views.characters_hub_view import CharactersHubView
 from src.views.chat_view import ChatView
-from src.views.goal_resolution_view import GoalResolutionView
 from src.views.index_view import IndexView
 from src.views.location_hub_view import LocationHubView
 from src.views.participants_view import ParticipantsView
+from src.views.research_view import ResearchView
 from src.views.story_hub_view import StoryHubView
 from src.views.travel_view import TravelView
 
@@ -44,20 +44,8 @@ app.add_url_rule(
 app.add_url_rule(
     "/character-voice", view_func=CharacterVoiceView.as_view("character-voice")
 )
-app.add_url_rule(
-    "/goal-resolution", view_func=GoalResolutionView.as_view("goal-resolution")
-)
-
-
-@app.route("/play-audio", methods=["POST"])
-def play_audio_route():
-    data = request.get_json()
-    file_path = data.get("file_path")
-
-    VoicesServices().play_voice_line(file_path)
-
-    # Return a JSON response without waiting for the audio to finish
-    return jsonify({"message": "Audio playback started"}), 200
+app.add_url_rule("/actions", view_func=ActionsView.as_view("actions"))
+app.add_url_rule("/research", view_func=ResearchView.as_view("research"))
 
 
 if __name__ == "__main__":

@@ -15,6 +15,9 @@ class CharacterDescriptionProviderFactory:
         )
 
     def create_provider(self, character_data: dict):
+        if "health" not in character_data:
+            raise ValueError("health should have been present in character_data.")
+
         return CharacterDescriptionProvider(
             character_data, self._produce_tool_response_strategy_factory
         )

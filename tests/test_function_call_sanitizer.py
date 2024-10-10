@@ -357,3 +357,77 @@ def test_none_function_call():
     input_function_call = None
     with pytest.raises(ValueError):
         FunctionCallSanitizer(input_function_call)
+
+
+def test_sanitizer_removes_incorrect_function_closing_tag():
+    # Test input with incorrect closing tag '/function</function>'
+    function_call = (
+        '<function=generate_research_resolution>{"narrative": "In the dimly lit common room of the '
+        "Haven of the Wayward, Roran Wainwright sat hunched over a worn, leather-bound tome, his brow "
+        "furrowed in concentration. The flickering light of the Lumina Lilies cast an ethereal glow "
+        "across the pages, illuminating the cryptic text that held the key to unlocking the secrets "
+        "of this strange and wondrous place. Thogrim Ironfist, the battle-scarred dwarf, and Astera "
+        "Lightbearer, the weary paladin, looked on with a mix of curiosity and concern. They had seen "
+        "the toll that Roran's obsessive pursuit of knowledge had taken on him, the dark circles "
+        "beneath his eyes and the gauntness of his features a testament to his single-minded "
+        "determination. Despite their misgivings, they could not deny the importance of the task at "
+        "hand. The secrets contained within the tome could hold the key to understanding the mysterious "
+        "Lumina Lilies, the bioluminescent flora that had become a symbol of hope and resilience in this "
+        "unforgiving world. As Roran pored over the ancient text, his mind raced with the possibilities. "
+        "Could the Lumina Lilies hold the key to unlocking the secrets of the ancient ruins that dotted "
+        "the landscape? Or perhaps they could provide a much-needed source of light and warmth in the "
+        "darkest depths of the Whispering Grove? The answers lay within the pages before him, waiting to "
+        "be deciphered. But as the hours turned to days and the days to weeks, the toll of Roran's "
+        "relentless research began to show. His once-sparkling eyes grew dull and lifeless, his skin "
+        "taking on a sickly pallor that spoke of countless sleepless nights. Thogrim and Astera watched "
+        "with growing concern as their friend and companion seemed to waste away before their very eyes, "
+        'consumed by his obsessive quest for knowledge.", "outcome": "After weeks of painstaking '
+        "research, Roran finally unlocked the secrets of the Lumina Lilies. The ancient tome revealed "
+        "that the bioluminescent flora was not only a source of light, but also a powerful healing agent, "
+        "capable of curing even the most grievous of wounds. The discovery filled Roran with a sense of "
+        "triumph and validation, his exhaustion giving way to a renewed sense of purpose. With this "
+        "newfound knowledge, he knew that he could make a real difference in the lives of those around "
+        'him.", "consequences": "The toll of Roran\'s relentless research was not limited to his physical '
+        "well-being. His relationships with his companions suffered as well, as he became increasingly "
+        "distant and withdrawn. Thogrim and Astera, once his closest allies, found themselves pushed away "
+        "by his obsessive behavior. The once-close-knit group began to fracture, leaving Roran "
+        "increasingly isolated in his pursuit of knowledge. In the end, the cost of his research was high, "
+        "leaving him with a bitter-sweet victory that was tempered by the knowledge of all that he had "
+        'sacrificed in its pursuit."}/function</function>'
+    )
+
+    # Expected output with the incorrect closing tag fixed
+    expected_output = function_call.replace("/function</function>", "</function>")
+
+    # Initialize the sanitizer with the test input
+    sanitizer = FunctionCallSanitizer(function_call)
+
+    # Sanitize the function call
+    sanitized_output = sanitizer.sanitize()
+
+    # Assert that the sanitized output matches the expected output
+    assert sanitized_output == expected_output
+
+
+def test_sanitizer_handles_multiple_incorrect_closing_tags():
+    function_call = '<function=my_func>{"key": "value"}/function</function>'
+    expected_output = '<function=my_func>{"key": "value"}</function>'
+    sanitizer = FunctionCallSanitizer(function_call)
+    sanitized_output = sanitizer.sanitize()
+    assert sanitized_output == expected_output
+
+
+def test_sanitizer_adds_missing_closing_tag():
+    function_call = '<function=my_func>{"key": "value"}'
+    expected_output = '<function=my_func>{"key": "value"}</function>'
+    sanitizer = FunctionCallSanitizer(function_call)
+    sanitized_output = sanitizer.sanitize()
+    assert sanitized_output == expected_output
+
+
+def test_sanitizer_does_not_alter_correct_function_call():
+    function_call = '<function=my_func>{"key": "value"}</function>'
+    expected_output = function_call
+    sanitizer = FunctionCallSanitizer(function_call)
+    sanitized_output = sanitizer.sanitize()
+    assert sanitized_output == expected_output

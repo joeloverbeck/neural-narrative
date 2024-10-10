@@ -19,7 +19,8 @@
             <i class="fas fa-info-circle"></i> Place Description
         </button>
         <div class="content">
-            <div class="place-description">
+            <div class="place-description" {% if place_description_voice_line_url
+                 %}data-file-url="{{ place_description_voice_line_url }}" {% endif %}>
                 <p>{{ place_description }}</p>
             </div>
         </div>
@@ -198,8 +199,8 @@
         <a href="{{ url_for('chat') }}" class="button">
             <i class="fas fa-comments"></i> Chat
         </a>
-        <a href="{{ url_for('goal-resolution') }}" class="button">
-            <i class="fas fa-flag-checkered"></i> Goal Resolution
+        <a href="{{ url_for('actions') }}" class="button">
+            <i class="fas fa-bolt"></i> Actions
         </a>
     </div>
 </div>
@@ -225,6 +226,35 @@
             content.style.display = 'block'; // Show content if 'active' is already present
         }
     });
-</script>
 
+    document.addEventListener('DOMContentLoaded', function () {
+        // Function to handle click events on place description
+        function handlePlaceDescriptionClick(event) {
+            var fileUrl = event.currentTarget.getAttribute('data-file-url');
+            if (fileUrl && fileUrl !== 'None' && fileUrl !== 'null') {
+                var audio = new Audio(fileUrl);
+                // Attach an error handler for loading errors
+                audio.onerror = function() {
+                    console.error('Error occurred while loading audio:', audio.error);
+                    alert('The audio file could not be loaded.');
+                };
+                // Play the audio and catch any playback errors
+                audio.play().catch(function(error) {
+                    console.error('Error occurred while playing audio:', error);
+                    alert('The audio file couldn\'t be played.');
+                });
+            } else {
+                // If fileUrl is invalid, display the message
+                alert('The RunPod pod isn\'t running.');
+            }
+        }
+        // Attach event listener to the place-description element
+        var placeDescription = document.querySelector('.place-description');
+        if (placeDescription) {
+            placeDescription.addEventListener('click', handlePlaceDescriptionClick);
+            // Change cursor to pointer
+            placeDescription.style.cursor = 'pointer';
+        }
+    });
+</script>
 {% endblock %}

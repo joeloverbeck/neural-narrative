@@ -1,6 +1,9 @@
 from typing import Optional
 
 from src.characters.characters_manager import CharactersManager
+from src.characters.factories.player_data_for_prompt_factory import (
+    PlayerDataForPromptFactory,
+)
 from src.constants import (
     PLACE_DESCRIPTION_PROMPT_FILE,
     PLACE_DESCRIPTION_TOOL_FILE,
@@ -29,6 +32,7 @@ class ConcreteFilteredPlaceDescriptionGenerationFactory(
         player_identifier: str,
         place_identifier: str,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
+        player_data_for_prompt_factory: PlayerDataForPromptFactory,
         map_manager: MapManager = None,
         characters_manager: CharactersManager = None,
         filesystem_manager: FilesystemManager = None,
@@ -46,6 +50,7 @@ class ConcreteFilteredPlaceDescriptionGenerationFactory(
         self._playthrough_name = playthrough_name
         self._player_identifier = player_identifier
         self._place_identifier = place_identifier
+        self._player_data_for_prompt_factory = player_data_for_prompt_factory
 
         self._map_manager = map_manager or MapManager(self._playthrough_name)
         self._characters_manager = characters_manager or CharactersManager(
@@ -70,32 +75,25 @@ class ConcreteFilteredPlaceDescriptionGenerationFactory(
 
         place_data = place_full_data[f"{place_type.value}_data"]
 
-        # Now that we have the place data, we need to retrieve the player's data.
-        player_data = self._characters_manager.load_character_data(
-            self._player_identifier
+        player_data_for_prompt = (
+            self._player_data_for_prompt_factory.create_player_data_for_prompt()
         )
 
-        # Load player memories
-        player_data["memories"] = self._characters_manager.load_character_memories(
-            self._player_identifier
-        )
-
-        return {
+        data_for_prompt = {
             "hour": self._time_manager.get_hour(),
             "time_of_the_day": self._time_manager.get_time_of_the_day(),
             "place_type": place_type,
             "place_template": place_data["name"],
             "place_description": place_data["description"],
-            "player_name": player_data["name"],
-            "player_description": player_data["description"],
-            "player_personality": player_data["personality"],
-            "player_profile": player_data["profile"],
-            "player_likes": player_data["likes"],
-            "player_dislikes": player_data["dislikes"],
-            "player_speech_patterns": player_data["speech patterns"],
-            "player_equipment": player_data["equipment"],
-            "player_memories": player_data["memories"],
         }
+
+        data_for_prompt.update(player_data_for_prompt.get_player_data_for_prompt())
+
+        data_for_prompt.update(
+            {"player_memories": player_data_for_prompt.get_player_memories()}
+        )
+
+        return data_for_prompt
 
     def create_product(self, arguments: dict):
         description = arguments.get(

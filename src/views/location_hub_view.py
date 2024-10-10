@@ -71,6 +71,9 @@ class LocationHubView(MethodView):
             characters=characters_at_current_place,
             followers=followers,
             place_description=session.get("place_description", ""),
+            place_description_voice_line_url=session.get(
+                "place_description_voice_line_url", None
+            ),
             current_place_type=current_place_type,
             locations_present=locations_present,
             cardinal_connections=cardinal_connections,
@@ -111,12 +114,15 @@ class LocationHubView(MethodView):
 
     @staticmethod
     def handle_describe_place(playthrough_name):
-        description = PlaceService().describe_place(playthrough_name)
+        description, file_url = PlaceService().describe_place(playthrough_name)
 
         # Add the place description to the adventure.
         PlaythroughManager(playthrough_name).add_to_adventure(description + "\n")
 
         session["place_description"] = description
+        session["place_description_voice_line_url"] = (
+            file_url  # Store the voice line URL
+        )
         return redirect(url_for("location-hub"))
 
     @staticmethod

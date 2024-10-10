@@ -163,5 +163,6 @@ cython_debug/
 /OPENROUTER_SECRET_KEY.txt
 /OPENAI_SECRET_KEY.txt
 /OPENAI_PROJECT_KEY.txt
+/RUNPOD_SECRET_KEY.txt
 
 static/*

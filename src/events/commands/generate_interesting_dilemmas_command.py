@@ -38,10 +38,10 @@ class GenerateInterestingDilemmasCommand(Command):
             return
 
         # Generated interesting dilemmas. Must save them.
-        interesting_dilemmas = "\n"
+        interesting_dilemmas = ""
 
         for interesting_dilemma in interesting_dilemmas_product.get():
-            interesting_dilemmas += interesting_dilemma + "\n"
+            interesting_dilemmas += "\n" + interesting_dilemma
 
         self._filesystem_manager.append_to_file(
             self._filesystem_manager.get_file_path_to_interesting_dilemmas(

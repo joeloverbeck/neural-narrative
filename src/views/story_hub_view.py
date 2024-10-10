@@ -8,6 +8,9 @@ from src.actions.factories.goals_factory import GoalsFactory
 from src.characters.factories.party_data_for_prompt_factory import (
     PartyDataForPromptFactory,
 )
+from src.characters.factories.player_data_for_prompt_factory import (
+    PlayerDataForPromptFactory,
+)
 from src.config.config_manager import ConfigManager
 from src.events.commands.generate_concepts_command import GenerateConceptsCommand
 from src.events.commands.generate_interesting_dilemmas_command import (
@@ -172,7 +175,6 @@ class StoryHubView(MethodView):
             party_data_for_prompt_factory = PartyDataForPromptFactory(playthrough_name)
 
             interesting_dilemmas_factory = InterestingDilemmasFactory(
-                playthrough_name,
                 produce_tool_response_strategy_factory,
                 places_descriptions_for_prompt_factory,
                 party_data_for_prompt_factory,
@@ -211,7 +213,13 @@ class StoryHubView(MethodView):
                 playthrough_name
             )
 
-            party_data_for_prompt_factory = PartyDataForPromptFactory(playthrough_name)
+            player_data_for_prompt_factory = PlayerDataForPromptFactory(
+                playthrough_name
+            )
+
+            party_data_for_prompt_factory = PartyDataForPromptFactory(
+                playthrough_name, player_data_for_prompt_factory
+            )
 
             goals_factory = GoalsFactory(
                 playthrough_name,

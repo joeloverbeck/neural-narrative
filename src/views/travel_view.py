@@ -4,6 +4,9 @@ from flask.views import MethodView
 from src.characters.factories.party_data_for_prompt_factory import (
     PartyDataForPromptFactory,
 )
+from src.characters.factories.player_data_for_prompt_factory import (
+    PlayerDataForPromptFactory,
+)
 from src.config.config_manager import ConfigManager
 from src.constants import (
     TIME_ADVANCED_DUE_TO_TRAVELING,
@@ -37,7 +40,11 @@ class TravelView(MethodView):
             ConfigManager().get_heavy_llm(),
         )
 
-        party_data_for_prompt_factory = PartyDataForPromptFactory(playthrough_name)
+        player_data_for_prompt_factory = PlayerDataForPromptFactory(playthrough_name)
+
+        party_data_for_prompt_factory = PartyDataForPromptFactory(
+            playthrough_name, player_data_for_prompt_factory
+        )
 
         product = TravelNarrationFactory(
             playthrough_name,

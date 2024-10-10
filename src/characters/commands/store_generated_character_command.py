@@ -61,6 +61,7 @@ class StoreGeneratedCharacterCommand(Command):
             "dislikes": self._character_data["dislikes"],
             "first message": self._character_data["first message"],
             "speech patterns": self._character_data["speech patterns"],
+            "health": self._character_data["health"],
             "equipment": self._character_data["equipment"],
             "voice_model": self._match_voice_data_to_voice_model_algorithm.match(
                 self._character_data

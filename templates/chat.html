@@ -67,8 +67,8 @@
         <a href="{{ url_for('location-hub') }}" class="button">
             <i class="fas fa-map-marker-alt"></i> Location Hub
         </a>
-        <a href="{{ url_for('goal-resolution') }}" class="button">
-            <i class="fas fa-flag-checkered"></i> Goal Resolution
+        <a href="{{ url_for('actions') }}" class="button">
+            <i class="fas fa-bolt"></i> Actions
         </a>
     </div>
 </div>
@@ -96,9 +96,24 @@
         function handleChatBubbleClick(event) {
             var fileUrl = event.currentTarget.getAttribute('data-file-url');
 
-            if (fileUrl) {
+            // Check if fileUrl is valid and not 'None' or 'null'
+            if (fileUrl && fileUrl !== 'None' && fileUrl !== 'null') {
                 var audio = new Audio(fileUrl);
-                audio.play();
+
+                // Attach an error handler for loading errors
+                audio.onerror = function() {
+                    console.error('Error occurred while loading audio:', audio.error);
+                    alert('The RunPod pod isn\'t running.');
+                };
+
+                // Play the audio and catch any playback errors
+                audio.play().catch(function(error) {
+                    console.error('Error occurred while playing audio:', error);
+                    alert('The RunPod pod isn\'t running.');
+                });
+            } else {
+                // If fileUrl is invalid, display the message
+                alert('The RunPod pod isn\'t running.');
             }
         }
 

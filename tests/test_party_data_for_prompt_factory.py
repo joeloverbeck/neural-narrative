@@ -15,7 +15,9 @@ class TestPartyDataForPromptFactory:
     def test_init_with_empty_playthrough_name(self):
         """Test that ValueError is raised when playthrough_name is empty."""
         with pytest.raises(ValueError, match="playthrough_name can't be empty."):
-            PartyDataForPromptFactory(playthrough_name="")
+            PartyDataForPromptFactory(
+                playthrough_name="", player_data_for_prompt_factory=MagicMock()
+            )
 
     def test_init_with_provided_managers(self):
         """Test that provided managers are used."""
@@ -24,6 +26,7 @@ class TestPartyDataForPromptFactory:
         characters_manager = MagicMock()
         factory = PartyDataForPromptFactory(
             playthrough_name=playthrough_name,
+            player_data_for_prompt_factory=MagicMock(),
             playthrough_manager=playthrough_manager,
             characters_manager=characters_manager,
         )
@@ -45,6 +48,7 @@ class TestPartyDataForPromptFactory:
 
         factory = PartyDataForPromptFactory(
             playthrough_name=playthrough_name,
+            player_data_for_prompt_factory=MagicMock(),
             playthrough_manager=playthrough_manager,
             characters_manager=characters_manager,
         )
@@ -66,6 +70,7 @@ class TestPartyDataForPromptFactory:
 
         factory = PartyDataForPromptFactory(
             playthrough_name=playthrough_name,
+            player_data_for_prompt_factory=MagicMock(),
             playthrough_manager=playthrough_manager,
             characters_manager=characters_manager,
         )
@@ -104,6 +109,7 @@ class TestPartyDataForPromptFactory:
         ]
         factory = PartyDataForPromptFactory(
             playthrough_name=playthrough_name,
+            player_data_for_prompt_factory=MagicMock(),
             playthrough_manager=playthrough_manager,
             characters_manager=characters_manager,
         )
@@ -141,6 +147,7 @@ class TestPartyDataForPromptFactory:
 
         factory = PartyDataForPromptFactory(
             playthrough_name=playthrough_name,
+            player_data_for_prompt_factory=MagicMock(),
             playthrough_manager=playthrough_manager,
             characters_manager=characters_manager,
         )
@@ -168,6 +175,7 @@ class TestPartyDataForPromptFactory:
         ]
         factory = PartyDataForPromptFactory(
             playthrough_name=playthrough_name,
+            player_data_for_prompt_factory=MagicMock(),
             playthrough_manager=playthrough_manager,
             characters_manager=characters_manager,
         )
@@ -198,6 +206,7 @@ class TestPartyDataForPromptFactory:
 
         factory = PartyDataForPromptFactory(
             playthrough_name=playthrough_name,
+            player_data_for_prompt_factory=MagicMock(),
             playthrough_manager=playthrough_manager,
             characters_manager=characters_manager,
         )
@@ -217,6 +226,7 @@ class TestPartyDataForPromptFactory:
 
         factory = PartyDataForPromptFactory(
             playthrough_name=playthrough_name,
+            player_data_for_prompt_factory=MagicMock(),
             playthrough_manager=playthrough_manager,
             characters_manager=characters_manager,
         )
@@ -239,6 +249,7 @@ class TestPartyDataForPromptFactory:
 
         factory = PartyDataForPromptFactory(
             playthrough_name=playthrough_name,
+            player_data_for_prompt_factory=MagicMock(),
             playthrough_manager=playthrough_manager,
             characters_manager=characters_manager,
         )
@@ -264,6 +275,7 @@ class TestPartyDataForPromptFactory:
 
         factory = PartyDataForPromptFactory(
             playthrough_name=playthrough_name,
+            player_data_for_prompt_factory=MagicMock(),
             playthrough_manager=playthrough_manager,
             characters_manager=characters_manager,
         )
@@ -271,116 +283,3 @@ class TestPartyDataForPromptFactory:
 
         result = factory._get_followers_memories()
         assert result == expected_memories
-
-    def test_get_party_data_for_prompt(self):
-        """Test that get_party_data_for_prompt returns correct aggregated data."""
-        playthrough_name = "TestPlaythrough"
-        playthrough_manager = MagicMock()
-        characters_manager = MagicMock()
-
-        player_identifier = "player1"
-        player_data = {
-            "name": "Player One",
-            "description": "Player Description",
-            "personality": "Player Personality",
-            "profile": "Player Profile",
-            "likes": "Player Likes",
-            "dislikes": "Player Dislikes",
-            "speech patterns": "Player Speech Patterns",
-            "equipment": "Player Equipment",
-        }
-        player_memories_str = "memory1\nmemory2"
-
-        followers_information = "Followers info"
-
-        followers_memories = ["memory2", "memory3", "memory4"]
-        combined_memories = ["memory1", "memory2", "memory3", "memory4"]
-
-        playthrough_manager.get_player_identifier.return_value = player_identifier
-        characters_manager.load_character_data.return_value = player_data
-        characters_manager.load_character_memories.return_value = player_memories_str
-
-        factory = PartyDataForPromptFactory(
-            playthrough_name=playthrough_name,
-            playthrough_manager=playthrough_manager,
-            characters_manager=characters_manager,
-        )
-
-        factory._get_followers_information = MagicMock(
-            return_value=followers_information
-        )
-        factory._get_followers_memories = MagicMock(return_value=followers_memories)
-        factory._get_combined_memories = MagicMock(return_value=combined_memories)
-
-        result = factory.get_party_data_for_prompt()
-
-        expected_result = {
-            "player_name": player_data["name"],
-            "player_description": player_data["description"],
-            "player_personality": player_data["personality"],
-            "player_profile": player_data["profile"],
-            "player_likes": player_data["likes"],
-            "player_dislikes": player_data["dislikes"],
-            "player_speech_patterns": player_data["speech patterns"],
-            "player_equipment": player_data["equipment"],
-            "followers_information": followers_information,
-            "combined_memories": combined_memories,
-        }
-
-        assert result == expected_result
-
-    def test_get_party_data_for_prompt_no_memories(self):
-        """Test get_party_data_for_prompt when player has no memories."""
-        playthrough_name = "TestPlaythrough"
-        playthrough_manager = MagicMock()
-        characters_manager = MagicMock()
-
-        player_identifier = "player1"
-        player_data = {
-            "name": "Player One",
-            "description": "Player Description",
-            "personality": "Player Personality",
-            "profile": "Player Profile",
-            "likes": "Player Likes",
-            "dislikes": "Player Dislikes",
-            "speech patterns": "Player Speech Patterns",
-            "equipment": "Player Equipment",
-        }
-        player_memories_str = ""
-
-        followers_information = ""
-        followers_memories = []
-        combined_memories = []
-
-        playthrough_manager.get_player_identifier.return_value = player_identifier
-        characters_manager.load_character_data.return_value = player_data
-        characters_manager.load_character_memories.return_value = player_memories_str
-
-        factory = PartyDataForPromptFactory(
-            playthrough_name=playthrough_name,
-            playthrough_manager=playthrough_manager,
-            characters_manager=characters_manager,
-        )
-
-        factory._get_followers_information = MagicMock(
-            return_value=followers_information
-        )
-        factory._get_followers_memories = MagicMock(return_value=followers_memories)
-        factory._get_combined_memories = MagicMock(return_value=combined_memories)
-
-        result = factory.get_party_data_for_prompt()
-
-        expected_result = {
-            "player_name": player_data["name"],
-            "player_description": player_data["description"],
-            "player_personality": player_data["personality"],
-            "player_profile": player_data["profile"],
-            "player_likes": player_data["likes"],
-            "player_dislikes": player_data["dislikes"],
-            "player_speech_patterns": player_data["speech patterns"],
-            "player_equipment": player_data["equipment"],
-            "followers_information": followers_information,
-            "combined_memories": combined_memories,
-        }
-
-        assert result == expected_result

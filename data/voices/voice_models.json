@@ -159,5 +159,87 @@
     "AUTHORITATIVE",
     "NOBLE",
     "NO SPECIAL EFFECTS"
+  ],
+  "crcat": [
+    "MALE",
+    "ADULT",
+    "AGGRESSIVE",
+    "SLOW",
+    "GUTTURAL",
+    "INTENSE",
+    "CALCULATING",
+    "NO SPECIAL EFFECTS"
+  ],
+  "npcfsheila": [
+    "FEMALE",
+    "YOUNG ADULT",
+    "ANXIOUS",
+    "STEADY",
+    "BREATHLESS",
+    "INTENSE",
+    "SKEPTICAL",
+    "NO SPECIAL EFFECTS"
+  ],
+  "auri": [
+    "FEMALE",
+    "TEENAGE",
+    "CALM",
+    "SLOW",
+    "SOFT-SPOKEN",
+    "WHISPERY",
+    "NARRATIVE",
+    "NAIVE",
+    "NO SPECIAL EFFECTS"
+  ],
+  "npcfpriscillapenske": [
+    "FEMALE",
+    "ADULT",
+    "NERVOUS",
+    "FAST-PACED",
+    "SMOOTH",
+    "INTENSE",
+    "ENERGETIC",
+    "NO SPECIAL EFFECTS"
+  ],
+  "npcfclairhutchins": [
+    "FEMALE",
+    "ADULT",
+    "CONFIDENT",
+    "STEADY",
+    "CLEAR",
+    "INSTRUCTIONAL",
+    "PHILOSOPHICAL",
+    "NO SPECIAL EFFECTS"
+  ],
+  "npcfgeneva": [
+    "FEMALE",
+    "ADULT",
+    "CALM",
+    "SLOW",
+    "SOFT-SPOKEN",
+    "AIRY",
+    "FORMAL",
+    "WISE",
+    "NO SPECIAL EFFECTS"
+  ],
+  "npcfpolly": [
+    "FEMALE",
+    "ADULT",
+    "ARROGANT",
+    "FAST-PACED",
+    "CLEAR",
+    "AUTHORITATIVE",
+    "SCHEMING",
+    "NO SPECIAL EFFECTS"
+  ],
+  "npcfkatherinepinn": [
+    "FEMALE",
+    "YOUNG ADULT",
+    "ANXIOUS",
+    "FAST-PACED",
+    "CRISP",
+    "DRAMATIC",
+    "PARANOID",
+    "NO SPECIAL EFFECTS"
   ]
 }

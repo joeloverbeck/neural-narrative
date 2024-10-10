@@ -28,6 +28,7 @@ WAIT_TIME_WHEN_MALFORMED_COMPLETION: int = 5
 CONFIG_FILE: str = "config.json"
 LOGGING_CONFIG_FILE: str = "data/logging/logging_config.json"
 VOICE_MODELS_FILE: str = "data/voices/voice_models.json"
+VOICE_LINES_FOLDER_PATH: str = "static/voice_lines"
 PLAYTHROUGHS_FOLDER: str = "playthroughs"
 CHARACTERS_FOLDER_NAME: str = "characters"
 IMAGES_FOLDER_NAME: str = "images"
@@ -92,6 +93,9 @@ GOAL_RESOLUTION_GENERATION_TOOL_FILE: str = (
     "data/prompting/goal_resolution_generation_tool.json"
 )
 GOALS_GENERATION_TOOL_FILE: str = "data/prompting/goals_generation_tool.json"
+RESEARCH_RESOLUTION_GENERATION_TOOL_FILE: str = (
+    "data/prompting/actions/research_resolution_generation_tool.json"
+)
 
 # Prompts
 
@@ -132,6 +136,9 @@ GOAL_RESOLUTION_GENERATION_PROMPT_FILE: str = (
     "data/prompting/goal_resolution_generation_prompt.txt"
 )
 GOALS_GENERATION_PROMPT_FILE: str = "data/prompting/goals_generation_prompt.txt"
+RESEARCH_RESOLUTION_GENERATION_PROMPT_FILE: str = (
+    "data/prompting/actions/research_resolution_generation_prompt.txt"
+)
 
 OPENROUTER_API_URL: str = "https://openrouter.ai/api/v1"
 
