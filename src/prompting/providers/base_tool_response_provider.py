@@ -67,6 +67,9 @@ class BaseToolResponseProvider:
         """Extracts arguments from the tool response."""
         return tool_response.get("arguments", {})
 
+    def peep_into_system_content(self, system_content: str):
+        pass
+
     def generate_product(self):
         # Prepare the prompt
         formatted_prompt = self.get_formatted_prompt()
@@ -82,6 +85,8 @@ class BaseToolResponseProvider:
         tool_instructions = self._read_tool_instructions()
         tool_prompt = self._generate_tool_prompt(tool_data, tool_instructions)
         system_content = self._generate_system_content(formatted_prompt, tool_prompt)
+
+        self.peep_into_system_content(system_content)
 
         # User content
         user_content = self.get_user_content()

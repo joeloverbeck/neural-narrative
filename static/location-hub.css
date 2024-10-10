@@ -171,6 +171,12 @@ button:disabled {
     margin-bottom: 15px;
 }
 
+.group-separator {
+    border: none;
+    border-top: 2px dashed #ccc;
+    margin: 20px 0;
+}
+
 /* Responsive Adjustments */
 @media (max-width: 600px) {
     .place-description {

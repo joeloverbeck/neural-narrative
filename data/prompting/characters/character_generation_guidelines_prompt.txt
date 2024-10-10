@@ -12,8 +12,8 @@ Your task is the following: influenced by the above combination of places, write
 - Specify the character's species or race, including any unique traits or abilities relevant to the setting.
 - Specify the character's approximate age.
 - Highlight key aspects of their personality, such as being brave, cunning, compassionate, or conflicted.
-- Mention significant experiences or history that have shaped them, like being an orphan, a former soldier, or a scholar.
-- Describe how their environment has impacted them—perhaps they hail from a war-torn region, a wealthy city, or a mystical forest.
+- Mention significant experiences or history that have shaped them.
+- Describe how their environment has impacted them. For example, they may hail from a war-torn region, a wealthy city, or a mystical forest.
 - Outline their main objectives or what drives them, such as seeking revenge, knowledge, or redemption.
 Your goal should be to create the most fascinating breadth of possible characters that would fit the above combination of places.
 Important:

@@ -1,8 +1,8 @@
 {
   "npcmmel": [
     "MALE",
-    "ADULT",
-    "CONFIDENT",
+    "YOUNG ADULT/ADULT",
+    "CONFIDENT/DETERMINED",
     "MODERATE",
     "NEUTRAL",
     "NORMAL VOLUME",
@@ -13,7 +13,7 @@
   ],
   "npcmlucasmiller": [
     "MALE",
-    "ADULT",
+    "YOUNG ADULT/ADULT",
     "CALM",
     "FAST",
     "NEUTRAL",
@@ -25,7 +25,7 @@
   ],
   "robotmsnanny": [
     "FEMALE",
-    "ADULT",
+    "YOUNG ADULT/ADULT",
     "CALM",
     "MODERATE",
     "SMOOTH",
@@ -37,7 +37,7 @@
   ],
   "npcma951": [
     "MALE",
-    "ADULT",
+    "YOUNG ADULT/ADULT",
     "ANXIOUS/FRIGHTENED",
     "SLOW",
     "CASUAL",
@@ -49,7 +49,7 @@
   ],
   "npcfphyllisdaily": [
     "FEMALE",
-    "ADULT",
+    "YOUNG ADULT/ADULT",
     "SLOW",
     "COLD",
     "CALM",
@@ -73,7 +73,7 @@
   ],
   "femaleyoungeager": [
     "FEMALE",
-    "ADULT",
+    "YOUNG ADULT/ADULT",
     "HOPEFUL",
     "FAST",
     "WARM",
@@ -86,7 +86,7 @@
   "femalevampire": [
     "FEMALE",
     "MIDDLE-AGED",
-    "CONFIDENT",
+    "CONFIDENT/DETERMINED",
     "MODERATE",
     "NORMAL VOLUME",
     "AUTHORITATIVE",
@@ -97,7 +97,7 @@
   ],
   "femalekhajiit": [
     "FEMALE",
-    "ADULT",
+    "YOUNG ADULT/ADULT",
     "CALM",
     "MODERATE",
     "NEUTRAL",
@@ -109,7 +109,7 @@
   ],
   "femaleuniqueghost": [
     "FEMALE",
-    "ADULT",
+    "YOUNG ADULT/ADULT",
     "SAD/MELANCHOLIC",
     "MODERATE",
     "NEUTRAL",
@@ -121,7 +121,7 @@
   ],
   "femaleghoul": [
     "FEMALE",
-    "ADULT",
+    "YOUNG ADULT/ADULT",
     "ANGRY/AGGRESSIVE",
     "MODERATE",
     "NEUTRAL",
@@ -133,7 +133,7 @@
   ],
   "femaleboston": [
     "FEMALE",
-    "ADULT",
+    "YOUNG ADULT/ADULT",
     "CALM",
     "MODERATE",
     "SMOOTH",
@@ -145,8 +145,8 @@
   ],
   "npcfcolette": [
     "FEMALE",
-    "ADULT",
-    "CONFIDENT",
+    "YOUNG ADULT/ADULT",
+    "CONFIDENT/DETERMINED",
     "MODERATE",
     "NEUTRAL",
     "NORMAL VOLUME",
@@ -157,8 +157,8 @@
   ],
   "florentius": [
     "MALE",
-    "ADULT",
-    "CONFIDENT",
+    "YOUNG ADULT/ADULT",
+    "CONFIDENT/DETERMINED",
     "MODERATE",
     "NEUTRAL",
     "NORMAL VOLUME",
@@ -169,7 +169,7 @@
   ],
   "npcmstorytimesimon": [
     "MALE",
-    "ADULT",
+    "YOUNG ADULT/ADULT",
     "ANXIOUS/FRIGHTENED",
     "SLOW",
     "NEUTRAL",
@@ -181,7 +181,7 @@
   ],
   "modyn": [
     "MALE",
-    "ADULT",
+    "YOUNG ADULT/ADULT",
     "ANGRY/AGGRESSIVE",
     "MODERATE",
     "NEUTRAL",
@@ -193,7 +193,7 @@
   ],
   "crcat": [
     "MALE",
-    "ADULT",
+    "YOUNG ADULT/ADULT",
     "ANGRY/AGGRESSIVE",
     "SLOW",
     "NEUTRAL",
@@ -205,7 +205,7 @@
   ],
   "npcfsheila": [
     "FEMALE",
-    "ADULT",
+    "YOUNG ADULT/ADULT",
     "ANXIOUS/FRIGHTENED",
     "MODERATE",
     "NEUTRAL",
@@ -229,7 +229,7 @@
   ],
   "npcfpriscillapenske": [
     "FEMALE",
-    "ADULT",
+    "YOUNG ADULT/ADULT",
     "ANXIOUS/FRIGHTENED",
     "FAST",
     "NEUTRAL",
@@ -241,8 +241,8 @@
   ],
   "npcfclairhutchins": [
     "FEMALE",
-    "ADULT",
-    "CONFIDENT",
+    "YOUNG ADULT/ADULT",
+    "CONFIDENT/DETERMINED",
     "MODERATE",
     "NORMAL VOLUME",
     "NEUTRAL",
@@ -253,7 +253,7 @@
   ],
   "npcfgeneva": [
     "FEMALE",
-    "ADULT",
+    "YOUNG ADULT/ADULT",
     "CALM",
     "SLOW",
     "NEUTRAL",
@@ -265,8 +265,8 @@
   ],
   "npcfpolly": [
     "FEMALE",
-    "ADULT",
-    "CONFIDENT",
+    "YOUNG ADULT/ADULT",
+    "CONFIDENT/DETERMINED",
     "FAST",
     "NEUTRAL",
     "NORMAL VOLUME",
@@ -277,7 +277,7 @@
   ],
   "npcfkatherinepinn": [
     "FEMALE",
-    "ADULT",
+    "YOUNG ADULT/ADULT",
     "ANXIOUS/FRIGHTENED",
     "FAST",
     "NEUTRAL",
@@ -289,8 +289,8 @@
   ],
   "hagraven": [
     "FEMALE",
-    "ADULT",
-    "CONFIDENT",
+    "YOUNG ADULT/ADULT",
+    "CONFIDENT/DETERMINED",
     "NEUTRAL",
     "SLOW",
     "SOFT-SPOKEN/QUIET",
@@ -301,7 +301,7 @@
   ],
   "maledarkelf": [
     "MALE",
-    "ADULT",
+    "YOUNG ADULT/ADULT",
     "STOIC",
     "NEUTRAL",
     "MODERATE",
@@ -337,7 +337,7 @@
   ],
   "mq203memorya_kelloggchildvoice": [
     "MALE",
-    "ADULT",
+    "YOUNG ADULT/ADULT",
     "SAD/MELANCHOLIC",
     "SLOW",
     "NORMAL VOLUME",
@@ -349,8 +349,8 @@
   ],
   "npcmjacobforsythe": [
     "MALE",
-    "ADULT",
-    "CONFIDENT",
+    "YOUNG ADULT/ADULT",
+    "CONFIDENT/DETERMINED",
     "SLOW",
     "LOUD",
     "SMOOTH",
@@ -361,7 +361,7 @@
   ],
   "molagbal": [
     "MALE",
-    "ADULT",
+    "YOUNG ADULT/ADULT",
     "ANGRY/AGGRESSIVE",
     "MODERATE",
     "NORMAL VOLUME",
@@ -373,7 +373,7 @@
   ],
   "npcmmaxloken": [
     "MALE",
-    "ADULT",
+    "YOUNG ADULT/ADULT",
     "EXCITED",
     "MODERATE",
     "LOUD",
@@ -386,7 +386,7 @@
   "npcfmarleneglass": [
     "FEMALE",
     "TEENAGE",
-    "CONFIDENT",
+    "CONFIDENT/DETERMINED",
     "MODERATE",
     "NORMAL VOLUME",
     "SMOOTH",
@@ -397,7 +397,7 @@
   ],
   "galmar": [
     "MALE",
-    "ADULT",
+    "YOUNG ADULT/ADULT",
     "ANGRY/AGGRESSIVE",
     "MODERATE",
     "LOUD",
@@ -409,7 +409,7 @@
   ],
   "npcfpiper": [
     "FEMALE",
-    "ADULT",
+    "YOUNG ADULT/ADULT",
     "ANXIOUS/FRIGHTENED",
     "MODERATE",
     "NORMAL VOLUME",
@@ -422,7 +422,7 @@
   "maven": [
     "FEMALE",
     "MIDDLE-AGED",
-    "CONFIDENT",
+    "CONFIDENT/DETERMINED",
     "MODERATE",
     "NORMAL VOLUME",
     "SMOOTH",
@@ -440,13 +440,13 @@
     "SMOOTH",
     "WARM",
     "CASUAL",
-    "ADVENTUROUS",
+    "ADVENTUROUS/DRIVEN",
     "NO SPECIAL EFFECTS"
   ],
   "robotsentrybot": [
     "MALE",
-    "ADULT",
-    "CONFIDENT",
+    "YOUNG ADULT/ADULT",
+    "CONFIDENT/DETERMINED",
     "SLOW",
     "LOUD",
     "METALLIC/MECHANICAL",

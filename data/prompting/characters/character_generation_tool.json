@@ -85,52 +85,52 @@
         "voice_gender": {
           "type": "string",
           "enum": null,
-          "description": "The fitting gender for the voice this character would have."
+          "description": "The fitting gender for the voice this character would have. Choose among the provided options."
         },
         "voice_age": {
           "type": "string",
           "enum": null,
-          "description": "The fitting age for the voice this character would have."
+          "description": "The fitting age for the voice this character would have. Choose among the provided options."
         },
         "voice_emotion": {
           "type": "string",
           "enum": null,
-          "description": "The fitting main emotion for the voice this character would have."
+          "description": "The fitting main emotion for the voice this character would have. Choose among the provided options."
         },
         "voice_tempo": {
           "type": "string",
           "enum": null,
-          "description": "The fitting tempo for the voice this character would have."
+          "description": "The fitting tempo for the voice this character would have. Choose among the provided options."
         },
         "voice_volume": {
           "type": "string",
           "enum": null,
-          "description": "The fitting volume for the voice this character would have."
+          "description": "The fitting volume for the voice this character would have. Choose among the provided options."
         },
         "voice_texture": {
           "type": "string",
           "enum": null,
-          "description": "The fitting texture for the voice this character would have."
+          "description": "The fitting texture for the voice this character would have. Choose among the provided options."
         },
         "voice_tone": {
           "type": "string",
           "enum": null,
-          "description": "The fitting tone for the voice this character would have."
+          "description": "The fitting tone for the voice this character would have. Choose among the provided options."
         },
         "voice_style": {
           "type": "string",
           "enum": null,
-          "description": "The fitting style for the voice this character would have."
+          "description": "The fitting style for the voice this character would have. Choose among the provided options."
         },
         "voice_personality": {
           "type": "string",
           "enum": null,
-          "description": "The fitting personality for the voice this character would have."
+          "description": "The fitting personality for the voice this character would have. Choose among the provided options."
         },
         "voice_special_effects": {
           "type": "string",
           "enum": null,
-          "description": "The fitting special effects for the voice this character would have."
+          "description": "The fitting special effects for the voice this character would have. Choose among the provided options."
         }
       },
       "required": [
