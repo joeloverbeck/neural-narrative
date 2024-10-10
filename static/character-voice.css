@@ -1,0 +1,194 @@
+/* character-voice.css */
+
+.tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 800px;
+    margin: 0 auto 20px auto;
+}
+
+.tags-container label {
+    margin: 5px;
+    font-size: 16px;
+}
+
+.tags-container input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+.assigned-voice-model h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.select-voice-model-form select {
+    width: 100%;
+    max-width: 800px;
+    height: 300px;
+    margin: 0 auto 20px auto;
+    display: block;
+    padding: 10px;
+    font-size: 16px;
+}
+
+.select-voice-model-form {
+    text-align: center;
+}
+
+.filter-voice-models-form {
+    text-align: center;
+}
+
+.filter-voice-models-form .action-button {
+    margin-top: 20px;
+}
+
+.select-voice-model-form .action-button {
+    margin-top: 20px;
+}
+
+.message {
+    text-align: center;
+    color: green;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.categories-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+fieldset {
+    border: 1px solid #ccc;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+legend {
+    font-size: 18px;
+    font-weight: bold;
+    padding: 0 10px;
+}
+
+/* Adjust the tags container */
+.tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.tags-container label {
+    background-color: #e0e0e0;
+    border-radius: 20px;
+    padding: 5px 10px; /* Adjusted padding for smaller buttons */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.tags-container input[type="checkbox"] {
+    display: none;
+}
+
+.tags-container input[type="checkbox"]:checked + label {
+    background-color: #3f51b5;
+    color: #fff;
+}
+
+.voice-models-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    max-height: 600px; /* Adjust as needed */
+    overflow-y: auto;
+    margin: 20px auto;
+}
+
+.voice-model-card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 15px;
+    width: calc(33.333% - 20px); /* Three cards per row */
+    box-sizing: border-box;
+    position: relative;
+}
+
+/* Hide the radio input */
+.voice-model-card input[type="radio"] {
+    display: none;
+}
+
+/* Style the label */
+.voice-model-card label {
+    cursor: pointer;
+    display: block;
+    height: 80%;
+    border: 2px solid transparent; /* Add border for selection */
+    padding: 15px;
+    border-radius: 8px;
+    transition: border-color 0.3s, background-color 0.3s;
+    background-color: #fff;
+}
+
+/* Hover effect */
+.voice-model-card label:hover {
+    background-color: #f9f9f9;
+}
+
+
+/* Style when the radio input is checked */
+.voice-model-card input[type="radio"]:checked + label {
+    border-color: #3f51b5;
+    background-color: #e3f2fd; /* Light blue background when selected */
+}
+
+.voice-model-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.voice-model-header h3 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.play-sample-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #3f51b5;
+}
+
+.voice-model-tags {
+    margin-top: 10px;
+}
+
+.voice-model-tags .tag {
+    display: inline-block;
+    background-color: #e0e0e0;
+    color: #333;
+    border-radius: 15px;
+    padding: 5px 10px;
+    margin: 3px 5px 0 0;
+    font-size: 12px;
+}
+
+.content label{
+    width: auto;
+}
+
+@media (max-width: 800px) {
+    .voice-model-card {
+        width: calc(50% - 20px); /* Two cards per row */
+    }
+}
+
+@media (max-width: 500px) {
+    .voice-model-card {
+        width: 100%; /* One card per row */
+    }
+}
+

@@ -1,0 +1,43 @@
+/* static/story-hub.css */
+.story-hub-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.concepts-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+
+form {
+    margin-bottom: 20px;
+}
+
+form input[type="submit"] {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+
+.concept-form {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: none;
+}
+
+.fade-out {
+    opacity: 0;
+    transform: scale(0.95);
+}
+
+
+/* Adjust margin for content */
+.content .concepts-list {
+    margin-top: 15px;
+}

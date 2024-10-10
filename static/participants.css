@@ -1,0 +1,61 @@
+/* Container styles */
+.participants-container {
+    margin-top: 20px;
+}
+
+/* No characters message */
+.no-characters {
+    font-size: 18px;
+    color: #666;
+    text-align: center;
+    margin: 20px 0;
+}
+
+/* Form styles */
+.participants-form {
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* Style for the purpose label and input */
+.participants-form label {
+    display: block;
+    font-size: 18px;
+    color: #555;
+    margin: 20px auto 10px auto;
+    text-align: left;
+    width: 100%;
+    max-width: 600px;
+}
+
+.participants-form input[type="text"] {
+    display: block;
+    width: 100%;
+    max-width: 600px;
+    padding: 12px 15px;
+    margin: 0 auto 15px auto;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    font-size: 16px;
+    color: #333;
+    box-sizing: border-box;
+}
+
+.participants-form input[type="text"]:focus {
+    outline: none;
+    border-color: #45a049;
+    box-shadow: 0 0 5px rgba(69, 160, 73, 0.5);
+}
+
+.content label {
+    display: inline;
+    margin: 0 auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .participants-form input[type="text"] {
+        width: 100%;
+    }
+}

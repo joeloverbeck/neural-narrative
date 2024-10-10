@@ -241,5 +241,26 @@
     "DRAMATIC",
     "PARANOID",
     "NO SPECIAL EFFECTS"
+  ],
+  "hagraven": [
+    "FEMALE",
+    "ADULT",
+    "CONFIDENT",
+    "SLOW",
+    "SOFT-SPOKEN",
+    "GUTTURAL",
+    "INTENSE",
+    "VILLAINOUS",
+    "NO SPECIAL EFFECTS"
+  ],
+  "maledarkelf": [
+    "MALE",
+    "ADULT",
+    "STOIC",
+    "STEADY",
+    "GRAVELLY",
+    "FORMAL",
+    "NOBLE",
+    "NO SPECIAL EFFECTS"
   ]
 }
