@@ -36,6 +36,44 @@ class MatchingVoiceModelProvider:
             "voice_special_effects"
         )
 
+        # None of the voice attributes should be invalid.
+        if not voice_gender:
+            return MatchingVoiceModelProduct(
+                None, is_valid=False, error="Invalid voice_gender."
+            )
+        if not voice_age:
+            return MatchingVoiceModelProduct(
+                None, is_valid=False, error="Invalid voice_age."
+            )
+        if not voice_emotion:
+            return MatchingVoiceModelProduct(
+                None, is_valid=False, error="Invalid voice_emotion."
+            )
+        if not voice_tempo:
+            return MatchingVoiceModelProduct(
+                None, is_valid=False, error="Invalid voice_tempo."
+            )
+        if not voice_volume:
+            return MatchingVoiceModelProduct(
+                None, is_valid=False, error="Invalid voice_volume."
+            )
+        if not voice_texture:
+            return MatchingVoiceModelProduct(
+                None, is_valid=False, error="Invalid voice_texture."
+            )
+        if not voice_style:
+            return MatchingVoiceModelProduct(
+                None, is_valid=False, error="Invalid voice_style."
+            )
+        if not voice_personality:
+            return MatchingVoiceModelProduct(
+                None, is_valid=False, error="Invalid voice_personality."
+            )
+        if not voice_special_effects:
+            return MatchingVoiceModelProduct(
+                None, is_valid=False, error="Invalid voice_special_effects."
+            )
+
         # Initialize the list of possible speakers
         possible_voice_models = self._filesystem_manager.load_existing_or_new_json_file(
             VOICE_MODELS_FILE

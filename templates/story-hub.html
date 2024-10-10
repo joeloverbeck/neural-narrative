@@ -157,36 +157,9 @@ Story Hub
         </a>
     </div>
 </div>
+{% endblock %}
 
-<!-- JavaScript for the fade-out effect and collapsible sections -->
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Fade-out effect for items
-        const itemForms = document.querySelectorAll('.item-form');
-        itemForms.forEach(function(form) {
-            form.addEventListener('submit', function(event) {
-                event.preventDefault();
-                const itemButton = form.querySelector('.post-it');
-                itemButton.classList.add('fade-out');
-                setTimeout(function() {
-                    form.submit();
-                }, 500);
-            });
-        });
-
-        // Collapsible sections
-        const collapsibles = document.querySelectorAll('.collapsible');
-        collapsibles.forEach(function(collapsible) {
-            collapsible.addEventListener('click', function() {
-                this.classList.toggle('active');
-                const content = this.nextElementSibling;
-                if (content.style.display === 'block') {
-                    content.style.display = 'none';
-                } else {
-                    content.style.display = 'block';
-                }
-            });
-        });
-    });
-</script>
+{% block scripts %}
+<script src="{{ url_for('static', filename='collapsible.js') }}"></script>
+<script src="{{ url_for('static', filename='story-hub.js') }}"></script>
 {% endblock %}

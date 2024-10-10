@@ -79,25 +79,8 @@
     </div>
 
 </div> <!-- JavaScript for collapsible sections -->
-<script>
-    // Collapsible sections
-    const collapsibles = document.querySelectorAll('.collapsible');
-    collapsibles.forEach(function(collapsible) {
-        collapsible.addEventListener('click', function() {
-            this.classList.toggle('active');
-            const content = this.nextElementSibling;
-            if (content.style.display === 'block') {
-                content.style.display = 'none';
-            } else {
-                content.style.display = 'block';
-            }
-        });
+{% endblock %}
 
-        // On load: Display content for any collapsible that has 'active' class
-        if (collapsible.classList.contains('active')) {
-            const content = collapsible.nextElementSibling;
-            content.style.display = 'block'; // Show content if 'active' is already present
-        }
-    });
-</script>
+{% block scripts %}
+<script src="{{ url_for('static', filename='collapsible.js') }}"></script>
 {% endblock %}

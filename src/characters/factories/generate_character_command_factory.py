@@ -63,9 +63,7 @@ class GenerateCharacterCommandFactory:
                     self._playthrough_name,
                     self._produce_tool_response_strategy_factory,
                     AutomaticUserContentForCharacterGenerationFactory(),
-                ).create_character_generation_tool_response_provider(
-                    places_templates_parameter
-                ),
+                ).create_response_provider(places_templates_parameter),
                 self._store_generate_character_command_factory,
                 self._generate_character_image_command_factory,
                 place_character_at_current_place,
@@ -78,9 +76,7 @@ class GenerateCharacterCommandFactory:
                     self._playthrough_name,
                     self._produce_tool_response_strategy_factory,
                     PlayerGuidedUserContentForCharacterGenerationFactory(user_content),
-                ).create_character_generation_tool_response_provider(
-                    places_templates_parameter
-                ),
+                ).create_response_provider(places_templates_parameter),
                 self._store_generate_character_command_factory,
                 self._generate_character_image_command_factory,
                 place_character_at_current_place,

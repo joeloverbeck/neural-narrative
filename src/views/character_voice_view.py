@@ -1,8 +1,22 @@
-from flask import session, redirect, url_for, render_template, request
+from flask import session, redirect, url_for, render_template, request, flash
 from flask.views import MethodView
 
 from src.characters.characters_manager import CharactersManager
-from src.filesystem.filesystem_manager import FilesystemManager
+from src.constants import (
+    VOICE_GENDERS,
+    VOICE_AGES,
+    VOICE_EMOTIONS,
+    VOICE_TEMPOS,
+    VOICE_VOLUMES,
+    VOICE_TEXTURES,
+    VOICE_TONES,
+    VOICE_STYLES,
+    VOICE_PERSONALITIES,
+    VOICE_SPECIAL_EFFECTS,
+)
+from src.voices.algorithms.match_voice_data_to_voice_model_algorithm import (
+    MatchVoiceDataToVoiceModelAlgorithm,
+)
 from src.voices.voice_manager import VoiceManager
 
 
@@ -48,125 +62,16 @@ class CharacterVoiceView(MethodView):
 
         # Define categories and their tags
         categories_tags = {
-            "voice_gender": ["MALE", "FEMALE"],
-            "voice_age": [
-                "CHILDLIKE",
-                "TEENAGE",
-                "YOUNG ADULT",
-                "ADULT",
-                "MIDDLE-AGED",
-                "ELDERLY",
-            ],
-            "voice_emotion": [
-                "CALM",
-                "HAPPY",
-                "SAD",
-                "ANGRY",
-                "MENACING",
-                "NERVOUS",
-                "MELANCHOLIC",
-                "JOYFUL",
-                "CONFIDENT",
-                "ARROGANT",
-                "ANXIOUS",
-                "AGGRESSIVE",
-                "HOPEFUL",
-                "STOIC",
-                "FRIGHTENED",
-                "SURPRISED",
-                "PLAYFUL",
-                "EXCITED",
-                "RESIGNED",
-            ],
-            "voice_tempo": [
-                "FAST-PACED",
-                "SLOW",
-                "STEADY",
-                "DRAWLING",
-                "RAPID-FIRE",
-            ],
-            "voice_volume": [
-                "WHISPERING",
-                "SOFT-SPOKEN",
-                "LOUD",
-                "BOOMING",
-                "QUIET",
-            ],
-            "voice_texture": [
-                "GRAVELLY",
-                "SMOOTH",
-                "RASPY",
-                "NASAL",
-                "CRISP",
-                "MUFFLED",
-                "ETHEREAL",
-                "WHISPERY",
-                "CLEAR",
-                "BREATHLESS",
-                "HOARSE",
-                "WARM",
-                "COLD",
-                "METALLIC",
-                "MECHANICAL",
-                "AIRY",
-                "GUTTURAL",
-            ],
-            "voice_style": [
-                "FORMAL",
-                "CASUAL",
-                "INTENSE",
-                "DRAMATIC",
-                "MONOTONE",
-                "FLIRTATIOUS",
-                "SARCASTIC",
-                "HUMOROUS",
-                "MELODIC",
-                "AUTHORITATIVE",
-                "NARRATIVE",
-                "INSTRUCTIONAL",
-            ],
-            "voice_personality": [
-                "INNOCENT",
-                "YOUTHFUL",
-                "SULTRY",
-                "HEROIC",
-                "VILLAINOUS",
-                "NOBLE",
-                "MYSTERIOUS",
-                "SLY",
-                "CHARMING",
-                "ENERGETIC",
-                "WITTY",
-                "CYNICAL",
-                "KIND",
-                "CALCULATING",
-                "WISE",
-                "ENTHUSIASTIC",
-                "MANIPULATIVE",
-                "ECCENTRIC",
-                "PHILOSOPHICAL",
-                "ADVENTUROUS",
-                "SKEPTICAL",
-                "BRAVE",
-                "SCHEMING",
-                "NAIVE",
-                "OPTIMISTIC",
-                "PESSIMISTIC",
-                "PARANOID",
-            ],
-            "voice_special_effects": [
-                "NO SPECIAL EFFECTS",
-                "ROBOTIC",
-                "ALIEN",
-                "DEMON-LIKE",
-                "MAGICAL",
-                "DISTORTED",
-                "ECHOED",
-                "GHOSTLY",
-                "FUTURISTIC",
-                "RETRO",
-                "SYNTHESIZED",
-            ],
+            "voice_gender": VOICE_GENDERS,
+            "voice_age": VOICE_AGES,
+            "voice_emotion": VOICE_EMOTIONS,
+            "voice_tempo": VOICE_TEMPOS,
+            "voice_volume": VOICE_VOLUMES,
+            "voice_texture": VOICE_TEXTURES,
+            "voice_tone": VOICE_TONES,
+            "voice_style": VOICE_STYLES,
+            "voice_personality": VOICE_PERSONALITIES,
+            "voice_special_effects": VOICE_SPECIAL_EFFECTS,
         }
 
         return render_template(
@@ -185,29 +90,84 @@ class CharacterVoiceView(MethodView):
         if not playthrough_name:
             return redirect(url_for("index"))
 
-        character_identifier = request.form.get("character_identifier")
-        new_voice_model = request.form.get("voice_model")
+        characters_manager = CharactersManager(playthrough_name)
 
-        print(f"Will assign voice model: {new_voice_model} to {character_identifier}")
+        # Determine which form was submitted
+        if "match_voice_model" in request.form:
+            # Handle "Match Voice Model" form submission
+            character_identifier = request.form.get("character_identifier")
+            if not character_identifier:
+                flash("Character identifier is missing.", "error")
+                return redirect(url_for("character-voice"))
 
-        if character_identifier and new_voice_model:
-            # Load character data
-            filesystem_manager = FilesystemManager()
+            try:
+                # Load character data
+                character_data = characters_manager.load_character_data(
+                    character_identifier
+                )
 
-            characters_file = filesystem_manager.load_existing_or_new_json_file(
-                filesystem_manager.get_file_path_to_characters_file(playthrough_name)
+                # Extract voice data required for matching
+
+                # Use the matching algorithm to find a suitable voice model
+                matched_voice_model = MatchVoiceDataToVoiceModelAlgorithm.match(
+                    character_data
+                )
+
+                # Assign the matched voice model to the character
+                characters_manager.save_character_data(
+                    character_identifier, {"voice_model": matched_voice_model}
+                )
+
+                # Set a success message
+                session["voice_model_changed_message"] = (
+                    f"Voice model '{matched_voice_model}' matched and assigned successfully."
+                )
+
+            except KeyError as e:
+                flash(f"Error: {str(e)}", "error")
+            except ValueError as e:
+                flash(f"Error: {str(e)}", "error")
+            except Exception as e:
+                flash(f"An unexpected error occurred: {str(e)}", "error")
+
+            return redirect(
+                url_for("character-voice", character_identifier=character_identifier)
             )
 
-            characters_file[character_identifier]["voice_model"] = new_voice_model
+        elif "voice_model" in request.form:
+            # Handle "Change Voice Model" form submission
+            character_identifier = request.form.get("character_identifier")
+            new_voice_model = request.form.get("voice_model")
 
-            filesystem_manager.save_json_file(
-                characters_file,
-                filesystem_manager.get_file_path_to_characters_file(playthrough_name),
-            )
+            if character_identifier and new_voice_model:
+                try:
+                    # Assign the new voice model to the character
+                    characters_manager.save_character_data(
+                        character_identifier, {"voice_model": new_voice_model}
+                    )
 
-            # Add a success message to the session
-            session["voice_model_changed_message"] = "Voice model updated successfully."
+                    # Add a success message to the session
+                    session["voice_model_changed_message"] = (
+                        "Voice model updated successfully."
+                    )
 
-        return redirect(
-            url_for("character-voice", character_identifier=character_identifier)
-        )
+                except KeyError as e:
+                    flash(f"Error: {str(e)}", "error")
+                except ValueError as e:
+                    flash(f"Error: {str(e)}", "error")
+                except Exception as e:
+                    flash(f"An unexpected error occurred: {str(e)}", "error")
+
+                return redirect(
+                    url_for(
+                        "character-voice", character_identifier=character_identifier
+                    )
+                )
+            else:
+                flash("Character identifier or voice model is missing.", "error")
+                return redirect(url_for("character-voice"))
+
+        else:
+            # Unknown form submission
+            flash("Invalid form submission.", "error")
+            return redirect(url_for("character-voice"))

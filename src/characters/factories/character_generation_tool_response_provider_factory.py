@@ -28,7 +28,7 @@ class CharacterGenerationToolResponseProviderFactory:
             user_content_for_character_generation_factory
         )
 
-    def create_character_generation_tool_response_provider(
+    def create_response_provider(
         self, places_templates_parameter: PlacesTemplatesParameter
     ):
         return CharacterGenerationToolResponseProvider(
