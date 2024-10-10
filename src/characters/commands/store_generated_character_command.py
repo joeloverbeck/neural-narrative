@@ -69,6 +69,7 @@ class StoreGeneratedCharacterCommand(Command):
             "voice_tempo": self._character_data["voice_tempo"],
             "voice_volume": self._character_data["voice_volume"],
             "voice_texture": self._character_data["voice_texture"],
+            "voice_tone": self._character_data["voice_tone"],
             "voice_style": self._character_data["voice_style"],
             "voice_personality": self._character_data["voice_personality"],
             "voice_special_effects": self._character_data["voice_special_effects"],

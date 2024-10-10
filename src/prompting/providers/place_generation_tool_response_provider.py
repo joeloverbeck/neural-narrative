@@ -11,6 +11,7 @@ from src.constants import (
     LOCATIONS_TEMPLATES_FILE,
     AREAS_TEMPLATES_FILE,
     REGIONS_TEMPLATES_FILE,
+    LOCATION_TYPES,
 )
 from src.enums import TemplateType
 from src.filesystem.filesystem_manager import FilesystemManager
@@ -44,6 +45,25 @@ class PlaceGenerationToolResponseProvider(
         self._place_identifier = place_identifier
         self._template_type = template_type
         self._notion = notion
+
+    def _read_and_format_tool_file(self, tool_file: str) -> dict:
+        template_copy = self._filesystem_manager.load_existing_or_new_json_file(
+            LOCATION_GENERATION_TOOL_FILE
+        )
+
+        try:
+            template_copy["function"]["parameters"]["properties"]["type"][
+                "enum"
+            ] = LOCATION_TYPES
+        except Exception as e:
+            raise ValueError(
+                f"Was unable to format the location generation tool file: {e}"
+            )
+
+        return template_copy
+
+    def _read_tool_file(self, tool_file: str) -> dict:
+        return self._read_and_format_tool_file(tool_file)
 
     def _get_template_type_data(self) -> Optional[TemplateTypeData]:
         data_mapping: Dict[TemplateType, TemplateTypeData] = {
@@ -84,6 +104,7 @@ class PlaceGenerationToolResponseProvider(
                 template_data.current_place_templates_file_path
             )
         )
+
         return {
             "father_place_name": self._place_identifier,
             "father_place_description": place_template["description"],

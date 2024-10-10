@@ -1,8 +1,12 @@
 import io
+import logging
+import time
 
 import requests
 
 from src.voices.products.voice_line_product import VoiceLineProduct
+
+logger = logging.getLogger(__name__)
 
 
 class VoiceLineFactory:
@@ -14,7 +18,9 @@ class VoiceLineFactory:
         if not xtts_url:
             raise ValueError("xtts_url can't be empty.")
 
-        self._text = text
+        # I read on the Mantella GitHub that they were adding spaces at both ends.
+        # Maybe this helps to avoid getting any end clipped in the final voice line.
+        self._text = " " + text + " "
         self._voice_model = voice_model
         self._xtts_url = xtts_url
 
@@ -26,12 +32,21 @@ class VoiceLineFactory:
             "accent": "en",
         }
 
+        # Let's measure how much it takes.
+        start_time = time.time()
+
         # Call the TTS service
         response = requests.post(self._xtts_url, json=payload)
 
         if response and response.status_code == 200:
             # Convert and save the audio file
-            return VoiceLineProduct(io.BytesIO(response.content), is_valid=True)
+            audio_data = VoiceLineProduct(io.BytesIO(response.content), is_valid=True)
+
+            logging.info(
+                f"The voice data took {time.time() - start_time} seconds to generate."
+            )
+
+            return audio_data
         else:
             return VoiceLineProduct(
                 None,

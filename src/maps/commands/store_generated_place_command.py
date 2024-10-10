@@ -70,6 +70,7 @@ class StoreGeneratedPlaceCommand(Command):
                     "categories": [
                         category.lower() for category in self._place_data["categories"]
                     ],
+                    "type": self._place_data["type"],
                 }
             }
         )

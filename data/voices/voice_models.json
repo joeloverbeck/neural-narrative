@@ -382,5 +382,77 @@
     "INSTRUCTIONAL",
     "OPTIMISTIC",
     "NO SPECIAL EFFECTS"
+  ],
+  "npcfmarleneglass": [
+    "FEMALE",
+    "TEENAGE",
+    "CONFIDENT",
+    "MODERATE",
+    "NORMAL VOLUME",
+    "SMOOTH",
+    "AUTHORITATIVE",
+    "INSTRUCTIONAL",
+    "HEROIC/BRAVE",
+    "NO SPECIAL EFFECTS"
+  ],
+  "galmar": [
+    "MALE",
+    "ADULT",
+    "ANGRY/AGGRESSIVE",
+    "MODERATE",
+    "LOUD",
+    "GRAVELLY/RASPY",
+    "AUTHORITATIVE",
+    "INTENSE/DRAMATIC",
+    "HEROIC/BRAVE",
+    "NO SPECIAL EFFECTS"
+  ],
+  "npcfpiper": [
+    "FEMALE",
+    "ADULT",
+    "ANXIOUS/FRIGHTENED",
+    "MODERATE",
+    "NORMAL VOLUME",
+    "SMOOTH",
+    "WARM",
+    "INTENSE/DRAMATIC",
+    "SKEPTICAL",
+    "NO SPECIAL EFFECTS"
+  ],
+  "maven": [
+    "FEMALE",
+    "MIDDLE-AGED",
+    "CONFIDENT",
+    "MODERATE",
+    "NORMAL VOLUME",
+    "SMOOTH",
+    "AUTHORITATIVE",
+    "INTENSE/DRAMATIC",
+    "MANIPULATIVE/SCHEMING",
+    "NO SPECIAL EFFECTS"
+  ],
+  "npcfnat": [
+    "FEMALE",
+    "CHILDLIKE",
+    "EXCITED",
+    "MODERATE",
+    "NORMAL VOLUME",
+    "SMOOTH",
+    "WARM",
+    "CASUAL",
+    "ADVENTUROUS",
+    "NO SPECIAL EFFECTS"
+  ],
+  "robotsentrybot": [
+    "MALE",
+    "ADULT",
+    "CONFIDENT",
+    "SLOW",
+    "LOUD",
+    "METALLIC/MECHANICAL",
+    "NEUTRAL",
+    "NARRATIVE",
+    "PARANOID",
+    "ROBOTIC/SYNTHESIZED"
   ]
 }

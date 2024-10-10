@@ -1,6 +1,6 @@
 Given the following area, named {father_place_name}:
 {father_place_description}
-You are tasked with coming up with a location that would fit the area of {father_place_name}. A location is understood as an extent of space the size of a building or a cave.
+You are tasked with coming up with a location that would fit the area of {father_place_name}. A location is understood as a concrete place like a bar, a hospital, a forge, a cave, a labyrinth, a woods, etc.
 Your description of the location should be at the most five paragraphs long, and it should contain the following information:
 - Consider what can be sensed: sight, sound, smell, touch, taste.
 - Creatures, entities, or people who live in or protect the location. The presence of creatures or characters is essential for drama and interaction.

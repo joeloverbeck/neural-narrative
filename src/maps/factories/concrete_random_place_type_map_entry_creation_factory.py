@@ -105,7 +105,9 @@ class ConcreteRandomPlaceTypeMapEntryCreationFactory(
         templates = self._filesystem_manager.load_existing_or_new_json_file(
             template_file_path
         )
+
         used_templates = self._map_manager.get_place_templates_of_type(self._place_type)
+
         return {
             name: data for name, data in templates.items() if name not in used_templates
         }

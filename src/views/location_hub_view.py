@@ -31,7 +31,9 @@ class LocationHubView(MethodView):
         if not playthrough_name:
             return redirect(url_for("index"))
 
-        current_place = MapManager(playthrough_name).get_current_place_template()
+        map_manager = MapManager(playthrough_name)
+        current_place = map_manager.get_current_place_template()
+        current_place_type = map_manager.get_current_place_type()
         characters_manager = CharactersManager(playthrough_name)
         characters_at_current_place = (
             characters_manager.get_characters_at_current_place()
@@ -41,16 +43,20 @@ class LocationHubView(MethodView):
         web_service.format_image_urls_of_characters(characters_at_current_place)
         followers = characters_manager.get_followers()
         web_service.format_image_urls_of_characters(followers)
-        map_manager = MapManager(playthrough_name)
-        current_place_type = map_manager.get_current_place_type()
+
+        exploration_result_message = session.get("no_available_templates", None)
+
         locations_present = None
         cardinal_connections = None
-        exploration_result_message = session.get("no_available_templates", None)
+        available_locations = []
+
+        can_search_for_location = False  # New flag to indicate if searching is possible
+        available_location_types = []
 
         if current_place_type == PlaceType.AREA:
             playthrough_manager = PlaythroughManager(playthrough_name)
 
-            # Load locations
+            # Load locations currently present in the area
             locations_present = map_manager.get_locations_in_area(
                 playthrough_manager.get_current_place_identifier()
             )
@@ -60,7 +66,12 @@ class LocationHubView(MethodView):
                 playthrough_manager.get_current_place_identifier()
             )
 
-            # Get current time
+            # Determine if there are available location types for searching
+            available_location_types = map_manager.get_available_location_types()
+            if available_location_types:
+                can_search_for_location = True
+
+        # Get current time
         time_manager = TimeManager(playthrough_name)
         current_hour = time_manager.get_hour()
         current_time_of_day = time_manager.get_time_of_the_day()
@@ -80,6 +91,8 @@ class LocationHubView(MethodView):
             current_hour=current_hour,
             current_time_of_day=current_time_of_day,
             exploration_result_message=exploration_result_message,
+            location_types=available_location_types,  # Available types for searching
+            can_search_for_location=can_search_for_location,  # New flag
         )
 
     def post(self):
@@ -172,11 +185,14 @@ class LocationHubView(MethodView):
 
     @staticmethod
     def handle_search_for_location(playthrough_name):
+        location_type = request.form.get("location_type")
         map_manager = MapManager(playthrough_name)
         father_template = map_manager.get_current_place_template()
 
         random_place_template_based_on_categories_factory = (
-            ConcreteRandomPlaceTemplateBasedOnCategoriesFactory(playthrough_name)
+            ConcreteRandomPlaceTemplateBasedOnCategoriesFactory(
+                playthrough_name, location_type
+            )
         )
 
         playthrough_manager = PlaythroughManager(playthrough_name)

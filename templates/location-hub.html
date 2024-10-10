@@ -40,71 +40,113 @@
             </div>
             {% endif %}
 
-            <div class="buttons">
-                <form method="post" class="action-form">
-                    <input name="action" type="hidden" value="Describe Place">
-                    <button type="submit" class="action-button">
-                        <i class="fas fa-info-circle"></i> Describe current place
-                    </button>
-                </form>
+            <!-- Begin grouping of buttons -->
 
-                {% if current_place_type.value == "location" %}
-                <form method="post" class="action-form">
-                    <input name="action" type="hidden" value="Exit Location">
-                    <button type="submit" class="action-button">
-                        <i class="fas fa-sign-out-alt"></i> Exit current place
-                    </button>
-                </form>
-                {% endif %}
-
-                {% if current_place_type.value == "area" %}
-                <form method="post" class="action-form">
-                    <input name="action" type="hidden" value="Search For Location">
-                    <button type="submit" class="action-button">
-                        <i class="fas fa-search-location"></i> Search for location
-                    </button>
-                </form>
-                {% endif %}
-
-                {% if locations_present %}
-                {% for location in locations_present %}
-                <form method="post" class="action-form">
-                    <input name="action" type="hidden" value="Visit Location">
-                    <input name="location_identifier" type="hidden" value="{{ location.identifier }}">
-                    <button type="submit" class="action-button">
-                        <i class="fas fa-door-open"></i> Visit {{ location.place_template }}
-                    </button>
-                </form>
-                {% endfor %}
-                {% endif %}
-
-                {% if cardinal_connections %}
-                {% for key, value in cardinal_connections.items() %}
-                {% if not value %}
-                <form method="post" class="action-form">
-                    <input name="action" type="hidden" value="Explore Cardinal Direction">
-                    <input name="cardinal_direction" type="hidden" value="{{ key }}">
-                    <button type="submit" class="action-button">
-                        <i class="fas fa-compass"></i> Explore {{ key }}
-                    </button>
-                </form>
-                {% endif %}
-                {% if value %}
-                <form method="post" class="action-form">
-                    <input name="action" type="hidden" value="Travel In Cardinal Direction">
-                    <input name="destination_identifier" type="hidden" value="{{ value.get('identifier') }}">
-                    <button type="submit" class="action-button">
-                        <i class="fas fa-location-arrow"></i> Travel {{ key }} to {{ value.get('place_template') }}
-                    </button>
-                </form>
-                {% endif %}
-                {% endfor %}
-                {% endif %}
+            <!-- Place Description Actions -->
+            <div class="action-group">
+                <h2 class="action-group-title">Place Description</h2>
+                <div class="buttons">
+                    <form method="post" class="action-form">
+                        <input name="action" type="hidden" value="Describe Place">
+                        <button type="submit" class="action-button">
+                            <i class="fas fa-info-circle"></i> Describe current place
+                        </button>
+                    </form>
+                </div>
             </div>
+
+            <!-- Location Actions -->
+            {% if current_place_type.value == "area" %}
+            <div class="action-group">
+                <h2 class="action-group-title">Location Actions</h2>
+                <div class="buttons">
+
+                    <!-- Search Location Group -->
+                    <div class="search-location-group">
+                        {% if can_search_for_location %}
+                        <form method="post" class="action-form search-location-form">
+                            <input name="action" type="hidden" value="Search For Location">
+                            <label for="location_type">Choose Location Type:</label>
+                            <select name="location_type" id="location_type">
+                                <option value="" selected>Any Type</option>
+                                {% for location_type in location_types %}
+                                <option value="{{ location_type }}">{{ location_type }}</option>
+                                {% endfor %}
+                            </select>
+                            <button type="submit" class="action-button">
+                                <i class="fas fa-search-location"></i> Search for location
+                            </button>
+                        </form>
+                        {% else %}
+                        <form method="post" class="action-form search-location-form">
+                            <input name="action" type="hidden" value="Search For Location">
+                            <label for="location_type">Choose Location Type:</label>
+                            <select name="location_type" id="location_type" disabled>
+                                <option value="" selected>Any Type</option>
+                                <!-- Optionally, you can list types but disable them -->
+                            </select>
+                            <button type="submit" class="action-button" disabled>
+                                <i class="fas fa-search-location"></i> Search for location
+                            </button>
+                        </form>
+                        <p class="info-message">
+                            No available location types.
+                        </p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Visit Location Group -->
+                    <div class="visit-location-group">
+                        {% if locations_present %}
+                        {% for location in locations_present %}
+                        <form method="post" class="action-form visit-location-form">
+                            <input name="action" type="hidden" value="Visit Location">
+                            <input name="location_identifier" type="hidden" value="{{ location.identifier }}">
+                            <button type="submit" class="action-button">
+                                <i class="fas fa-door-open"></i> Visit {{ location.place_template }}
+                            </button>
+                        </form>
+                        {% endfor %}
+                        {% endif %}
+                    </div>
+
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Area Actions -->
+            <div class="action-group">
+                <h2 class="action-group-title">Area Actions</h2>
+                <div class="buttons">
+                    {% if cardinal_connections %}
+                    {% for key, value in cardinal_connections.items() %}
+                    {% if not value %}
+                    <form method="post" class="action-form">
+                        <input name="action" type="hidden" value="Explore Cardinal Direction">
+                        <input name="cardinal_direction" type="hidden" value="{{ key }}">
+                        <button type="submit" class="action-button">
+                            <i class="fas fa-compass"></i> Explore {{ key }}
+                        </button>
+                    </form>
+                    {% endif %}
+                    {% if value %}
+                    <form method="post" class="action-form">
+                        <input name="action" type="hidden" value="Travel In Cardinal Direction">
+                        <input name="destination_identifier" type="hidden" value="{{ value.get('identifier') }}">
+                        <button type="submit" class="action-button">
+                            <i class="fas fa-location-arrow"></i> Travel {{ key }} to {{ value.get('place_template') }}
+                        </button>
+                    </form>
+                    {% endif %}
+                    {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+            <!-- End of action groups -->
         </div>
     </div>
 
-    <!-- General Actions Section -->
+    <!-- General Actions Section remains unchanged -->
     <div class="collapsible-section">
         <button class="collapsible">
             <i class="fas fa-globe"></i> General Actions
@@ -203,10 +245,9 @@
             <i class="fas fa-bolt"></i> Actions
         </a>
     </div>
-</div>
-{% endblock %}
-
+</div> {% endblock %}
 {% block scripts %}
+
 <script src="{{ url_for('static', filename='collapsible.js') }}"></script>
 <script src="{{ url_for('static', filename='audio-playback.js') }}"></script>
 <script src="{{ url_for('static', filename='location-hub.js') }}"></script>
