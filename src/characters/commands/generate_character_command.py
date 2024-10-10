@@ -60,8 +60,6 @@ class GenerateCharacterCommand(Command):
             )
             return
 
-        print(f"Produced character: {llm_tool_response_product.get()}")
-
         self._store_generate_character_command_factory.create_store_generated_character_command(
             llm_tool_response_product.get()
         ).execute()

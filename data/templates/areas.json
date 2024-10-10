@@ -138,5 +138,12 @@
       "high fantasy",
       "post-apocalyptic"
     ]
+  },
+  "Providence": {
+    "description": "Providence, a bustling city nestled along the jagged coastline, serves as the intellectual heart of the region. At its core lies the prestigious university, a renowned institution dedicated to the study of otherworldly horrors that draws scholars and researchers from across the globe. The city's architecture is a blend of colonial and Victorian influences, with the university's imposing Gothic buildings dominating the skyline. The streets are adorned with art and sculptures that reflect the unsettling motifs inspired by the horrors studied within the university's walls.\nThe city's economy thrives on the back of the university, which attracts substantial funding and resources, as well as the thriving fishing industry supported by the bustling harbor. This unique combination of intellectual pursuit and maritime trade shapes the cultural norms and traditions of Providence's diverse inhabitants. The constant influx of scholars and researchers contributes to the city's vibrant and ever-evolving character.\nDespite the uneasy peace that prevails in Providence, the city is not immune to the tensions simmering beneath the surface. Secretive cults and organizations seek to harness the power of otherworldly horrors for their own ends, posing a constant threat to the delicate balance maintained by the university and the democratic assembly that governs the city. The university maintains a well-equipped militia to protect against both human and supernatural threats, highlighting the importance of defense in this volatile environment.\nProvidence's strategic location and thriving intellectual community make it a key player in the global fight against the unknown. The alliances forged between the university and governments around the world serve to strengthen the city's position in this ongoing battle. As the tears in reality continue to widen and sightings of strange beasts and supernatural entities become more common, Providence remains at the forefront of understanding and combating these otherworldly horrors.",
+    "categories": [
+      "cosmic horror",
+      "alternate history"
+    ]
   }
 }

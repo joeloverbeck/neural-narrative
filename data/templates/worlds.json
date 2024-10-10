@@ -103,5 +103,12 @@
       "absurdist",
       "dystopian"
     ]
+  },
+  "Riftworld": {
+    "description": "In the alternate 1920s reality of Riftworld, tears into other dimensions have been discovered by scholars and fanatics. The governments of the world are attempting to suppress this information, but the effects have become known to people. Horrors from other dimensions have sneaked into this world, threatening the lives and sanity of its inhabitants. Some of these entities possess terrifying intelligence. Scholars from universities all over the world are busy studying this new reality, while security forces are tasked with protecting citizens from the otherworldly threats. Secretive orders and cults welcome the chaos and despair, seeking to summon more horrors, believing they can be controlled or desiring the ruin of the world. Riftworld is a world of cosmic horror, where the familiar 1920s setting is combined with the unknown and terrifying realities that lie beyond the dimensional tears.",
+    "categories": [
+      "cosmic horror",
+      "alternate history"
+    ]
   }
 }

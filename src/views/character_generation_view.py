@@ -117,10 +117,17 @@ class CharacterGenerationView(MethodView):
     def handle_generate_character(playthrough_name):
         guideline_text = request.form.get("guideline_text")
 
-        CharacterService.generate_character(playthrough_name, guideline_text)
+        try:
+            CharacterService.generate_character(playthrough_name, guideline_text)
 
-        # Optionally, add a success message to session
-        session["character_generation_message"] = "Character generated successfully."
+            # Optionally, add a success message to session
+            session["character_generation_message"] = (
+                "Character generated successfully."
+            )
+        except Exception as e:
+            session["character_generation_message"] = (
+                f"Character generation failed. Error: {e}"
+            )
 
         # Clear the selected guideline
         session.pop("selected_guideline", None)

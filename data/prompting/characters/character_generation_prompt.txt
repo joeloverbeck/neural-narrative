@@ -26,12 +26,8 @@ Design the bio to encourage engaging, natural dialogue reflecting the character'
 Use an informal, conversational tone, akin to chatting in a tavern.
 Incorporate contractions, slang, and colloquial expressions.
 Avoid formal or archaic language and clichés.
-Include specific speech patterns or quirks [in brackets] as guidance for dialogue.
 3. Sample Utterances:
-Provide 5-7 examples of things the character might say, reflecting their personality and coping mechanisms. Format without quotation marks, as follows:
-<START>
-[Character Name]: [Utterance]
-[Character Name]: [Utterance]
+Provide 10 examples of things the character might say, reflecting their personality and coping mechanisms. Format without quotation marks.
 ...
 Situations to inspire the utterances (feel free to be creative):
 - Expressing moderate hunger and casually seeking food.

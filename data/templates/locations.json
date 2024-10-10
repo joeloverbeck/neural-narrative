@@ -166,5 +166,12 @@
       "high fantasy",
       "post-apocalyptic"
     ]
+  },
+  "The Eldritch Precinct": {
+    "description": "The Eldritch Precinct is an imposing Victorian mansion that has been repurposed to serve as the city's main police station. Its Gothic architecture, characterized by the soaring spires and intricate detailing, hints at the unsettling horrors that the city's defenders must confront. The interior of the mansion has been extensively renovated to accommodate the needs of a modern police force while preserving the building's historic character. The heavy wooden doors, adorned with mystic symbols to ward off evil, creak open to reveal a grand foyer lit by flickering gas lamps.\nThe officers of the Eldritch Precinct are a hardened bunch, trained to deal with both mundane crimes and supernatural threats. They are a constant presence on the streets of the city, their dark uniforms and gleaming badges a reassuring sight to the law-abiding citizens. The precinct houses a specialized unit, known as the Arcane Crimes Division, tasked with investigating incidents involving otherworldly horrors.\nIn the bowels of the mansion, a secure vault contains dangerous artifacts and cursed objects confiscated during investigations. The walls of the vault are lined with lead and engraved with protective runes to contain the malevolent energies emanating from within. Only the most senior officers are permitted to access this restricted area, and only when absolutely necessary.\nThe Eldritch Precinct is a place of grim determination, where the brave men and women of the police force stand as the last line of defense against the incursion of cosmic horrors. The weight of their duty hangs heavy in the air, mingling with the scent of ancient wood and polished leather. It is a bastion of order and justice, a beacon of hope for a city teetering on the brink of madness.",
+    "categories": [
+      "cosmic horror",
+      "alternate history"
+    ]
   }
 }

@@ -7,43 +7,43 @@
       "type": "object",
       "properties": {
         "guideline_1": {
-          "type": "array",
+          "type": "string",
           "description": "A guideline for creating interesting characters based on the above combination of places. The guideline should be about two or three sentences. Follow the provided instructions for what elements the guideline should include."
         },
         "guideline_2": {
-          "type": "array",
+          "type": "string",
           "description": "A guideline for creating interesting characters based on the above combination of places. The guideline should be about two or three sentences. Follow the provided instructions for what elements the guideline should include."
         },
         "guideline_3": {
-          "type": "array",
+          "type": "string",
           "description": "A guideline for creating interesting characters based on the above combination of places. The guideline should be about two or three sentences. Follow the provided instructions for what elements the guideline should include."
         },
         "guideline_4": {
-          "type": "array",
+          "type": "string",
           "description": "A guideline for creating interesting characters based on the above combination of places. The guideline should be about two or three sentences. Follow the provided instructions for what elements the guideline should include."
         },
         "guideline_5": {
-          "type": "array",
+          "type": "string",
           "description": "A guideline for creating interesting characters based on the above combination of places. The guideline should be about two or three sentences. Follow the provided instructions for what elements the guideline should include."
         },
         "guideline_6": {
-          "type": "array",
+          "type": "string",
           "description": "A guideline for creating interesting characters based on the above combination of places. The guideline should be about two or three sentences. Follow the provided instructions for what elements the guideline should include."
         },
         "guideline_7": {
-          "type": "array",
+          "type": "string",
           "description": "A guideline for creating interesting characters based on the above combination of places. The guideline should be about two or three sentences. Follow the provided instructions for what elements the guideline should include."
         },
         "guideline_8": {
-          "type": "array",
+          "type": "string",
           "description": "A guideline for creating interesting characters based on the above combination of places. The guideline should be about two or three sentences. Follow the provided instructions for what elements the guideline should include."
         },
         "guideline_9": {
-          "type": "array",
+          "type": "string",
           "description": "A guideline for creating interesting characters based on the above combination of places. The guideline should be about two or three sentences. Follow the provided instructions for what elements the guideline should include."
         },
         "guideline_10": {
-          "type": "array",
+          "type": "string",
           "description": "A guideline for creating interesting characters based on the above combination of places. The guideline should be about two or three sentences. Follow the provided instructions for what elements the guideline should include."
         }
       },
