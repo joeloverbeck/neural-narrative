@@ -25,7 +25,8 @@ WAIT_TIME_WHEN_MALFORMED_COMPLETION: int = 5
 
 # Base files and folders
 
-CONFIG_FILE: str = "config.json"
+CONFIG_FILE: str = "data/llm/config.json"
+XTTS_CONFIG_FILE: str = "data/voices/xtts_config.json"
 LOGGING_CONFIG_FILE: str = "data/logging/logging_config.json"
 VOICE_MODELS_FILE: str = "data/voices/voice_models.json"
 VOICE_LINES_FOLDER_PATH: str = "static/voice_lines"
@@ -66,12 +67,14 @@ SPEECH_TURN_TOOL_FILE: str = "data/prompting/speech_turn_tool.json"
 DIALOGUE_SUMMARIZATION_TOOL_FILE: str = (
     "data/prompting/dialogue_summarization_tool.json"
 )
-WORLD_GENERATION_TOOL_FILE: str = "data/prompting/world_generation_tool.json"
-REGION_GENERATION_TOOL_FILE: str = "data/prompting/region_generation_tool.json"
-AREA_GENERATION_TOOL_FILE: str = "data/prompting/area_generation_tool.json"
-LOCATION_GENERATION_TOOL_FILE: str = "data/prompting/location_generation_tool.json"
-PLACE_DESCRIPTION_TOOL_FILE: str = "data/prompting/place_description_tool.json"
-TRAVEL_NARRATION_TOOL_FILE: str = "data/prompting/travel_narration_tool.json"
+WORLD_GENERATION_TOOL_FILE: str = "data/prompting/places/world_generation_tool.json"
+REGION_GENERATION_TOOL_FILE: str = "data/prompting/places/region_generation_tool.json"
+AREA_GENERATION_TOOL_FILE: str = "data/prompting/places/area_generation_tool.json"
+LOCATION_GENERATION_TOOL_FILE: str = (
+    "data/prompting/places/location_generation_tool.json"
+)
+PLACE_DESCRIPTION_TOOL_FILE: str = "data/prompting/places/place_description_tool.json"
+TRAVEL_NARRATION_TOOL_FILE: str = "data/prompting/places/travel_narration_tool.json"
 CHARACTER_GENERATION_GUIDELINES_TOOL_FILE: str = (
     "data/prompting/characters/character_generation_guidelines_tool.json"
 )
@@ -108,12 +111,18 @@ TOOL_INSTRUCTIONS_FILE: str = "data/prompting/tool_instructions.txt"
 DIALOGUE_PROMPT_FILE: str = "data/prompting/dialogue_prompt.txt"
 CHOOSING_SPEECH_TURN_PROMPT_FILE: str = "data/prompting/choosing_speech_turn_prompt.txt"
 SUMMARIZE_DIALOGUE_PROMPT_FILE: str = "data/prompting/summarize_dialogue_prompt.txt"
-WORLD_GENERATION_PROMPT_FILE: str = "data/prompting/world_generation_prompt.txt"
-REGION_GENERATION_PROMPT_FILE: str = "data/prompting/region_generation_prompt.txt"
-AREA_GENERATION_PROMPT_FILE: str = "data/prompting/area_generation_prompt.txt"
-LOCATION_GENERATION_PROMPT_FILE: str = "data/prompting/location_generation_prompt.txt"
-PLACE_DESCRIPTION_PROMPT_FILE: str = "data/prompting/place_description_prompt.txt"
-TRAVEL_NARRATION_PROMPT_FILE: str = "data/prompting/travel_narration_prompt.txt"
+WORLD_GENERATION_PROMPT_FILE: str = "data/prompting/places/world_generation_prompt.txt"
+REGION_GENERATION_PROMPT_FILE: str = (
+    "data/prompting/places/region_generation_prompt.txt"
+)
+AREA_GENERATION_PROMPT_FILE: str = "data/prompting/places/area_generation_prompt.txt"
+LOCATION_GENERATION_PROMPT_FILE: str = (
+    "data/prompting/places/location_generation_prompt.txt"
+)
+PLACE_DESCRIPTION_PROMPT_FILE: str = (
+    "data/prompting/places/place_description_prompt.txt"
+)
+TRAVEL_NARRATION_PROMPT_FILE: str = "data/prompting/places/travel_narration_prompt.txt"
 CHARACTER_GENERATION_GUIDELINES_PROMPT_FILE: str = (
     "data/prompting/characters/character_generation_guidelines_prompt.txt"
 )
@@ -238,4 +247,26 @@ VOICE_SPECIAL_EFFECTS = [
     "DISTORTED",
     "GHOSTLY/ECHOED",
     "RETRO",
+]
+
+LOCATION_TYPES = [
+    "BAR",
+    "POLICE STATION",
+    "BROTHEL",
+    "MALL",
+    "MANSION",
+    "CAVE SYSTEM",
+    "LABYRINTH",
+    "BURIAL SITE",
+    "FORTRESS",
+    "HOSPITAL",
+    "TRAINING GROUND",
+    "FORGE",
+    "CHAMBER",
+    "INN",
+    "MINE",
+    "OASIS",
+    "GREENHOUSE",
+    "CLEARING",
+    "WOODS",
 ]

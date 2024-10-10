@@ -30,6 +30,7 @@ class MatchingVoiceModelProvider:
         voice_tempo = self._character_voice_attributes.get("voice_tempo")
         voice_volume = self._character_voice_attributes.get("voice_volume")
         voice_texture = self._character_voice_attributes.get("voice_texture")
+        voice_tone = self._character_voice_attributes.get("voice_tone")
         voice_style = self._character_voice_attributes.get("voice_style")
         voice_personality = self._character_voice_attributes.get("voice_personality")
         voice_special_effects = self._character_voice_attributes.get(
@@ -61,6 +62,10 @@ class MatchingVoiceModelProvider:
             return MatchingVoiceModelProduct(
                 None, is_valid=False, error="Invalid voice_texture."
             )
+        if not voice_tone:
+            return MatchingVoiceModelProduct(
+                None, is_valid=False, error="Invalid voice_tone."
+            )
         if not voice_style:
             return MatchingVoiceModelProduct(
                 None, is_valid=False, error="Invalid voice_style."
@@ -84,8 +89,9 @@ class MatchingVoiceModelProvider:
             ("voice_age", voice_age, True),
             ("voice_emotion", voice_emotion, False),
             ("voice_tempo", voice_tempo, True),
-            ("voice_volume", voice_volume, False),
+            ("voice_volume", voice_volume, True),
             ("voice_texture", voice_texture, True),
+            ("voice_tone", voice_tone, False),
             ("voice_style", voice_style, False),
             ("voice_personality", voice_personality, True),
             ("voice_special_effects", voice_special_effects, True),
@@ -113,6 +119,7 @@ class MatchingVoiceModelProvider:
 
                 if is_required:
                     # Stop further filtering and break the loop
+                    print(f"Failed for {attribute_name}")
                     break
                 else:
                     # For optional attribute, continue with previous_possible_voice_models

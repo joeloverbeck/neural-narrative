@@ -113,6 +113,39 @@ class MapManager:
 
         return hierarchy
 
+    def get_available_location_types(self):
+        # Get the categories of the current area
+        place_categories = self.get_place_categories(
+            self.get_current_place_template(), PlaceType.AREA
+        )
+
+        # Load location templates
+        location_templates = self._load_template_file(PlaceType.LOCATION)
+
+        # Filter locations based on categories
+        filtered_places = self.filter_places_by_categories(
+            location_templates, place_categories
+        )
+
+        # Get the list of used place templates to avoid duplicates
+        used_place_templates = self.get_place_templates_of_type(PlaceType.LOCATION)
+
+        # Further filter out places whose template has already been used
+        available_places = {
+            identifier: data
+            for identifier, data in filtered_places.items()
+            if identifier not in used_place_templates
+        }
+
+        # Extract unique types from the filtered places
+        return list(
+            set(
+                data.get("type")
+                for data in available_places.values()
+                if data.get("type")
+            )
+        )
+
     def is_visited(self, place_identifier: str):
         map_file = self._load_map_file()
 
@@ -280,14 +313,30 @@ class MapManager:
 
     @staticmethod
     def filter_places_by_categories(
-        place_templates: Dict, father_place_categories: List[str]
+        place_templates: Dict,
+        father_place_categories: List[str],
+        location_type: str = None,
     ) -> Dict:
         """Filter places whose categories match any of the father place's categories."""
-        return {
-            name: data
-            for name, data in place_templates.items()
-            if set(data.get("categories", [])) & set(father_place_categories)
-        }
+        filtered_places = {}
+
+        for name, data in place_templates.items():
+            place_categories = data.get("categories", [])
+            place_type = data.get("type", None)
+
+            # Match categories
+            if not any(
+                category in place_categories for category in father_place_categories
+            ):
+                continue
+
+            # If location_type is specified, check if it matches
+            if location_type and place_type != location_type:
+                continue
+
+            filtered_places[name] = data
+
+        return filtered_places
 
     @staticmethod
     def select_random_place(matching_places: Dict) -> str:
@@ -407,6 +456,7 @@ class MapManager:
             List[str]: A list of place template names.
         """
         map_file = self._load_map_file()
+
         return [
             place_data.get("place_template")
             for place_data in map_file.values()

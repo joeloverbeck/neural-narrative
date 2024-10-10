@@ -1,0 +1,10 @@
+{
+  "temperature": 0.75,
+  "length_penalty": 1.0,
+  "repetition_penalty": 5.0,
+  "top_k": 50,
+  "top_p": 0.85,
+  "speed": 1,
+  "enable_text_splitting": true,
+  "stream_chunk_size": 100
+}

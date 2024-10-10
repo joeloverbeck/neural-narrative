@@ -13,11 +13,17 @@
         "description": {
           "type": "string",
           "description": "The description of the generated location. Follow the instructions provided to produce this description."
+        },
+        "type": {
+          "type": "string",
+          "enum": null,
+          "description": "The type of location."
         }
       },
       "required": [
         "name",
-        "description"
+        "description",
+        "type"
       ]
     }
   }

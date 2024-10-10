@@ -9,9 +9,9 @@ function playAudio(fileUrl) {
         };
         audio.play().catch(function(error) {
             console.error('Error occurred while playing audio:', error);
-            alert('The audio file couldn't be played.');
+            alert('The audio file couldn\'t be played.');
         });
     } else {
-        alert('The RunPod pod isn't running.');
+        alert('The RunPod pod isn\'t running.');
     }
 }

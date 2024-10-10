@@ -75,6 +75,102 @@
     margin-top: 0px;
 }
 
+/* New styles for action groups */
+
+.action-group-title {
+    font-size: 22px;
+    font-weight: bold;
+    color: #3f51b5; /* Matches the collapsible button color */
+    margin-bottom: 15px;
+    border-bottom: 2px solid #3f51b5;
+    padding-bottom: 5px;
+    text-align: center;
+}
+
+/* Adjust buttons within action groups */
+.action-group .buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+}
+
+.info-message {
+    color: #ff0000; /* Red color for emphasis */
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+/* Optionally, style disabled select and button */
+select:disabled {
+    background-color: #e0e0e0;
+    cursor: not-allowed;
+}
+
+button:disabled {
+    background-color: #a0a0a0;
+    cursor: not-allowed;
+}
+
+
+/* Location Actions Section */
+
+/* Container for the entire Location Actions */
+.action-group {
+    margin-bottom: 30px; /* Adds spacing between groups */
+}
+
+/* Search Location Group Styles */
+.search-location-group {
+    background-color: #e3f2fd; /* Light blue background */
+    border: 2px solid #90caf9; /* Blue border */
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.search-location-group:hover {
+    background-color: #bbdefb; /* Slightly darker blue on hover */
+    border-color: #42a5f5;
+}
+
+.search-location-group .action-button {
+    background-color: #42a5f5; /* Blue button */
+}
+
+.search-location-group .action-button:hover {
+    background-color: #1e88e5; /* Darker blue on hover */
+}
+
+/* Visit Location Group Styles */
+.visit-location-group {
+    background-color: #fff3e0; /* Light orange background */
+    border: 2px solid #ffb74d; /* Orange border */
+    border-radius: 10px;
+    padding: 20px;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.visit-location-group:hover {
+    background-color: #ffe0b2; /* Slightly darker orange on hover */
+    border-color: #ffa726;
+}
+
+.visit-location-group .action-button {
+    background-color: #ff9800; /* Orange button */
+}
+
+.visit-location-group .action-button:hover {
+    background-color: #fb8c00; /* Darker orange on hover */
+}
+
+/* Optional: Adjust spacing between forms within each group */
+.search-location-form,
+.visit-location-form {
+    margin-bottom: 15px;
+}
+
 /* Responsive Adjustments */
 @media (max-width: 600px) {
     .place-description {
@@ -88,5 +184,9 @@
 
     .buttons {
         flex-direction: column;
+    }
+
+    .action-group-title {
+        font-size: 18px;
     }
 }

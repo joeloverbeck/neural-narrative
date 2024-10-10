@@ -1,41 +1,44 @@
+from src.constants import VOICE_MODELS_FILE
+from src.filesystem.filesystem_manager import FilesystemManager
+from src.requests.requests_manager import RequestsManager
 from src.services.voices_services import VoicesServices
 
 
 def main():
-    available_speakers = [
-        "mq101prewarsoldier02",
-        "azura",
-        "npcmskinnymalone",
-        "npcmzeke",
-        "npcfmrsable",
-        "malecoward",
-        "brainfrog",
-        "npcmdutchman",
-        "npcftraderrylee",
-        "holotapeinstitutevoicemale02",
-        "elanadarkfirevoice",
-        "radiofatfahey",
-        "announcer_elevatorvoice",
-        "npcfcurie",
-        "frea",
-        "npcmvaulttecrep",
-        "synthgen1male03",
-        "femalevampire",
-        "npcmdoccrocker",
-        "sheogorath",
-        "npcfroslynchambers",
-        "npcmproctorquinlan",
-        "ancano",
-        "synthgen3male01",
+    available_speakers = RequestsManager().get_available_speakers()
+
+    implemented_voice_models = FilesystemManager().load_existing_or_new_json_file(
+        VOICE_MODELS_FILE
+    )
+
+    # I want to filter the available speakers to remove the voice models already implemented, to only request voice lines of unimplemented models
+    # Convert the implemented models to a set for faster lookup (optional but recommended)
+    implemented_models_set = set(implemented_voice_models.keys())
+
+    # Filter out the speakers that have already been implemented
+    unimplemented_speakers = [
+        speaker
+        for speaker in available_speakers
+        if speaker not in implemented_models_set
     ]
 
-    for available_speaker in available_speakers:
-        file_path = VoicesServices.generate_voice_line(
+    text_to_read = (
+        "I'm absolutely thrilled to share this wonderful news with you! "
+        "It's hard to believe that our journey has come to an end. "
+        "Quickly, we need to secure the perimeter before nightfall! "
+        "In the stillness of the night, every sound echoes louder than the last. "
+        "The quantum processor operates at unprecedented speeds, revolutionizing computational capabilities. "
+        "Once upon a time, in a land far away, there lived a brave young explorer. "
+        "Would you care for a spot of tea while we discuss the matter?"
+    )
+
+    for available_speaker in unimplemented_speakers:
+        file_path = VoicesServices().generate_voice_line(
             "test",
-            "Stop right there! Before you proceed any further, think carefully about the choice you're about to make.",
+            text_to_read,
             available_speaker,
         )
-        print(f"Generated voiceline for '{file_path}'")
+        print(f"Generated voice line for '{file_path}'")
 
 
 if __name__ == "__main__":
