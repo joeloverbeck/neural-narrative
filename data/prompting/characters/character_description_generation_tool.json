@@ -8,7 +8,7 @@
       "properties": {
         "description": {
           "type": "string",
-          "description": "The detailed and vivid description. Follow the provided instructions."
+          "description": "The detailed and vivid description. Follow the provided instructions. You are prohibited from repeating the provided information verbatim."
         }
       },
       "required": [

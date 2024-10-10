@@ -36,6 +36,9 @@ class CharacterDescriptionProvider(BaseToolResponseProvider):
     def get_tool_file(self) -> str:
         return CHARACTER_DESCRIPTION_GENERATION_TOOL_FILE
 
+    def peep_into_system_content(self, system_content: str):
+        print(system_content)
+
     def get_user_content(self) -> str:
         return "Craft a detailed and vivid description of the character's appearance suitable for an image-generating AI, as per the above instructions."
 
