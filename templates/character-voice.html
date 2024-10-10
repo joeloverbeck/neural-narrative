@@ -112,6 +112,22 @@
         <p>Please select tags to filter and display voice models.</p>
     </div>
     {% endif %}
+
+    <!-- Match Voice Model Section -->
+    <div class="collapsible-section">
+        <button class="collapsible">
+            <i class="fas fa-magic"></i> Match Voice Model
+        </button>
+        <div class="content">
+            <form method="post" class="match-voice-model-form">
+                <input name="character_identifier" type="hidden" value="{{ selected_character.identifier }}">
+                <input name="match_voice_model" type="hidden" value="1">
+                <button type="submit" class="action-button">
+                    <i class="fas fa-magic"></i> Match Voice Model
+                </button>
+            </form>
+        </div>
+    </div>
     {% endif %}
 
     <!-- Navigation Buttons -->
@@ -136,27 +152,8 @@
         </a>
     </div>
 </div>
+{% endblock %}
 
-<!-- JavaScript for collapsible sections -->
-<script>
-    // Collapsible sections
-    const collapsibles = document.querySelectorAll('.collapsible');
-    collapsibles.forEach(function(collapsible) {
-        collapsible.addEventListener('click', function() {
-            this.classList.toggle('active');
-            const content = this.nextElementSibling;
-            if (content.style.display === 'block') {
-                content.style.display = 'none';
-            } else {
-                content.style.display = 'block';
-            }
-        });
-
-        // On load: Display content for any collapsible that has 'active' class
-        if (collapsible.classList.contains('active')) {
-            const content = collapsible.nextElementSibling;
-            content.style.display = 'block'; // Show content if 'active' is already present
-        }
-    });
-</script>
+{% block scripts %}
+<script src="{{ url_for('static', filename='collapsible.js') }}"></script>
 {% endblock %}

@@ -204,57 +204,10 @@
         </a>
     </div>
 </div>
+{% endblock %}
 
-<!-- JavaScript for collapsible sections -->
-<script>
-    // Collapsible sections
-    const collapsibles = document.querySelectorAll('.collapsible');
-    collapsibles.forEach(function(collapsible) {
-        collapsible.addEventListener('click', function() {
-            this.classList.toggle('active');
-            const content = this.nextElementSibling;
-            if (content.style.display === 'block') {
-                content.style.display = 'none';
-            } else {
-                content.style.display = 'block';
-            }
-        });
-
-        // On load: Display content for any collapsible that has 'active' class
-        if (collapsible.classList.contains('active')) {
-            const content = collapsible.nextElementSibling;
-            content.style.display = 'block'; // Show content if 'active' is already present
-        }
-    });
-
-    document.addEventListener('DOMContentLoaded', function () {
-        // Function to handle click events on place description
-        function handlePlaceDescriptionClick(event) {
-            var fileUrl = event.currentTarget.getAttribute('data-file-url');
-            if (fileUrl && fileUrl !== 'None' && fileUrl !== 'null') {
-                var audio = new Audio(fileUrl);
-                // Attach an error handler for loading errors
-                audio.onerror = function() {
-                    console.error('Error occurred while loading audio:', audio.error);
-                    alert('The audio file could not be loaded.');
-                };
-                // Play the audio and catch any playback errors
-                audio.play().catch(function(error) {
-                    console.error('Error occurred while playing audio:', error);
-                    alert('The audio file couldn\'t be played.');
-                });
-            } else {
-                // If fileUrl is invalid, display the message
-                alert('The RunPod pod isn\'t running.');
-            }
-        }
-        // Attach event listener to the place-description element
-        var placeDescription = document.querySelector('.place-description');
-        if (placeDescription) {
-            placeDescription.addEventListener('click', handlePlaceDescriptionClick);
-            // Change cursor to pointer
-            placeDescription.style.cursor = 'pointer';
-        }
-    });
-</script>
+{% block scripts %}
+<script src="{{ url_for('static', filename='collapsible.js') }}"></script>
+<script src="{{ url_for('static', filename='audio-playback.js') }}"></script>
+<script src="{{ url_for('static', filename='location-hub.js') }}"></script>
 {% endblock %}

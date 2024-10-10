@@ -63,6 +63,15 @@ class StoreGeneratedCharacterCommand(Command):
             "speech patterns": self._character_data["speech patterns"],
             "health": self._character_data["health"],
             "equipment": self._character_data["equipment"],
+            "voice_gender": self._character_data["voice_gender"],
+            "voice_age": self._character_data["voice_age"],
+            "voice_emotion": self._character_data["voice_emotion"],
+            "voice_tempo": self._character_data["voice_tempo"],
+            "voice_volume": self._character_data["voice_volume"],
+            "voice_texture": self._character_data["voice_texture"],
+            "voice_style": self._character_data["voice_style"],
+            "voice_personality": self._character_data["voice_personality"],
+            "voice_special_effects": self._character_data["voice_special_effects"],
             "voice_model": self._match_voice_data_to_voice_model_algorithm.match(
                 self._character_data
             ),
