@@ -70,6 +70,9 @@ class BaseToolResponseProvider:
     def peep_into_system_content(self, system_content: str):
         pass
 
+    def peep_into_tool_response(self, tool_response: dict):
+        pass
+
     def generate_product(self):
         # Prepare the prompt
         formatted_prompt = self.get_formatted_prompt()
@@ -93,6 +96,8 @@ class BaseToolResponseProvider:
 
         # Produce tool response
         tool_response = self._produce_tool_response(system_content, user_content)
+
+        self.peep_into_tool_response(tool_response)
 
         # Extract arguments
         arguments = self._extract_arguments(tool_response)

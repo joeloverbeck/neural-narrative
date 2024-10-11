@@ -1,3 +1,4 @@
+import logging
 from typing import Optional
 
 from src.actions.products.goals_product import GoalsProduct
@@ -13,6 +14,8 @@ from src.prompting.factories.produce_tool_response_strategy_factory import (
     ProduceToolResponseStrategyFactory,
 )
 from src.prompting.providers.base_tool_response_provider import BaseToolResponseProvider
+
+logger = logging.getLogger(__name__)
 
 
 class GoalsFactory(BaseToolResponseProvider):
@@ -39,6 +42,18 @@ class GoalsFactory(BaseToolResponseProvider):
         return "Generate a list of five intriguing and engaging short-term goals for the player to pursue. Follow the provided instructions."
 
     def create_product(self, arguments: dict):
+        # if it turns out that it has failed to produce goals, at least log it.
+        if not arguments.get("goal_1"):
+            logger.warning("LLM didn't produce goal_1")
+        if not arguments.get("goal_2"):
+            logger.warning("LLM didn't produce goal_2")
+        if not arguments.get("goal_3"):
+            logger.warning("LLM didn't produce goal_3")
+        if not arguments.get("goal_4"):
+            logger.warning("LLM didn't produce goal_4")
+        if not arguments.get("goal_5"):
+            logger.warning("LLM didn't produce goal_5")
+
         return GoalsProduct(
             [
                 arguments.get("goal_1"),

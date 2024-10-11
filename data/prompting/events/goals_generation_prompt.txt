@@ -27,3 +27,4 @@ Player and Followers Information:
 {followers_information}
 Memories:
 {combined_memories}
+Important: You are prohibited from repeating verbatim in your answer any of the information provided.
