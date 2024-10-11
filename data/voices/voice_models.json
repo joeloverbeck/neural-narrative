@@ -454,5 +454,64 @@
     "NARRATIVE",
     "PARANOID",
     "ROBOTIC/SYNTHESIZED"
+  ],
+  "npcfbeckyfallon": [
+    "FEMALE",
+    "YOUNG ADULT/ADULT",
+    "CONFIDENT/DETERMINED",
+    "SLOW",
+    "NORMAL VOLUME",
+    "SMOOTH",
+    "NEUTRAL",
+    "INTENSE/DRAMATIC",
+    "CHARMING",
+    "NO SPECIAL EFFECTS"
+  ],
+  "npcmhonestdan": [
+    "MALE",
+    "YOUNG ADULT/ADULT",
+    "CALM",
+    "SLOW",
+    "NORMAL VOLUME",
+    "SMOOTH",
+    "NEUTRAL",
+    "FORMAL",
+    "NOBLE",
+    "NO SPECIAL EFFECTS"
+  ],
+  "npcfemogenecabot": [
+    "FEMALE",
+    "YOUNG ADULT/ADULT",
+    "PLAYFUL",
+    "MODERATE",
+    "NORMAL VOLUME",
+    "SMOOTH",
+    "WARM",
+    "CASUAL",
+    "CHARMING",
+    "NO SPECIAL EFFECTS"
+  ],
+  "npcffahrenheit": [
+    "FEMALE",
+    "YOUNG ADULT/ADULT",
+    "CALM",
+    "SLOW",
+    "SOFT-SPOKEN/QUIET",
+    "SMOOTH",
+    "WARM",
+    "NARRATIVE",
+    "MYSTERIOUS",
+    "NO SPECIAL EFFECTS"
+  ],
+  "dbspectrallachance": [
+    "MALE",
+    "MIDDLE-AGED",
+    "CALM",
+    "SLOW",
+    "GRAVELLY/RASPY",
+    "WARM",
+    "FORMAL",
+    "WISE/PHILOSOPHICAL",
+    "GHOSTLY/ECHOED"
   ]
 }
