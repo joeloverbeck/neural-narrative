@@ -1,11 +1,11 @@
 import logging
 from typing import Optional
 
-from src.actions.products.goals_product import GoalsProduct
 from src.characters.factories.party_data_for_prompt_factory import (
     PartyDataForPromptFactory,
 )
 from src.constants import GOALS_GENERATION_TOOL_FILE, GOALS_GENERATION_PROMPT_FILE
+from src.events.products.goals_product import GoalsProduct
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.factories.place_descriptions_for_prompt_factory import (
     PlaceDescriptionsForPromptFactory,

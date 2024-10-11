@@ -222,5 +222,13 @@
       "alternate history"
     ],
     "type": "APARTMENT BUILDING"
+  },
+  "Miskatonic University": {
+    "description": "Miskatonic University, a renowned institution dedicated to the study of otherworldly horrors, looms over the city with its imposing Gothic architecture. The campus is a sprawling collection of ivy-covered buildings, labyrinthine libraries, and advanced research facilities, all devoted to unraveling the mysteries of the cosmos. The air is thick with the scent of ancient tomes and the faint odor of formaldehyde from the biology labs. Students and faculty members can be seen hurrying between classes, their faces etched with a mixture of excitement and unease.\nThe university's libraries house an extensive collection of occult texts, including rare and forbidden tomes that are kept under lock and key. These valuable resources draw scholars and researchers from across the globe, each hoping to uncover the secrets of the universe. However, the knowledge contained within these texts is not without its dangers. Many have been driven to madness or worse by the eldritch truths they contain.\nThe university is not without its controversies. Rumors abound of secretive experiments conducted in the bowels of the research facilities, and of students and bystanders who have disappeared without a trace. Some whisper of dark alliances between the university and the cults that seek to harness the power of otherworldly horrors for their own ends. The militia maintained by the university is a constant reminder of the dangers that lurk both within and without its walls.\nDespite the risks, Miskatonic University remains at the forefront of the fight against the unknown. Its strategic location and thriving intellectual community make it a key player in the global effort to understand and combat the tears in reality. As the world teeters on the brink of unimaginable horrors, the university's work has never been more important.",
+    "categories": [
+      "cosmic horror",
+      "alternate history"
+    ],
+    "type": "COLLEGE"
     }
 }

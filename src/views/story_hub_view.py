@@ -3,8 +3,6 @@ import os
 from flask import session, redirect, url_for, render_template, request
 from flask.views import MethodView
 
-from src.actions.commands.GenerateGoalsCommand import GenerateGoalsCommand
-from src.actions.factories.goals_factory import GoalsFactory
 from src.characters.factories.party_data_for_prompt_factory import (
     PartyDataForPromptFactory,
 )
@@ -13,6 +11,7 @@ from src.characters.factories.player_data_for_prompt_factory import (
 )
 from src.config.config_manager import ConfigManager
 from src.events.commands.generate_concepts_command import GenerateConceptsCommand
+from src.events.commands.generate_goals_command import GenerateGoalsCommand
 from src.events.commands.generate_interesting_dilemmas_command import (
     GenerateInterestingDilemmasCommand,
 )
@@ -20,6 +19,7 @@ from src.events.commands.generate_interesting_situations_command import (
     GenerateInterestingSituationsCommand,
 )
 from src.events.factories.concepts_factory import ConceptsFactory
+from src.events.factories.goals_factory import GoalsFactory
 from src.events.factories.interesting_dilemmas_factory import InterestingDilemmasFactory
 from src.events.factories.interesting_situations_factory import (
     InterestingSituationsFactory,
