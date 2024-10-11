@@ -23,18 +23,17 @@ from src.prompting.factories.openrouter_llm_client_factory import (
 from src.prompting.factories.produce_tool_response_strategy_factory import (
     ProduceToolResponseStrategyFactory,
 )
-from src.services.voices_services import VoicesServices
-from src.services.web_service import WebService
+from src.voices.voice_manager import VoiceManager
 
 
 class PlaceService:
     def __init__(
         self,
         config_manager: Optional[ConfigManager] = None,
-        voices_services: Optional[VoicesServices] = None,
+        voice_manager: Optional[VoiceManager] = None,
     ):
         self._config_manager = config_manager or ConfigManager()
-        self._voices_services = voices_services or VoicesServices()
+        self._voice_manager = voice_manager or VoiceManager()
 
     def _generate_place_description_voice_line(
         self, playthrough_name, description_text
@@ -45,12 +44,9 @@ class PlaceService:
             PlaythroughManager(playthrough_name).get_player_identifier()
         )
 
-        file_name = self._voices_services.generate_voice_line(
+        return self._voice_manager.generate_voice_line(
             player_data["name"], description_text, player_data["voice_model"]
         )
-
-        # Generate the URL to access the audio file
-        return WebService.get_file_url("voice_lines", file_name)
 
     def describe_place(self, playthrough_name):
         playthrough_manager = PlaythroughManager(playthrough_name)
@@ -75,11 +71,11 @@ class PlaceService:
             return description_product.get_error(), None
 
         # Generate the audio file for the description
-        voice_line_url = self._generate_place_description_voice_line(
+        voice_line_file_name = self._generate_place_description_voice_line(
             playthrough_name, description
         )
 
-        return description, voice_line_url
+        return description, voice_line_file_name
 
     def exit_location(self, playthrough_name):
         playthrough_manager = PlaythroughManager(playthrough_name)

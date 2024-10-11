@@ -15,4 +15,4 @@ Character Bio:
 - Equipment: {equipment}
 - Memories:
 {memories}
-Important: the self-reflection should be at the most three paragraphs long.
+Important: the self-reflection should be at the most three paragraphs long. You are prohibited from repeating verbatim the character information you have been provided for this task.

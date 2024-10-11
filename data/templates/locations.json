@@ -214,5 +214,13 @@
             "alternate history"
         ],
         "type": "BAR"
+    },
+  "The Sighing Tenements": {
+    "description": "An aging apartment building that houses the working class of the city, the Sighing Tenements is a place where the walls have absorbed countless stories of struggle, despair, and fleeting moments of joy. The building's exterior is a weathered facade of brick and mortar, with the architecture speaking to a bygone era of grandeur that has long since faded. Within the cramped confines of the apartments, the air is thick with the scent of cheap perfume and the acrid tang of sweat and toil. Late into the night, the walls come alive with the muffled sounds of heated arguments, punctuated by the occasional shattering of glass or the thud of fists meeting flesh. As the arguments subside, they are replaced by the rhythmic creaking of bedsprings and the breathy sighs and moans of frantic, desperate intimacy.\nThe Tenements are home to a diverse array of residents, from laborers and factory workers to struggling artists and intellectuals drawn to the city by the university's dark allure. Despite the close quarters, a sense of isolation permeates the building, with neighbors rarely interacting beyond furtive glances in the dimly lit hallways.\nThe Sighing Tenements serve as a reminder of the stark divide between the haves and have-nots in this city, where the pursuit of knowledge and power often comes at the expense of the working class. The building's primary function is to provide a roof over the heads of those who toil in the shadow of the university, but it also serves as a breeding ground for resentment and unrest, with whispered rumors of secret meetings and underground organizations plotting to upset the delicate balance of power.\nThe emotional tone of the location is one of melancholy and weary resignation, with the weight of the city's dark secrets bearing down on the residents. The Tenements are a place where dreams come to die, but also where the seeds of revolution may one day take root, fueled by the desperation and discontent that simmers just below the surface.",
+    "categories": [
+      "cosmic horror",
+      "alternate history"
+    ],
+    "type": "APARTMENT BUILDING"
     }
 }

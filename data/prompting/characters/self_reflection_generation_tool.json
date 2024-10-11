@@ -8,7 +8,7 @@
       "properties": {
         "self_reflection": {
           "type": "string",
-          "description": "The meaningful and compelling first-person self-reflection. Follow the provided instructions. You are prohibited from repeating verbatim the data you have been provided for this task."
+          "description": "The meaningful and compelling first-person self-reflection. Follow the provided instructions."
         }
       },
       "required": [

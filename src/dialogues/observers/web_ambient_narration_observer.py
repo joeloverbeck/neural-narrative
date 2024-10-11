@@ -6,7 +6,7 @@ from flask import session, url_for
 from src.abstracts.observer import Observer
 from src.characters.characters_manager import CharactersManager
 from src.constants import NARRATOR_VOICE_MODEL
-from src.services.voices_services import VoicesServices
+from src.voices.voice_manager import VoiceManager
 
 
 class WebAmbientNarrationObserver(Observer):
@@ -25,7 +25,7 @@ class WebAmbientNarrationObserver(Observer):
             )
 
         # Generate the voice line and get the file path
-        file_name = VoicesServices().generate_voice_line(
+        file_name = VoiceManager().generate_voice_line(
             "narrator", message["message_text"], NARRATOR_VOICE_MODEL
         )
         # Append the message with the file path

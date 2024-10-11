@@ -1,16 +1,19 @@
 import logging
 from typing import cast, Optional
 
-from src.abstracts.command import Command
 from src.characters.characters_manager import CharactersManager
 from src.characters.factories.self_reflection_factory import SelfReflectionFactory
+from src.characters.products.ProduceSelfReflectionProduct import (
+    ProduceSelfReflectionProduct,
+)
 from src.characters.products.self_reflection_product import SelfReflectionProduct
 from src.filesystem.filesystem_manager import FilesystemManager
+from src.voices.voice_manager import VoiceManager
 
 logger = logging.getLogger(__name__)
 
 
-class ProduceSelfReflectionCommand(Command):
+class ProduceSelfReflectionAlgorithm:
     def __init__(
         self,
         playthrough_name: str,
@@ -18,6 +21,7 @@ class ProduceSelfReflectionCommand(Command):
         self_reflection_factory: SelfReflectionFactory,
         filesystem_manager: Optional[FilesystemManager] = None,
         characters_manager: Optional[CharactersManager] = None,
+        voice_manager: Optional[VoiceManager] = None,
     ):
         self._playthrough_name = playthrough_name
         self._character_identifier = character_identifier
@@ -27,8 +31,9 @@ class ProduceSelfReflectionCommand(Command):
         self._characters_manager = characters_manager or CharactersManager(
             self._playthrough_name
         )
+        self._voice_manager = voice_manager or VoiceManager()
 
-    def execute(self) -> None:
+    def do_algorithm(self) -> ProduceSelfReflectionProduct:
         product = cast(
             SelfReflectionProduct, self._self_reflection_factory.generate_product()
         )
@@ -53,4 +58,10 @@ class ProduceSelfReflectionCommand(Command):
             "\n" + product.get(),
         )
 
+        voice_line_file_name = self._voice_manager.generate_voice_line(
+            character_data["name"], product.get(), character_data["voice_model"]
+        )
+
         logger.info("Generated the self-reflection.")
+
+        return ProduceSelfReflectionProduct(product.get(), voice_line_file_name)

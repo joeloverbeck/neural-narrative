@@ -1,7 +1,7 @@
 from src.constants import VOICE_MODELS_FILE
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.requests.requests_manager import RequestsManager
-from src.services.voices_services import VoicesServices
+from src.voices.voice_manager import VoiceManager
 
 
 def main():
@@ -33,7 +33,7 @@ def main():
     )
 
     for available_speaker in unimplemented_speakers:
-        file_path = VoicesServices().generate_voice_line(
+        file_path = VoiceManager().generate_voice_line(
             "test",
             text_to_read,
             available_speaker,
