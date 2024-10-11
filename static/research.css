@@ -1,0 +1,43 @@
+/* investigate.css */
+.research-container {
+    margin-top: 20px;
+}
+
+.research-result {
+    margin-top: 20px;
+}
+
+.research-result div {
+    background-color: #f9f9f9;
+    padding: 20px;
+    margin: 20px auto;
+    border-radius: 10px;
+    max-width: 800px;
+    font-size: 16px;
+    line-height: 1.6;
+    text-align: left;
+    color: #333;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    position: relative;
+}
+
+.research-result div:hover {
+    background-color: #f0f0f0;
+}
+
+.research-result h3 {
+    margin-top: 0;
+}
+
+.research-result div .play-icon {
+    font-size: 24px;
+    color: #555;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.research-result div:hover .play-icon {
+    color: #000;
+}

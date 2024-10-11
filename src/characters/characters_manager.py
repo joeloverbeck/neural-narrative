@@ -1,6 +1,7 @@
 from typing import List, Dict
 
 from src.constants import CHARACTER_GENERATION_GUIDELINES_FILE
+from src.dialogues.participants import Participants
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.identifiers_manager import IdentifiersManager
 from src.playthrough_manager import PlaythroughManager
@@ -135,6 +136,10 @@ class CharactersManager:
             characters_file[character_identifier]["voice_model"] = character_data[
                 "voice_model"
             ]
+        if "description_for_portrait" in character_data:
+            characters_file[character_identifier]["description_for_portrait"] = (
+                character_data["description_for_portrait"]
+            )
 
         # Now must save the JSON back to file.
         self._filesystem_manager.save_json_file(
@@ -346,3 +351,31 @@ class CharactersManager:
             )
             in guidelines_file
         )
+
+    def initialize_participants_for_action_resolution(self):
+        participants = Participants()
+
+        player_data = self.load_character_data(
+            self._playthrough_manager.get_player_identifier()
+        )
+
+        participants.add_participant(
+            player_data["identifier"],
+            player_data["name"],
+            player_data["description"],
+            player_data["personality"],
+            player_data["equipment"],
+            player_data.get("voice_model", ""),
+        )
+
+        for follower in self.get_followers():
+            participants.add_participant(
+                follower["identifier"],
+                follower["name"],
+                follower["description"],
+                follower["personality"],
+                follower["equipment"],
+                follower.get("voice_model", ""),
+            )
+
+        return participants

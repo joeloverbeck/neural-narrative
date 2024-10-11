@@ -10,19 +10,6 @@ document.addEventListener('DOMContentLoaded', function () {
     // Call scrollToBottom after the page loads
     scrollToBottom();
 
-    // Function to handle click events on chat bubbles
-    function handleChatBubbleClick(event) {
-        var fileUrl = event.currentTarget.getAttribute('data-file-url');
-        playAudio(fileUrl);
-    }
-
-    // Attach event listeners to chat bubbles and ambient messages
-    var chatBubbles = document.querySelectorAll('.chat-bubble, .ambient-message');
-    chatBubbles.forEach(function(chatBubble) {
-        chatBubble.addEventListener('click', handleChatBubbleClick);
-        chatBubble.style.cursor = 'pointer';
-    });
-
     // Call scrollToBottom whenever a new message is added to the chat
     const chatForm = document.querySelector('.chat-form');
     chatForm.addEventListener('submit', function() {

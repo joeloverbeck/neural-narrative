@@ -55,15 +55,31 @@ class GenerateCharacterImageCommand(Command):
             self._character_identifier
         )
 
-        character_description_product = (
-            self._character_description_provider_factory.create_provider(
-                character_data
-            ).generate_product()
-        )
+        # The description for a portrait gets saved in character data,
+        # in case image generation has failed.
+        if (
+            not "description_for_portrait" in character_data
+            or not character_data["description_for_portrait"]
+        ):
+            character_description_product = (
+                self._character_description_provider_factory.create_provider(
+                    character_data
+                ).generate_product()
+            )
+
+            # Save the description
+            self._character_manager.save_character_data(
+                character_data["identifier"],
+                {"description_for_portrait": character_description_product.get()},
+            )
+
+            character_data["description_for_portrait"] = (
+                character_description_product.get()
+            )
 
         prompt = self._filesystem_manager.read_file(
             IMAGE_GENERATION_PROMPT_FILE
-        ).format(character_description=character_description_product.get())
+        ).format(character_description=character_data["description_for_portrait"])
 
         target_image_path = self._filesystem_manager.get_file_path_to_character_image(
             self._playthrough_name, self._character_identifier

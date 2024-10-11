@@ -13,16 +13,11 @@
         "outcome": {
           "type": "string",
           "description": "The results of the research action based on the assessment."
-        },
-        "consequences": {
-          "type": "string",
-          "description": "The costs associated with the research action."
         }
       },
       "required": [
         "narrative",
-        "outcome",
-        "consequences"
+        "outcome"
       ]
     }
   }

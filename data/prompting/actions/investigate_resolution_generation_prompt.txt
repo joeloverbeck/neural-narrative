@@ -1,0 +1,64 @@
+You are to generate a detailed narrative describing the player's attempt at an Investigate action within a rich, immersive world. Use the provided information about the player, their followers, the world's conditions, and the specific locations involved. Your narrative should be engaging and realistic, reflecting the player's abilities and circumstances.
+
+Instructions:
+
+1. Viability and Realism Assessment:
+
+Carefully consider whether the player's investigation goal is achievable based on:
+The information about the player.
+The abilities and resources of any followers accompanying the player.
+The characteristics of the location, including available resources, accessibility, and any restrictions.
+The time of day and how it might affect the investigation attempt.
+The facts already known to the player.
+2. Narrative of the Investigation Attempt:
+
+Write two or three descriptive paragraphs detailing the player's investigation endeavor.
+Include specific actions taken by the player and their followers.
+Describe interactions with the environment, use of equipment, and any obstacles or challenges faced.
+Ensure the attempt aligns with the world's lore and the player's personal history.
+
+3. Outcome - Clues Discovered:
+
+Determine the results of the investigation based on your assessment.
+If successful, provide one or more very specific clues (nothing vague) that could further the goal of the investigation.
+If the investigation was partially successful or failed, explain what was found or why nothing of worth was discovered.
+The clues should be consistent with the facts already known and logically advance the investigation.
+
+4. Tone and Style:
+
+Write in the third person, past tense, maintaining an engaging and immersive narrative style.
+Ensure consistency with the established world setting and the player's character.
+
+Provided Information:
+
+Time of Day: {hour} {time_of_day}
+World Description: {world_description}
+Region Description: {region_description}
+Area Description: {area_description} {location_description}
+Facts Already Known: {facts_already_known}
+Player and Followers Information:
+
+Name: {player_name}
+Description: {player_description}
+Personality: {player_personality}
+Profile: {player_profile}
+Likes: {player_likes}
+Dislikes: {player_dislikes}
+Speech Patterns: {player_speech_patterns}
+Health: {player_health}
+Equipment: {player_equipment}
+-----
+{followers_information}
+Memories:
+{combined_memories}
+
+Investigation Goal: {investigation_goal}
+
+Example Format:
+
+"With determination etched on their face, [Player Name] quietly quietly began searching for clues..."
+
+Your Task:
+
+Using the above instructions and information, craft a compelling narrative that captures the essence of the player's Investigate action, reflecting both the potential discoveries and the inherent costs.
+

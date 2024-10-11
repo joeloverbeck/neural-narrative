@@ -1,0 +1,24 @@
+{
+  "type": "function",
+  "function": {
+    "name": "generate_investigate_resolution",
+    "description": "generate a detailed narrative describing the player's attempt at a Investigate action within a rich, immersive world.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "narrative": {
+          "type": "string",
+          "description": "A few descriptive paragraphs detailing the player's investigation endeavor."
+        },
+        "outcome": {
+          "type": "string",
+          "description": "The results of the investigate action based on the assessment."
+        }
+      },
+      "required": [
+        "narrative",
+        "outcome"
+      ]
+    }
+  }
+}

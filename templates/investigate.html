@@ -1,25 +1,25 @@
 {% extends 'base.html' %}
 
-{% block title %}Research{% endblock %}
+{% block title %}Investigate{% endblock %}
 
 {% block styles %}
 {{ super() }}
-<link href="{{ url_for('static', filename='research.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ url_for('static', filename='investigate.css') }}" rel="stylesheet" type="text/css">
 {% endblock %}
 
 {% block content %}
-<div class="research-container">
-    <h1 class="page-title"><i class="fas fa-book"></i> Research</h1>
+<div class="investigate-container">
+    <h1 class="page-title"><i class="fas fa-search"></i> Investigate</h1>
     <p class="current-place">Current Place: {{ current_place }}</p>
 
     {% if result %}
-    <!-- Research Result Section -->
+    <!-- Investigation Result Section -->
     <div class="collapsible-section">
         <button class="collapsible">
-            <i class="fas fa-check"></i> Research Resolution Result
+            <i class="fas fa-check"></i> Investigation Resolution Result
         </button>
         <div class="content">
-            <div class="research-result">
+            <div class="investigation-result">
                 <div class="narration" data-file-url="{{ result.get_narrative_voice_line_url() }}">
                     <h3>Narration</h3>
                     <p>{{ result.get_narrative() }}</p>
@@ -40,7 +40,7 @@
             <i class="fas fa-user-edit"></i> Modify Characters
         </button>
         <div class="content">
-            <form action="{{ url_for('research') }}" method="post">
+            <form action="{{ url_for('investigate') }}" method="post">
                 <input type="hidden" name="form_type" value="modify_characters">
                 {% for character in characters %}
                 <div class="character-modification">
@@ -63,18 +63,20 @@
     </div>
 
     {% else %}
-    <!-- Research Input Section -->
+    <!-- Investigation Input Section -->
     <div class="collapsible-section">
         <button class="collapsible active">
-            <i class="fas fa-book"></i> Enter Research Goal
+            <i class="fas fa-search"></i> Enter Investigation Goal
         </button>
         <div class="content" style="display: block;">
-            <form action="{{ url_for('research') }}" method="post" class="research-form">
-                <input type="hidden" name="form_type" value="resolve_research">
-                <label for="research_goal">Research Goal:</label>
-                <input type="text" id="research_goal" name="research_goal" required>
+            <form action="{{ url_for('investigate') }}" method="post" class="investigation-form">
+                <input type="hidden" name="form_type" value="resolve_investigate">
+                <label for="investigation_goal">Investigation Goal:</label>
+                <input type="text" id="investigation_goal" name="investigation_goal" required>
+                <label for="investigation_goal">Facts Known:</label>
+                <input type="text" id="facts_already_known" name="facts_already_known">
                 <button type="submit" class="action-button">
-                    <i class="fas fa-magic"></i> Resolve Research
+                    <i class="fas fa-magic"></i> Resolve Investigation
                 </button>
             </form>
         </div>

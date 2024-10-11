@@ -4,7 +4,7 @@ Instructions:
 
 1. Viability and Realism Assessment:
 
-- Carefully consider whether the player's research goal is achievable based on:
+Carefully consider whether the player's research goal is achievable based on:
 The information about the player.
 The abilities and resources of any followers accompanying the player.
 The characteristics of the location, including available resources, accessibility, and any restrictions.
@@ -12,7 +12,7 @@ The time of day and how it might affect the research attempt.
 
 2. Narrative of the Research Attempt:
 
-Write a two or three descriptive paragraphs detailing the player's research endeavor.
+Write two or three descriptive paragraphs detailing the player's research endeavor.
 Include specific actions taken by the player and their followers.
 Describe interactions with the environment, use of equipment, and any obstacles or challenges faced.
 Ensure the attempt aligns with the world's lore and the player's personal history.
@@ -20,52 +20,42 @@ Ensure the attempt aligns with the world's lore and the player's personal histor
 3. Outcome - Impact of the Research:
 
 Determine the results of the research action based on the assessment.
-You must be specific about what the player has discovered: this is the memory that will get saved.
+If successful, you must be very specific (nothing vague) about what the player has discovered.
 Detail any new knowledge gained, abilities unlocked, or crucial information discovered.
 If the research was partially successful or failed, explain what was learned or why it didn't succeed fully.
 
-4. Consequences - Cost of the Research:
-
-- Describe the costs associated with the research action, such as:
-Time consumed and its implications.
-Use or loss of resources and equipment.
-Physical or mental strain on the player and followers.
-Potential negative repercussions, such as drawing unwanted attention or causing disturbances.
-Use your judgement to determine the extent of the consequences, according to all the information provided.
-Important: the consequences are an account of the costs of the research effort, looking back now that it's finished. Do not continue the narrative nor project into the future.
-
-5. Tone and Style:
+4. Tone and Style:
 
 Write in the third person, past tense, maintaining an engaging and immersive narrative style.
 Ensure consistency with the established world setting and the player's character.
 
 Provided Information:
 
-- Time of Day: {hour} {time_of_day}
-- World Description: {world_description}
-- Region Description: {region_description}
-- Area Description: {area_description}
+Time of Day: {hour} {time_of_day}
+World Description: {world_description}
+Region Description: {region_description}
+Area Description: {area_description}
 {location_description}
 Player and Followers Information:
-- Name: {player_name}
-- Description: {player_description}
-- Personality: {player_personality}
-- Profile: {player_profile}
-- Likes: {player_likes}
-- Dislikes: {player_dislikes}
-- Speech patterns: {player_speech_patterns}
-- Health: {player_health}
-- Equipment: {player_equipment}
+Name: {player_name}
+Description: {player_description}
+Personality: {player_personality}
+Profile: {player_profile}
+Likes: {player_likes}
+Dislikes: {player_dislikes}
+Speech patterns: {player_speech_patterns}
+Health: {player_health}
+Equipment: {player_equipment}
 -----
 {followers_information}
-- Memories:
+Memories:
 {combined_memories}
 
-- Research Goal: {research_goal}
+Research Goal: {research_goal}
 
 Example Format:
 
-"Seeking to unravel the mysteries of the ancient sigils, the tall, cloaked figure of [Player Name] entered the dimly lit archives of the Grand Library. Clutching the worn tome of cryptic symbols, they, alongside their ever-curious companion [Follower Name], began sifting through scrolls and manuscripts..."
+"Seeking to unravel the mystery, [Player Name] hit the archives..."
 
 Your Task:
 

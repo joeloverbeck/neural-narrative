@@ -10,7 +10,9 @@ from src.actions.algorithms.produce_voice_lines_for_action_resolution_algorithm 
 from src.actions.algorithms.store_action_resolution_algorithm import (
     StoreActionResolutionAlgorithm,
 )
-from src.actions.factories.research_resolution_factory import ResearchResolutionFactory
+from src.actions.factories.investigate_resolution_factory import (
+    InvestigateResolutionFactory,
+)
 from src.characters.characters_manager import CharactersManager
 from src.characters.factories.party_data_for_prompt_factory import (
     PartyDataForPromptFactory,
@@ -35,7 +37,7 @@ from src.prompting.factories.produce_tool_response_strategy_factory import (
 )
 
 
-class ResearchView(MethodView):
+class InvestigateView(MethodView):
     def get(self):
         playthrough_name = session.get("playthrough_name")
         if not playthrough_name:
@@ -44,7 +46,7 @@ class ResearchView(MethodView):
         map_manager = MapManager(playthrough_name)
         current_place = map_manager.get_current_place_template()
 
-        return render_template("research.html", current_place=current_place)
+        return render_template("investigate.html", current_place=current_place)
 
     def post(self):
         playthrough_name = session.get("playthrough_name")
@@ -53,12 +55,12 @@ class ResearchView(MethodView):
 
         form_type = request.form.get("form_type")
 
-        if form_type == "resolve_research":
-            # Handle research resolution
-            research_goal = request.form.get("research_goal")
-            if not research_goal:
-                flash("Please enter a research goal.", "error")
-                return redirect(url_for("research"))
+        if form_type == "resolve_investigate":
+            # Handle investigate resolution
+            investigation_goal = request.form.get("investigation_goal")
+            if not investigation_goal:
+                flash("Please enter an investigation goal.", "error")
+                return redirect(url_for("investigate"))
 
             # Initialize necessary components
             produce_tool_response_strategy_factory = ProduceToolResponseStrategyFactory(
@@ -76,9 +78,13 @@ class ResearchView(MethodView):
             place_descriptions_for_prompt_factory = PlaceDescriptionsForPromptFactory(
                 playthrough_name
             )
-            research_resolution_factory = ResearchResolutionFactory(
+
+            facts_already_known = request.form.get("facts_already_known")
+
+            investigate_resolution_factory = InvestigateResolutionFactory(
                 playthrough_name,
-                research_goal,
+                investigation_goal,
+                facts_already_known,
                 produce_tool_response_strategy_factory,
                 place_descriptions_for_prompt_factory,
                 party_data_for_prompt_factory,
@@ -103,18 +109,18 @@ class ResearchView(MethodView):
                 ProduceVoiceLinesForActionResolutionAlgorithm()
             )
 
-            research_resolution_algorithm = ProduceActionResolutionAlgorithm(
+            investigate_resolution_algorithm = ProduceActionResolutionAlgorithm(
                 playthrough_name,
-                research_resolution_factory,
+                investigate_resolution_factory,
                 store_action_resolution_algorithm,
                 produce_voice_lines_for_action_resolution_algorithm,
             )
 
             try:
-                result = research_resolution_algorithm.do_algorithm()
+                result = investigate_resolution_algorithm.do_algorithm()
             except ValueError as e:
                 flash(str(e), "error")
-                return redirect(url_for("research"))
+                return redirect(url_for("investigate"))
 
             # Get current place
             map_manager = MapManager(playthrough_name)
@@ -128,7 +134,7 @@ class ResearchView(MethodView):
             character_list = [player_data] + characters_manager.get_followers()
 
             return render_template(
-                "research.html",
+                "investigate.html",
                 current_place=current_place,
                 result=result,
                 characters=character_list,
@@ -164,8 +170,8 @@ class ResearchView(MethodView):
                 characters_manager.save_character_data(identifier, character_data)
 
             flash("Character changes saved successfully.", "success")
-            return redirect(url_for("research"))
+            return redirect(url_for("investigate"))
 
         else:
             flash("Unknown action.", "error")
-            return redirect(url_for("research"))
+            return redirect(url_for("investigate"))

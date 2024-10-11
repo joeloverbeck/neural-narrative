@@ -103,6 +103,9 @@ GOALS_GENERATION_TOOL_FILE: str = "data/prompting/events/goals_generation_tool.j
 RESEARCH_RESOLUTION_GENERATION_TOOL_FILE: str = (
     "data/prompting/actions/research_resolution_generation_tool.json"
 )
+INVESTIGATE_RESOLUTION_GENERATION_TOOL_FILE: str = (
+    "data/prompting/actions/investigate_resolution_generation_tool.json"
+)
 
 # Prompts
 
@@ -153,6 +156,9 @@ GOAL_RESOLUTION_GENERATION_PROMPT_FILE: str = (
 GOALS_GENERATION_PROMPT_FILE: str = "data/prompting/events/goals_generation_prompt.txt"
 RESEARCH_RESOLUTION_GENERATION_PROMPT_FILE: str = (
     "data/prompting/actions/research_resolution_generation_prompt.txt"
+)
+INVESTIGATE_RESOLUTION_GENERATION_PROMPT_FILE: str = (
+    "data/prompting/actions/investigate_resolution_generation_prompt.txt"
 )
 
 OPENROUTER_API_URL: str = "https://openrouter.ai/api/v1"
@@ -274,4 +280,5 @@ LOCATION_TYPES = [
     "GREENHOUSE",
     "CLEARING",
     "WOODS",
+    "COLLEGE",
 ]
