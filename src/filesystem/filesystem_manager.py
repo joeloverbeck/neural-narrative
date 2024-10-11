@@ -146,6 +146,9 @@ class FilesystemManager:
         # Generate a unique filename to prevent overwriting
         file_name = f"{timestamp}-{character_name}-{voice_model}.wav"
 
+        # Note: the file name may have spaces. Because these files are supposed to be played by the client in a browser,
+        # The spaces need to be replaced by %20.
+
         # Ensure the 'voice_lines' directory exists
         os.makedirs(VOICE_LINES_FOLDER_PATH, exist_ok=True)
 

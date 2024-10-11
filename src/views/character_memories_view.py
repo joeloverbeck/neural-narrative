@@ -1,10 +1,10 @@
 from flask import session, redirect, url_for, render_template, request
 from flask.views import MethodView
 
-from src.characters.characters_manager import CharactersManager
-from src.characters.commands.produce_self_reflection_command import (
-    ProduceSelfReflectionCommand,
+from src.characters.algorithms.produce_self_reflection_algorithm import (
+    ProduceSelfReflectionAlgorithm,
 )
+from src.characters.characters_manager import CharactersManager
 from src.characters.factories.self_reflection_factory import SelfReflectionFactory
 from src.config.config_manager import ConfigManager
 from src.prompting.factories.openrouter_llm_client_factory import (
@@ -13,6 +13,7 @@ from src.prompting.factories.openrouter_llm_client_factory import (
 from src.prompting.factories.produce_tool_response_strategy_factory import (
     ProduceToolResponseStrategyFactory,
 )
+from src.services.web_service import WebService
 
 
 class CharacterMemoriesView(MethodView):
@@ -46,11 +47,18 @@ class CharacterMemoriesView(MethodView):
             ):
                 character["selected"] = True
 
+        self_reflection_text = session.pop("self_reflection_text", None)
+        self_reflection_voice_line_url = session.pop(
+            "self_reflection_voice_line_url", None
+        )
+
         return render_template(
             "character-memories.html",
             all_characters=all_characters,
             selected_character=selected_character,
             character_memories=character_memories,
+            self_reflection_text=self_reflection_text,
+            self_reflection_voice_line_url=self_reflection_voice_line_url,
         )
 
     def post(self):
@@ -82,7 +90,7 @@ class CharacterMemoriesView(MethodView):
                 ConfigManager().get_heavy_llm(),
             )
 
-            command = ProduceSelfReflectionCommand(
+            algorithm = ProduceSelfReflectionAlgorithm(
                 playthrough_name,
                 character_identifier,
                 SelfReflectionFactory(
@@ -92,7 +100,17 @@ class CharacterMemoriesView(MethodView):
                 ),
             )
 
-            command.execute()
+            # Execute the algorithm and get the result
+            produce_self_reflection_product = algorithm.do_algorithm()
+
+            # Extract the self-reflection text and voice line URL
+            session["self_reflection_text"] = (
+                produce_self_reflection_product.get_self_reflection()
+            )
+            session["self_reflection_voice_line_url"] = WebService.get_file_url(
+                "voice_lines",
+                produce_self_reflection_product.get_voice_line_file_name(),
+            )
 
             # Add a success message
             session["memories_saved_message"] = (

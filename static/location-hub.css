@@ -99,6 +99,7 @@
     color: #ff0000; /* Red color for emphasis */
     font-weight: bold;
     margin-top: 10px;
+    text-align: center;
 }
 
 /* Optionally, style disabled select and button */
@@ -126,6 +127,7 @@ button:disabled {
     border: 2px solid #90caf9; /* Blue border */
     border-radius: 10px;
     padding: 20px;
+    margin-top: 20px;
     margin-bottom: 20px;
     transition: background-color 0.3s ease, border-color 0.3s ease;
 }
@@ -148,6 +150,7 @@ button:disabled {
     background-color: #fff3e0; /* Light orange background */
     border: 2px solid #ffb74d; /* Orange border */
     border-radius: 10px;
+    margin-top: 20px;
     padding: 20px;
     transition: background-color 0.3s ease, border-color 0.3s ease;
 }

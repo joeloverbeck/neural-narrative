@@ -48,7 +48,6 @@ class LocationHubView(MethodView):
 
         locations_present = None
         cardinal_connections = None
-        available_locations = []
 
         can_search_for_location = False  # New flag to indicate if searching is possible
         available_location_types = []
@@ -127,14 +126,18 @@ class LocationHubView(MethodView):
 
     @staticmethod
     def handle_describe_place(playthrough_name):
-        description, file_url = PlaceService().describe_place(playthrough_name)
+        description, voice_line_file_name = PlaceService().describe_place(
+            playthrough_name
+        )
+
+        voice_line_url = WebService.get_file_url("voice_lines", voice_line_file_name)
 
         # Add the place description to the adventure.
         PlaythroughManager(playthrough_name).add_to_adventure(description + "\n")
 
         session["place_description"] = description
         session["place_description_voice_line_url"] = (
-            file_url  # Store the voice line URL
+            voice_line_url  # Store the voice line URL
         )
         return redirect(url_for("location-hub"))
 
@@ -156,7 +159,12 @@ class LocationHubView(MethodView):
         return redirect(url_for("location-hub"))
 
     @staticmethod
-    def handle_advance_time(playthrough_name):
+    def handle_advance_time_one_hour(playthrough_name):
+        TimeManager(playthrough_name).advance_time(1)
+        return redirect(url_for("location-hub"))
+
+    @staticmethod
+    def handle_advance_time_five_hours(playthrough_name):
         TimeManager(playthrough_name).advance_time(5)
         return redirect(url_for("location-hub"))
 
@@ -178,7 +186,6 @@ class LocationHubView(MethodView):
 
     @staticmethod
     def handle_travel_in_cardinal_direction(playthrough_name):
-
         session["destination_identifier"] = request.form.get("destination_identifier")
 
         return redirect(url_for("travel"))

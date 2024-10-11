@@ -87,7 +87,13 @@ class StoryHubView(MethodView):
                 ConfigManager().get_heavy_llm(),
             )
 
-            party_data_for_prompty_factory = PartyDataForPromptFactory(playthrough_name)
+            player_data_for_prompt_factory = PlayerDataForPromptFactory(
+                playthrough_name
+            )
+
+            party_data_for_prompty_factory = PartyDataForPromptFactory(
+                playthrough_name, player_data_for_prompt_factory
+            )
 
             place_descriptions_for_prompt_factory = PlaceDescriptionsForPromptFactory(
                 playthrough_name
@@ -133,7 +139,13 @@ class StoryHubView(MethodView):
                 ConfigManager().get_heavy_llm(),
             )
 
-            party_data_for_prompt_factory = PartyDataForPromptFactory(playthrough_name)
+            player_data_for_prompt_factory = PlayerDataForPromptFactory(
+                playthrough_name
+            )
+
+            party_data_for_prompt_factory = PartyDataForPromptFactory(
+                playthrough_name, player_data_for_prompt_factory
+            )
 
             place_descriptions_for_prompt_factory = PlaceDescriptionsForPromptFactory(
                 playthrough_name
@@ -172,7 +184,13 @@ class StoryHubView(MethodView):
                 playthrough_name
             )
 
-            party_data_for_prompt_factory = PartyDataForPromptFactory(playthrough_name)
+            player_data_for_prompt_factory = PlayerDataForPromptFactory(
+                playthrough_name
+            )
+
+            party_data_for_prompt_factory = PartyDataForPromptFactory(
+                playthrough_name, player_data_for_prompt_factory
+            )
 
             interesting_dilemmas_factory = InterestingDilemmasFactory(
                 produce_tool_response_strategy_factory,

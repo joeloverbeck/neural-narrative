@@ -4,8 +4,8 @@ from flask import session
 
 from src.abstracts.observer import Observer
 from src.characters.characters_manager import CharactersManager
-from src.services.voices_services import VoicesServices
 from src.services.web_service import WebService
+from src.voices.voice_manager import VoiceManager
 
 
 class WebDialogueObserver(Observer):
@@ -15,7 +15,7 @@ class WebDialogueObserver(Observer):
 
     def update(self, message: dict) -> None:
         # Generate the voice line and get the file path
-        file_name = VoicesServices().generate_voice_line(
+        file_name = VoiceManager().generate_voice_line(
             message["sender_name"], message["message_text"], message["voice_model"]
         )
 

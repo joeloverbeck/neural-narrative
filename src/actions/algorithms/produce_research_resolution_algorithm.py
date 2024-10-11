@@ -8,7 +8,7 @@ from src.characters.factories.store_character_memory_command_factory import (
 from src.constants import NARRATOR_VOICE_MODEL
 from src.dialogues.participants import Participants
 from src.playthrough_manager import PlaythroughManager
-from src.services.voices_services import VoicesServices
+from src.voices.voice_manager import VoiceManager
 
 
 class ProduceResearchResolutionAlgorithm:
@@ -19,6 +19,7 @@ class ProduceResearchResolutionAlgorithm:
         research_resolution_factory: ResearchResolutionFactory,
         store_character_memory_command_factory: StoreCharacterMemoryCommandFactory,
         playthrough_manager: Optional[PlaythroughManager] = None,
+        voice_manager: Optional[VoiceManager] = None,
     ):
         if not playthrough_name:
             raise ValueError("playthrough_name can't be empty.")
@@ -33,6 +34,7 @@ class ProduceResearchResolutionAlgorithm:
         self._playthrough_manager = playthrough_manager or PlaythroughManager(
             self._playthrough_name
         )
+        self._voice_manager = voice_manager or VoiceManager()
 
     def do_algorithm(self) -> ResearchResolutionProduct:
         product = cast(
@@ -60,13 +62,13 @@ class ProduceResearchResolutionAlgorithm:
         self._playthrough_manager.add_to_adventure(product.get_consequences() + "\n")
 
         # At this point we can also produce the voice lines
-        VoicesServices().generate_voice_line(
+        research_narrative_voice_line_url = self._voice_manager.generate_voice_line(
             "narrator", product.get_narrative(), NARRATOR_VOICE_MODEL
         )
-        VoicesServices().generate_voice_line(
+        research_outcome_voice_line_url = self._voice_manager.generate_voice_line(
             "narrator", product.get_outcome(), NARRATOR_VOICE_MODEL
         )
-        VoicesServices().generate_voice_line(
+        research_consequences_voice_line_url = self._voice_manager.generate_voice_line(
             "narrator", product.get_consequences(), NARRATOR_VOICE_MODEL
         )
 
