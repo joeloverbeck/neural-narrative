@@ -1,6 +1,10 @@
 from typing import Optional
 
+from src.characters.character import Character
 from src.characters.characters_manager import CharactersManager
+from src.characters.factories.character_information_factory import (
+    CharacterInformationFactory,
+)
 from src.characters.products.self_reflection_product import SelfReflectionProduct
 from src.constants import (
     SELF_REFLECTION_GENERATION_PROMPT_FILE,
@@ -19,6 +23,7 @@ class SelfReflectionFactory(BaseToolResponseProvider):
         playthrough_name: str,
         character_identifier: str,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
+        character_information_factory: CharacterInformationFactory,
         filesystem_manager: Optional[FilesystemManager] = None,
         characters_manager: Optional[CharactersManager] = None,
     ):
@@ -31,6 +36,7 @@ class SelfReflectionFactory(BaseToolResponseProvider):
 
         self._playthrough_name = playthrough_name
         self._character_identifier = character_identifier
+        self._character_information_factory = character_information_factory
 
         self._characters_manager = characters_manager or CharactersManager(
             self._playthrough_name
@@ -49,25 +55,10 @@ class SelfReflectionFactory(BaseToolResponseProvider):
         return SelfReflectionProduct(arguments.get("self_reflection"), is_valid=True)
 
     def get_prompt_kwargs(self) -> dict:
-        # Load the character memories.
-        memories = self._characters_manager.load_character_memories(
-            self._character_identifier
-        )
-
         # Get the character's name.
-        character_data = self._characters_manager.load_character_data(
-            self._character_identifier
-        )
+        character = Character(self._playthrough_name, self._character_identifier)
 
         return {
-            "name": character_data["name"],
-            "description": character_data["description"],
-            "personality": character_data["personality"],
-            "profile": character_data["profile"],
-            "likes": character_data["likes"],
-            "dislikes": character_data["dislikes"],
-            "speech_patterns": character_data["speech patterns"],
-            "health": character_data["health"],
-            "equipment": character_data["equipment"],
-            "memories": memories,
+            "name": character.name,
+            "character_information": self._character_information_factory.get_information(),
         }

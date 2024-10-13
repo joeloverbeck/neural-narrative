@@ -4,7 +4,12 @@ from flask.views import MethodView
 from src.characters.algorithms.produce_self_reflection_algorithm import (
     ProduceSelfReflectionAlgorithm,
 )
+from src.characters.character import Character
+from src.characters.character_memories import CharacterMemories
 from src.characters.characters_manager import CharactersManager
+from src.characters.factories.character_information_factory import (
+    CharacterInformationFactory,
+)
 from src.characters.factories.self_reflection_factory import SelfReflectionFactory
 from src.config.config_manager import ConfigManager
 from src.prompting.factories.openrouter_llm_client_factory import (
@@ -31,19 +36,20 @@ class CharacterMemoriesView(MethodView):
 
         if selected_character_identifier:
             # Load the selected character's data
-            selected_character = characters_manager.load_character_data(
-                selected_character_identifier
+            selected_character = Character(
+                playthrough_name, selected_character_identifier
             )
+
             # Load the character's memories
-            character_memories = characters_manager.load_character_memories(
-                selected_character_identifier
+            character_memories = CharacterMemories(playthrough_name).load_memories(
+                selected_character
             )
 
         for character in all_characters:
             character["selected"] = False
             if (
                 selected_character
-                and character["identifier"] == selected_character["identifier"]
+                and character["identifier"] == selected_character.identifier
             ):
                 character["selected"] = True
 
@@ -66,8 +72,6 @@ class CharacterMemoriesView(MethodView):
         if not playthrough_name:
             return redirect(url_for("index"))
 
-        characters_manager = CharactersManager(playthrough_name)
-
         action = request.form.get("action")
         character_identifier = request.form.get("character_identifier")
 
@@ -77,8 +81,8 @@ class CharacterMemoriesView(MethodView):
             # Normalize newlines to prevent issues with excessive newline characters
             new_memories = new_memories.replace("\r\n", "\n").strip()
 
-            characters_manager.save_character_memories(
-                character_identifier, new_memories
+            CharacterMemories(playthrough_name).save_memories(
+                Character(playthrough_name, character_identifier), new_memories
             )
 
             # Optionally, add a success message to the session
@@ -90,6 +94,10 @@ class CharacterMemoriesView(MethodView):
                 ConfigManager().get_heavy_llm(),
             )
 
+            character_information_factory = CharacterInformationFactory(
+                playthrough_name, character_identifier
+            )
+
             algorithm = ProduceSelfReflectionAlgorithm(
                 playthrough_name,
                 character_identifier,
@@ -97,6 +105,7 @@ class CharacterMemoriesView(MethodView):
                     playthrough_name,
                     character_identifier,
                     produce_tool_response_strategy_factory,
+                    character_information_factory,
                 ),
             )
 

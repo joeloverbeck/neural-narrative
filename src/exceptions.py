@@ -4,3 +4,7 @@ class PlaythroughAlreadyExistsException(Exception):
 
 class WorldTemplateNotFoundException(Exception):
     pass
+
+
+class CharacterGenerationFailedError(Exception):
+    pass

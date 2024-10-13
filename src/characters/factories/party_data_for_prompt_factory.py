@@ -1,5 +1,7 @@
 from typing import Optional, List
 
+from src.characters.character import Character
+from src.characters.character_memories import CharacterMemories
 from src.characters.characters_manager import CharactersManager
 from src.characters.factories.player_data_for_prompt_factory import (
     PlayerDataForPromptFactory,
@@ -14,6 +16,7 @@ class PartyDataForPromptFactory:
         player_data_for_prompt_factory: PlayerDataForPromptFactory,
         playthrough_manager: Optional[PlaythroughManager] = None,
         characters_manager: Optional[CharactersManager] = None,
+        character_memories: Optional[CharacterMemories] = None,
     ):
         if not playthrough_name:
             raise ValueError("playthrough_name can't be empty.")
@@ -27,24 +30,27 @@ class PartyDataForPromptFactory:
         self._characters_manager = characters_manager or CharactersManager(
             self._playthrough_name
         )
+        self._character_memories = character_memories or CharacterMemories(
+            self._playthrough_name
+        )
 
-    def _get_followers_data(self) -> List[dict]:
+    def _get_followers_data(self) -> List[Character]:
         follower_ids = self._playthrough_manager.get_followers()
-        return self._characters_manager.get_full_data_of_characters(follower_ids)
+        return self._characters_manager.get_characters(follower_ids)
 
     def _get_followers_information(self) -> str:
         followers_info = ""
 
         for follower in self._get_followers_data():
             followers_info += (
-                f"- Follower name: {follower['name']}\n"
-                f"- Description: {follower['description']}\n"
-                f"- Personality: {follower['personality']}\n"
-                f"- Profile: {follower['profile']}\n"
-                f"- Likes: {follower['likes']}\n"
-                f"- Dislikes: {follower['dislikes']}\n"
-                f"- Speech patterns: {follower['speech patterns']}\n"
-                f"- Equipment: {follower['equipment']}\n-----\n"
+                f"- Follower name: {follower.name}\n"
+                f"- Description: {follower.description}\n"
+                f"- Personality: {follower.personality}\n"
+                f"- Profile: {follower.profile}\n"
+                f"- Likes: {follower.likes}\n"
+                f"- Dislikes: {follower.dislikes}\n"
+                f"- Speech patterns: {follower.speech_patterns}\n"
+                f"- Equipment: {follower.equipment}\n-----\n"
             )
 
         return followers_info
@@ -96,9 +102,8 @@ class PartyDataForPromptFactory:
         followers_memories = []
 
         for follower in self._get_followers_data():
-            memories_str = self._characters_manager.load_character_memories(
-                follower["identifier"]
-            )
+            memories_str = self._character_memories.load_memories(follower)
+
             # Convert the memories string into a list
             memories_list = [
                 memory.strip()

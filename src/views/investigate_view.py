@@ -13,9 +13,13 @@ from src.actions.algorithms.store_action_resolution_algorithm import (
 from src.actions.factories.investigate_resolution_factory import (
     InvestigateResolutionFactory,
 )
+from src.characters.character import Character
 from src.characters.characters_manager import CharactersManager
 from src.characters.factories.party_data_for_prompt_factory import (
     PartyDataForPromptFactory,
+)
+from src.characters.factories.player_and_followers_information_factory import (
+    PlayerAndFollowersInformationFactory,
 )
 from src.characters.factories.player_data_for_prompt_factory import (
     PlayerDataForPromptFactory,
@@ -23,10 +27,12 @@ from src.characters.factories.player_data_for_prompt_factory import (
 from src.characters.factories.store_character_memory_command_factory import (
     StoreCharacterMemoryCommandFactory,
 )
+from src.characters.participants_manager import ParticipantsManager
 from src.config.config_manager import ConfigManager
 from src.maps.factories.place_descriptions_for_prompt_factory import (
     PlaceDescriptionsForPromptFactory,
 )
+from src.maps.factories.places_descriptions_factory import PlacesDescriptionsFactory
 from src.maps.map_manager import MapManager
 from src.playthrough_manager import PlaythroughManager
 from src.prompting.factories.openrouter_llm_client_factory import (
@@ -81,25 +87,31 @@ class InvestigateView(MethodView):
 
             facts_already_known = request.form.get("facts_already_known")
 
+            players_and_followers_information_factory = (
+                PlayerAndFollowersInformationFactory(party_data_for_prompt_factory)
+            )
+
+            places_descriptions_factory = PlacesDescriptionsFactory(
+                place_descriptions_for_prompt_factory
+            )
+
             investigate_resolution_factory = InvestigateResolutionFactory(
                 playthrough_name,
                 investigation_goal,
                 facts_already_known,
                 produce_tool_response_strategy_factory,
-                place_descriptions_for_prompt_factory,
-                party_data_for_prompt_factory,
+                places_descriptions_factory,
+                players_and_followers_information_factory,
             )
 
             store_character_memory_command_factory = StoreCharacterMemoryCommandFactory(
                 playthrough_name,
             )
 
-            characters_manager = CharactersManager(playthrough_name)
-
             # Initialize Participants
-            participants = (
-                characters_manager.initialize_participants_for_action_resolution()
-            )
+            participants = ParticipantsManager(
+                playthrough_name
+            ).initialize_participants()
 
             store_action_resolution_algorithm = StoreActionResolutionAlgorithm(
                 playthrough_name, participants, store_character_memory_command_factory
@@ -127,11 +139,14 @@ class InvestigateView(MethodView):
             current_place = map_manager.get_current_place_template()
 
             # Collect characters for modification
-            player_data = characters_manager.load_character_data(
-                PlaythroughManager(playthrough_name).get_player_identifier()
+            player = Character(
+                playthrough_name,
+                PlaythroughManager(playthrough_name).get_player_identifier(),
             )
 
-            character_list = [player_data] + characters_manager.get_followers()
+            characters_manager = CharactersManager(playthrough_name)
+
+            character_list = [player] + characters_manager.get_followers()
 
             return render_template(
                 "investigate.html",
@@ -159,15 +174,15 @@ class InvestigateView(MethodView):
                 health = request.form.get(f"health_{identifier}")
 
                 # Load current character data
-                character_data = characters_manager.load_character_data(identifier)
+                character = Character(playthrough_name, identifier)
 
                 # Update character data
-                character_data["description"] = description
-                character_data["equipment"] = equipment
-                character_data["health"] = health
+                character.update_data({"description": description})
+                character.update_data({"equipment": equipment})
+                character.update_data({"health": health})
 
                 # Save changes
-                characters_manager.save_character_data(identifier, character_data)
+                character.save()
 
             flash("Character changes saved successfully.", "success")
             return redirect(url_for("investigate"))

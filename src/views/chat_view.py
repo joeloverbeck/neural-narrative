@@ -1,4 +1,4 @@
-from flask import redirect, session, render_template, url_for, flash, request
+from flask import redirect, session, render_template, url_for, flash, request, jsonify
 from flask.views import MethodView
 
 from src.constants import MAX_DIALOGUE_ENTRIES_FOR_WEB
@@ -58,16 +58,33 @@ class ChatView(MethodView):
         dialogue_participants = session.get("participants")
 
         if not playthrough_name or not dialogue_participants:
-            return redirect(url_for("index"))
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return (
+                    jsonify(
+                        {
+                            "success": False,
+                            "error": "Session expired. Please start a new chat.",
+                        }
+                    ),
+                    400,
+                )
+            else:
+                return redirect(url_for("index"))
 
         dialogue = session.get("dialogue", [])
-        action = request.form.get("action")
+        action = request.form.get("submit_action")
         user_input = request.form.get("user_input")
 
         if action == "Send":
             if not user_input:
-                flash("Please enter a message.")
-                return redirect(url_for("chat"))
+                if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                    return (
+                        jsonify({"success": False, "error": "Please enter a message."}),
+                        400,
+                    )
+                else:
+                    flash("Please enter a message.")
+                    return redirect(url_for("chat"))
 
             dialogue_service = DialogueService()
 
@@ -77,7 +94,11 @@ class ChatView(MethodView):
                 session.pop("participants", None)
                 session.pop("dialogue", None)
                 session.pop("purpose", None)
-                return redirect(url_for("story-hub"))
+
+                if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                    return jsonify({"success": True, "goodbye": True}), 200
+                else:
+                    return redirect(url_for("story-hub"))
 
             dialogue.extend(messages)
             if len(dialogue) > MAX_DIALOGUE_ENTRIES_FOR_WEB:
@@ -85,7 +106,22 @@ class ChatView(MethodView):
 
             session["dialogue"] = dialogue
 
-            return redirect(url_for("chat"))
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                # Prepare messages to send back
+                messages_data = []
+                for msg in messages:
+                    messages_data.append(
+                        {
+                            "alignment": msg["alignment"],
+                            "message_text": msg["message_text"],
+                            "sender_name": msg["sender_name"],
+                            "sender_photo_url": msg["sender_photo_url"],
+                            "file_url": msg["file_url"] or "",
+                        }
+                    )
+                return jsonify({"success": True, "messages": messages_data}), 200
+            else:
+                return redirect(url_for("chat"))
 
         elif action == "Ambient narration":
             ambient_message = DialogueService().process_ambient_message()
@@ -96,8 +132,24 @@ class ChatView(MethodView):
                 dialogue = dialogue[-MAX_DIALOGUE_ENTRIES_FOR_WEB:]
 
             session["dialogue"] = dialogue
-            return redirect(url_for("chat"))
+
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                messages_data = [
+                    {
+                        "alignment": ambient_message["alignment"],
+                        "message_text": ambient_message["message_text"],
+                        "sender_name": ambient_message["sender_name"],
+                        "sender_photo_url": ambient_message["sender_photo_url"],
+                        "file_url": ambient_message["file_url"] or "",
+                    }
+                ]
+                return jsonify({"success": True, "messages": messages_data}), 200
+            else:
+                return redirect(url_for("chat"))
 
         else:
-            flash("Unknown action.")
-            return redirect(url_for("chat"))
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return jsonify({"success": False, "error": "Unknown action."}), 400
+            else:
+                flash("Unknown action.")
+                return redirect(url_for("chat"))

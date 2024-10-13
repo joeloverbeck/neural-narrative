@@ -35,20 +35,39 @@
         </div>
     </div>
 
+    <!-- Generate Guidelines Section -->
+    <div class="collapsible-section">
+        <button class="collapsible">
+            <i class="fas fa-lightbulb"></i> Generate Guidelines
+        </button>
+        <div class="content">
+            <form method="post" class="guideline-form ajax-form" id="generate-guidelines-form"
+                  action="{{ url_for('character-generation') }}" data-message-selector="#generate-guidelines-message">
+                <input name="submit_action" type="hidden" value="Generate Guidelines">
+                <button type="submit" class="action-button" id="generate-guidelines-button">
+                    <i class="fas fa-magic"></i> Generate Guidelines
+                </button>
+            </form>
+            <div id="generate-guidelines-message" class="message ajax-message" style="display: none;"></div>
+        </div>
+    </div>
+
     <!-- Guideline Textbox Section -->
     <div class="collapsible-section">
         <button class="collapsible active">
             <i class="fas fa-edit"></i> Guideline
         </button>
         <div class="content">
-            <form method="post" class="guideline-form">
+            <form method="post" class="guideline-form ajax-form" id="generate-character-form"
+                  action="{{ url_for('character-generation') }}" data-message-selector="#character-generation-message">
                 <label for="guideline_text">Guideline:</label>
                 <textarea id="guideline_text" name="guideline_text" rows="10">{{ selected_guideline }}</textarea>
-                <input name="action" type="hidden" value="Generate Character">
-                <button type="submit" class="action-button">
+                <input name="submit_action" type="hidden" value="Generate Character"> <!-- Renamed input -->
+                <button type="submit" class="action-button" id="generate-character-button">
                     <i class="fas fa-magic"></i> Generate Character
                 </button>
             </form>
+            <div id="character-generation-message" class="message ajax-message" style="display: none;"></div>
         </div>
     </div>
 
@@ -79,5 +98,6 @@
 
 {% block scripts %}
 <script src="{{ url_for('static', filename='collapsible.js') }}"></script>
+<script src="{{ url_for('static', filename='ajax-form-submit.js') }}"></script>
 <script src="{{ url_for('static', filename='character-generation.js') }}"></script>
 {% endblock %}

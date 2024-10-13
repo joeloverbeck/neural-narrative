@@ -1,14 +1,5 @@
-Given the following description of a world named {world_name}:
-{world_description}
-----
-Given the following description of a region inside {world_name}, named {region_name}:
-{region_description}
-----
-Given the following description of an area inside {region_name}, named {area_name}:
-{area_description}
-----
-{location_segment}
-Your task is the following: influenced by the above combination of places, write about ten entries that are guidelines for creating interesting characters based on the above combination of places. Those guidelines for character creation should fit the following categories: {categories}. Each guideline should be about two or three sentences that feature the following:
+{places_descriptions}
+Your task is the following: influenced by the above combination of places, write three entries that are guidelines for creating interesting characters based on the above combination of places. Those guidelines for character creation should fit the following categories: {categories}. Each guideline should be about two or three sentences that feature the following:
 - Specify the character's species or race, including any unique traits or abilities relevant to the setting.
 - Specify the character's approximate age.
 - Highlight key aspects of their personality, such as being brave, cunning, compassionate, or conflicted.
@@ -17,6 +8,5 @@ Your task is the following: influenced by the above combination of places, write
 - Outline their main objectives or what drives them, such as seeking revenge, knowledge, or redemption.
 Your goal should be to create the most fascinating breadth of possible characters that would fit the above combination of places.
 Important:
-- You are prohibited from numbering the list entries of guidelines.
 - Do not preface each guideline with "portray," "create," etc. Just write the guideline.
 - If you're going to use quotes in any of the guidelines, use single quotes.

@@ -1,8 +1,10 @@
+from typing import Optional
+
 from src.abstracts.command import Command
-from src.characters.characters_manager import CharactersManager
-from src.characters.commands.generate_character_generation_guidelines_command import (
-    GenerateCharacterGenerationGuidelinesCommand,
+from src.characters.algorithms.generate_character_generation_guidelines_algorithm import (
+    GenerateCharacterGenerationGuidelinesAlgorithm,
 )
+from src.characters.character_guidelines_manager import CharacterGuidelinesManager
 from src.characters.factories.character_generation_guidelines_factory import (
     CharacterGenerationGuidelinesFactory,
 )
@@ -18,10 +20,10 @@ class VisitPlaceCommand(Command):
         playthrough_name: str,
         place_identifier: str,
         character_generation_guidelines_factory: CharacterGenerationGuidelinesFactory,
-        playthrough_manager: PlaythroughManager = None,
-        map_manager: MapManager = None,
-        time_manager: TimeManager = None,
-        characters_manager: CharactersManager = None,
+        playthrough_manager: Optional[PlaythroughManager] = None,
+        map_manager: Optional[MapManager] = None,
+        time_manager: Optional[TimeManager] = None,
+        character_guidelines_manager: Optional[CharacterGuidelinesManager] = None,
     ):
         if not playthrough_name:
             raise ValueError("playthrough_name can't be empty.")
@@ -39,8 +41,8 @@ class VisitPlaceCommand(Command):
         )
         self._map_manager = map_manager or MapManager(self._playthrough_name)
         self._time_manager = time_manager or TimeManager(self._playthrough_name)
-        self._characters_manager = characters_manager or CharactersManager(
-            self._playthrough_name
+        self._character_guidelines_manager = (
+            character_guidelines_manager or CharacterGuidelinesManager()
         )
 
     def _handle_place_is_not_visited(self):
@@ -51,18 +53,18 @@ class VisitPlaceCommand(Command):
             self._place_identifier
         )
 
-        if not self._characters_manager.are_there_character_generation_guidelines_for_place(
+        if not self._character_guidelines_manager.guidelines_exist(
             world_name,
             places_templates_parameter.get_region_template(),
             places_templates_parameter.get_area_template(),
             places_templates_parameter.get_location_template(),
         ):
             # We need to create the character generation guidelines for this location.
-            GenerateCharacterGenerationGuidelinesCommand(
+            GenerateCharacterGenerationGuidelinesAlgorithm(
                 self._playthrough_name,
                 self._place_identifier,
                 self._character_generation_guidelines_factory,
-            ).execute()
+            ).do_algorithm()
 
         # Now set the place as visited.
         self._map_manager.set_as_visited(self._place_identifier)

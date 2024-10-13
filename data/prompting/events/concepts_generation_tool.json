@@ -2,37 +2,17 @@
   "type": "function",
   "function": {
     "name": "generate_story_concepts",
-    "description": "generate five magnificent concepts for full stories.",
+    "description": "generate a magnificent concept for a full story.",
     "parameters": {
       "type": "object",
       "properties": {
-        "concept_1": {
-          "type": "string",
-          "description": "A magnificent concept for a full story. Follow the provided instructions."
-        },
-        "concept_2": {
-          "type": "string",
-          "description": "A magnificent concept for a full story. Follow the provided instructions."
-        },
-        "concept_3": {
-          "type": "string",
-          "description": "A magnificent concept for a full story. Follow the provided instructions."
-        },
-        "concept_4": {
-          "type": "string",
-          "description": "A magnificent concept for a full story. Follow the provided instructions."
-        },
-        "concept_5": {
+        "concept": {
           "type": "string",
           "description": "A magnificent concept for a full story. Follow the provided instructions."
         }
       },
       "required": [
-        "concept_1",
-        "concept_2",
-        "concept_3",
-        "concept_4",
-        "concept_5"
+        "concept"
       ]
     }
   }

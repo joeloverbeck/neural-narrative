@@ -1,8 +1,8 @@
 from typing import Optional
 
 from src.characters.characters_manager import CharactersManager
-from src.characters.factories.player_data_for_prompt_factory import (
-    PlayerDataForPromptFactory,
+from src.characters.factories.character_information_factory import (
+    CharacterInformationFactory,
 )
 from src.constants import (
     PLACE_DESCRIPTION_PROMPT_FILE,
@@ -32,7 +32,7 @@ class ConcreteFilteredPlaceDescriptionGenerationFactory(
         player_identifier: str,
         place_identifier: str,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
-        player_data_for_prompt_factory: PlayerDataForPromptFactory,
+        character_information_factory: CharacterInformationFactory,
         map_manager: MapManager = None,
         characters_manager: CharactersManager = None,
         filesystem_manager: FilesystemManager = None,
@@ -50,7 +50,7 @@ class ConcreteFilteredPlaceDescriptionGenerationFactory(
         self._playthrough_name = playthrough_name
         self._player_identifier = player_identifier
         self._place_identifier = place_identifier
-        self._player_data_for_prompt_factory = player_data_for_prompt_factory
+        self._character_information_factory = character_information_factory
 
         self._map_manager = map_manager or MapManager(self._playthrough_name)
         self._characters_manager = characters_manager or CharactersManager(
@@ -75,10 +75,6 @@ class ConcreteFilteredPlaceDescriptionGenerationFactory(
 
         place_data = place_full_data[f"{place_type.value}_data"]
 
-        player_data_for_prompt = (
-            self._player_data_for_prompt_factory.create_player_data_for_prompt()
-        )
-
         data_for_prompt = {
             "hour": self._time_manager.get_hour(),
             "time_of_the_day": self._time_manager.get_time_of_the_day(),
@@ -87,10 +83,10 @@ class ConcreteFilteredPlaceDescriptionGenerationFactory(
             "place_description": place_data["description"],
         }
 
-        data_for_prompt.update(player_data_for_prompt.get_player_data_for_prompt())
-
         data_for_prompt.update(
-            {"player_memories": player_data_for_prompt.get_player_memories()}
+            {
+                "character_information": self._character_information_factory.get_information()
+            }
         )
 
         return data_for_prompt

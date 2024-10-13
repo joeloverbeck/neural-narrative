@@ -32,24 +32,8 @@ Ensure consistency with the established world setting and the player's character
 Provided Information:
 
 Time of Day: {hour} {time_of_day}
-World Description: {world_description}
-Region Description: {region_description}
-Area Description: {area_description}
-{location_description}
-Player and Followers Information:
-Name: {player_name}
-Description: {player_description}
-Personality: {player_personality}
-Profile: {player_profile}
-Likes: {player_likes}
-Dislikes: {player_dislikes}
-Speech patterns: {player_speech_patterns}
-Health: {player_health}
-Equipment: {player_equipment}
------
-{followers_information}
-Memories:
-{combined_memories}
+{places_descriptions}
+{player_and_followers_information}
 
 Research Goal: {research_goal}
 

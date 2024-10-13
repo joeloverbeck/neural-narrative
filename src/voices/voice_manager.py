@@ -84,13 +84,9 @@ class VoiceManager:
                 current_params = w.getparams()
 
                 # Print current parameters for debugging
-                print(f"Audio parameters for {wav_file}: {current_params}")
-
                 # Initialize parameters with the first file's settings
                 if params is None:
                     params = current_params
-                    print(f"Using audio parameters from: {wav_file}")
-
                     # Calculate silent frames for the given silence duration
                     silence_frames = b"\x00" * int(
                         params.framerate
@@ -119,7 +115,7 @@ class VoiceManager:
             out_wav.setparams(params)  # Use the first file's parameters
             for frames in data:
                 out_wav.writeframes(frames)
-            print(f"Successfully created {output_file}")
+            logger.info(f"Successfully created '%s'.", output_file)
 
     def generate_voice_line(
         self, character_name: str, text: str, voice_model: str

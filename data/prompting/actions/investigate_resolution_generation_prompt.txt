@@ -32,31 +32,15 @@ Ensure consistency with the established world setting and the player's character
 Provided Information:
 
 Time of Day: {hour} {time_of_day}
-World Description: {world_description}
-Region Description: {region_description}
-Area Description: {area_description} {location_description}
+{places_descriptions}
 Facts Already Known: {facts_already_known}
-Player and Followers Information:
-
-Name: {player_name}
-Description: {player_description}
-Personality: {player_personality}
-Profile: {player_profile}
-Likes: {player_likes}
-Dislikes: {player_dislikes}
-Speech Patterns: {player_speech_patterns}
-Health: {player_health}
-Equipment: {player_equipment}
------
-{followers_information}
-Memories:
-{combined_memories}
+{player_and_followers_information}
 
 Investigation Goal: {investigation_goal}
 
 Example Format:
 
-"With determination etched on their face, [Player Name] quietly quietly began searching for clues..."
+"With determination etched on their face, [Player Name] quietly began searching for clues..."
 
 Your Task:
 

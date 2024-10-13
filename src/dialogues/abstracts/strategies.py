@@ -1,6 +1,7 @@
 from abc import abstractmethod, ABC
 from typing import Protocol, List
 
+from src.characters.character import Character
 from src.dialogues.abstracts.factory_products import (
     PlayerInputProduct,
     SpeechDataProduct,
@@ -48,7 +49,7 @@ class PromptFormatterForDialogueStrategy(ABC):
 
 class MessageDataProducerForIntroducePlayerInputIntoDialogueStrategy(Protocol):
     def produce_message_data(
-        self, player_character_data: dict, player_input_product: PlayerInputProduct
+        self, player_character: Character, player_input_product: PlayerInputProduct
     ) -> dict:
         pass
 

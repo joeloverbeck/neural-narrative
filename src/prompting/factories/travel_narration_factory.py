@@ -1,6 +1,6 @@
 from src.characters.characters_manager import CharactersManager
-from src.characters.factories.party_data_for_prompt_factory import (
-    PartyDataForPromptFactory,
+from src.characters.factories.player_and_followers_information_factory import (
+    PlayerAndFollowersInformationFactory,
 )
 from src.constants import (
     TRAVEL_NARRATION_PROMPT_FILE,
@@ -26,7 +26,7 @@ class TravelNarrationFactory(BaseToolResponseProvider):
         playthrough_name: str,
         destination_identifier: str,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
-        party_data_for_prompt_factory: PartyDataForPromptFactory,
+        player_and_followers_information_factory: PlayerAndFollowersInformationFactory,
         characters_manager: CharactersManager = None,
         playthrough_manager: PlaythroughManager = None,
         filesystem_manager: FilesystemManager = None,
@@ -41,7 +41,9 @@ class TravelNarrationFactory(BaseToolResponseProvider):
 
         self._playthrough_name = playthrough_name
         self._destination_identifier = destination_identifier
-        self._party_data_for_prompt_factory = party_data_for_prompt_factory
+        self._player_and_followers_information_factory = (
+            player_and_followers_information_factory
+        )
 
         self._characters_manager = characters_manager or CharactersManager(
             playthrough_name
@@ -75,7 +77,9 @@ class TravelNarrationFactory(BaseToolResponseProvider):
         }
 
         prompt_data.update(
-            self._party_data_for_prompt_factory.get_party_data_for_prompt()
+            {
+                "player_and_followers_information": self._player_and_followers_information_factory.get_information()
+            }
         )
 
         return prompt_data

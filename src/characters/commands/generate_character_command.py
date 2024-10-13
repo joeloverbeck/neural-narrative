@@ -8,6 +8,7 @@ from src.characters.factories.store_generated_character_command_factory import (
 from src.characters.providers.character_generation_tool_response_provider import (
     CharacterGenerationToolResponseProvider,
 )
+from src.exceptions import CharacterGenerationFailedError
 from src.images.factories.generate_character_image_command_factory import (
     GenerateCharacterImageCommandFactory,
 )
@@ -58,7 +59,8 @@ class GenerateCharacterCommand(Command):
             logger.error(
                 f"The LLM was unable to generate a character: {llm_tool_response_product.get_error()}"
             )
-            return
+            # Raise error so that the user, which is the client view, catches it.
+            raise CharacterGenerationFailedError
 
         self._store_generate_character_command_factory.create_store_generated_character_command(
             llm_tool_response_product.get()

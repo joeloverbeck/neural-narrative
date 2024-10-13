@@ -1,19 +1,23 @@
+import logging
 import random
-from typing import Dict, Optional
+from typing import Optional
 
 from src.constants import VOICE_MODELS_FILE
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.voices.products.matching_voice_model_product import MatchingVoiceModelProduct
+from src.voices.voice_attributes import VoiceAttributes
+
+logger = logging.getLogger(__name__)
 
 
 class MatchingVoiceModelProvider:
 
     def __init__(
         self,
-        character_voice_attributes: Dict[str, str],
+        voice_attributes: VoiceAttributes,
         filesystem_manager: Optional[FilesystemManager] = None,
     ):
-        self._character_voice_attributes = character_voice_attributes
+        self._voice_attributes = voice_attributes
 
         self._filesystem_manager = filesystem_manager or FilesystemManager()
 
@@ -24,60 +28,36 @@ class MatchingVoiceModelProvider:
         :return: The product, that if valid, will indicate a matching speaker.
         """
         # Extract character's voice attributes
-        voice_gender = self._character_voice_attributes.get("voice_gender")
-        voice_age = self._character_voice_attributes.get("voice_age")
-        voice_emotion = self._character_voice_attributes.get("voice_emotion")
-        voice_tempo = self._character_voice_attributes.get("voice_tempo")
-        voice_volume = self._character_voice_attributes.get("voice_volume")
-        voice_texture = self._character_voice_attributes.get("voice_texture")
-        voice_tone = self._character_voice_attributes.get("voice_tone")
-        voice_style = self._character_voice_attributes.get("voice_style")
-        voice_personality = self._character_voice_attributes.get("voice_personality")
-        voice_special_effects = self._character_voice_attributes.get(
-            "voice_special_effects"
-        )
+        voice_gender = self._voice_attributes.voice_gender
+        voice_age = self._voice_attributes.voice_age
+        voice_emotion = self._voice_attributes.voice_emotion
+        voice_tempo = self._voice_attributes.voice_tempo
+        voice_volume = self._voice_attributes.voice_volume
+        voice_texture = self._voice_attributes.voice_texture
+        voice_tone = self._voice_attributes.voice_tone
+        voice_style = self._voice_attributes.voice_style
+        voice_personality = self._voice_attributes.voice_personality
+        voice_special_effects = self._voice_attributes.voice_special_effects
 
-        # None of the voice attributes should be invalid.
-        if not voice_gender:
-            return MatchingVoiceModelProduct(
-                None, is_valid=False, error="Invalid voice_gender."
-            )
-        if not voice_age:
-            return MatchingVoiceModelProduct(
-                None, is_valid=False, error="Invalid voice_age."
-            )
-        if not voice_emotion:
-            return MatchingVoiceModelProduct(
-                None, is_valid=False, error="Invalid voice_emotion."
-            )
-        if not voice_tempo:
-            return MatchingVoiceModelProduct(
-                None, is_valid=False, error="Invalid voice_tempo."
-            )
-        if not voice_volume:
-            return MatchingVoiceModelProduct(
-                None, is_valid=False, error="Invalid voice_volume."
-            )
-        if not voice_texture:
-            return MatchingVoiceModelProduct(
-                None, is_valid=False, error="Invalid voice_texture."
-            )
-        if not voice_tone:
-            return MatchingVoiceModelProduct(
-                None, is_valid=False, error="Invalid voice_tone."
-            )
-        if not voice_style:
-            return MatchingVoiceModelProduct(
-                None, is_valid=False, error="Invalid voice_style."
-            )
-        if not voice_personality:
-            return MatchingVoiceModelProduct(
-                None, is_valid=False, error="Invalid voice_personality."
-            )
-        if not voice_special_effects:
-            return MatchingVoiceModelProduct(
-                None, is_valid=False, error="Invalid voice_special_effects."
-            )
+        # Validate that none of the required voice attributes are invalid.
+        attribute_checks = {
+            "voice_gender": voice_gender,
+            "voice_age": voice_age,
+            "voice_emotion": voice_emotion,
+            "voice_tempo": voice_tempo,
+            "voice_volume": voice_volume,
+            "voice_texture": voice_texture,
+            "voice_tone": voice_tone,
+            "voice_style": voice_style,
+            "voice_personality": voice_personality,
+            "voice_special_effects": voice_special_effects,
+        }
+
+        for attr_name, attr_value in attribute_checks.items():
+            if not attr_value:
+                return MatchingVoiceModelProduct(
+                    None, is_valid=False, error=f"Invalid {attr_name}."
+                )
 
         # Initialize the list of possible speakers
         possible_voice_models = self._filesystem_manager.load_existing_or_new_json_file(
@@ -119,7 +99,7 @@ class MatchingVoiceModelProvider:
 
                 if is_required:
                     # Stop further filtering and break the loop
-                    print(f"Failed for {attribute_name}")
+                    logger.info(f"Matching voice model failed at {attribute_name}.")
                     break
                 else:
                     # For optional attribute, continue with previous_possible_voice_models

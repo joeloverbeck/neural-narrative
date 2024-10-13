@@ -8,6 +8,7 @@ from src.identifiers_manager import IdentifiersManager
 from src.voices.algorithms.match_voice_data_to_voice_model_algorithm import (
     MatchVoiceDataToVoiceModelAlgorithm,
 )
+from src.voices.voice_attributes import VoiceAttributes
 
 logger = logging.getLogger(__name__)
 
@@ -59,6 +60,7 @@ class StoreGeneratedCharacterCommand(Command):
             "profile": self._character_data["profile"],
             "likes": self._character_data["likes"],
             "dislikes": self._character_data["dislikes"],
+            "secrets": self._character_data["secrets"],
             "first message": self._character_data["first message"],
             "speech patterns": self._compose_speech_patterns(),
             "health": self._character_data["health"],
@@ -74,7 +76,18 @@ class StoreGeneratedCharacterCommand(Command):
             "voice_personality": self._character_data["voice_personality"],
             "voice_special_effects": self._character_data["voice_special_effects"],
             "voice_model": self._match_voice_data_to_voice_model_algorithm.match(
-                self._character_data
+                VoiceAttributes(
+                    self._character_data["voice_gender"],
+                    self._character_data["voice_age"],
+                    self._character_data["voice_emotion"],
+                    self._character_data["voice_tempo"],
+                    self._character_data["voice_volume"],
+                    self._character_data["voice_texture"],
+                    self._character_data["voice_tone"],
+                    self._character_data["voice_style"],
+                    self._character_data["voice_personality"],
+                    self._character_data["voice_special_effects"],
+                )
             ),
         }
 

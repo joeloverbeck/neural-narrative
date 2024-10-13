@@ -1,9 +1,10 @@
 import logging
 from typing import cast, Optional
 
+from src.characters.character import Character
 from src.characters.characters_manager import CharactersManager
 from src.characters.factories.self_reflection_factory import SelfReflectionFactory
-from src.characters.products.ProduceSelfReflectionProduct import (
+from src.characters.products.produce_self_reflection_product import (
     ProduceSelfReflectionProduct,
 )
 from src.characters.products.self_reflection_product import SelfReflectionProduct
@@ -44,22 +45,20 @@ class ProduceSelfReflectionAlgorithm:
             )
 
         # Character data
-        character_data = self._characters_manager.load_character_data(
-            self._character_identifier
-        )
+        character = Character(self._playthrough_name, self._character_identifier)
 
         # Append the memory to the existing memories.
         self._filesystem_manager.append_to_file(
             self._filesystem_manager.get_file_path_to_character_memories(
                 self._playthrough_name,
                 self._character_identifier,
-                character_data["name"],
+                character.name,
             ),
             "\n" + product.get(),
         )
 
         voice_line_file_name = self._voice_manager.generate_voice_line(
-            character_data["name"], product.get(), character_data["voice_model"]
+            character.name, product.get(), character.voice_model
         )
 
         logger.info("Generated the self-reflection.")

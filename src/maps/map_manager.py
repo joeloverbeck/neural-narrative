@@ -273,7 +273,6 @@ class MapManager:
         if current_place_type == PlaceType.LOCATION:
             return places_parameter.get_area_template()
         if current_place_type == PlaceType.AREA:
-            print(places_parameter.get_area_template())
             return places_parameter.get_region_template()
 
         raise ValueError(

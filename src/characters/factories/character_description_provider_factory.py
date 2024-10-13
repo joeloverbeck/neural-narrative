@@ -1,3 +1,4 @@
+from src.characters.character import Character
 from src.characters.providers.character_description_provider import (
     CharacterDescriptionProvider,
 )
@@ -14,10 +15,7 @@ class CharacterDescriptionProviderFactory:
             produce_tool_response_strategy_factory
         )
 
-    def create_provider(self, character_data: dict):
-        if "health" not in character_data:
-            raise ValueError("health should have been present in character_data.")
-
+    def create_provider(self, character: Character):
         return CharacterDescriptionProvider(
-            character_data, self._produce_tool_response_strategy_factory
+            character, self._produce_tool_response_strategy_factory
         )

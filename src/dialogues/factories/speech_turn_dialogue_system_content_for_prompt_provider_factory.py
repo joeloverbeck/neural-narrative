@@ -1,3 +1,4 @@
+from src.characters.character import Character
 from src.constants import SPEECH_GENERATOR_TOOL_FILE
 from src.dialogues.factories.prompt_formatter_for_dialogue_strategy_factory import (
     PromptFormatterForDialogueStrategyFactory,
@@ -18,12 +19,12 @@ class SpeechTurnDialogueSystemContentForPromptProviderFactory:
         )
 
     def create_speech_turn_dialogue_system_content_for_prompt_provider(
-        self, participants: Participants, character_data: dict, memories: str
+        self, participants: Participants, character: Character, memories: str
     ) -> SpeechTurnDialogueSystemContentForPromptProvider:
         return SpeechTurnDialogueSystemContentForPromptProvider(
-            character_data,
+            character,
             SPEECH_GENERATOR_TOOL_FILE,
             self._prompt_formatter_for_dialogue_strategy_factory.create_prompt_formatter_for_dialogue_strategy_factory(
-                participants, character_data, memories
+                participants, character, memories
             ),
         )

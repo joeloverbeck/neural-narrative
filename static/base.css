@@ -34,6 +34,39 @@ input[type="submit"]:hover {
 .current-place {
     text-align: right;
 }
+
+/* Message styles */
+.message {
+    max-width: 600px;
+    margin: 20px auto;
+    text-align: left;
+    padding: 10px;
+    border-left: 5px solid;
+    display: none; /* Initially hidden */
+}
+
+.message.success {
+    background-color: #d4edda;
+    border-color: #28a745;
+    color: #155724;
+}
+
+.message.error {
+    background-color: #f8d7da;
+    border-color: #dc3545;
+    color: #721c24;
+}
+
+/* Hide the section */
+.hidden-section {
+    display: none;
+}
+
+/* Show the section */
+.visible-section {
+    display: block;
+}
+
 @media (max-width: 600px) {
     .container {
         max-width: 100%;

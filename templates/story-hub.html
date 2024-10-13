@@ -20,27 +20,44 @@ Story Hub
         </button>
         <div class="content">
             {% if concepts %}
+            <!-- Concepts list -->
             <div class="concepts-list">
                 {% for concept in concepts %}
-                <form action="{{ url_for('story-hub') }}" method="post" class="item-form">
-                    <input type="hidden" name="action" value="delete_concept">
-                    <input type="hidden" name="item_index" value="{{ loop.index0 }}">
-                    <button type="submit" class="post-it">
-                        <i class="fas fa-thumbtack"></i> <!-- Pin Icon -->
-                        <p>{{ concept }}</p>
-                    </button>
-                </form>
+                <div class="concept-item" onclick="openModal({{ loop.index0 }})">
+                    <h3>Concept {{ loop.index }}</h3>
+                    <p>{{ concept[:150] }}...</p>
+                </div>
                 {% endfor %}
             </div>
+
+            <!-- Modals -->
+            {% for concept in concepts %}
+            <div id="modal-{{ loop.index0 }}" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeModal({{ loop.index0 }})">&times;</span>
+                    <h2>Concept {{ loop.index }}</h2>
+                    <p>{{ concept }}</p>
+                    <form action="{{ url_for('story-hub') }}" method="post">
+                        <input type="hidden" name="submit_action" value="delete_concept">
+                        <input type="hidden" name="item_index" value="{{ loop.index0 }}">
+                        <button type="submit" class="delete-button">
+                            <i class="fas fa-trash-alt"></i> Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
             {% else %}
             <p>No concepts generated yet.</p>
             {% endif %}
-            <form action="{{ url_for('story-hub') }}" method="post">
-                <input type="hidden" name="action" value="generate_concepts">
-                <button type="submit" class="action-button">
+
+            <form method="post" class="ajax-form" action="{{ url_for('story-hub') }}">
+                <input type="hidden" name="submit_action" value="generate_concepts">
+                <button type="submit" class="action-button" id="generate-concepts-button">
                     <i class="fas fa-lightbulb"></i> Generate Concepts
                 </button>
             </form>
+            <div id="concepts-generation-message" class="message ajax-message" style="display: none;"></div>
         </div>
     </div>
 
@@ -54,7 +71,7 @@ Story Hub
             <div class="concepts-list">
                 {% for situation in interesting_situations %}
                 <form action="{{ url_for('story-hub') }}" method="post" class="item-form">
-                    <input type="hidden" name="action" value="delete_situation">
+                    <input type="hidden" name="submit_action" value="delete_situation">
                     <input type="hidden" name="item_index" value="{{ loop.index0 }}">
                     <button type="submit" class="post-it">
                         <i class="fas fa-thumbtack"></i> <!-- Pin Icon -->
@@ -66,12 +83,14 @@ Story Hub
             {% else %}
             <p>No interesting situations generated yet.</p>
             {% endif %}
-            <form action="{{ url_for('story-hub') }}" method="post">
-                <input type="hidden" name="action" value="generate_situations">
-                <button type="submit" class="action-button">
+            <form method="post" class="ajax-form" action="{{ url_for('story-hub') }}">
+                <input type="hidden" name="submit_action" value="generate_situations">
+                <button type="submit" class="action-button" id="generate-interesting-situations-button">
                     <i class="fas fa-exclamation-circle"></i> Generate Interesting Situations
                 </button>
             </form>
+            <div id="interesting-situations-generation-message" class="message ajax-message"
+                 style="display: none;"></div>
         </div>
     </div>
 
@@ -85,7 +104,7 @@ Story Hub
             <div class="concepts-list">
                 {% for dilemma in interesting_dilemmas %}
                 <form action="{{ url_for('story-hub') }}" method="post" class="item-form">
-                    <input type="hidden" name="action" value="delete_dilemma">
+                    <input type="hidden" name="submit_action" value="delete_dilemma">
                     <input type="hidden" name="item_index" value="{{ loop.index0 }}">
                     <button type="submit" class="post-it">
                         <i class="fas fa-thumbtack"></i> <!-- Pin Icon -->
@@ -97,12 +116,14 @@ Story Hub
             {% else %}
             <p>No interesting dilemmas generated yet.</p>
             {% endif %}
-            <form action="{{ url_for('story-hub') }}" method="post">
-                <input type="hidden" name="action" value="generate_dilemmas">
-                <button type="submit" class="action-button">
+            <form method="post" class="ajax-form" action="{{ url_for('story-hub') }}">
+                <input type="hidden" name="submit_action" value="generate_dilemmas">
+                <button type="submit" class="action-button" id="generate-interesting-dilemmas-button">
                     <i class="fas fa-question-circle"></i> Generate Interesting Dilemmas
                 </button>
             </form>
+            <div id="interesting-dilemmas-generation-message" class="message ajax-message"
+                 style="display: none;"></div>
         </div>
     </div>
 
@@ -116,7 +137,7 @@ Story Hub
             <div class="concepts-list">
                 {% for goal in goals %}
                 <form action="{{ url_for('story-hub') }}" method="post" class="item-form">
-                    <input type="hidden" name="action" value="delete_goal">
+                    <input type="hidden" name="submit_action" value="delete_goal">
                     <input type="hidden" name="item_index" value="{{ loop.index0 }}">
                     <button type="submit" class="post-it">
                         <i class="fas fa-thumbtack"></i> <!-- Pin Icon -->
@@ -128,12 +149,14 @@ Story Hub
             {% else %}
             <p>No goals generated yet.</p>
             {% endif %}
-            <form action="{{ url_for('story-hub') }}" method="post">
-                <input type="hidden" name="action" value="generate_goals">
-                <button type="submit" class="action-button">
+            <form method="post" class="ajax-form" action="{{ url_for('story-hub') }}">
+                <input type="hidden" name="submit_action" value="generate_goals">
+                <button type="submit" class="action-button" id="generate-goals-button">
                     <i class="fas fa-flag-checkered"></i> Generate Goals
                 </button>
             </form>
+            <div id="goals-generation-message" class="message ajax-message"
+                 style="display: none;"></div>
         </div>
     </div>
 
@@ -161,5 +184,6 @@ Story Hub
 
 {% block scripts %}
 <script src="{{ url_for('static', filename='collapsible.js') }}"></script>
+<script src="{{ url_for('static', filename='ajax-form-submit.js') }}"></script>
 <script src="{{ url_for('static', filename='story-hub.js') }}"></script>
 {% endblock %}

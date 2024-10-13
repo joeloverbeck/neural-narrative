@@ -92,7 +92,7 @@
     "AUTHORITATIVE",
     "SMOOTH",
     "FORMAL",
-    "CYNICAL/PESSIMISTIC",
+    "WORLD-WEARY",
     "NO SPECIAL EFFECTS"
   ],
   "femalekhajiit": [
@@ -508,6 +508,7 @@
     "MIDDLE-AGED",
     "CALM",
     "SLOW",
+    "NORMAL VOLUME",
     "GRAVELLY/RASPY",
     "WARM",
     "FORMAL",
@@ -546,7 +547,7 @@
     "LOUD",
     "GRAVELLY/RASPY",
     "WARM",
-    "HUMOROUS",
+    "HUMOROUS/SARCASTIC",
     "ECCENTRIC",
     "NO SPECIAL EFFECTS"
   ],
@@ -632,6 +633,126 @@
     "NEUTRAL",
     "INSTRUCTIONAL",
     "STOIC",
+    "NO SPECIAL EFFECTS"
+  ],
+  "npcfglory": [
+    "FEMALE",
+    "YOUNG ADULT/ADULT",
+    "CONFIDENT/DETERMINED",
+    "MODERATE",
+    "NORMAL VOLUME",
+    "SMOOTH",
+    "NEUTRAL",
+    "INTENSE/DRAMATIC",
+    "NOBLE",
+    "NO SPECIAL EFFECTS"
+  ],
+  "npcmzeke": [
+    "MALE",
+    "YOUNG ADULT/ADULT",
+    "HOPEFUL",
+    "MODERATE",
+    "NORMAL VOLUME",
+    "SMOOTH",
+    "WARM",
+    "CASUAL",
+    "OPTIMISTIC",
+    "NO SPECIAL EFFECTS"
+  ],
+  "npcmprescottsoldier": [
+    "MALE",
+    "YOUNG ADULT/ADULT",
+    "CALM",
+    "MODERATE",
+    "NORMAL VOLUME",
+    "NASAL",
+    "NEUTRAL",
+    "MONOTONE",
+    "NOBLE",
+    "NO SPECIAL EFFECTS"
+  ],
+  "npcmnickvalentine": [
+    "MALE",
+    "MIDDLE-AGED",
+    "EXCITED",
+    "SLOW",
+    "LOUD",
+    "NASAL",
+    "NEUTRAL",
+    "INTENSE/DRAMATIC",
+    "ADVENTUROUS/DRIVEN",
+    "NO SPECIAL EFFECTS"
+  ],
+  "npcmshaun60": [
+    "MALE",
+    "MIDDLE-AGED",
+    "CALM",
+    "MODERATE",
+    "SOFT-SPOKEN/QUIET",
+    "GRAVELLY/RASPY",
+    "NEUTRAL",
+    "FORMAL",
+    "CHARMING",
+    "NO SPECIAL EFFECTS"
+  ],
+  "npcmdavies": [
+    "MALE",
+    "YOUNG ADULT/ADULT",
+    "CONFIDENT/DETERMINED",
+    "SLOW",
+    "NORMAL VOLUME",
+    "GRAVELLY/RASPY",
+    "NEUTRAL",
+    "INTENSE/DRAMATIC",
+    "SLY",
+    "NO SPECIAL EFFECTS"
+  ],
+  "malecommoner": [
+    "MALE",
+    "YOUNG ADULT/ADULT",
+    "CALM",
+    "MODERATE",
+    "NORMAL VOLUME",
+    "SMOOTH",
+    "NEUTRAL",
+    "FORMAL",
+    "NOBLE",
+    "NO SPECIAL EFFECTS"
+  ],
+  "odahviing": [
+    "MALE",
+    "MIDDLE-AGED",
+    "CALM",
+    "SLOW",
+    "LOUD",
+    "GUTTURAL",
+    "NEUTRAL",
+    "INTENSE/DRAMATIC",
+    "STOIC",
+    "DEMON-LIKE"
+  ],
+  "npcmfensphantom": [
+    "MALE",
+    "YOUNG ADULT/ADULT",
+    "CALM",
+    "SLOW",
+    "NORMAL VOLUME",
+    "GUTTURAL",
+    "NEUTRAL",
+    "FORMAL",
+    "MYSTERIOUS",
+    "NO SPECIAL EFFECTS"
+  ],
+  "amaleevoice": [
+    "FEMALE",
+    "TEENAGE",
+    "HOPEFUL",
+    "MODERATE",
+    "NORMAL VOLUME",
+    "WHISPERY/AIRY",
+    "NEUTRAL",
+    "CASUAL",
+    "OPTIMISTIC",
     "NO SPECIAL EFFECTS"
   ]
 }

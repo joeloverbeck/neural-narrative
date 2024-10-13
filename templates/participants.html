@@ -30,7 +30,7 @@
                         <input id="char-{{ character.identifier }}" name="selected_characters" type="checkbox"
                                value="{{ character.identifier }}">
                         <label for="char-{{ character.identifier }}">
-                            <img alt="{{ character.name }}" src="{{ character.image_url }}">
+                            <img alt="{{ character.name }}" src="{{ url_for('static', filename=character.image_url) }}">
                             <div class="character-name">{{ character.name }}</div>
                         </label>
                     </div>

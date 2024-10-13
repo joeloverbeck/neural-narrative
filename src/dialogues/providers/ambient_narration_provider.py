@@ -1,5 +1,6 @@
 from typing import Optional
 
+from src.characters.character import Character
 from src.characters.characters_manager import CharactersManager
 from src.constants import (
     AMBIENT_NARRATION_GENERATION_PROMPT_FILE,
@@ -65,9 +66,9 @@ class AmbientNarrationProvider(BaseToolResponseProvider):
             self._playthrough_manager.get_current_place_identifier()
         )
 
-        personality = self._characters_manager.load_character_data(
-            self._playthrough_manager.get_player_identifier()
-        ).get("personality")
+        personality = Character(
+            self._playthrough_name, self._playthrough_manager.get_player_identifier()
+        ).personality
 
         return {
             "setting_description": setting_description,

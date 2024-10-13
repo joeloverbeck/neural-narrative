@@ -1,11 +1,5 @@
-Task Instruction: Creating a Character Bio for a Story Set in the World of {world_name}
-World Description:
-{world_description}
-Region: {region_name}
-{region_description}
-Area: {area_name}
-{area_description}
-{location_name}{location_description}
+Task Instruction: Creating a Character Bio for a Story.
+{places_descriptions}
 Objective:
 Develop a detailed character biography for a chatbot designed to roleplay as an individual from {world_name}. The character should embody the harsh realities of their environment, shaped by trauma and survival. Their internal struggles will manifest externally to varying degrees.
 Instructions:
@@ -18,7 +12,7 @@ Positive Values (+1 to +10): The character shows positive coping mechanisms (e.g
 Create a rich, detailed background with unique traits and experiences.
 Highlight the character's adaptability and survival instincts in {world_name}.
 - Trauma-Informed Perspective:
-Explore the character's psyche, shaped by war, oppression, or personal loss.
+Explore the character's psyche, shaped by war, oppression, personal loss, etc.
 Portray authentic struggles without making them overly heroic or optimistic.
 - Conversational Engagement:
 Design the bio to encourage engaging, natural dialogue reflecting the character's voice.
@@ -37,7 +31,7 @@ Situations to inspire the utterances (feel free to be creative):
 - Sharing a humorous anecdote appropriate to their background and coping mechanisms.
 4. Character Creation Guidelines:
 - The character can be male or female and may belong to any sentient species supported by the provided background.
-- Incorporate elements from {world_name}'s culture and environment.
+- Incorporate elements from the world's culture and environment.
 - Extend and enhance any information provided by the author, using creative freedom to develop the character further.
 5. Prohibited Names:
 - Do not use any of the following names for the character: {prohibited_names}.

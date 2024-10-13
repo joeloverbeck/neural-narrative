@@ -1,3 +1,5 @@
+from typing import Optional
+
 from src.characters.characters_manager import CharactersManager
 from src.constants import (
     CHARACTER_GENERATOR_TOOL_FILE,
@@ -18,6 +20,7 @@ from src.constants import (
     VOICE_SPECIAL_EFFECTS,
 )
 from src.filesystem.filesystem_manager import FilesystemManager
+from src.maps.factories.places_descriptions_factory import PlacesDescriptionsFactory
 from src.maps.places_templates_parameter import PlacesTemplatesParameter
 from src.prompting.abstracts.abstract_factories import (
     ToolResponseProvider,
@@ -45,8 +48,9 @@ class CharacterGenerationToolResponseProvider(
         places_parameter: PlacesTemplatesParameter,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         user_content_for_character_generation_factory: UserContentForCharacterGenerationFactory,
-        filesystem_manager: FilesystemManager = None,
-        characters_manager: CharactersManager = None,
+        places_description_factory: PlacesDescriptionsFactory,
+        filesystem_manager: Optional[FilesystemManager] = None,
+        characters_manager: Optional[CharactersManager] = None,
     ):
         super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
 
@@ -58,6 +62,7 @@ class CharacterGenerationToolResponseProvider(
         self._user_content_for_character_generation_factory = (
             user_content_for_character_generation_factory
         )
+        self._places_description_factory = places_description_factory
 
         self._characters_manager = characters_manager or CharactersManager(
             self._playthrough_name
@@ -112,14 +117,9 @@ class CharacterGenerationToolResponseProvider(
     def get_formatted_prompt(self) -> str:
         templates = self._load_templates()
 
-        location_name, location_description = self._get_location_details(
-            templates["locations_templates"]
-        )
-
         instructions = CharacterGenerationInstructionsFormatter(
             self._playthrough_name,
-            location_name,
-            location_description,
+            self._places_description_factory.get_information(),
             templates,
             self._places_parameter,
         ).format()

@@ -8,5 +8,4 @@ Time of Day: {hour} {time_of_day}
 Player Personality: {personality}
 Ongoing Dialogue:
 {transcription}
-Important:
-- You are prohibited from repeating the ongoing dialogue in your response.
+Important: you are prohibited from repeating the ongoing dialogue in your response.

@@ -1,0 +1,12 @@
+Name: {name}
+Description: {description}
+Personality: {personality}
+Profile: {profile}
+Likes: {likes}
+Dislikes: {dislikes}
+Secrets: {secrets}
+Speech Patterns: {speech_patterns}
+Health: {health}
+Equipment: {equipment}
+Memories:
+{memories}

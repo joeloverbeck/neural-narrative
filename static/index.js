@@ -7,6 +7,7 @@ function updateDescription(type) {
     var descriptionElement = document.getElementById(type + '_description').querySelector('p');
     descriptionElement.innerText = description;
 }
+
 window.onload = function() {
     updateDescription('world');
     updateDescription('region');

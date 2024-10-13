@@ -57,6 +57,22 @@
     border-color: #45a049;
 }
 
+/* Animation for new guidelines */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.new-guideline {
+    animation: slideIn 0.5s ease-out;
+}
+
 /* Responsive adjustments */
 @media (max-width: 600px) {
     .guideline-item {

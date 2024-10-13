@@ -30,6 +30,10 @@
           "type": "string",
           "description": "The character's dislikes."
         },
+        "secrets": {
+          "type": "string",
+          "description": "The character's secrets. They must be compelling and truly worth being hidden for the character."
+        },
         "first message": {
           "type": "string",
           "description": "A single speech pattern example demonstrating how the character would greet someone they have never met before, a stranger, who may have greeted them with a simple \"Hello.\" Their response should be inconsequential, small talk (but not about the weather or the time of day, and absolutely not including any variation on \"What brings you here...\""
@@ -140,6 +144,7 @@
         "profile",
         "likes",
         "dislikes",
+        "secrets",
         "first message",
         "speech_pattern_1",
         "speech_pattern_2",
@@ -151,6 +156,7 @@
         "speech_pattern_8",
         "speech_pattern_9",
         "speech_pattern_10",
+        "health",
         "equipment",
         "voice_gender",
         "voice_age",

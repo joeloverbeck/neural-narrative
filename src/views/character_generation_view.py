@@ -1,16 +1,21 @@
-from flask import session, redirect, url_for, render_template, request
+from flask import session, redirect, url_for, render_template, request, jsonify, flash
 from flask.views import MethodView
 
-from src.characters.characters_manager import CharactersManager
-from src.characters.commands.generate_character_generation_guidelines_command import (
-    GenerateCharacterGenerationGuidelinesCommand,
+from src.characters.algorithms.generate_character_generation_guidelines_algorithm import (
+    GenerateCharacterGenerationGuidelinesAlgorithm,
 )
+from src.characters.character_guidelines_manager import CharacterGuidelinesManager
 from src.characters.factories.character_generation_guidelines_factory import (
     CharacterGenerationGuidelinesFactory,
 )
 from src.config.config_manager import ConfigManager
 from src.constants import CHARACTER_GENERATION_GUIDELINES_FILE
+from src.exceptions import CharacterGenerationFailedError
 from src.filesystem.filesystem_manager import FilesystemManager
+from src.maps.factories.place_descriptions_for_prompt_factory import (
+    PlaceDescriptionsForPromptFactory,
+)
+from src.maps.factories.places_descriptions_factory import PlacesDescriptionsFactory
 from src.maps.map_manager import MapManager
 from src.playthrough_manager import PlaythroughManager
 from src.prompting.factories.openrouter_llm_client_factory import (
@@ -38,7 +43,7 @@ class CharacterGenerationView(MethodView):
         )
 
         # Load the guidelines
-        characters_manager = CharactersManager(playthrough_name)
+        character_guidelines_manager = CharacterGuidelinesManager()
 
         world_template = playthrough_manager.get_world_template()
         region_template = places_templates_parameter.get_region_template()
@@ -55,11 +60,19 @@ class CharacterGenerationView(MethodView):
 
         # First ensure that the guidelines exist.
         if (
-            not characters_manager.create_key_for_character_generation_guidelines(
+            not character_guidelines_manager.create_key(
                 world_template, region_template, area_template, location_template
             )
             in character_generation_guidelines
         ):
+            place_descriptions_for_prompt_factory = PlaceDescriptionsForPromptFactory(
+                playthrough_name
+            )
+
+            places_descriptions_factory = PlacesDescriptionsFactory(
+                place_descriptions_for_prompt_factory
+            )
+
             # Need to create the guidelines.
             character_generation_guidelines_factory = (
                 CharacterGenerationGuidelinesFactory(
@@ -69,16 +82,17 @@ class CharacterGenerationView(MethodView):
                         OpenRouterLlmClientFactory().create_llm_client(),
                         ConfigManager().get_heavy_llm(),
                     ),
+                    places_descriptions_factory,
                 )
             )
 
-            GenerateCharacterGenerationGuidelinesCommand(
+            GenerateCharacterGenerationGuidelinesAlgorithm(
                 playthrough_name,
                 playthrough_manager.get_current_place_identifier(),
                 character_generation_guidelines_factory,
-            ).execute()
+            ).do_algorithm()
 
-        guidelines = characters_manager.load_character_generation_guidelines(
+        guidelines = character_guidelines_manager.load_guidelines(
             world_template,
             region_template,
             area_template,
@@ -98,11 +112,25 @@ class CharacterGenerationView(MethodView):
     def post(self):
         playthrough_name = session.get("playthrough_name")
         if not playthrough_name:
-            return redirect(url_for("index"))
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return (
+                    jsonify(
+                        {
+                            "success": False,
+                            "error": "Session expired.",
+                        }
+                    ),
+                    400,
+                )
+            else:
+                return redirect(url_for("index"))
 
-        action = request.form.get("action")
+        action = request.form.get("submit_action")
         if not action:
-            return redirect(url_for("character-generation"))
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return jsonify({"success": False, "error": "Invalid action."}), 400
+            else:
+                return redirect(url_for("character-generation"))
 
         # Dispatch to the appropriate handler method
         method_name = WebService.create_method_name(action)
@@ -120,16 +148,85 @@ class CharacterGenerationView(MethodView):
         try:
             CharacterService.generate_character(playthrough_name, guideline_text)
 
-            # Optionally, add a success message to session
-            session["character_generation_message"] = (
-                "Character generated successfully."
-            )
+            # Prepare the response
+            response = {"success": True, "message": "Character generated successfully."}
+        except CharacterGenerationFailedError as e:
+            response = {
+                "success": False,
+                "error": f"Character generation failed. Error: {str(e)}",
+            }
         except Exception as e:
-            session["character_generation_message"] = (
-                f"Character generation failed. Error: {e}"
+            response = {"success": False, "error": str(e)}
+
+        if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+            return jsonify(response)
+        else:
+            # For non-AJAX requests, handle as before
+            session["character_generation_message"] = response.get(
+                "message"
+            ) or response.get("error")
+            return redirect(url_for("character-generation"))
+
+    @staticmethod
+    def handle_generate_guidelines(playthrough_name):
+        try:
+
+            playthrough_manager = PlaythroughManager(playthrough_name)
+
+            place_identifier = playthrough_manager.get_current_place_identifier()
+
+            produce_tool_response_strategy_factory = ProduceToolResponseStrategyFactory(
+                OpenRouterLlmClientFactory().create_llm_client(),
+                ConfigManager().get_heavy_llm(),
             )
 
-        # Clear the selected guideline
-        session.pop("selected_guideline", None)
+            place_descriptions_for_prompt_factory = PlaceDescriptionsForPromptFactory(
+                playthrough_name
+            )
 
-        return redirect(url_for("character-generation"))
+            places_descriptions_factory = PlacesDescriptionsFactory(
+                place_descriptions_for_prompt_factory
+            )
+
+            character_generation_guidelines_factory = (
+                CharacterGenerationGuidelinesFactory(
+                    playthrough_name,
+                    place_identifier,
+                    produce_tool_response_strategy_factory,
+                    places_descriptions_factory,
+                )
+            )
+
+            # Product could be used to return it to the page and show the guidelines
+            # without having to refresh the page.
+            product = GenerateCharacterGenerationGuidelinesAlgorithm(
+                playthrough_name,
+                place_identifier,
+                character_generation_guidelines_factory,
+            ).do_algorithm()
+
+            # Ensure the product is valid
+            if not product.is_valid():
+                raise ValueError(
+                    "Failed to generate guidelines: " + product.get_error()
+                )
+
+            # Get the generated guidelines
+            guidelines = product.get()
+
+            response = {
+                "success": True,
+                "message": "Guidelines generated successfully.",
+                "guidelines": guidelines,  # Include the guidelines in the response
+            }
+        except Exception as e:
+            response = {
+                "success": False,
+                "error": f"Failed to generate guidelines. Error: {str(e)}",
+            }
+
+        if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+            return jsonify(response)
+        else:
+            flash("Guidelines generated successfully.")
+            return redirect(url_for("chat"))

@@ -1,17 +1,15 @@
 from typing import Optional
 
 from src.actions.products.action_resolution_product import ActionResolutionProduct
-from src.characters.factories.party_data_for_prompt_factory import (
-    PartyDataForPromptFactory,
+from src.characters.factories.player_and_followers_information_factory import (
+    PlayerAndFollowersInformationFactory,
 )
 from src.constants import (
     RESEARCH_RESOLUTION_GENERATION_PROMPT_FILE,
     RESEARCH_RESOLUTION_GENERATION_TOOL_FILE,
 )
 from src.filesystem.filesystem_manager import FilesystemManager
-from src.maps.factories.place_descriptions_for_prompt_factory import (
-    PlaceDescriptionsForPromptFactory,
-)
+from src.maps.factories.places_descriptions_factory import PlacesDescriptionsFactory
 from src.prompting.factories.produce_tool_response_strategy_factory import (
     ProduceToolResponseStrategyFactory,
 )
@@ -25,8 +23,8 @@ class ResearchResolutionFactory(BaseToolResponseProvider):
         playthrough_name: str,
         research_goal: str,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
-        place_descriptions_for_prompt_factory: PlaceDescriptionsForPromptFactory,
-        party_data_for_prompt_factory: PartyDataForPromptFactory,
+        places_descriptions_factory: PlacesDescriptionsFactory,
+        players_and_followers_information_factory: PlayerAndFollowersInformationFactory,
         filesystem_manager: Optional[FilesystemManager] = None,
         time_manager: Optional[TimeManager] = None,
     ):
@@ -40,10 +38,10 @@ class ResearchResolutionFactory(BaseToolResponseProvider):
         self._playthrough_name = playthrough_name
         self._research_goal = research_goal
 
-        self._place_descriptions_for_prompt_factory = (
-            place_descriptions_for_prompt_factory
+        self._places_descriptions_factory = places_descriptions_factory
+        self._players_and_followers_information_factory = (
+            players_and_followers_information_factory
         )
-        self._party_data_for_prompt_factory = party_data_for_prompt_factory
 
         self._time_manager = time_manager or TimeManager(self._playthrough_name)
 
@@ -58,11 +56,13 @@ class ResearchResolutionFactory(BaseToolResponseProvider):
         }
 
         prompt_data.update(
-            self._place_descriptions_for_prompt_factory.create_place_descriptions_for_prompt()
+            {"places_descriptions": self._places_descriptions_factory.get_information()}
         )
 
         prompt_data.update(
-            self._party_data_for_prompt_factory.get_party_data_for_prompt()
+            {
+                "player_and_followers_information": self._players_and_followers_information_factory.get_information()
+            }
         )
 
         return prompt_data
@@ -77,7 +77,6 @@ class ResearchResolutionFactory(BaseToolResponseProvider):
         )
 
     def create_product(self, arguments: dict):
-        print(arguments)
         return ActionResolutionProduct(
             arguments.get("narrative"),
             arguments.get("outcome"),
