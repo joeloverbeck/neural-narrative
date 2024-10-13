@@ -2,8 +2,8 @@ from typing import Optional
 
 from src.characters.character import Character
 from src.characters.characters_manager import CharactersManager
-from src.characters.factories.character_information_factory import (
-    CharacterInformationFactory,
+from src.characters.factories.character_information_provider import (
+    CharacterInformationProvider,
 )
 from src.characters.products.self_reflection_product import SelfReflectionProduct
 from src.constants import (
@@ -23,7 +23,7 @@ class SelfReflectionFactory(BaseToolResponseProvider):
         playthrough_name: str,
         character_identifier: str,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
-        character_information_factory: CharacterInformationFactory,
+        character_information_factory: CharacterInformationProvider,
         filesystem_manager: Optional[FilesystemManager] = None,
         characters_manager: Optional[CharactersManager] = None,
     ):

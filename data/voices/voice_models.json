@@ -754,5 +754,29 @@
     "CASUAL",
     "OPTIMISTIC",
     "NO SPECIAL EFFECTS"
+  ],
+  "malecommoneraccented": [
+    "MALE",
+    "MIDDLE-AGED",
+    "CALM",
+    "MODERATE",
+    "NORMAL VOLUME",
+    "NASAL",
+    "NEUTRAL",
+    "NARRATIVE",
+    "NOBLE",
+    "NO SPECIAL EFFECTS"
+  ],
+  "zoravoice": [
+    "FEMALE",
+    "TEENAGE",
+    "PLAYFUL",
+    "MODERATE",
+    "NORMAL VOLUME",
+    "WHISPERY/AIRY",
+    "WARM",
+    "MELODIC",
+    "CHARMING",
+    "NO SPECIAL EFFECTS"
   ]
 }

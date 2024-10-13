@@ -1,5 +1,5 @@
-from src.characters.factories.character_information_factory import (
-    CharacterInformationFactory,
+from src.characters.factories.character_information_provider import (
+    CharacterInformationProvider,
 )
 from src.dialogues.abstracts.strategies import PromptFormatterForDialogueStrategy
 from src.dialogues.participants import Participants
@@ -15,7 +15,7 @@ class ConcretePromptFormatterForDialogueStrategy(PromptFormatterForDialogueStrat
         participants: Participants,
         purpose: str,
         name: str,
-        character_information_factory: CharacterInformationFactory,
+        character_information_factory: CharacterInformationProvider,
         prompt_file: str,
         places_descriptions_factory: PlacesDescriptionsFactory,
         filesystem_manager: FilesystemManager = None,

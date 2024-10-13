@@ -8,3 +8,7 @@ class WorldTemplateNotFoundException(Exception):
 
 class CharacterGenerationFailedError(Exception):
     pass
+
+
+class FailedToLoadJsonError(Exception):
+    pass

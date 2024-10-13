@@ -7,8 +7,8 @@ from src.characters.algorithms.produce_self_reflection_algorithm import (
 from src.characters.character import Character
 from src.characters.character_memories import CharacterMemories
 from src.characters.characters_manager import CharactersManager
-from src.characters.factories.character_information_factory import (
-    CharacterInformationFactory,
+from src.characters.factories.character_information_provider import (
+    CharacterInformationProvider,
 )
 from src.characters.factories.self_reflection_factory import SelfReflectionFactory
 from src.config.config_manager import ConfigManager
@@ -94,7 +94,7 @@ class CharacterMemoriesView(MethodView):
                 ConfigManager().get_heavy_llm(),
             )
 
-            character_information_factory = CharacterInformationFactory(
+            character_information_factory = CharacterInformationProvider(
                 playthrough_name, character_identifier
             )
 

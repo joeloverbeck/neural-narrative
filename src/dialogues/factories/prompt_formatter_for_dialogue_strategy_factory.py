@@ -1,6 +1,6 @@
 from src.characters.character import Character
-from src.characters.factories.character_information_factory import (
-    CharacterInformationFactory,
+from src.characters.factories.character_information_provider import (
+    CharacterInformationProvider,
 )
 from src.constants import DIALOGUE_PROMPT_FILE
 from src.dialogues.abstracts.strategies import PromptFormatterForDialogueStrategy
@@ -33,7 +33,7 @@ class PromptFormatterForDialogueStrategyFactory:
             participants,
             self._purpose,
             character.name,
-            CharacterInformationFactory(self._playthrough_name, character.identifier),
+            CharacterInformationProvider(self._playthrough_name, character.identifier),
             DIALOGUE_PROMPT_FILE,
             self._places_descriptions_factory,
         )

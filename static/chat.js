@@ -1,3 +1,5 @@
+// static/chat.js
+
 document.addEventListener('DOMContentLoaded', () => {
     // Function to scroll the chat window to the bottom
     function scrollToBottom() {

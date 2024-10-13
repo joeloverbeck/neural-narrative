@@ -1,8 +1,8 @@
 from typing import Optional
 
 from src.characters.characters_manager import CharactersManager
-from src.characters.factories.character_information_factory import (
-    CharacterInformationFactory,
+from src.characters.factories.character_information_provider import (
+    CharacterInformationProvider,
 )
 from src.constants import (
     PLACE_DESCRIPTION_PROMPT_FILE,
@@ -32,7 +32,7 @@ class ConcreteFilteredPlaceDescriptionGenerationFactory(
         player_identifier: str,
         place_identifier: str,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
-        character_information_factory: CharacterInformationFactory,
+        character_information_factory: CharacterInformationProvider,
         map_manager: MapManager = None,
         characters_manager: CharactersManager = None,
         filesystem_manager: FilesystemManager = None,

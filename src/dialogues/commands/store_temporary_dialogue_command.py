@@ -31,7 +31,7 @@ class StoreTemporaryDialogueCommand(Command):
         self._filesystem_manager = filesystem_manager or FilesystemManager()
 
     def execute(self) -> None:
-        # The idea is the following: store both the messages to the llm as well as the transcription
+        # The idea is the following: store both the messages to the llm and also the transcription
         # at a place where it is considered temporary, along with the necessary information
         # to load that information from the files once launching 'chat.py' again.
         json_data = {

@@ -1,0 +1,19 @@
+{
+  "type": "function",
+  "function": {
+    "name": "generate_connection_between_characters",
+    "description": "generate a meaningful and compelling connection between two characters.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "connection": {
+          "type": "string",
+          "description": "The meaningful and compelling connection between two characters. Follow the provided instructions. You are prohibited from repeating the provided information verbatim."
+        }
+      },
+      "required": [
+        "connection"
+      ]
+    }
+  }
+}

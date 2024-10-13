@@ -51,6 +51,7 @@ class StoreDialoguesCommand(Command):
         self._filesystem_manager.append_to_file(
             character_dialogues_path, prettified_dialogue
         )
+
         logger.info(f"Saved dialogue at '{character_dialogues_path}'.")
 
     def execute(self) -> None:

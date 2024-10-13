@@ -116,6 +116,9 @@ INVESTIGATE_RESOLUTION_GENERATION_TOOL_FILE: str = (
 SECRETS_GENERATION_TOOL_FILE: str = (
     "data/prompting/characters/secrets_generation_tool.json"
 )
+CONNECTION_GENERATION_TOOL_FILE: str = (
+    "data/prompting/characters/connection_generation_tool.json"
+)
 
 # Prompts
 
@@ -172,6 +175,9 @@ INVESTIGATE_RESOLUTION_GENERATION_PROMPT_FILE: str = (
 )
 SECRETS_GENERATION_PROMPT_FILE: str = (
     "data/prompting/characters/secrets_generation_prompt.txt"
+)
+CONNECTION_GENERATION_PROMPT_FILE: str = (
+    "data/prompting/characters/connection_generation_prompt.txt"
 )
 
 OPENROUTER_API_URL: str = "https://openrouter.ai/api/v1"
