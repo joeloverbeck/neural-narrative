@@ -12,7 +12,7 @@ Character {name_b}:
 
 Your Task:
 
-Using the above information, write a detailed description (approximately 3-5 sentences) of the connection between {name_a} and {name_b}. The description should:
+Using the above information, write a detailed description (approximately 5-6 sentences) of the connection between {name_a} and {name_b}. The description should:
 
 Explain how they met or became connected.
 Highlight the nature of their relationship (e.g., allies, rivals, mentor and protégé, siblings).
