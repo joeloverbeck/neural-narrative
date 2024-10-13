@@ -1,6 +1,7 @@
 import logging
 
 from src.abstracts.command import Command
+from src.characters.character import Character
 from src.characters.characters_manager import CharactersManager
 from src.filesystem.filesystem_manager import FilesystemManager
 
@@ -31,12 +32,10 @@ class StoreCharacterMemoryCommand(Command):
         )
 
     def execute(self) -> None:
-        character_data = self._characters_manager.load_character_data(
-            self._character_identifier
-        )
+        character = Character(self._playthrough_name, self._character_identifier)
 
         file_path = self._filesystem_manager.get_file_path_to_character_memories(
-            self._playthrough_name, self._character_identifier, character_data["name"]
+            self._playthrough_name, self._character_identifier, character.name
         )
 
         self._filesystem_manager.append_to_file(file_path, "\n" + self._memory)

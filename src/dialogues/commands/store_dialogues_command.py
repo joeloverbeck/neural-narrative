@@ -2,6 +2,7 @@ import logging
 from typing import Optional
 
 from src.abstracts.command import Command
+from src.characters.character import Character
 from src.characters.characters_manager import CharactersManager
 from src.dialogues.participants import Participants
 from src.dialogues.transcription import Transcription
@@ -43,9 +44,7 @@ class StoreDialoguesCommand(Command):
             self._filesystem_manager.get_file_path_to_character_dialogues(
                 self._playthrough_name,
                 character_identifier=participant,
-                character_name=self._characters_manager.load_character_data(
-                    participant
-                )["name"],
+                character_name=Character(self._playthrough_name, participant).name,
             )
         )
 

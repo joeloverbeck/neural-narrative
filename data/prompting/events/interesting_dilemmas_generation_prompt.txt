@@ -1,25 +1,9 @@
-Given the following information about the player character, possible followers of the player, and their collective memories, analyze them and generate a list of at least five intriguing moral and ethical dilemmas that could stem from this information.
+Given the following information about the player character, possible followers of the player, and their collective memories, analyze them and generate three intriguing moral and ethical dilemmas that could stem from this information.
 These dilemmas should present the player with difficult choices between equally compelling options, highlighting moral ambiguity and challenging their values.
 They should force the player to make tough decisions that affect their moral alignment and have far-reaching consequences.
 Consider the characters' motivations, relationships, and any hints or clues in the provided information to create these dilemmas.
 Each dilemma should be described in two or three sentences. Do not precede each dilemma with a number (it shouldn't be a numbered list).
 Provided Elements:
-- World Description: {world_description}
-- Region Description: {region_description}
-- Area Description: {area_description}
-{location_description}
-Player and Followers Information:
-- Name: {player_name}
-- Description: {player_description}
-- Personality: {player_personality}
-- Profile: {player_profile}
-- Likes: {player_likes}
-- Dislikes: {player_dislikes}
-- Speech patterns: {player_speech_patterns}
-- Health: {player_health}
-- Equipment: {player_equipment}
------
-{followers_information}
-Memories:
-{combined_memories}
+{places_descriptions}
+{player_and_followers_information}
 Important: you are prohibited from repeating verbatim any of the player and followers information, as well as the memories. Do not write any preamble, just do as ordered.

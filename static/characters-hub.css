@@ -31,6 +31,8 @@
     font-size: 2em; /* Larger font size for the name */
 }
 
+
+
 /* Responsive adjustments */
 @media (max-width: 600px) {
     .player-character img {

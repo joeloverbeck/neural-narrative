@@ -27,6 +27,7 @@
         {% if message.alignment == 'center' %}
         <div class="ambient-message" data-file-url="{{ message.file_url }}">
             <div class="ambient-message-text">{{ message.message_text }}</div>
+            <i class="fas play-icon"></i>
         </div>
         {% else %}
         <div class="chat-bubble {{ message.alignment }}" data-file-url="{{ message.file_url }}">
@@ -35,23 +36,28 @@
                 <div class="sender-label">{{ message.sender_name }}</div>
                 <div class="message-text">{{ message.message_text }}</div>
             </div>
+            <i class="fas play-icon"></i>
         </div>
         {% endif %}
         {% endfor %}
     </div>
 
     <!-- Chat Form -->
-    <form method="post" class="chat-form">
+    <form method="post" class="chat-form ajax-form" action="{{ url_for('chat') }}">
         <input id="user-input" name="user_input" placeholder="Type your message here..." type="text">
         <div class="form-buttons">
-            <button type="submit" name="action" value="Send" class="action-button">
+            <button type="submit" name="submit_action" value="Send" class="action-button"
+                    id="send-message-button">
                 <i class="fas fa-paper-plane"></i> Send
             </button>
-            <button type="submit" name="action" value="Ambient narration" class="action-button">
+            <button type="submit" name="submit_action" value="Ambient narration" class="action-button"
+                    id="ambient-narration-button">
                 <i class="fas fa-magic"></i> Ambient Narration
             </button>
         </div>
     </form>
+    <div id="send-text-message" class="message ajax-message"
+         style="display: none;"></div>
 
     <!-- Navigation Buttons -->
     <div class="buttons">
@@ -76,5 +82,6 @@
 
 {% block scripts %}
 <script src="{{ url_for('static', filename='audio-playback.js') }}"></script>
+<script src="{{ url_for('static', filename='ajax-form-submit.js') }}"></script>
 <script src="{{ url_for('static', filename='chat.js') }}"></script>
 {% endblock %}

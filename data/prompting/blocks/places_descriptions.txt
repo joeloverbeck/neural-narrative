@@ -1,0 +1,4 @@
+World Description: {world_description}
+Region Description: {region_description}
+Area Description: {area_description}
+{location_description}

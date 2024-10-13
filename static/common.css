@@ -131,6 +131,10 @@ h1.page-title i {
     outline: none;
 }
 
+.action-button:active {
+    transform: translateY(2px);
+}
+
 /* Collapsible button */
 .collapsible {
     background-color: #3f51b5; /* Deep blue color for strong contrast */
@@ -347,6 +351,70 @@ h1.page-title i {
     content: "\f04b";  /* FontAwesome play icon */
 }
 
+/* Action Buttons Container */
+.action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 50px;
+}
+
+/* Unique Action Button Style */
+.action-button-unique {
+    display: inline-flex;
+    align-items: center;
+    padding: 15px 25px;
+    background: linear-gradient(45deg, #8e44ad, #3498db);
+    color: white;
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: 50px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    transition: background 0.3s, transform 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.action-button-unique i {
+    margin-right: 10px;
+    font-size: 24px;
+}
+
+/* Hover Effects */
+.action-button-unique:hover {
+    background: linear-gradient(45deg, #6d3794, #2c81b7);
+    transform: translateY(-5px);
+}
+
+.action-button-unique:active {
+    transform: translateY(2px);
+}
+
+/* Ripple Effect on Click */
+.action-button-unique::after {
+    content: "";
+    position: absolute;
+    background: rgba(255, 255, 255, 0.5);
+    width: 0;
+    height: 0;
+    border-radius: 100%;
+    transform: scale(0);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.action-button-unique:active::after {
+    width: 200px;
+    height: 200px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+    transition: transform 0.5s, opacity 1s;
+}
+
 /* Responsive adjustments */
 @media (max-width: 600px) {
     .button {
@@ -359,6 +427,11 @@ h1.page-title i {
     }
 
     .action-button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .action-button-unique {
         width: 100%;
         justify-content: center;
     }

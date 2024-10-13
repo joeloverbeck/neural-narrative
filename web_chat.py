@@ -6,6 +6,7 @@ from src.filesystem.filesystem_manager import FilesystemManager
 from src.views.actions_view import ActionsView
 from src.views.character_generation_view import CharacterGenerationView
 from src.views.character_memories_view import CharacterMemoriesView
+from src.views.character_secrets_view import CharacterSecretsView
 from src.views.character_voice_view import CharacterVoiceView
 from src.views.characters_hub_view import CharactersHubView
 from src.views.chat_view import ChatView
@@ -44,6 +45,9 @@ app.add_url_rule(
 )
 app.add_url_rule(
     "/character-voice", view_func=CharacterVoiceView.as_view("character-voice")
+)
+app.add_url_rule(
+    "/character-secrets", view_func=CharacterSecretsView.as_view("character-secrets")
 )
 app.add_url_rule("/actions", view_func=ActionsView.as_view("actions"))
 app.add_url_rule("/investigate", view_func=InvestigateView.as_view("investigate"))

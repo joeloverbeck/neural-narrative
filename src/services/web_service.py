@@ -3,15 +3,16 @@ from typing import List
 
 from flask import url_for
 
+from src.characters.character import Character
+
 
 class WebService:
-    def format_image_urls_of_characters(self, characters: List[dict]):
-        for character in characters:
-            character["image_url"] = self.format_image_url_of_character(character)
-
     @staticmethod
-    def format_image_url_of_character(character: dict) -> str:
-        return url_for("static", filename=character["image_url"])
+    def format_image_urls_of_characters(characters: List[Character]):
+        for character in characters:
+            character.update_data(
+                {"image_url": url_for("static", filename=character.image_url)}
+            )
 
     @staticmethod
     def get_file_url(folder: str, file_name: str):

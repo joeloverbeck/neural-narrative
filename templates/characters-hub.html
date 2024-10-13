@@ -14,7 +14,7 @@
     <!-- Player Character Section -->
     <div class="player-character-section">
         <div class="character player-character">
-            <img alt="{{ player_character.name }}" src="{{ player_character.image_url }}">
+            <img alt="{{ player_character.name }}" src="{{ url_for('static', filename=player_character.image_url) }}">
             <h2 class="character-name">{{ player_character.name }}</h2>
         </div>
     </div>
@@ -38,16 +38,19 @@
     </div>
     {% endif %}
 
-    <!-- Action Buttons -->
-    <div class="buttons">
-        <a href="{{ url_for('character-generation') }}" class="button">
-            <i class="fas fa-plus-circle"></i> Generate Character
+    <!-- Action Buttons with Unique Style -->
+    <div class="action-buttons">
+        <a href="{{ url_for('character-generation') }}" class="action-button-unique">
+            <i class="fas fa-plus-circle"></i> Generate
         </a>
-        <a href="{{ url_for('character-memories') }}" class="button">
-            <i class="fas fa-brain"></i> Character Memories
+        <a href="{{ url_for('character-memories') }}" class="action-button-unique">
+            <i class="fas fa-brain"></i> Memories
         </a>
-        <a href="{{ url_for('character-voice') }}" class="button">
-            <i class="fas fa-microphone"></i> Character Voice
+        <a href="{{ url_for('character-voice') }}" class="action-button-unique">
+            <i class="fas fa-microphone"></i> Voice
+        </a>
+        <a href="{{ url_for('character-secrets') }}" class="action-button-unique">
+            <i class="fas fa-user-secret"></i> Secrets
         </a>
     </div>
 

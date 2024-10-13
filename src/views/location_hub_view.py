@@ -1,4 +1,4 @@
-from flask import session, redirect, url_for, render_template, request
+from flask import session, redirect, url_for, render_template, request, jsonify
 from flask.views import MethodView
 
 from src.characters.characters_manager import CharactersManager
@@ -97,11 +97,28 @@ class LocationHubView(MethodView):
     def post(self):
         playthrough_name = session.get("playthrough_name")
         if not playthrough_name:
-            return redirect(url_for("index"))
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return (
+                    jsonify(
+                        {
+                            "success": False,
+                            "error": "Session expired. Return to the index.",
+                        }
+                    ),
+                    400,
+                )
+            else:
+                return redirect(url_for("index"))
 
-        action = request.form.get("action")
+        action = request.form.get("submit_action")
         if not action:
-            return redirect(url_for("location-hub"))
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return (
+                    jsonify({"success": False, "error": "Action invalid."}),
+                    400,
+                )
+            else:
+                return redirect(url_for("location-hub"))
 
         # Dispatch to the appropriate handler method
         method_name = WebService.create_method_name(action)
@@ -126,20 +143,42 @@ class LocationHubView(MethodView):
 
     @staticmethod
     def handle_describe_place(playthrough_name):
-        description, voice_line_file_name = PlaceService().describe_place(
-            playthrough_name
-        )
+        try:
+            description, voice_line_file_name = PlaceService().describe_place(
+                playthrough_name
+            )
 
-        voice_line_url = WebService.get_file_url("voice_lines", voice_line_file_name)
+            voice_line_url = WebService.get_file_url(
+                "voice_lines", voice_line_file_name
+            )
 
-        # Add the place description to the adventure.
-        PlaythroughManager(playthrough_name).add_to_adventure(description + "\n")
+            # Add the place description to the adventure.
+            PlaythroughManager(playthrough_name).add_to_adventure("\n" + description)
 
-        session["place_description"] = description
-        session["place_description_voice_line_url"] = (
-            voice_line_url  # Store the voice line URL
-        )
-        return redirect(url_for("location-hub"))
+            session["place_description"] = description
+            session["place_description_voice_line_url"] = (
+                voice_line_url  # Store the voice line URL
+            )
+
+            response = {
+                "success": True,
+                "message": "Description generated successfully.",
+                "description": description,
+                "voice_line_url": voice_line_url,
+            }
+        except Exception as e:
+            response = {
+                "success": False,
+                "error": f"Failed to generate the description. Error: {str(e)}",
+            }
+
+        if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+            return (
+                jsonify(response),
+                200,
+            )
+        else:
+            return redirect(url_for("location-hub"))
 
     @staticmethod
     def handle_proceed_to_chat(playthrough_name):

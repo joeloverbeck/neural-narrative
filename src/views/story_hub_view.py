@@ -1,10 +1,13 @@
 import os
 
-from flask import session, redirect, url_for, render_template, request
+from flask import session, redirect, url_for, render_template, request, jsonify
 from flask.views import MethodView
 
 from src.characters.factories.party_data_for_prompt_factory import (
     PartyDataForPromptFactory,
+)
+from src.characters.factories.player_and_followers_information_factory import (
+    PlayerAndFollowersInformationFactory,
 )
 from src.characters.factories.player_data_for_prompt_factory import (
     PlayerDataForPromptFactory,
@@ -28,6 +31,7 @@ from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.factories.place_descriptions_for_prompt_factory import (
     PlaceDescriptionsForPromptFactory,
 )
+from src.maps.factories.places_descriptions_factory import PlacesDescriptionsFactory
 from src.prompting.factories.openrouter_llm_client_factory import (
     OpenRouterLlmClientFactory,
 )
@@ -77,7 +81,7 @@ class StoryHubView(MethodView):
         if not playthrough_name:
             return redirect(url_for("index"))
 
-        action = request.form.get("action")
+        action = request.form.get("submit_action")
 
         filesystem_manager = FilesystemManager()
 
@@ -91,7 +95,7 @@ class StoryHubView(MethodView):
                 playthrough_name
             )
 
-            party_data_for_prompty_factory = PartyDataForPromptFactory(
+            party_data_for_prompt_factory = PartyDataForPromptFactory(
                 playthrough_name, player_data_for_prompt_factory
             )
 
@@ -99,18 +103,40 @@ class StoryHubView(MethodView):
                 playthrough_name
             )
 
+            player_and_followers_information_factory = (
+                PlayerAndFollowersInformationFactory(party_data_for_prompt_factory)
+            )
+
+            places_descriptions_factory = PlacesDescriptionsFactory(
+                place_descriptions_for_prompt_factory
+            )
+
             concepts_factory = ConceptsFactory(
                 playthrough_name,
                 produce_tool_response_strategy_factory,
-                place_descriptions_for_prompt_factory,
-                party_data_for_prompty_factory,
+                places_descriptions_factory,
+                player_and_followers_information_factory,
             )
 
             command = GenerateConceptsCommand(playthrough_name, concepts_factory)
 
-            command.execute()
+            try:
+                command.execute()
 
-            return redirect(url_for("story-hub"))
+                response = {
+                    "success": True,
+                    "message": "Concepts generated successfully.",
+                }
+            except Exception as e:
+                response = {
+                    "success": False,
+                    "error": f"Failed to generate concepts. Error: {str(e)}",
+                }
+
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return jsonify(response)
+            else:
+                return redirect(url_for("story-hub"))
         elif action == "delete_concept":
             concept_index = int(request.form.get("item_index"))
 
@@ -151,18 +177,41 @@ class StoryHubView(MethodView):
                 playthrough_name
             )
 
+            player_and_followers_information_factory = (
+                PlayerAndFollowersInformationFactory(party_data_for_prompt_factory)
+            )
+
+            places_descriptions_factory = PlacesDescriptionsFactory(
+                place_descriptions_for_prompt_factory
+            )
+
             interesting_situations_factory = InterestingSituationsFactory(
                 playthrough_name,
                 produce_tool_response_strategy_factory,
-                place_descriptions_for_prompt_factory,
-                party_data_for_prompt_factory,
+                places_descriptions_factory,
+                player_and_followers_information_factory,
             )
 
-            GenerateInterestingSituationsCommand(
-                playthrough_name, interesting_situations_factory
-            ).execute()
+            try:
+                GenerateInterestingSituationsCommand(
+                    playthrough_name, interesting_situations_factory
+                ).execute()
 
-            return redirect(url_for("story-hub"))
+                response = {
+                    "success": True,
+                    "message": f"Generated interesting situations successfully.",
+                }
+
+            except Exception as e:
+                response = {
+                    "success": False,
+                    "error": f"Failed to generate interesting situations. Error: {str(e)}",
+                }
+
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return jsonify(response)
+            else:
+                return redirect(url_for("story-hub"))
 
         elif action == "delete_situation":
             index = int(request.form.get("item_index"))
@@ -192,17 +241,40 @@ class StoryHubView(MethodView):
                 playthrough_name, player_data_for_prompt_factory
             )
 
-            interesting_dilemmas_factory = InterestingDilemmasFactory(
-                produce_tool_response_strategy_factory,
-                places_descriptions_for_prompt_factory,
-                party_data_for_prompt_factory,
+            player_and_followers_information_factory = (
+                PlayerAndFollowersInformationFactory(party_data_for_prompt_factory)
             )
 
-            GenerateInterestingDilemmasCommand(
-                playthrough_name, interesting_dilemmas_factory
-            ).execute()
+            places_descriptions_factory = PlacesDescriptionsFactory(
+                places_descriptions_for_prompt_factory
+            )
 
-            return redirect(url_for("story-hub"))
+            interesting_dilemmas_factory = InterestingDilemmasFactory(
+                produce_tool_response_strategy_factory,
+                places_descriptions_factory,
+                player_and_followers_information_factory,
+            )
+
+            try:
+                GenerateInterestingDilemmasCommand(
+                    playthrough_name, interesting_dilemmas_factory
+                ).execute()
+
+                response = {
+                    "success": True,
+                    "message": "Interesting dilemmas generated successfully.",
+                }
+
+            except Exception as e:
+                response = {
+                    "success": False,
+                    "error": f"Failed to generate interesting dilemmas. Error: {str(e)}",
+                }
+
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return jsonify(response)
+            else:
+                return redirect(url_for("story-hub"))
         elif action == "delete_dilemma":
             index = int(request.form.get("item_index"))
             filesystem_manager.remove_item_from_file(
@@ -239,15 +311,34 @@ class StoryHubView(MethodView):
                 playthrough_name, player_data_for_prompt_factory
             )
 
+            places_descriptions_factory = PlacesDescriptionsFactory(
+                places_descriptions_for_prompt_factory
+            )
+
+            player_and_followers_factory = PlayerAndFollowersInformationFactory(
+                party_data_for_prompt_factory
+            )
+
             goals_factory = GoalsFactory(
                 playthrough_name,
                 produce_tool_response_strategy_factory,
-                places_descriptions_for_prompt_factory,
-                party_data_for_prompt_factory,
+                places_descriptions_factory,
+                player_and_followers_factory,
             )
 
-            GenerateGoalsCommand(playthrough_name, goals_factory).execute()
+            try:
+                GenerateGoalsCommand(playthrough_name, goals_factory).execute()
 
-            return redirect(url_for("story-hub"))
+                response = {"success": True, "message": "Generated goals successfully."}
+            except Exception as e:
+                response = {
+                    "success": False,
+                    "error": f"Failed to generate goals. Error: {str(e)}",
+                }
+
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return jsonify(response)
+            else:
+                return redirect(url_for("story-hub"))
         else:
             return redirect(url_for("story-hub"))

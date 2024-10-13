@@ -1,6 +1,7 @@
 from src.characters.factories.character_generation_guidelines_factory import (
     CharacterGenerationGuidelinesFactory,
 )
+from src.maps.factories.places_descriptions_factory import PlacesDescriptionsFactory
 from src.movements.commands.visit_place_command import VisitPlaceCommand
 from src.prompting.factories.produce_tool_response_strategy_factory import (
     ProduceToolResponseStrategyFactory,
@@ -13,11 +14,13 @@ class VisitPlaceCommandFactory:
         self,
         playthrough_name: str,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
+        places_descriptions_factory: PlacesDescriptionsFactory,
     ):
         self._playthrough_name = playthrough_name
         self._produce_tool_response_strategy_factory = (
             produce_tool_response_strategy_factory
         )
+        self._places_descriptions_factory = places_descriptions_factory
 
     def create_visit_place_command(self, place_identifier: str) -> VisitPlaceCommand:
         if not place_identifier:
@@ -30,5 +33,6 @@ class VisitPlaceCommandFactory:
                 self._playthrough_name,
                 place_identifier,
                 self._produce_tool_response_strategy_factory,
+                self._places_descriptions_factory,
             ),
         )

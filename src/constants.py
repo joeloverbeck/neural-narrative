@@ -57,6 +57,13 @@ REGIONS_TEMPLATES_FILE: str = "data/templates/regions.json"
 AREAS_TEMPLATES_FILE: str = "data/templates/areas.json"
 LOCATIONS_TEMPLATES_FILE: str = "data/templates/locations.json"
 
+# Prompting Blocks
+CHARACTER_INFORMATION_BLOCK: str = "data/prompting/blocks/character_information.txt"
+PLACES_DESCRIPTIONS_BLOCK: str = "data/prompting/blocks/places_descriptions.txt"
+PLAYER_AND_FOLLOWERS_INFORMATION_BLOCK: str = (
+    "data/prompting/blocks/player_and_followers_information.txt"
+)
+
 # Tools
 
 CHARACTER_GENERATOR_TOOL_FILE: str = (
@@ -105,6 +112,9 @@ RESEARCH_RESOLUTION_GENERATION_TOOL_FILE: str = (
 )
 INVESTIGATE_RESOLUTION_GENERATION_TOOL_FILE: str = (
     "data/prompting/actions/investigate_resolution_generation_tool.json"
+)
+SECRETS_GENERATION_TOOL_FILE: str = (
+    "data/prompting/characters/secrets_generation_tool.json"
 )
 
 # Prompts
@@ -159,6 +169,9 @@ RESEARCH_RESOLUTION_GENERATION_PROMPT_FILE: str = (
 )
 INVESTIGATE_RESOLUTION_GENERATION_PROMPT_FILE: str = (
     "data/prompting/actions/investigate_resolution_generation_prompt.txt"
+)
+SECRETS_GENERATION_PROMPT_FILE: str = (
+    "data/prompting/characters/secrets_generation_prompt.txt"
 )
 
 OPENROUTER_API_URL: str = "https://openrouter.ai/api/v1"
@@ -217,8 +230,7 @@ VOICE_STYLES = [
     "MONOTONE",
     "DRAWLING",
     "FLIRTATIOUS",
-    "SARCASTIC",
-    "HUMOROUS",
+    "HUMOROUS/SARCASTIC",
     "MELODIC",
     "NARRATIVE",
     "INSTRUCTIONAL",
@@ -227,25 +239,27 @@ VOICE_STYLES = [
 VOICE_PERSONALITIES = [
     "INNOCENT/NAIVE",
     "YOUTHFUL",
-    "SULTRY",
-    "HEROIC/BRAVE",
-    "VILLAINOUS",
-    "NOBLE",
-    "MYSTERIOUS",
-    "SLY",
-    "CHARMING",
     "ENERGETIC",
-    "WITTY",
-    "CYNICAL/PESSIMISTIC",
-    "KIND",
-    "WISE/PHILOSOPHICAL",
-    "MANIPULATIVE/SCHEMING",
-    "ECCENTRIC",
+    "HEROIC/BRAVE",
+    "PASSIONATE",
     "ADVENTUROUS/DRIVEN",
-    "SKEPTICAL",
-    "STOIC",
     "OPTIMISTIC",
+    "NOBLE",
+    "SULTRY",
+    "WITTY",
+    "KIND",
+    "CHARMING",
+    "WISE/PHILOSOPHICAL",
+    "STOIC",
+    "ECCENTRIC",
+    "MYSTERIOUS",
+    "SKEPTICAL",
+    "WORLD-WEARY",
+    "CYNICAL/PESSIMISTIC",
     "PARANOID",
+    "MANIPULATIVE/SCHEMING",
+    "SLY",
+    "VILLAINOUS",
 ]
 
 VOICE_SPECIAL_EFFECTS = [

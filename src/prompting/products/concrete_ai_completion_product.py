@@ -1,3 +1,4 @@
+import logging
 from typing import Optional
 
 from openai.types.chat import ChatCompletion
@@ -9,6 +10,8 @@ from src.constants import (
 )
 from src.enums import AiCompletionErrorType
 from src.prompting.abstracts.ai_completion_product import AiCompletionProduct
+
+logger = logging.getLogger(__name__)
 
 
 class ConcreteAiCompletionProduct(AiCompletionProduct):
@@ -61,7 +64,7 @@ class ConcreteAiCompletionProduct(AiCompletionProduct):
             # failed due to unhandled error
             self._is_valid = False
             self._error = AiCompletionErrorType.UNHANDLED
-            print(self._content)
+            logger.error("Failed due to an unhandled error: %s", self._content)
 
     def get(self) -> str:
         return self._content

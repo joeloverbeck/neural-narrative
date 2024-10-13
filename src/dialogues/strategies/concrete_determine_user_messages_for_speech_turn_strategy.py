@@ -1,5 +1,6 @@
 from typing import Optional
 
+from src.characters.character import Character
 from src.characters.characters_manager import CharactersManager
 from src.dialogues.abstracts.factory_products import PlayerInputProduct
 from src.dialogues.abstracts.strategies import (
@@ -45,7 +46,7 @@ class ConcreteDetermineUserMessagesForSpeechTurnStrategy(
         else:
             self._messages_to_llm.add_message(
                 "user",
-                f"{self._characters_manager.load_character_data(self._player_identifier)["name"]}: {self._player_input_product.get()}",
+                f"{Character(self._playthrough_name, self._player_identifier).name}: {self._player_input_product.get()}",
             )
             self._messages_to_llm.add_message(
                 "user",

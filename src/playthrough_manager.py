@@ -1,6 +1,6 @@
 import logging.config
 import os
-from typing import List
+from typing import List, Optional
 
 from src.filesystem.filesystem_manager import FilesystemManager
 
@@ -9,10 +9,12 @@ logger = logging.getLogger(__name__)
 
 class PlaythroughManager:
     def __init__(
-        self, playthrough_name: str, filesystem_manager: FilesystemManager = None
+        self,
+        playthrough_name: str,
+        filesystem_manager: Optional[FilesystemManager] = None,
     ):
         if not playthrough_name:
-            raise ValueError("'playthrough_name' can't be empty.")
+            raise ValueError("playthrough_name can't be empty.")
 
         self._playthrough_name = playthrough_name
         self._filesystem_manager = filesystem_manager or FilesystemManager()

@@ -1,6 +1,7 @@
 from flask import session, redirect, url_for, render_template, request, flash
 from flask.views import MethodView
 
+from src.characters.character import Character
 from src.characters.characters_manager import CharactersManager
 from src.constants import (
     VOICE_GENDERS,
@@ -17,6 +18,7 @@ from src.constants import (
 from src.voices.algorithms.match_voice_data_to_voice_model_algorithm import (
     MatchVoiceDataToVoiceModelAlgorithm,
 )
+from src.voices.voice_attributes import VoiceAttributes
 from src.voices.voice_manager import VoiceManager
 
 
@@ -36,17 +38,17 @@ class CharacterVoiceView(MethodView):
 
         if selected_character_identifier:
             # Load the selected character's data
-            selected_character = characters_manager.load_character_data(
-                selected_character_identifier
+            selected_character = Character(
+                playthrough_name, selected_character_identifier
             )
             # Get the assigned voice model
-            selected_voice_model = selected_character.get("voice_model", "")
+            selected_voice_model = selected_character.voice_model
 
         for character in all_characters:
             character["selected"] = False
             if (
                 selected_character
-                and character["identifier"] == selected_character["identifier"]
+                and character["identifier"] == selected_character.identifier
             ):
                 character["selected"] = True
 
@@ -102,21 +104,32 @@ class CharacterVoiceView(MethodView):
 
             try:
                 # Load character data
-                character_data = characters_manager.load_character_data(
-                    character_identifier
-                )
+                character = Character(playthrough_name, character_identifier)
 
                 # Extract voice data required for matching
 
                 # Use the matching algorithm to find a suitable voice model
                 matched_voice_model = MatchVoiceDataToVoiceModelAlgorithm.match(
-                    character_data
+                    VoiceAttributes(
+                        character.voice_gender,
+                        character.voice_age,
+                        character.voice_emotion,
+                        character.voice_tempo,
+                        character.voice_volume,
+                        character.voice_texture,
+                        character.voice_tone,
+                        character.voice_style,
+                        character.personality,
+                        character.voice_special_effects,
+                    )
                 )
 
                 # Assign the matched voice model to the character
-                characters_manager.save_character_data(
-                    character_identifier, {"voice_model": matched_voice_model}
-                )
+                character = Character(playthrough_name, character_identifier)
+
+                character.update_data({"voice_model": matched_voice_model})
+
+                character.save()
 
                 # Set a success message
                 session["voice_model_changed_message"] = (
@@ -142,9 +155,11 @@ class CharacterVoiceView(MethodView):
             if character_identifier and new_voice_model:
                 try:
                     # Assign the new voice model to the character
-                    characters_manager.save_character_data(
-                        character_identifier, {"voice_model": new_voice_model}
-                    )
+                    character = Character(playthrough_name, character_identifier)
+
+                    character.update_data({"voice_model": new_voice_model})
+
+                    character.save()
 
                     # Add a success message to the session
                     session["voice_model_changed_message"] = (

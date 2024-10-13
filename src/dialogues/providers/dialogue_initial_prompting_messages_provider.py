@@ -1,3 +1,4 @@
+from src.characters.character import Character
 from src.dialogues.abstracts.abstract_factories import InitialPromptingMessagesProvider
 from src.dialogues.abstracts.factory_products import InitialPromptingMessagesProduct
 from src.dialogues.factories.speech_turn_dialogue_system_content_for_prompt_provider_factory import (
@@ -14,7 +15,7 @@ class DialogueInitialPromptingMessagesProvider(InitialPromptingMessagesProvider)
     def __init__(
         self,
         participants: Participants,
-        character_data: dict,
+        character: Character,
         memories: str,
         speech_turn_dialogue_system_content_for_prompt_provider_factory: SpeechTurnDialogueSystemContentForPromptProviderFactory,
     ):
@@ -22,7 +23,7 @@ class DialogueInitialPromptingMessagesProvider(InitialPromptingMessagesProvider)
             raise ValueError("Not enough participants.")
 
         self._participants = participants
-        self._character_data = character_data
+        self._character = character
         self._memories = memories
         self._speech_turn_dialogue_system_content_for_prompt_provider_factory = (
             speech_turn_dialogue_system_content_for_prompt_provider_factory
@@ -32,12 +33,12 @@ class DialogueInitialPromptingMessagesProvider(InitialPromptingMessagesProvider)
         other_character_name: str = "[CHARACTER]"
 
         for identifier, character in self._participants.get().items():
-            if character["name"] != self._character_data["name"]:
+            if character["name"] != self._character.name:
                 other_character_name = character["name"]
                 break
 
         system_content_for_prompt_product = self._speech_turn_dialogue_system_content_for_prompt_provider_factory.create_speech_turn_dialogue_system_content_for_prompt_provider(
-            self._participants, self._character_data, self._memories
+            self._participants, self._character, self._memories
         ).create_system_content_for_prompt()
 
         if not system_content_for_prompt_product.is_valid():
@@ -56,7 +57,7 @@ class DialogueInitialPromptingMessagesProvider(InitialPromptingMessagesProvider)
         )
         messages_to_llm.add_message(
             "assistant",
-            f"<function=generate_speech>{{\"name\": \"{self._character_data['name']}\", \"speech\": \"What's up with you?\", \"narration_text\": \"{self._character_data['name']} stares at {other_character_name}.\" }}</function>",
+            f'<function=generate_speech>{{"name": "{self._character.name}", "speech": "What\'s up with you?", "narration_text": "{self._character.name} stares at {other_character_name}." }}</function>',
             is_guiding_message=True,
         )
         messages_to_llm.add_message(
@@ -66,7 +67,7 @@ class DialogueInitialPromptingMessagesProvider(InitialPromptingMessagesProvider)
         )
         messages_to_llm.add_message(
             "assistant",
-            f"<function=generate_speech>{{\"name\": \"{self._character_data['name']}\", \"speech\": \"Hey.\", \"narration_text\": \"{self._character_data['name']} stares at {other_character_name}.\" }}</function>",
+            f'<function=generate_speech>{{"name": "{self._character.name}", "speech": "Hey.", "narration_text": "{self._character.name} stares at {other_character_name}." }}</function>',
             is_guiding_message=True,
         )
 

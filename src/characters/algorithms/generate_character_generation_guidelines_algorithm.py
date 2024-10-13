@@ -1,9 +1,12 @@
 import logging
+from typing import Optional, cast
 
-from src.abstracts.command import Command
-from src.characters.characters_manager import CharactersManager
+from src.characters.character_guidelines_manager import CharacterGuidelinesManager
 from src.characters.factories.character_generation_guidelines_factory import (
     CharacterGenerationGuidelinesFactory,
+)
+from src.characters.products.character_generation_guidelines_product import (
+    CharacterGenerationGuidelinesProduct,
 )
 from src.maps.map_manager import MapManager
 from src.playthrough_manager import PlaythroughManager
@@ -11,16 +14,16 @@ from src.playthrough_manager import PlaythroughManager
 logger = logging.getLogger(__name__)
 
 
-class GenerateCharacterGenerationGuidelinesCommand(Command):
+class GenerateCharacterGenerationGuidelinesAlgorithm:
 
     def __init__(
         self,
         playthrough_name: str,
         place_identifier: str,
         character_generation_guidelines_factory: CharacterGenerationGuidelinesFactory,
-        map_manager: MapManager = None,
-        playthrough_manager: PlaythroughManager = None,
-        characters_manager: CharactersManager = None,
+        map_manager: Optional[MapManager] = None,
+        playthrough_manager: Optional[PlaythroughManager] = None,
+        character_guidelines_manager: Optional[CharacterGuidelinesManager] = None,
     ):
         if not playthrough_name:
             raise ValueError("playthrough_name can't be empty.")
@@ -37,36 +40,28 @@ class GenerateCharacterGenerationGuidelinesCommand(Command):
         self._playthrough_manager = playthrough_manager or PlaythroughManager(
             self._playthrough_name
         )
-        self._characters_manager = characters_manager or CharactersManager(
-            self._playthrough_name
+        self._character_guidelines_manager = (
+            character_guidelines_manager or CharacterGuidelinesManager()
         )
 
-    def execute(self) -> None:
+    def do_algorithm(self) -> CharacterGenerationGuidelinesProduct:
         places_templates_parameter = self._map_manager.fill_places_templates_parameter(
             self._place_identifier
         )
 
         world_name = self._playthrough_manager.get_world_template()
 
-        key = self._characters_manager.create_key_for_character_generation_guidelines(
+        key = self._character_guidelines_manager.create_key(
             world_name,
             places_templates_parameter.get_region_template(),
             places_templates_parameter.get_area_template(),
             places_templates_parameter.get_location_template(),
         )
 
-        if self._characters_manager.are_there_character_generation_guidelines_for_place(
-            world_name,
-            places_templates_parameter.get_region_template(),
-            places_templates_parameter.get_area_template(),
-            places_templates_parameter.get_location_template(),
-        ):
-            logger.info(
-                f"There were already character generation guidelines created for {key}."
-            )
-            return
-
-        result = self._character_generation_guidelines_factory.generate_product()
+        result = cast(
+            CharacterGenerationGuidelinesProduct,
+            self._character_generation_guidelines_factory.generate_product(),
+        )
 
         if not result.is_valid():
             raise ValueError(
@@ -74,7 +69,7 @@ class GenerateCharacterGenerationGuidelinesCommand(Command):
             )
 
         # We have the guidelines, and now we ought to store them.
-        self._characters_manager.save_character_generation_guidelines(
+        self._character_guidelines_manager.save_guidelines(
             world_name,
             places_templates_parameter.get_region_template(),
             places_templates_parameter.get_area_template(),
@@ -83,3 +78,5 @@ class GenerateCharacterGenerationGuidelinesCommand(Command):
         )
 
         logger.info(f"Generated character generation guidelines for key '{key}'.")
+
+        return result

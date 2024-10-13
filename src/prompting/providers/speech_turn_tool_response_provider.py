@@ -1,6 +1,7 @@
 import logging
 from typing import Optional
 
+from src.characters.character import Character
 from src.characters.characters_manager import CharactersManager
 from src.dialogues.factories.character_choice_dialogue_initial_prompting_messages_provider_factory import (
     CharacterChoiceDialogueInitialPromptingMessagesProviderFactory,
@@ -84,10 +85,8 @@ class SpeechTurnChoiceToolResponseProvider(ToolResponseProvider):
             )
 
         # The tool response should contain "identifier", so we can get the proper "voice_model"
-        parsed_tool_response.get()["voice_model"] = (
-            self._characters_manager.get_voice_model(
-                parsed_tool_response.get()["identifier"]
-            )
-        )
+        parsed_tool_response.get()["voice_model"] = Character(
+            self._playthrough_name, parsed_tool_response.get()["identifier"]
+        ).voice_model
 
         return parsed_tool_response

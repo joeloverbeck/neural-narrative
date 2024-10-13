@@ -18,6 +18,10 @@ from src.images.factories.generate_character_image_command_factory import (
 from src.images.factories.openai_generated_image_factory import (
     OpenAIGeneratedImageFactory,
 )
+from src.maps.factories.place_descriptions_for_prompt_factory import (
+    PlaceDescriptionsForPromptFactory,
+)
+from src.maps.factories.places_descriptions_factory import PlacesDescriptionsFactory
 from src.maps.map_manager import MapManager
 from src.movements.movement_manager import MovementManager
 from src.playthrough_manager import PlaythroughManager
@@ -74,12 +78,21 @@ class CharacterService:
             llm_client, ConfigManager().get_heavy_llm()
         )
 
+        place_descriptions_for_prompt_factory = PlaceDescriptionsForPromptFactory(
+            playthrough_name
+        )
+
+        places_description_factory = PlacesDescriptionsFactory(
+            place_descriptions_for_prompt_factory
+        )
+
         guided_character_generation_tool_response_provider = (
             CharacterGenerationToolResponseProvider(
                 playthrough_name,
                 places_templates_parameter,
                 produce_tool_response_strategy_factory,
                 GuidelinesBasedUserContentForCharacterGenerationFactory(guideline),
+                places_description_factory,
             )
         )
 

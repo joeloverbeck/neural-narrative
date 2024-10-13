@@ -4,6 +4,9 @@ from flask.views import MethodView
 from src.characters.factories.party_data_for_prompt_factory import (
     PartyDataForPromptFactory,
 )
+from src.characters.factories.player_and_followers_information_factory import (
+    PlayerAndFollowersInformationFactory,
+)
 from src.characters.factories.player_data_for_prompt_factory import (
     PlayerDataForPromptFactory,
 )
@@ -46,11 +49,15 @@ class TravelView(MethodView):
             playthrough_name, player_data_for_prompt_factory
         )
 
+        player_and_followers_information_factory = PlayerAndFollowersInformationFactory(
+            party_data_for_prompt_factory
+        )
+
         product = TravelNarrationFactory(
             playthrough_name,
             destination_identifier,
             produce_tool_response_strategy_factory,
-            party_data_for_prompt_factory,
+            player_and_followers_information_factory,
         ).generate_product()
 
         if not product.is_valid():

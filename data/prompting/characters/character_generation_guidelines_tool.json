@@ -2,7 +2,7 @@
   "type": "function",
   "function": {
     "name": "generate_guidelines_for_generating_characters",
-    "description": "generate about ten entries that are guidelines for the breadth of characters that would be fitting to create for the provided combination of places.",
+    "description": "generate three entries that are guidelines for the breadth of characters that would be fitting to create for the provided combination of places.",
     "parameters": {
       "type": "object",
       "properties": {
@@ -17,47 +17,12 @@
         "guideline_3": {
           "type": "string",
           "description": "A guideline for creating interesting characters based on the above combination of places. The guideline should be about two or three sentences. Follow the provided instructions for what elements the guideline should include."
-        },
-        "guideline_4": {
-          "type": "string",
-          "description": "A guideline for creating interesting characters based on the above combination of places. The guideline should be about two or three sentences. Follow the provided instructions for what elements the guideline should include."
-        },
-        "guideline_5": {
-          "type": "string",
-          "description": "A guideline for creating interesting characters based on the above combination of places. The guideline should be about two or three sentences. Follow the provided instructions for what elements the guideline should include."
-        },
-        "guideline_6": {
-          "type": "string",
-          "description": "A guideline for creating interesting characters based on the above combination of places. The guideline should be about two or three sentences. Follow the provided instructions for what elements the guideline should include."
-        },
-        "guideline_7": {
-          "type": "string",
-          "description": "A guideline for creating interesting characters based on the above combination of places. The guideline should be about two or three sentences. Follow the provided instructions for what elements the guideline should include."
-        },
-        "guideline_8": {
-          "type": "string",
-          "description": "A guideline for creating interesting characters based on the above combination of places. The guideline should be about two or three sentences. Follow the provided instructions for what elements the guideline should include."
-        },
-        "guideline_9": {
-          "type": "string",
-          "description": "A guideline for creating interesting characters based on the above combination of places. The guideline should be about two or three sentences. Follow the provided instructions for what elements the guideline should include."
-        },
-        "guideline_10": {
-          "type": "string",
-          "description": "A guideline for creating interesting characters based on the above combination of places. The guideline should be about two or three sentences. Follow the provided instructions for what elements the guideline should include."
         }
       },
       "required": [
         "guideline_1",
         "guideline_2",
-        "guideline_3",
-        "guideline_4",
-        "guideline_5",
-        "guideline_6",
-        "guideline_7",
-        "guideline_8",
-        "guideline_9",
-        "guideline_10"
+        "guideline_3"
       ]
     }
   }

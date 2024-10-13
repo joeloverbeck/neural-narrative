@@ -250,12 +250,12 @@ class FilesystemManager:
 
     @staticmethod
     def get_file_path_to_empty_content_context_file() -> str:
-        file_path = "errors/empty_content_context.txt"
+        file_path = "errors"
 
         if not os.path.exists(file_path):
             os.makedirs(file_path, exist_ok=True)
 
-        return file_path
+        return os.path.join(file_path, "empty_content_context.txt")
 
     def remove_ongoing_dialogue(self, playthrough_name: str):
         if not playthrough_name:

@@ -2,7 +2,7 @@
   "type": "function",
   "function": {
     "name": "generate_interesting_situations",
-    "description": "generate a list of at least five very interesting and intriguing situations that could stem from the provided information.",
+    "description": "generate three very interesting and intriguing situations that could stem from the provided information.",
     "parameters": {
       "type": "object",
       "properties": {
@@ -17,22 +17,12 @@
         "interesting_situation_3": {
           "type": "string",
           "description": "A very interesting and intriguing situation that could stem from the provided information. Follow the provided instructions."
-        },
-        "interesting_situation_4": {
-          "type": "string",
-          "description": "A very interesting and intriguing situation that could stem from the provided information. Follow the provided instructions."
-        },
-        "interesting_situation_5": {
-          "type": "string",
-          "description": "A very interesting and intriguing situation that could stem from the provided information. Follow the provided instructions."
         }
       },
       "required": [
         "interesting_situation_1",
         "interesting_situation_2",
-        "interesting_situation_3",
-        "interesting_situation_4",
-        "interesting_situation_5"
+        "interesting_situation_3"
       ]
     }
   }

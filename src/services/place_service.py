@@ -1,12 +1,16 @@
 from typing import Optional
 
-from src.characters.characters_manager import CharactersManager
-from src.characters.factories.player_data_for_prompt_factory import (
-    PlayerDataForPromptFactory,
+from src.characters.character import Character
+from src.characters.factories.character_information_factory import (
+    CharacterInformationFactory,
 )
 from src.config.config_manager import ConfigManager
 from src.enums import PlaceType, TemplateType
 from src.filesystem.filesystem_manager import FilesystemManager
+from src.maps.factories.place_descriptions_for_prompt_factory import (
+    PlaceDescriptionsForPromptFactory,
+)
+from src.maps.factories.places_descriptions_factory import PlacesDescriptionsFactory
 from src.maps.factories.visit_place_command_factory import VisitPlaceCommandFactory
 from src.maps.map_manager import MapManager
 from src.maps.strategies.fathered_place_generation_strategy import (
@@ -40,12 +44,13 @@ class PlaceService:
     ):
 
         # Load the player's voice model.
-        player_data = CharactersManager(playthrough_name).load_character_data(
-            PlaythroughManager(playthrough_name).get_player_identifier()
+        player = Character(
+            playthrough_name,
+            PlaythroughManager(playthrough_name).get_player_identifier(),
         )
 
         return self._voice_manager.generate_voice_line(
-            player_data["name"], description_text, player_data["voice_model"]
+            player.name, description_text, player.voice_model
         )
 
     def describe_place(self, playthrough_name):
@@ -55,14 +60,16 @@ class PlaceService:
             llm_client, self._config_manager.get_heavy_llm()
         )
 
-        player_data_for_prompt_factory = PlayerDataForPromptFactory(playthrough_name)
+        character_information_factory = CharacterInformationFactory(
+            playthrough_name, playthrough_manager.get_player_identifier()
+        )
 
         description_product = ConcreteFilteredPlaceDescriptionGenerationFactory(
             playthrough_name,
             playthrough_manager.get_player_identifier(),
             playthrough_manager.get_current_place_identifier(),
             strategy_factory,
-            player_data_for_prompt_factory,
+            character_information_factory,
         ).generate_product()
 
         if description_product.is_valid():
@@ -149,4 +156,14 @@ class PlaceService:
             self._config_manager.get_heavy_llm(),
         )
 
-        return VisitPlaceCommandFactory(playthrough_name, strategy_factory)
+        place_descriptions_for_prompt_factory = PlaceDescriptionsForPromptFactory(
+            playthrough_name
+        )
+
+        places_descriptions_factory = PlacesDescriptionsFactory(
+            place_descriptions_for_prompt_factory
+        )
+
+        return VisitPlaceCommandFactory(
+            playthrough_name, strategy_factory, places_descriptions_factory
+        )

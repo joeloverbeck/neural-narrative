@@ -180,6 +180,23 @@ button:disabled {
     margin: 20px 0;
 }
 
+
+/* Animation for new guidelines */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.new-place-description {
+    animation: slideIn 0.5s ease-out;
+}
+
 /* Responsive Adjustments */
 @media (max-width: 600px) {
     .place-description {

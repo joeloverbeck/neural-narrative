@@ -2,6 +2,7 @@ import logging
 import shutil
 
 from src.abstracts.command import Command
+from src.characters.character import Character
 from src.characters.characters_manager import CharactersManager
 from src.characters.factories.character_description_provider_factory import (
     CharacterDescriptionProviderFactory,
@@ -31,10 +32,6 @@ class GenerateCharacterImageCommand(Command):
     ):
         if not character_identifier:
             raise ValueError("character_identifier should not be empty.")
-        if not generated_image_factory:
-            raise ValueError("generated_image_factory should not be empty.")
-        if not url_content_factory:
-            raise ValueError("url_content_factory should not be empty.")
 
         self._playthrough_name = playthrough_name
         self._character_identifier = character_identifier
@@ -51,35 +48,27 @@ class GenerateCharacterImageCommand(Command):
         self._secret_key = self._filesystem_manager.load_openai_secret_key()
 
     def execute(self) -> None:
-        character_data = self._character_manager.load_character_data(
-            self._character_identifier
-        )
+        character = Character(self._playthrough_name, self._character_identifier)
 
         # The description for a portrait gets saved in character data,
         # in case image generation has failed.
-        if (
-            not "description_for_portrait" in character_data
-            or not character_data["description_for_portrait"]
-        ):
+        if not character.has_description_for_portrait():
             character_description_product = (
                 self._character_description_provider_factory.create_provider(
-                    character_data
+                    character
                 ).generate_product()
             )
 
-            # Save the description
-            self._character_manager.save_character_data(
-                character_data["identifier"],
-                {"description_for_portrait": character_description_product.get()},
+            character.update_data(
+                {"description_for_portrait": character_description_product.get()}
             )
 
-            character_data["description_for_portrait"] = (
-                character_description_product.get()
-            )
+            # Save the description for portrait to file.
+            character.save()
 
         prompt = self._filesystem_manager.read_file(
             IMAGE_GENERATION_PROMPT_FILE
-        ).format(character_description=character_data["description_for_portrait"])
+        ).format(character_description=character.description_for_portrait)
 
         target_image_path = self._filesystem_manager.get_file_path_to_character_image(
             self._playthrough_name, self._character_identifier

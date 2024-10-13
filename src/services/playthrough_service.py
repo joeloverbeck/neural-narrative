@@ -25,6 +25,10 @@ from src.maps.commands.create_initial_map_command import CreateInitialMapCommand
 from src.maps.factories.concrete_random_place_template_based_on_categories_factory import (
     ConcreteRandomPlaceTemplateBasedOnCategoriesFactory,
 )
+from src.maps.factories.place_descriptions_for_prompt_factory import (
+    PlaceDescriptionsForPromptFactory,
+)
+from src.maps.factories.places_descriptions_factory import PlacesDescriptionsFactory
 from src.maps.factories.visit_place_command_factory import VisitPlaceCommandFactory
 from src.prompting.factories.openai_llm_client_factory import OpenAILlmClientFactory
 from src.prompting.factories.openrouter_llm_client_factory import (
@@ -105,9 +109,18 @@ class PlaythroughService:
             generate_character_command_factory,
         )
 
+        place_descriptions_for_prompt_factory = PlaceDescriptionsForPromptFactory(
+            playthrough_name
+        )
+
+        places_descriptions_factory = PlacesDescriptionsFactory(
+            place_descriptions_for_prompt_factory
+        )
+
         visit_place_command_factory = VisitPlaceCommandFactory(
             playthrough_name,
             produce_tool_response_strategy_factory,
+            places_descriptions_factory,
         )
 
         CreatePlaythroughCommand(

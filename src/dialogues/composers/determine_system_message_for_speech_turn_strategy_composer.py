@@ -1,3 +1,5 @@
+from typing import Optional
+
 from src.dialogues.abstracts.strategies import (
     DetermineSystemMessageForSpeechTurnStrategy,
 )
@@ -15,9 +17,11 @@ from src.dialogues.factories.speech_turn_dialogue_system_content_for_prompt_prov
 )
 from src.dialogues.messages_to_llm import MessagesToLlm
 from src.dialogues.participants import Participants
-from src.maps.factories.concrete_full_place_data_factory import (
-    ConcreteFullPlaceDataFactory,
+from src.maps.factories.place_descriptions_for_prompt_factory import (
+    PlaceDescriptionsForPromptFactory,
 )
+from src.maps.factories.places_descriptions_factory import PlacesDescriptionsFactory
+from src.playthrough_manager import PlaythroughManager
 
 
 class DetermineSystemMessageForSpeechTurnStrategyComposer:
@@ -28,6 +32,7 @@ class DetermineSystemMessageForSpeechTurnStrategyComposer:
         participants: Participants,
         purpose: str,
         messages_to_llm: MessagesToLlm,
+        playthrough_manager: Optional[PlaythroughManager] = None,
     ):
         if not playthrough_name:
             raise ValueError("playthrough_name can't be empty.")
@@ -37,12 +42,24 @@ class DetermineSystemMessageForSpeechTurnStrategyComposer:
         self._purpose = purpose
         self._messages_to_llm = messages_to_llm
 
+        self._playthrough_manager = playthrough_manager or PlaythroughManager(
+            self._playthrough_name
+        )
+
     def compose(self) -> DetermineSystemMessageForSpeechTurnStrategy:
-        full_place_data_factory = ConcreteFullPlaceDataFactory(self._playthrough_name)
+        place_descriptions_for_prompt_factory = PlaceDescriptionsForPromptFactory(
+            self._playthrough_name
+        )
+
+        places_descriptions_factory = PlacesDescriptionsFactory(
+            place_descriptions_for_prompt_factory
+        )
 
         prompt_formatter_for_dialogue_strategy_factory = (
             PromptFormatterForDialogueStrategyFactory(
-                self._playthrough_name, self._purpose, full_place_data_factory
+                self._playthrough_name,
+                self._purpose,
+                places_descriptions_factory,
             )
         )
 

@@ -3,16 +3,6 @@ The reflection should be meaningful and compelling, exploring {name}'s thoughts,
 Rely on the character's speech patterns to make the writing voice unique.
 Consider how these events have affected {name}, the lessons learned, how {name}'s relationships have evolved, and how {name} now perceives themselves and the world.
 The reflection should be introspective and deepen the understanding of {name}'s character.
-Character Bio:
-- Name: {name}
-- Description: {description}
-- Personality: {personality}
-- Profile: {profile}
-- Likes: {likes}
-- Dislikes: {dislikes}
-- Speech Patterns: {speech_patterns}
-- Health: {health}
-- Equipment: {equipment}
-- Memories:
-{memories}
+Character Information:
+{character_information}
 Important: the self-reflection should be at the most three paragraphs long. You are prohibited from repeating verbatim the character information you have been provided for this task.

@@ -41,3 +41,74 @@ form input[type="submit"] {
 .content .concepts-list {
     margin-top: 15px;
 }
+
+
+/* Concept item styling */
+.concept-item {
+    background-color: #fff;
+    padding: 20px;
+    margin: 15px;
+    cursor: pointer;
+    border: 1px solid #ddd;
+    transition: background-color 0.2s;
+    text-align: left;
+    width: 90%;
+}
+
+.concept-item:hover {
+    background-color: #f9f9f9;
+}
+
+/* Modal styling */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.7);
+    text-align: left;
+    font-size: 1.3em;
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 30px;
+    border: 1px solid #888;
+    max-width: 800px;
+    position: relative;
+}
+
+.close {
+    color: #aaa;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: #000;
+}
+
+/* Delete button */
+.delete-button {
+    background-color: #e53935;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+.delete-button:hover {
+    background-color: #d32f2f;
+}

@@ -13,19 +13,19 @@
         current_time_of_day }}</h1>
 
     <!-- Place Description Section -->
-    {% if place_description %}
-    <div class="collapsible-section">
-        <button class="collapsible">
+    <div class="collapsible-section {% if not place_description %}hidden-section{% else %}visible-section{% endif %}"
+         id="place-description-section">
+        <button class="collapsible active">
             <i class="fas fa-info-circle"></i> Place Description
         </button>
-        <div class="content">
-            <div class="place-description" {% if place_description_voice_line_url
+        <div class="content" style="display: block;">
+            <div class="place-description" id="place-description" {% if place_description_voice_line_url
                  %}data-file-url="{{ place_description_voice_line_url }}" {% endif %}>
                 <p>{{ place_description }}</p>
+                <i class="fas play-icon"></i>
             </div>
         </div>
     </div>
-    {% endif %}
 
     <!-- Place Actions Section -->
     <div class="collapsible-section">
@@ -46,22 +46,24 @@
             <div class="action-group">
                 <h2 class="action-group-title">Place Description</h2>
                 <div class="buttons">
-                    <form method="post" class="action-form">
-                        <input name="action" type="hidden" value="Describe Place">
-                        <button type="submit" class="action-button">
+                    <form method="post" class="action-form ajax-form describe-place-form"
+                          action="{{ url_for('location-hub') }}" data-message-selector="#describe-place-message">
+                        <input name="submit_action" type="hidden" value="Describe Place">
+                        <button type="submit" class="action-button" id="describe-place-button">
                             <i class="fas fa-info-circle"></i> Describe current place
                         </button>
                     </form>
-
                     {% if current_place_type.value == "location" %}
                     <form method="post" class="action-form">
-                        <input name="action" type="hidden" value="Exit Location">
+                        <input name="submit_action" type="hidden" value="Exit Location">
                         <button type="submit" class="action-button">
                             <i class="fas fa-sign-out-alt"></i> Exit current place
                         </button>
                     </form>
                     {% endif %}
                 </div>
+                <div id="describe-place-message" class="message ajax-message"
+                     style="display: none;"></div>
             </div>
 
 
@@ -75,7 +77,7 @@
                     <div class="search-location-group">
                         {% if can_search_for_location %}
                         <form method="post" class="action-form search-location-form">
-                            <input name="action" type="hidden" value="Search For Location">
+                            <input name="submit_action" type="hidden" value="Search For Location">
                             <label for="location_type">Choose Location Type:</label>
                             <select name="location_type" id="location_type">
                                 <option value="" selected>Any Type</option>
@@ -89,7 +91,7 @@
                         </form>
                         {% else %}
                         <form method="post" class="action-form search-location-form">
-                            <input name="action" type="hidden" value="Search For Location">
+                            <input name="submit_action" type="hidden" value="Search For Location">
                             <label for="location_type">Choose Location Type:</label>
                             <select name="location_type" id="location_type" disabled>
                                 <option value="" selected>Any Type</option>
@@ -112,7 +114,7 @@
                         {% if locations_present %}
                         {% for location in locations_present %}
                         <form method="post" class="action-form visit-location-form">
-                            <input name="action" type="hidden" value="Visit Location">
+                            <input name="submit_action" type="hidden" value="Visit Location">
                             <input name="location_identifier" type="hidden" value="{{ location.identifier }}">
                             <button type="submit" class="action-button">
                                 <i class="fas fa-door-open"></i> Visit {{ location.place_template }}
@@ -133,7 +135,7 @@
                     {% for key, value in cardinal_connections.items() %}
                     {% if not value %}
                     <form method="post" class="action-form">
-                        <input name="action" type="hidden" value="Explore Cardinal Direction">
+                        <input name="submit_action" type="hidden" value="Explore Cardinal Direction">
                         <input name="cardinal_direction" type="hidden" value="{{ key }}">
                         <button type="submit" class="action-button">
                             <i class="fas fa-compass"></i> Explore {{ key }}
@@ -142,7 +144,7 @@
                     {% endif %}
                     {% if value %}
                     <form method="post" class="action-form">
-                        <input name="action" type="hidden" value="Travel In Cardinal Direction">
+                        <input name="submit_action" type="hidden" value="Travel In Cardinal Direction">
                         <input name="destination_identifier" type="hidden" value="{{ value.get('identifier') }}">
                         <button type="submit" class="action-button">
                             <i class="fas fa-location-arrow"></i> Travel {{ key }} to {{ value.get('place_template') }}
@@ -166,13 +168,13 @@
         <div class="content">
             <div class="buttons">
                 <form method="post" class="action-form">
-                    <input name="action" type="hidden" value="Advance Time One Hour">
+                    <input name="submit_action" type="hidden" value="Advance Time One Hour">
                     <button type="submit" class="action-button">
                         <i class="fas fa-clock"></i> Advance time 1 hour
                     </button>
                 </form>
                 <form method="post" class="action-form">
-                    <input name="action" type="hidden" value="Advance Time Five Hours">
+                    <input name="submit_action" type="hidden" value="Advance Time Five Hours">
                     <button type="submit" class="action-button">
                         <i class="fas fa-clock"></i> Advance time 5 hours
                     </button>
@@ -190,14 +192,14 @@
         <div class="content">
             <form method="post">
                 <!-- Add the action input field -->
-                <input type="hidden" name="action" value="Add To Followers">
+                <input type="hidden" name="submit_action" value="Add To Followers">
                 <div class="characters-list">
                     {% for character in characters %}
                     <div class="character">
                         <input id="char-{{ character.identifier }}" name="add_followers" type="checkbox"
                                value="{{ character.identifier }}">
                         <label for="char-{{ character.identifier }}">
-                            <img alt="{{ character.name }}" src="{{ character.image_url }}">
+                            <img alt="{{ character.name }}" src="{{ url_for('static', filename=character.image_url) }}">
                             <div class="character-name">{{ character.name }}</div>
                         </label>
                     </div>
@@ -222,14 +224,14 @@
         <div class="content">
             <form method="post">
                 <!-- Add the action input field -->
-                <input type="hidden" name="action" value="Remove From Followers">
+                <input type="hidden" name="submit_action" value="Remove From Followers">
                 <div class="characters-list">
                     {% for follower in followers %}
                     <div class="character">
                         <input id="follower-{{ follower.identifier }}" name="remove_followers" type="checkbox"
                                value="{{ follower.identifier }}">
                         <label for="follower-{{ follower.identifier }}">
-                            <img alt="{{ follower.name }}" src="{{ follower.image_url }}">
+                            <img alt="{{ follower.name }}" src="{{ url_for('static', filename=follower.image_url) }}">
                             <div class="character-name">{{ follower.name }}</div>
                         </label>
                     </div>
@@ -268,4 +270,6 @@
 
 <script src="{{ url_for('static', filename='collapsible.js') }}"></script>
 <script src="{{ url_for('static', filename='audio-playback.js') }}"></script>
+<script src="{{ url_for('static', filename='ajax-form-submit.js') }}"></script>
+<script src="{{ url_for('static', filename='location-hub.js') }}"></script>
 {% endblock %}

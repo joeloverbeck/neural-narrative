@@ -11,19 +11,14 @@
 <div class="actions-container">
     <h1 class="page-title"><i class="fas fa-bolt"></i> Actions</h1>
 
-    <!-- List of actions -->
-    <div class="actions-list">
-        <div class="action-card">
-            <a href="{{ url_for('investigate') }}">
-                <i class="fas fa-search"></i>
-                <h2>Investigate</h2>
-            </a>
-            <a href="{{ url_for('research') }}">
-                <i class="fas fa-book"></i>
-                <h2>Research</h2>
-            </a>
-        </div>
-        <!-- More actions can be added here -->
+    <!-- Action Buttons with Unique Style -->
+    <div class="action-buttons">
+        <a href="{{ url_for('investigate') }}" class="action-button-unique">
+            <i class="fas fa-search"></i> Investigate
+        </a>
+        <a href="{{ url_for('research') }}" class="action-button-unique">
+            <i class="fas fa-book"></i> Research
+        </a>
     </div>
 
     <!-- Navigation Buttons -->

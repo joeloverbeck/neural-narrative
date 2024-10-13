@@ -1,0 +1,15 @@
+Player and Followers Information:
+Player Name: {player_name}
+Description: {player_description}
+Personality: {player_personality}
+Profile: {player_profile}
+Likes: {player_likes}
+Dislikes: {player_dislikes}
+Secrets: {player_secrets}
+Speech Patterns: {player_speech_patterns}
+Health: {player_health}
+Equipment: {player_equipment}
+-----
+{followers_information}
+Memories:
+{combined_memories}

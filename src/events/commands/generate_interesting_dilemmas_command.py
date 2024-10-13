@@ -41,7 +41,13 @@ class GenerateInterestingDilemmasCommand(Command):
         interesting_dilemmas = ""
 
         for interesting_dilemma in interesting_dilemmas_product.get():
-            interesting_dilemmas += "\n" + interesting_dilemma
+            # Could be that any of the dilemmas isn't valid.
+            if interesting_dilemma:
+                interesting_dilemmas += "\n" + interesting_dilemma
+            else:
+                logger.error(
+                    f"The generation of interesting dilemmas produced something invalid: {interesting_dilemmas_product.get()}"
+                )
 
         self._filesystem_manager.append_to_file(
             self._filesystem_manager.get_file_path_to_interesting_dilemmas(
