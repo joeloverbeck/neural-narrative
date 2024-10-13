@@ -10,6 +10,7 @@ from src.views.character_secrets_view import CharacterSecretsView
 from src.views.character_voice_view import CharacterVoiceView
 from src.views.characters_hub_view import CharactersHubView
 from src.views.chat_view import ChatView
+from src.views.connections_view import ConnectionsView
 from src.views.index_view import IndexView
 from src.views.investigate_view import InvestigateView
 from src.views.location_hub_view import LocationHubView
@@ -52,6 +53,7 @@ app.add_url_rule(
 app.add_url_rule("/actions", view_func=ActionsView.as_view("actions"))
 app.add_url_rule("/investigate", view_func=InvestigateView.as_view("investigate"))
 app.add_url_rule("/research", view_func=ResearchView.as_view("research"))
+app.add_url_rule("/connections", view_func=ConnectionsView.as_view("connections"))
 
 
 if __name__ == "__main__":

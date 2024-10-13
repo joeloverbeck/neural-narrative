@@ -2,6 +2,7 @@ import json
 import os
 import sys
 from datetime import datetime
+from json import JSONDecodeError
 from typing import List, Any
 
 from src.constants import (
@@ -21,6 +22,7 @@ from src.constants import (
     RUNPOD_SECRET_KEY_FILE,
     VOICE_LINES_FOLDER_PATH,
 )
+from src.exceptions import FailedToLoadJsonError
 
 
 class FilesystemManager:
@@ -95,8 +97,13 @@ class FilesystemManager:
                 json.dump({}, f)
 
         # Load the existing data from the file
-        with open(file_path, "r", encoding="utf-8") as f:
-            return json.load(f)
+        try:
+            with open(file_path, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except JSONDecodeError as e:
+            raise FailedToLoadJsonError(
+                f"Failed to load file '{file_path}'. Error: {e}"
+            ) from e
 
     @staticmethod
     def remove_item_from_file(file_path, index):

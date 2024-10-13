@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Connections{% endblock %}
+
+{% block styles %}
+{{ super() }}
+<link href="{{ url_for('static', filename='connections.css') }}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block content %}
+<div class="connections-container">
+    <h1 class="page-title"><i class="fas fa-handshake"></i> Connections</h1>
+
+
+    <!-- Select Characters Section -->
+    <div class="collapsible-section">
+        <button class="collapsible active">
+            <i class="fas fa-users"></i> Select Two Characters
+        </button>
+        <div class="content">
+            <form method="post" class="generate-connection-form ajax-form">
+                <label for="character_a_selector">Select first character:</label>
+                <select id="character_a_selector" name="character_a_identifier">
+                    <option value="">-- Select first character --</option>
+                    {% for character in all_characters %}
+                    <option value="{{ character.identifier }}">{{ character.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="character_b_selector">Select second character:</label>
+                <select id="character_b_selector" name="character_b_identifier">
+                    <option value="">-- Select second character --</option>
+                    {% for character in all_characters %}
+                    <option value="{{ character.identifier }}">{{ character.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <input name="submit_action" type="hidden" value="generate_connection">
+                <button type="submit" class="action-button">
+                    <i class="fas fa-magic"></i> Generate Connection
+                </button>
+            </form>
+            <!-- Message area for AJAX responses -->
+            <div class="message ajax-message">
+                <!-- Success or error messages will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div class="buttons">
+        <a href="{{ url_for('characters-hub') }}" class="button">
+            <i class="fas fa-users"></i> Characters Hub
+        </a>
+        <a href="{{ url_for('index') }}" class="button">
+            <i class="fas fa-globe"></i> Home
+        </a>
+        <a href="{{ url_for('story-hub') }}" class="button">
+            <i class="fas fa-feather-alt"></i> Story Hub
+        </a>
+        <a href="{{ url_for('location-hub') }}" class="button">
+            <i class="fas fa-map-marker-alt"></i> Location Hub
+        </a>
+        <a href="{{ url_for('participants') }}" class="button">
+            <i class="fas fa-comments"></i> Chat
+        </a>
+        <a href="{{ url_for('actions') }}" class="button">
+            <i class="fas fa-bolt"></i> Actions
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='collapsible.js') }}"></script>
+<script src="{{ url_for('static', filename='ajax-form-submit.js') }}"></script>
+<script src="{{ url_for('static', filename='connections.js') }}"></script>
+{% endblock %}

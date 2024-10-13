@@ -1,3 +1,5 @@
+import logging
+
 from flask import redirect, session, render_template, url_for, flash, request, jsonify
 from flask.views import MethodView
 
@@ -7,6 +9,8 @@ from src.maps.map_manager import MapManager
 from src.playthrough_manager import PlaythroughManager
 from src.services.dialogue_service import DialogueService
 from src.time.time_manager import TimeManager
+
+logger = logging.getLogger(__name__)
 
 
 class ChatView(MethodView):
@@ -24,6 +28,7 @@ class ChatView(MethodView):
         if not dialogue_participants and not playthrough_manager.has_ongoing_dialogue(
             playthrough_name
         ):
+            logger.info("There were no dialogue participants, and no ongoing dialogue.")
             return redirect(url_for("participants"))
 
         filesystem_manager = FilesystemManager()
@@ -138,8 +143,6 @@ class ChatView(MethodView):
                     {
                         "alignment": ambient_message["alignment"],
                         "message_text": ambient_message["message_text"],
-                        "sender_name": ambient_message["sender_name"],
-                        "sender_photo_url": ambient_message["sender_photo_url"],
                         "file_url": ambient_message["file_url"] or "",
                     }
                 ]

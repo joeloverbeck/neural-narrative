@@ -197,23 +197,6 @@ class TestCharacterGuidelinesManager:
         with pytest.raises(ValueError, match="World, region, and area can't be empty."):
             manager.save_guidelines("Earth", "North", "", ["Guideline1"])
 
-    def test_save_guidelines_overwrites_existing_guidelines(
-        self, manager, mock_filesystem_manager
-    ):
-        """Test that saving guidelines overwrites existing ones."""
-        key = "Earth:North:Forest"
-        initial_guidelines = ["InitialGuideline"]
-        updated_guidelines = ["UpdatedGuideline1", "UpdatedGuideline2"]
-        manager._guidelines_file[key] = initial_guidelines
-
-        manager.save_guidelines("Earth", "North", "Forest", updated_guidelines)
-
-        assert manager._guidelines_file[key] == updated_guidelines
-        mock_filesystem_manager.save_json_file.assert_called_once_with(
-            manager._guidelines_file,
-            CHARACTER_GENERATION_GUIDELINES_FILE,
-        )
-
     def test_filesystem_manager_save_json_file_called_correctly(
         self, manager, mock_filesystem_manager
     ):

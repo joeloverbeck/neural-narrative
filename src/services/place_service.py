@@ -1,8 +1,8 @@
 from typing import Optional
 
 from src.characters.character import Character
-from src.characters.factories.character_information_factory import (
-    CharacterInformationFactory,
+from src.characters.factories.character_information_provider import (
+    CharacterInformationProvider,
 )
 from src.config.config_manager import ConfigManager
 from src.enums import PlaceType, TemplateType
@@ -60,7 +60,7 @@ class PlaceService:
             llm_client, self._config_manager.get_heavy_llm()
         )
 
-        character_information_factory = CharacterInformationFactory(
+        character_information_factory = CharacterInformationProvider(
             playthrough_name, playthrough_manager.get_player_identifier()
         )
 

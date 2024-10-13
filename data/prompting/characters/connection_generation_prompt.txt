@@ -1,0 +1,21 @@
+Instructions:
+
+Using the character data provided for {name_a} and {name_b}, generate a meaningful and compelling connection between them. The connection should align with their personal information and memories. Ensure that the relationship is coherent, enriches their backstories, and is consistent with their individual characteristics. The connection does not need to be intimate or romantic; it can be any significant relationship such as friendship, rivalry, mentorship, familial ties, etc.
+
+Character {name_a}:
+
+{character_a_information}
+
+Character {name_b}:
+
+{character_b_information}
+
+Your Task:
+
+Using the above information, write a detailed description (approximately 3-5 sentences) of the connection between {name_a} and {name_b}. The description should:
+
+Explain how they met or became connected.
+Highlight the nature of their relationship (e.g., allies, rivals, mentor and protégé, siblings).
+Incorporate elements from their personalities, backgrounds, likes, dislikes, secrets, or memories.
+Be compelling and add depth to both characters.
+Ensure that the connection is believable and enhances the narrative potential of their interactions.

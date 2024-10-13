@@ -1,4 +1,7 @@
+import logging
 from typing import List, Optional
+
+logger = logging.getLogger(__name__)
 
 
 class Participants:
@@ -41,6 +44,15 @@ class Participants:
             raise ValueError("equipment must not be empty.")
         if not voice_model:
             raise ValueError("voice_model can't be empty.")
+
+        # I fund a bug in which the description received the value of name. Protect against that.
+        if name == description:
+            logger.error(
+                f"Attempted to add a participant with a name equal to the description. Data: {identifier} | {name} | {personality} | {equipment} | {voice_model}"
+            )
+            raise ValueError(
+                "Attempted to add a participant for whom the name was equal to the description."
+            )
 
         # Correct way to update the dictionary
         self._participants[identifier] = {

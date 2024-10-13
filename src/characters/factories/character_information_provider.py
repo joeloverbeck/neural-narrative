@@ -6,7 +6,7 @@ from src.constants import CHARACTER_INFORMATION_BLOCK
 from src.filesystem.filesystem_manager import FilesystemManager
 
 
-class CharacterInformationFactory:
+class CharacterInformationProvider:
     def __init__(
         self,
         playthrough_name: str,

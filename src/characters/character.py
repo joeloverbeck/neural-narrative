@@ -70,7 +70,7 @@ class Character:
             attr for attr in self.REQUIRED_ATTRIBUTES if attr not in self._data
         ]
         if missing_attributes:
-            raise ValueError(
+            raise KeyError(
                 f"Character '{self._identifier}' is missing the following required attributes: {', '.join(missing_attributes)}."
             )
 
@@ -124,27 +124,27 @@ class Character:
 
     @property
     def description(self) -> str:
-        return self._data["name"]
+        return self._data["description"]
 
     @property
     def personality(self) -> str:
-        return self._data["name"]
+        return self._data["personality"]
 
     @property
     def profile(self) -> str:
-        return self._data["name"]
+        return self._data["profile"]
 
     @property
     def likes(self) -> str:
-        return self._data["name"]
+        return self._data["likes"]
 
     @property
     def dislikes(self) -> str:
-        return self._data["name"]
+        return self._data["dislikes"]
 
     @property
     def secrets(self) -> str:
-        return self._data["name"]
+        return self._data["secrets"]
 
     @property
     def first_message(self) -> str:
@@ -207,10 +207,7 @@ class Character:
         return self._data["voice_model"]
 
     def has_description_for_portrait(self) -> bool:
-        return (
-            "description_for_portrait" in self._data
-            and self._data["description_for_portrait"]
-        )
+        return bool(self._data.get("description_for_portrait"))
 
     @property
     def description_for_portrait(self) -> str:
