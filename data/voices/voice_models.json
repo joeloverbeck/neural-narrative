@@ -838,5 +838,53 @@
     "INTENSE/DRAMATIC",
     "VILLAINOUS",
     "DEMON-LIKE"
+  ],
+  "meridia": [
+    "FEMALE",
+    "YOUNG ADULT/ADULT",
+    "CALM",
+    "SLOW",
+    "LOUD",
+    "CRISP",
+    "NEUTRAL",
+    "MONOTONE",
+    "STOIC",
+    "MAGICAL"
+  ],
+  "dexion": [
+    "MALE",
+    "MIDDLE-AGED",
+    "CONFIDENT/DETERMINED",
+    "SLOW",
+    "NORMAL VOLUME",
+    "GRAVELLY/RASPY",
+    "NEUTRAL",
+    "FORMAL",
+    "CHARMING",
+    "NO SPECIAL EFFECTS"
+  ],
+  "npcfellieperkins": [
+    "FEMALE",
+    "YOUNG ADULT/ADULT",
+    "EXCITED",
+    "MODERATE",
+    "NORMAL VOLUME",
+    "GRAVELLY/RASPY",
+    "WARM",
+    "FLIRTATIOUS",
+    "SULTRY",
+    "NO SPECIAL EFFECTS"
+  ],
+  "femaleold": [
+    "FEMALE",
+    "ELDERLY",
+    "HAPPY/JOYFUL",
+    "SLOW",
+    "NORMAL VOLUME",
+    "SMOOTH",
+    "WARM",
+    "CASUAL",
+    "KIND",
+    "NO SPECIAL EFFECTS"
   ]
 }
