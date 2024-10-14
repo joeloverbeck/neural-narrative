@@ -30,6 +30,7 @@
     display: flex;
     align-items: flex-start;
     margin-bottom: 20px; /* Increased from 10px to 20px */
+    position: relative;
 }
 
 .chat-bubble.left {
@@ -238,6 +239,7 @@ input[type="text"] {
 .ambient-message {
     text-align: center;
     margin: 20px 0;
+    position: relative;
 }
 
 /* Chat Form */

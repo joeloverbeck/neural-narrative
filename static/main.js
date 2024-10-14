@@ -29,8 +29,6 @@ function playAudio(fileUrl, element) {
         });
         element.audio.addEventListener('ended', function() {
             element.classList.remove('playing');
-            // Optionally, set element.audio to null to reset
-            // element.audio = null;
         });
         element.audio.onerror = function() {
             console.error('Error occurred while loading audio:', element.audio.error);
