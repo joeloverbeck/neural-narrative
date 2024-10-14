@@ -12,6 +12,7 @@ from src.characters.factories.character_information_provider import (
 )
 from src.characters.factories.self_reflection_factory import SelfReflectionFactory
 from src.config.config_manager import ConfigManager
+from src.interfaces.web_interface_manager import WebInterfaceManager
 from src.prompting.factories.openrouter_llm_client_factory import (
     OpenRouterLlmClientFactory,
 )
@@ -79,7 +80,9 @@ class CharacterMemoriesView(MethodView):
             new_memories = request.form.get("character_memories", "")
 
             # Normalize newlines to prevent issues with excessive newline characters
-            new_memories = new_memories.replace("\r\n", "\n").strip()
+            new_memories = WebInterfaceManager.remove_excessive_newline_characters(
+                new_memories
+            )
 
             CharacterMemories(playthrough_name).save_memories(
                 Character(playthrough_name, character_identifier), new_memories

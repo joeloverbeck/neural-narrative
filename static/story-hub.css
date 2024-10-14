@@ -1,18 +1,5 @@
 /* static/story-hub.css */
 
-.story-hub-container {
-    text-align: center;
-    margin-top: 20px;
-}
-
-.concepts-list {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-bottom: 20px;
-}
-
-
 form {
     margin-bottom: 20px;
 }
@@ -23,7 +10,22 @@ form input[type="submit"] {
     cursor: pointer;
 }
 
+.story-hub-container {
+    text-align: center;
+    margin-top: 20px;
+}
 
+/* Adjust margin for content */
+.content .concepts-list {
+    margin-top: 15px;
+}
+
+.concepts-list, .interesting-situations-list, .interesting-dilemmas-list, .goals-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 20px;
+}
 .concept-form {
     display: inline-block;
     margin: 0;
@@ -31,18 +33,6 @@ form input[type="submit"] {
     border: none;
     background: none;
 }
-
-.fade-out {
-    opacity: 0;
-    transform: scale(0.95);
-}
-
-
-/* Adjust margin for content */
-.content .concepts-list {
-    margin-top: 15px;
-}
-
 
 /* Concept item styling */
 .concept-item {
@@ -96,6 +86,11 @@ form input[type="submit"] {
 
 .close:hover {
     color: #000;
+}
+
+.fade-out {
+    opacity: 0;
+    transform: scale(0.95);
 }
 
 /* Delete button */

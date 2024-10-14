@@ -3,6 +3,7 @@ from typing import Optional
 from src.characters.factories.player_and_followers_information_factory import (
     PlayerAndFollowersInformationFactory,
 )
+from src.concepts.concepts_manager import ConceptsManager
 from src.concepts.products.interesting_dilemmas_product import (
     InterestingDilemmasProduct,
 )
@@ -12,6 +13,7 @@ from src.constants import (
 )
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.factories.places_descriptions_factory import PlacesDescriptionsFactory
+from src.playthrough_name import PlaythroughName
 from src.prompting.factories.produce_tool_response_strategy_factory import (
     ProduceToolResponseStrategyFactory,
 )
@@ -21,6 +23,7 @@ from src.prompting.providers.base_tool_response_provider import BaseToolResponse
 class InterestingDilemmasFactory(BaseToolResponseProvider):
     def __init__(
         self,
+        playthrough_name: PlaythroughName,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         places_descriptions_factory: PlacesDescriptionsFactory,
         player_and_followers_information_factory: PlayerAndFollowersInformationFactory,
@@ -28,6 +31,7 @@ class InterestingDilemmasFactory(BaseToolResponseProvider):
     ):
         super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
 
+        self._playthrough_name = playthrough_name
         self._places_descriptions_factory = places_descriptions_factory
         self._player_and_followers_information_factory = (
             player_and_followers_information_factory
@@ -37,17 +41,10 @@ class InterestingDilemmasFactory(BaseToolResponseProvider):
         return INTERESTING_DILEMMAS_GENERATION_PROMPT_FILE
 
     def get_prompt_kwargs(self) -> dict:
-        prompt_data = {
-            "places_descriptions": self._places_descriptions_factory.get_information()
-        }
-
-        prompt_data.update(
-            {
-                "player_and_followers_information": self._player_and_followers_information_factory.get_information()
-            }
+        return ConceptsManager(self._playthrough_name).get_prompt_data(
+            self._places_descriptions_factory,
+            self._player_and_followers_information_factory,
         )
-
-        return prompt_data
 
     def get_tool_file(self) -> str:
         return INTERESTING_DILEMMAS_GENERATION_TOOL_FILE

@@ -1,14 +1,13 @@
 import logging
-from typing import Optional
+from typing import Optional, List
 
-from src.abstracts.command import Command
 from src.concepts.factories.concepts_factory import ConceptsFactory
 from src.filesystem.filesystem_manager import FilesystemManager
 
 logger = logging.getLogger(__name__)
 
 
-class GenerateConceptsCommand(Command):
+class GenerateConceptsAlgorithm:
     def __init__(
         self,
         playthrough_name: str,
@@ -23,12 +22,13 @@ class GenerateConceptsCommand(Command):
 
         self._filesystem_manager = filesystem_manager or FilesystemManager()
 
-    def execute(self) -> None:
+    def do_algorithm(self) -> List[str]:
         product = self._concepts_factory.generate_product()
 
         if not product.is_valid():
-            logger.error("Failed to generate concepts. Error: %s", product.get_error())
-            return
+            raise ValueError(
+                "Failed to generate concepts. Error: %s", product.get_error()
+            )
 
         prettified_concepts = ""
 
@@ -42,3 +42,5 @@ class GenerateConceptsCommand(Command):
         )
 
         logger.info("Saved concepts.")
+
+        return product.get()

@@ -1,7 +1,6 @@
 import logging
-from typing import Optional
+from typing import Optional, List
 
-from src.abstracts.command import Command
 from src.concepts.factories.interesting_dilemmas_factory import (
     InterestingDilemmasFactory,
 )
@@ -10,7 +9,7 @@ from src.filesystem.filesystem_manager import FilesystemManager
 logger = logging.getLogger(__name__)
 
 
-class GenerateInterestingDilemmasCommand(Command):
+class GenerateInterestingDilemmasAlgorithms:
     def __init__(
         self,
         playthrough_name: str,
@@ -22,22 +21,20 @@ class GenerateInterestingDilemmasCommand(Command):
 
         self._filesystem_manager = filesystem_manager or FilesystemManager()
 
-    def execute(self) -> None:
+    def do_algorithm(self) -> List[str]:
 
         interesting_dilemmas_product = (
             self._interesting_dilemmas_factory.generate_product()
         )
 
         if not interesting_dilemmas_product.is_valid():
-            logger.error(
-                "Was unable to generate interesting dilemmas. Error: %s",
-                interesting_dilemmas_product.error(),
-            )
-            return
+            error_message = f"Was unable to generate interesting dilemmas. Error: {interesting_dilemmas_product.error()}"
+            logger.error(error_message)
+
+            raise ValueError(error_message)
 
         if not interesting_dilemmas_product.get():
-            logger.error("No dilemmas have been generated.")
-            return
+            raise ValueError("No dilemmas have been generated.")
 
         # Generated interesting dilemmas. Must save them.
         interesting_dilemmas = ""
@@ -64,3 +61,5 @@ class GenerateInterestingDilemmasCommand(Command):
                 self._playthrough_name
             ),
         )
+
+        return interesting_dilemmas_product.get()
