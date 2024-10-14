@@ -27,7 +27,14 @@
         {% if message.alignment == 'center' %}
         <div class="ambient-message" data-file-url="{{ message.file_url }}">
             <div class="ambient-message-text">{{ message.message_text }}</div>
-            <i class="fas play-icon"></i>
+            <i class="fas fa-play play-icon"></i>
+            <div class="waveform">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
         </div>
         {% else %}
         <div class="chat-bubble {{ message.alignment }}" data-file-url="{{ message.file_url }}">
@@ -36,7 +43,14 @@
                 <div class="sender-label">{{ message.sender_name }}</div>
                 <div class="message-text">{{ message.message_text }}</div>
             </div>
-            <i class="fas play-icon"></i>
+            <i class="fas fa-play play-icon"></i>
+            <div class="waveform">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
         </div>
         {% endif %}
         {% endfor %}

@@ -27,6 +27,20 @@ input[type="submit"] {
 input[type="submit"]:hover {
     background-color: #45a049;
 }
+
+/* Page Title */
+h1.page-title {
+   font-family: 'Pacifico', cursive;
+    font-size: 60px;
+    background: linear-gradient(to right, #ff5722, #3f51b5);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: center;
+    margin-bottom: 40px;
+    position: relative;
+    animation: fadeIn 2s ease-in-out;
+}
+
 .current-time,
 .current-place {
     font-size: 16px;
@@ -110,6 +124,76 @@ input[type="submit"]:hover {
 /* Show the section */
 .visible-section {
     display: block;
+}
+
+/* Playing State */
+.playing {
+    background: linear-gradient(90deg, #e0f7fa, #ffffff);
+    transition: background 0.5s, border-left 0.5s;
+}
+
+/* Play/Pause Icon */
+.play-icon {
+    font-size: 14px;
+    color: #fff;
+    background-color: #22A7F0;
+    border-radius: 50%;
+    padding: 8px;
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    cursor: pointer;
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);
+}
+
+.play-icon:hover {
+    opacity: 0.8;
+}
+
+.playing .play-icon {
+    background-color: #dc3545;
+}
+
+.playing .play-icon::before {
+    content: "\f28b";  /* FontAwesome pause icon */
+}
+
+/* Waveform Animation */
+
+/* Hide waveform by default */
+.waveform {
+    display: none;
+}
+
+.playing .waveform {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    left: -10px;
+    bottom: -10px;
+}
+
+.waveform div {
+    width: 4px;
+    height: 12px;
+    margin: 0 1px;
+    background: #22A7F0;
+    animation: bounce 1s infinite ease-in-out;
+}
+
+.waveform div:nth-child(1) { height: 10px; animation-delay: -1s; }
+.waveform div:nth-child(2) { height: 14px; animation-delay: -0.8s; }
+.waveform div:nth-child(3) { height: 18px; animation-delay: -0.6s; }
+.waveform div:nth-child(4) { height: 14px; animation-delay: -0.4s; }
+.waveform div:nth-child(5) { height: 10px; animation-delay: -0.2s; }
+
+@keyframes bounce {
+    0%, 100% {
+        transform: scaleY(0.5);
+    }
+    50% {
+        transform: scaleY(1);
+    }
 }
 
 @media (max-width: 600px) {

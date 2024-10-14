@@ -64,20 +64,6 @@ input[type="checkbox"] {
     }
 }
 
-
-h1.page-title {
-   font-family: 'Pacifico', cursive;
-    font-size: 60px;
-    background: linear-gradient(to right, #ff5722, #3f51b5);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-align: center;
-    margin-bottom: 40px;
-    position: relative;
-    animation: fadeIn 2s ease-in-out;
-}
-
-
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -304,50 +290,6 @@ h1.page-title i {
 
 .post-it:focus {
     outline: none;
-}
-
-/* Visual feedback during audio playback */
-.playing {
-    background-color: #e0f7fa;  /* Light cyan background */
-    position: relative;
-}
-
-/* Optional spinning icon to indicate playing */
-.playing::before {
-    content: '';
-    position: absolute;
-    left: 5px;
-    top: 50%;
-    width: 10px;
-    height: 10px;
-    margin-top: -5px;
-    border: 2px solid #00796b;
-    border-top: 2px solid transparent;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-/* Animation keyframes */
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-/* Optional play/pause icon */
-.play-icon {
-    font-size: 24px;
-    color: #00796b;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-}
-
-.playing .play-icon::before {
-    content: "\f28b";  /* FontAwesome pause icon */
-}
-
-.play-icon::before {
-    content: "\f04b";  /* FontAwesome play icon */
 }
 
 /* Action Buttons Container */
