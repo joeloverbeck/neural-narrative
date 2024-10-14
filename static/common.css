@@ -309,9 +309,7 @@ h1.page-title i {
 /* Visual feedback during audio playback */
 .playing {
     background-color: #e0f7fa;  /* Light cyan background */
-    border-left: 5px solid #00796b;  /* Teal border */
     position: relative;
-    padding-left: 15px;
 }
 
 /* Optional spinning icon to indicate playing */

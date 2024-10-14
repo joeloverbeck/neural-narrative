@@ -2,8 +2,8 @@ import logging
 from typing import cast, Optional
 
 from src.abstracts.command import Command
-from src.events.factories.goals_factory import GoalsFactory
-from src.events.products.goals_product import GoalsProduct
+from src.concepts.factories.goals_factory import GoalsFactory
+from src.concepts.products.goals_product import GoalsProduct
 from src.filesystem.filesystem_manager import FilesystemManager
 
 logger = logging.getLogger(__name__)

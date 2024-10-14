@@ -1,6 +1,6 @@
 // static/story-hub.js
 
-document.addEventListener('DOMContentLoaded', function() {
+function pageInit() {
     // Fade-out effect for items
     const itemForms = document.querySelectorAll('.item-form');
 
@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 500);
         });
     });
-});
+}
 
 function openModal(index) {
     document.getElementById('modal-' + index).style.display = 'block';
@@ -32,4 +32,12 @@ window.onclick = function(event) {
             modal.style.display = 'none';
         }
     });
+}
+
+function interestingDilemmasGenerationSuccess(data, context){
+    if (data.success){
+        showToast(data.message || 'Interesting dilemmas generated.', 'success')
+    } else {
+        showToast(data.error || 'An error ocurred.', 'error')
+    }
 }

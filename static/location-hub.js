@@ -7,7 +7,7 @@
 function placeDescriptionGenerationSuccess(data, context) {
     const { messageDiv, form } = context;
     if (data.success) {
-        displayMessage(messageDiv, data.message || 'Success', 'success');
+        showToast(data.message || 'Success', 'success');
 
         const container = document.getElementById('place-description-section');
         if (!container) {
@@ -88,20 +88,6 @@ function placeDescriptionGenerationSuccess(data, context) {
         contentDiv.style.display = 'block';
 
     } else {
-        displayMessage(messageDiv, data.error || 'An error occurred', 'error');
+        showToast(data.error || 'An error occurred', 'error');
     }
 }
-
-
-// Initialize forms with custom onSuccess handler
-document.addEventListener('DOMContentLoaded', () => {
-    const forms = document.querySelectorAll('form.ajax-form');
-
-    forms.forEach((form) => {
-        if (form.classList.contains('describe-place-form')) {
-            handleAjaxFormSubmit(form, {
-                onSuccess: placeDescriptionGenerationSuccess,
-            });
-        }
-    });
-});

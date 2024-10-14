@@ -57,7 +57,6 @@ Story Hub
                     <i class="fas fa-lightbulb"></i> Generate Concepts
                 </button>
             </form>
-            <div id="concepts-generation-message" class="message ajax-message" style="display: none;"></div>
         </div>
     </div>
 
@@ -89,8 +88,6 @@ Story Hub
                     <i class="fas fa-exclamation-circle"></i> Generate Interesting Situations
                 </button>
             </form>
-            <div id="interesting-situations-generation-message" class="message ajax-message"
-                 style="display: none;"></div>
         </div>
     </div>
 
@@ -116,14 +113,13 @@ Story Hub
             {% else %}
             <p>No interesting dilemmas generated yet.</p>
             {% endif %}
-            <form method="post" class="ajax-form" action="{{ url_for('story-hub') }}">
+            <form method="post" class="ajax-form" action="{{ url_for('story-hub') }}"
+                  data-success-handler="interestingDilemmasGenerationSuccess">
                 <input type="hidden" name="submit_action" value="generate_dilemmas">
                 <button type="submit" class="action-button" id="generate-interesting-dilemmas-button">
                     <i class="fas fa-question-circle"></i> Generate Interesting Dilemmas
                 </button>
             </form>
-            <div id="interesting-dilemmas-generation-message" class="message ajax-message"
-                 style="display: none;"></div>
         </div>
     </div>
 
@@ -155,8 +151,6 @@ Story Hub
                     <i class="fas fa-flag-checkered"></i> Generate Goals
                 </button>
             </form>
-            <div id="goals-generation-message" class="message ajax-message"
-                 style="display: none;"></div>
         </div>
     </div>
 
@@ -183,7 +177,6 @@ Story Hub
 {% endblock %}
 
 {% block scripts %}
-<script src="{{ url_for('static', filename='collapsible.js') }}"></script>
-<script src="{{ url_for('static', filename='ajax-form-submit.js') }}"></script>
+<script src="{{ url_for('static', filename='main.js') }}"></script>
 <script src="{{ url_for('static', filename='story-hub.js') }}"></script>
 {% endblock %}

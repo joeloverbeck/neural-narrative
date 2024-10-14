@@ -778,5 +778,65 @@
     "MELODIC",
     "CHARMING",
     "NO SPECIAL EFFECTS"
+  ],
+  "garan": [
+    "MALE",
+    "YOUNG ADULT/ADULT",
+    "CALM",
+    "SLOW",
+    "NORMAL VOLUME",
+    "SMOOTH",
+    "NEUTRAL",
+    "FORMAL",
+    "NOBLE",
+    "NO SPECIAL EFFECTS"
+  ],
+  "npcfcricket": [
+    "FEMALE",
+    "TEENAGE",
+    "HOPEFUL",
+    "MODERATE",
+    "NORMAL VOLUME",
+    "CRISP",
+    "WARM",
+    "INTENSE/DRAMATIC",
+    "PASSIONATE",
+    "NO SPECIAL EFFECTS"
+  ],
+  "npcmoldmanstockton": [
+    "MALE",
+    "ELDERLY",
+    "EXCITED",
+    "SLOW",
+    "LOUD",
+    "GRAVELLY/RASPY",
+    "WARM",
+    "INTENSE/DRAMATIC",
+    "ADVENTUROUS/DRIVEN",
+    "NO SPECIAL EFFECTS"
+  ],
+  "npcfcathy": [
+    "FEMALE",
+    "ELDERLY",
+    "CONFIDENT/DETERMINED",
+    "SLOW",
+    "NORMAL VOLUME",
+    "GRAVELLY/RASPY",
+    "NEUTRAL",
+    "CASUAL",
+    "ADVENTUROUS/DRIVEN",
+    "NO SPECIAL EFFECTS"
+  ],
+  "alduin": [
+    "MALE",
+    "MIDDLE-AGED",
+    "ANGRY/AGGRESSIVE",
+    "SLOW",
+    "LOUD",
+    "GUTTURAL",
+    "AUTHORITATIVE",
+    "INTENSE/DRAMATIC",
+    "VILLAINOUS",
+    "DEMON-LIKE"
   ]
 }
