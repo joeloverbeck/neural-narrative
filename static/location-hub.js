@@ -5,7 +5,6 @@
  * Inserts or updates the place description section with animation.
  */
 function placeDescriptionGenerationSuccess(data, context) {
-    const { messageDiv, form } = context;
     if (data.success) {
         showToast(data.message || 'Success', 'success');
 

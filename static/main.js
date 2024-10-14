@@ -112,10 +112,6 @@ function handleAjaxFormSubmit(form, options = {}) {
     const originalButtonHTMLs = [];
     let clickedButton = null;
 
-    // Find the message div
-    const messageSelector = form.getAttribute('data-message-selector');
-    const messageDiv = messageSelector ? document.querySelector(messageSelector) : form.parentElement.querySelector('.ajax-message');
-
     // Track which submit button was clicked
     submitButtons.forEach((button) => {
         button.addEventListener('click', (event) => {
@@ -157,23 +153,23 @@ function handleAjaxFormSubmit(form, options = {}) {
             })
             .then((data) => {
                 if (typeof options.onSuccess === 'function') {
-                    options.onSuccess(data, { submitter: clickedButton, messageDiv, form });
+                    options.onSuccess(data, { submitter: clickedButton, form });
                 } else {
                     // Default success handling
                     if (data.success) {
-                        showToast(messageDiv, data.message || 'Success', 'success');
+                        showToast(data.message || 'Success', 'success');
                     } else {
-                        showToast(messageDiv, data.error || 'An error occurred', 'error');
+                        showToast(data.error || 'An error occurred', 'error');
                     }
                 }
             })
             .catch((error) => {
                 if (typeof options.onError === 'function') {
-                    options.onError(error, { messageDiv, form });
+                    options.onError(error, { form });
                 } else {
                     // Default error handling
                     console.error('Error:', error);
-                    showToast(messageDiv, 'An unexpected error occurred.', 'error');
+                    showToast('An unexpected error occurred.', 'error');
                 }
             })
             .finally(() => {
