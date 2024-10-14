@@ -27,7 +27,6 @@ function createGuidelineElement(guideline) {
 
 // Custom onSuccess handler for character generation forms
 function characterGenerationSuccess(data, context) {
-    const { messageDiv } = context;
     if (data.success) {
         showToast(data.message || 'Success', 'success');
 
