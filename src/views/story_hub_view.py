@@ -12,21 +12,23 @@ from src.characters.factories.player_and_followers_information_factory import (
 from src.characters.factories.player_data_for_prompt_factory import (
     PlayerDataForPromptFactory,
 )
-from src.config.config_manager import ConfigManager
-from src.events.commands.generate_concepts_command import GenerateConceptsCommand
-from src.events.commands.generate_goals_command import GenerateGoalsCommand
-from src.events.commands.generate_interesting_dilemmas_command import (
+from src.concepts.commands.generate_concepts_command import GenerateConceptsCommand
+from src.concepts.commands.generate_goals_command import GenerateGoalsCommand
+from src.concepts.commands.generate_interesting_dilemmas_command import (
     GenerateInterestingDilemmasCommand,
 )
-from src.events.commands.generate_interesting_situations_command import (
+from src.concepts.commands.generate_interesting_situations_command import (
     GenerateInterestingSituationsCommand,
 )
-from src.events.factories.concepts_factory import ConceptsFactory
-from src.events.factories.goals_factory import GoalsFactory
-from src.events.factories.interesting_dilemmas_factory import InterestingDilemmasFactory
-from src.events.factories.interesting_situations_factory import (
+from src.concepts.factories.concepts_factory import ConceptsFactory
+from src.concepts.factories.goals_factory import GoalsFactory
+from src.concepts.factories.interesting_dilemmas_factory import (
+    InterestingDilemmasFactory,
+)
+from src.concepts.factories.interesting_situations_factory import (
     InterestingSituationsFactory,
 )
+from src.config.config_manager import ConfigManager
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.factories.place_descriptions_for_prompt_factory import (
     PlaceDescriptionsForPromptFactory,

@@ -238,6 +238,14 @@ class FilesystemManager:
             "interesting_situations.txt",
         )
 
+    def get_file_path_to_facts(self, playthrough_name: str) -> str:
+        if not playthrough_name:
+            raise ValueError("playthrough_name can't be empty.")
+
+        return os.path.join(
+            self.get_file_path_to_playthrough_folder(playthrough_name), "facts.txt"
+        )
+
     def get_file_path_to_interesting_dilemmas(self, playthrough_name: str) -> str:
         if not playthrough_name:
             raise ValueError("playthrough_name should not be empty.")

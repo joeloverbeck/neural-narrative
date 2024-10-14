@@ -1,7 +1,7 @@
 import logging
 
 from src.abstracts.command import Command
-from src.events.factories.interesting_situations_factory import (
+from src.concepts.factories.interesting_situations_factory import (
     InterestingSituationsFactory,
 )
 from src.filesystem.filesystem_manager import FilesystemManager

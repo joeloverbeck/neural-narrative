@@ -107,8 +107,7 @@ class ConcreteLlmContentProvider(LlmContentProvider):
                         self._messages_to_llm.get(),
                         empty_content_context_file_path,
                     )
-
-                    raise ValueError(
+                    logger.warning(
                         "The LLM returned empty content. That may mean that the context is too long."
                     )
                 elif (

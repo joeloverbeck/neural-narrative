@@ -4,7 +4,9 @@ from flask.views import MethodView
 from src.characters.algorithms.generate_character_generation_guidelines_algorithm import (
     GenerateCharacterGenerationGuidelinesAlgorithm,
 )
+from src.characters.character import Character
 from src.characters.character_guidelines_manager import CharacterGuidelinesManager
+from src.characters.characters_manager import CharactersManager
 from src.characters.factories.character_generation_guidelines_factory import (
     CharacterGenerationGuidelinesFactory,
 )
@@ -148,15 +150,22 @@ class CharacterGenerationView(MethodView):
         try:
             CharacterService.generate_character(playthrough_name, guideline_text)
 
+            latest_identifier = CharactersManager(
+                playthrough_name
+            ).get_latest_character_identifier()
+
             # Prepare the response
-            response = {"success": True, "message": "Character generated successfully."}
+            response = {
+                "success": True,
+                "message": f"Character '{Character(playthrough_name, latest_identifier).name}' generated successfully.",
+            }
         except CharacterGenerationFailedError as e:
             response = {
                 "success": False,
                 "error": f"Character generation failed. Error: {str(e)}",
             }
         except Exception as e:
-            response = {"success": False, "error": str(e)}
+            response = {"success": False, "error": f"Unspecific error: {str(e)}"}
 
         if request.headers.get("X-Requested-With") == "XMLHttpRequest":
             return jsonify(response)
@@ -170,7 +179,6 @@ class CharacterGenerationView(MethodView):
     @staticmethod
     def handle_generate_guidelines(playthrough_name):
         try:
-
             playthrough_manager = PlaythroughManager(playthrough_name)
 
             place_identifier = playthrough_manager.get_current_place_identifier()

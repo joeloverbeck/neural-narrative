@@ -18,7 +18,8 @@
             <i class="fas fa-users"></i> Select Two Characters
         </button>
         <div class="content">
-            <form method="post" class="generate-connection-form ajax-form">
+            <form method="post" class="generate-connection-form ajax-form"
+                  data-success-handler="connectionGenerationSuccess">
                 <label for="character_a_selector">Select first character:</label>
                 <select id="character_a_selector" name="character_a_identifier">
                     <option value="">-- Select first character --</option>
@@ -72,7 +73,6 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="{{ url_for('static', filename='collapsible.js') }}"></script>
-<script src="{{ url_for('static', filename='ajax-form-submit.js') }}"></script>
+<script src="{{ url_for('static', filename='main.js') }}"></script>
 <script src="{{ url_for('static', filename='connections.js') }}"></script>
 {% endblock %}

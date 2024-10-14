@@ -2,7 +2,9 @@ import logging
 from typing import Optional
 
 from src.abstracts.command import Command
-from src.events.factories.interesting_dilemmas_factory import InterestingDilemmasFactory
+from src.concepts.factories.interesting_dilemmas_factory import (
+    InterestingDilemmasFactory,
+)
 from src.filesystem.filesystem_manager import FilesystemManager
 
 logger = logging.getLogger(__name__)

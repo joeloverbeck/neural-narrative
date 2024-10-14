@@ -43,7 +43,8 @@
     </div>
 
     <!-- Chat Form -->
-    <form method="post" class="chat-form ajax-form" action="{{ url_for('chat') }}">
+    <form method="post" class="chat-form ajax-form" action="{{ url_for('chat') }}"
+          data-success-handler="chatSuccessHandler" data-error-handler="chatErrorHandler">
         <input id="user-input" name="user_input" placeholder="Type your message here..." type="text">
         <div class="form-buttons">
             <button type="submit" name="submit_action" value="Send" class="action-button"
@@ -81,7 +82,6 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="{{ url_for('static', filename='audio-playback.js') }}"></script>
-<script src="{{ url_for('static', filename='ajax-form-submit.js') }}"></script>
+<script src="{{ url_for('static', filename='main.js') }}"></script>
 <script src="{{ url_for('static', filename='chat.js') }}"></script>
 {% endblock %}

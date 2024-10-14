@@ -4,8 +4,8 @@ from typing import Optional
 from src.characters.factories.player_and_followers_information_factory import (
     PlayerAndFollowersInformationFactory,
 )
+from src.concepts.products.goals_product import GoalsProduct
 from src.constants import GOALS_GENERATION_TOOL_FILE, GOALS_GENERATION_PROMPT_FILE
-from src.events.products.goals_product import GoalsProduct
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.factories.places_descriptions_factory import PlacesDescriptionsFactory
 from src.prompting.factories.produce_tool_response_strategy_factory import (

@@ -47,7 +47,8 @@
                 <h2 class="action-group-title">Place Description</h2>
                 <div class="buttons">
                     <form method="post" class="action-form ajax-form describe-place-form"
-                          action="{{ url_for('location-hub') }}" data-message-selector="#describe-place-message">
+                          action="{{ url_for('location-hub') }}"
+                          data-success-handler="placeDescriptionGenerationSuccess">
                         <input name="submit_action" type="hidden" value="Describe Place">
                         <button type="submit" class="action-button" id="describe-place-button">
                             <i class="fas fa-info-circle"></i> Describe current place
@@ -62,8 +63,6 @@
                     </form>
                     {% endif %}
                 </div>
-                <div id="describe-place-message" class="message ajax-message"
-                     style="display: none;"></div>
             </div>
 
 
@@ -252,11 +251,11 @@
         <a href="{{ url_for('index') }}" class="button">
             <i class="fas fa-globe"></i> Home
         </a>
-        <a href="{{ url_for('characters-hub') }}" class="button">
-            <i class="fas fa-users"></i> Characters Hub
-        </a>
         <a href="{{ url_for('story-hub') }}" class="button">
             <i class="fas fa-feather-alt"></i> Story Hub
+        </a>
+        <a href="{{ url_for('characters-hub') }}" class="button">
+            <i class="fas fa-users"></i> Characters Hub
         </a>
         <a href="{{ url_for('chat') }}" class="button">
             <i class="fas fa-comments"></i> Chat
@@ -268,8 +267,6 @@
 </div> {% endblock %}
 {% block scripts %}
 
-<script src="{{ url_for('static', filename='collapsible.js') }}"></script>
-<script src="{{ url_for('static', filename='audio-playback.js') }}"></script>
-<script src="{{ url_for('static', filename='ajax-form-submit.js') }}"></script>
+<script src="{{ url_for('static', filename='main.js') }}"></script>
 <script src="{{ url_for('static', filename='location-hub.js') }}"></script>
 {% endblock %}

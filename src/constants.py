@@ -86,16 +86,16 @@ CHARACTER_GENERATION_GUIDELINES_TOOL_FILE: str = (
     "data/prompting/characters/character_generation_guidelines_tool.json"
 )
 INTERESTING_SITUATIONS_GENERATION_TOOL_FILE: str = (
-    "data/prompting/events/interesting_situations_generation_tool.json"
+    "data/prompting/concepts/interesting_situations_generation_tool.json"
 )
 INTERESTING_DILEMMAS_GENERATION_TOOL_FILE: str = (
-    "data/prompting/events/interesting_dilemmas_generation_tool.json"
+    "data/prompting/concepts/interesting_dilemmas_generation_tool.json"
 )
 CHARACTER_DESCRIPTION_GENERATION_TOOL_FILE: str = (
     "data/prompting/characters/character_description_generation_tool.json"
 )
 CONCEPTS_GENERATION_TOOL_FILE: str = (
-    "data/prompting/events/concepts_generation_tool.json"
+    "data/prompting/concepts/concepts_generation_tool.json"
 )
 AMBIENT_NARRATION_GENERATION_TOOL_FILE: str = (
     "data/prompting/ambient_narration_generation_tool.json"
@@ -106,7 +106,7 @@ SELF_REFLECTION_GENERATION_TOOL_FILE: str = (
 GOAL_RESOLUTION_GENERATION_TOOL_FILE: str = (
     "data/prompting/goal_resolution_generation_tool.json"
 )
-GOALS_GENERATION_TOOL_FILE: str = "data/prompting/events/goals_generation_tool.json"
+GOALS_GENERATION_TOOL_FILE: str = "data/prompting/concepts/goals_generation_tool.json"
 RESEARCH_RESOLUTION_GENERATION_TOOL_FILE: str = (
     "data/prompting/actions/research_resolution_generation_tool.json"
 )
@@ -145,17 +145,17 @@ CHARACTER_GENERATION_GUIDELINES_PROMPT_FILE: str = (
     "data/prompting/characters/character_generation_guidelines_prompt.txt"
 )
 INTERESTING_SITUATIONS_GENERATION_PROMPT_FILE: str = (
-    "data/prompting/events/interesting_situations_generation_prompt.txt"
+    "data/prompting/concepts/interesting_situations_generation_prompt.txt"
 )
 INTERESTING_DILEMMAS_GENERATION_PROMPT_FILE: str = (
-    "data/prompting/events/interesting_dilemmas_generation_prompt.txt"
+    "data/prompting/concepts/interesting_dilemmas_generation_prompt.txt"
 )
 IMAGE_GENERATION_PROMPT_FILE: str = "data/prompting/image_generation_prompt.txt"
 CHARACTER_DESCRIPTION_GENERATION_PROMPT_FILE: str = (
     "data/prompting/characters/character_description_generation_prompt.txt"
 )
 CONCEPTS_GENERATION_PROMPT_FILE: str = (
-    "data/prompting/events/concepts_generation_prompt.txt"
+    "data/prompting/concepts/concepts_generation_prompt.txt"
 )
 AMBIENT_NARRATION_GENERATION_PROMPT_FILE: str = (
     "data/prompting/ambient_narration_generation_prompt.txt"
@@ -166,7 +166,9 @@ SELF_REFLECTION_GENERATION_PROMPT_FILE: str = (
 GOAL_RESOLUTION_GENERATION_PROMPT_FILE: str = (
     "data/prompting/goal_resolution_generation_prompt.txt"
 )
-GOALS_GENERATION_PROMPT_FILE: str = "data/prompting/events/goals_generation_prompt.txt"
+GOALS_GENERATION_PROMPT_FILE: str = (
+    "data/prompting/concepts/goals_generation_prompt.txt"
+)
 RESEARCH_RESOLUTION_GENERATION_PROMPT_FILE: str = (
     "data/prompting/actions/research_resolution_generation_prompt.txt"
 )

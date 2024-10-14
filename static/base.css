@@ -36,26 +36,70 @@ input[type="submit"]:hover {
     text-align: right;
 }
 
-/* Message styles */
-.message {
+/* Container for Toasts */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+}
+
+/* Base Toast Style */
+.toast {
+    display: flex;
+    align-items: center;
     max-width: 600px;
-    margin: 20px auto;
-    text-align: left;
-    padding: 10px;
-    border-left: 5px solid;
-    display: none; /* Initially hidden */
+    min-width: 250px;
+    margin-bottom: 10px;
+    padding: 10px 15px;
+    border-radius: 5px;
+    color: #fff;
+    opacity: 0;
+    animation: fadeInToast 0.5s forwards;
+    font-size: 16px;
 }
 
-.message.success {
-    background-color: #d4edda;
-    border-color: #28a745;
-    color: #155724;
+/* Success Toast */
+.toast.success {
+    background: linear-gradient(45deg, #28a745, #218838);
 }
 
-.message.error {
-    background-color: #f8d7da;
-    border-color: #dc3545;
-    color: #721c24;
+/* Error Toast */
+.toast.error {
+    background: linear-gradient(45deg, #dc3545, #c82333);
+}
+
+/* Icon Styling */
+.toast::before {
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    margin-right: 10px;
+    font-size: 18px;
+}
+
+.toast.success::before {
+    content: "\f00c"; /* Font Awesome check icon */
+}
+
+.toast.error::before {
+    content: "\f00d"; /* Font Awesome times icon */
+}
+
+/* Animation */
+@keyframes fadeInToast {
+    from { opacity: 0; transform: translateX(100%); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* Fade-Out Animation */
+@keyframes fadeOutToast {
+    from { opacity: 1; transform: translateX(0); }
+    to { opacity: 0; transform: translateX(100%); }
+}
+
+/* Fade-Out Class */
+.fade-out {
+    animation: fadeOutToast 0.5s forwards;
 }
 
 /* Hide the section */

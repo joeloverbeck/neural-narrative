@@ -29,24 +29,13 @@ function createGuidelineElement(guideline) {
 function characterGenerationSuccess(data, context) {
     const { messageDiv } = context;
     if (data.success) {
-        displayMessage(messageDiv, data.message || 'Success', 'success');
+        showToast(data.message || 'Success', 'success');
 
         // If the response contains guidelines, update the grid
         if (data.guidelines) {
             updateGrid('.guidelines-grid', data.guidelines, createGuidelineElement);
         }
     } else {
-        displayMessage(messageDiv, data.error || 'An error occurred', 'error');
+        showToast(data.error || 'An error occurred', 'error');
     }
 }
-
-// Initialize forms with custom onSuccess handler
-document.addEventListener('DOMContentLoaded', () => {
-    const forms = document.querySelectorAll('form.ajax-form');
-
-    forms.forEach((form) => {
-        handleAjaxFormSubmit(form, {
-            onSuccess: characterGenerationSuccess,
-        });
-    });
-});
