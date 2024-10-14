@@ -23,7 +23,7 @@ Story Hub
             <!-- Concepts list -->
             <div class="concepts-list">
                 {% for concept in concepts %}
-                <div class="concept-item" onclick="openModal({{ loop.index0 }})">
+                <div class="concept-item" onclick="openModal({{ loop.index0 }})" data-index="{{ loop.index0 }}">
                     <h3>Concept {{ loop.index }}</h3>
                     <p>{{ concept[:150] }}...</p>
                 </div>
@@ -38,8 +38,8 @@ Story Hub
                     <h2>Concept {{ loop.index }}</h2>
                     <p>{{ concept }}</p>
                     <form action="{{ url_for('story-hub') }}" method="post">
-                        <input type="hidden" name="submit_action" value="delete_concept">
                         <input type="hidden" name="item_index" value="{{ loop.index0 }}">
+                        <input type="hidden" name="submit_action" value="delete_concept">
                         <button type="submit" class="delete-button">
                             <i class="fas fa-trash-alt"></i> Delete
                         </button>
@@ -51,7 +51,8 @@ Story Hub
             <p>No concepts generated yet.</p>
             {% endif %}
 
-            <form method="post" class="ajax-form" action="{{ url_for('story-hub') }}">
+            <form method="post" class="ajax-form" action="{{ url_for('story-hub') }}"
+                  data-success-handler="generateConceptsSuccess">
                 <input type="hidden" name="submit_action" value="generate_concepts">
                 <button type="submit" class="action-button" id="generate-concepts-button">
                     <i class="fas fa-lightbulb"></i> Generate Concepts
@@ -67,7 +68,7 @@ Story Hub
         </button>
         <div class="content">
             {% if interesting_situations %}
-            <div class="concepts-list">
+            <div class="interesting-situations-list">
                 {% for situation in interesting_situations %}
                 <form action="{{ url_for('story-hub') }}" method="post" class="item-form">
                     <input type="hidden" name="submit_action" value="delete_situation">
@@ -82,7 +83,8 @@ Story Hub
             {% else %}
             <p>No interesting situations generated yet.</p>
             {% endif %}
-            <form method="post" class="ajax-form" action="{{ url_for('story-hub') }}">
+            <form method="post" class="ajax-form" action="{{ url_for('story-hub') }}"
+                  data-success-handler="generateInterestingSituationsSuccess">
                 <input type="hidden" name="submit_action" value="generate_situations">
                 <button type="submit" class="action-button" id="generate-interesting-situations-button">
                     <i class="fas fa-exclamation-circle"></i> Generate Interesting Situations
@@ -98,7 +100,7 @@ Story Hub
         </button>
         <div class="content">
             {% if interesting_dilemmas %}
-            <div class="concepts-list">
+            <div class="interesting-dilemmas-list">
                 {% for dilemma in interesting_dilemmas %}
                 <form action="{{ url_for('story-hub') }}" method="post" class="item-form">
                     <input type="hidden" name="submit_action" value="delete_dilemma">
@@ -114,7 +116,7 @@ Story Hub
             <p>No interesting dilemmas generated yet.</p>
             {% endif %}
             <form method="post" class="ajax-form" action="{{ url_for('story-hub') }}"
-                  data-success-handler="interestingDilemmasGenerationSuccess">
+                  data-success-handler="generateInterestingDilemmasSuccess">
                 <input type="hidden" name="submit_action" value="generate_dilemmas">
                 <button type="submit" class="action-button" id="generate-interesting-dilemmas-button">
                     <i class="fas fa-question-circle"></i> Generate Interesting Dilemmas
@@ -130,7 +132,7 @@ Story Hub
         </button>
         <div class="content">
             {% if goals %}
-            <div class="concepts-list">
+            <div class="goals-list">
                 {% for goal in goals %}
                 <form action="{{ url_for('story-hub') }}" method="post" class="item-form">
                     <input type="hidden" name="submit_action" value="delete_goal">
@@ -145,10 +147,29 @@ Story Hub
             {% else %}
             <p>No goals generated yet.</p>
             {% endif %}
-            <form method="post" class="ajax-form" action="{{ url_for('story-hub') }}">
+            <form method="post" class="ajax-form" action="{{ url_for('story-hub') }}"
+                  data-success-handler="generateGoalsSuccess">
                 <input type="hidden" name="submit_action" value="generate_goals">
                 <button type="submit" class="action-button" id="generate-goals-button">
                     <i class="fas fa-flag-checkered"></i> Generate Goals
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Facts Section -->
+    <div class="collapsible-section">
+        <button class="collapsible">
+            <i class="fas fa-info-circle"></i> Facts
+        </button>
+        <div class="content">
+            <form method="post" class="edit-facts-form">
+                <input name="submit_action" type="hidden" value="save_facts">
+                <label for="facts">Facts:</label>
+                <textarea id="facts" name="facts"
+                          rows="20">{{ facts }}</textarea>
+                <button type="submit" class="action-button">
+                    <i class="fas fa-save"></i> Save Facts
                 </button>
             </form>
         </div>

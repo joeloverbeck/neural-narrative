@@ -165,6 +165,7 @@ cython_debug/
 /OPENAI_PROJECT_KEY.txt
 /RUNPOD_SECRET_KEY.txt
 
-static/playthroughs
-static/voice_lines
-voice_models
+/static/playthroughs
+/static/voice_lines
+/voice_models
+/playthroughs/

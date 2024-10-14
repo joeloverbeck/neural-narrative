@@ -1,6 +1,6 @@
 import logging
+from typing import List
 
-from src.abstracts.command import Command
 from src.concepts.factories.interesting_situations_factory import (
     InterestingSituationsFactory,
 )
@@ -9,7 +9,7 @@ from src.filesystem.filesystem_manager import FilesystemManager
 logger = logging.getLogger(__name__)
 
 
-class GenerateInterestingSituationsCommand(Command):
+class GenerateInterestingSituationsAlgorithms:
     def __init__(
         self,
         playthrough_name: str,
@@ -21,22 +21,20 @@ class GenerateInterestingSituationsCommand(Command):
 
         self._filesystem_manager = filesystem_manager or FilesystemManager()
 
-    def execute(self) -> None:
+    def do_algorithm(self) -> List[str]:
 
         interesting_situations_product = (
             self._interesting_situations_factory.generate_product()
         )
 
         if not interesting_situations_product.is_valid():
-            logger.error(
-                "Was unable to generate interesting situations. Error: %s",
-                interesting_situations_product.error(),
-            )
-            return
+            error_message = f"Was unable to generate interesting situations. Error: {interesting_situations_product.error()}"
+            logger.error(error_message)
+
+            raise ValueError(error_message)
 
         if not interesting_situations_product.get():
-            logger.error("No interesting situations have been generated.")
-            return
+            raise ValueError("No interesting situations have been generated.")
 
         # Generated interesting situations. Must save them.
         interesting_situations = ""
@@ -58,3 +56,5 @@ class GenerateInterestingSituationsCommand(Command):
                 self._playthrough_name
             ),
         )
+
+        return interesting_situations_product.get()

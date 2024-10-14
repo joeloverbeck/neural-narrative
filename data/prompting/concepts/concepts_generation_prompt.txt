@@ -8,6 +8,8 @@ Using the following detailed descriptions, generate one magnificent concept for 
 Provided Elements:
 {places_descriptions}
 {player_and_followers_information}
+Known Facts:
+{known_facts}
 Important:
 - Please ensure that the story concept creatively incorporates these elements to craft an engaging and imaginative narrative.
 - Aim for diversity in genres, themes, and conflicts, but ensure that the concept incorporates the provided player character, and is influenced by the provided place descriptions.

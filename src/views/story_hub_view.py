@@ -1,6 +1,6 @@
 import os
 
-from flask import session, redirect, url_for, render_template, request, jsonify
+from flask import session, redirect, url_for, render_template, request, jsonify, flash
 from flask.views import MethodView
 
 from src.characters.factories.party_data_for_prompt_factory import (
@@ -12,13 +12,15 @@ from src.characters.factories.player_and_followers_information_factory import (
 from src.characters.factories.player_data_for_prompt_factory import (
     PlayerDataForPromptFactory,
 )
-from src.concepts.commands.generate_concepts_command import GenerateConceptsCommand
-from src.concepts.commands.generate_goals_command import GenerateGoalsCommand
-from src.concepts.commands.generate_interesting_dilemmas_command import (
-    GenerateInterestingDilemmasCommand,
+from src.concepts.algorithms.generate_concepts_algorithm import (
+    GenerateConceptsAlgorithm,
 )
-from src.concepts.commands.generate_interesting_situations_command import (
-    GenerateInterestingSituationsCommand,
+from src.concepts.algorithms.generate_goals_algorithm import GenerateGoalsAlgorithm
+from src.concepts.algorithms.generate_interesting_dilemmas_algorithm import (
+    GenerateInterestingDilemmasAlgorithms,
+)
+from src.concepts.algorithms.generate_interesting_situations_algorithms import (
+    GenerateInterestingSituationsAlgorithms,
 )
 from src.concepts.factories.concepts_factory import ConceptsFactory
 from src.concepts.factories.goals_factory import GoalsFactory
@@ -30,10 +32,12 @@ from src.concepts.factories.interesting_situations_factory import (
 )
 from src.config.config_manager import ConfigManager
 from src.filesystem.filesystem_manager import FilesystemManager
+from src.interfaces.web_interface_manager import WebInterfaceManager
 from src.maps.factories.place_descriptions_for_prompt_factory import (
     PlaceDescriptionsForPromptFactory,
 )
 from src.maps.factories.places_descriptions_factory import PlacesDescriptionsFactory
+from src.playthrough_name import PlaythroughName
 from src.prompting.factories.openrouter_llm_client_factory import (
     OpenRouterLlmClientFactory,
 )
@@ -70,12 +74,26 @@ class StoryHubView(MethodView):
             filesystem_manager.get_file_path_to_goals(playthrough_name)
         )
 
+        # Could be that the facts don't exist.
+        facts_file_path = filesystem_manager.get_file_path_to_facts(playthrough_name)
+
+        if not os.path.exists(
+            filesystem_manager.get_file_path_to_facts(playthrough_name)
+        ):
+            filesystem_manager.write_file(facts_file_path, "")
+
+        # Load Facts
+        facts = filesystem_manager.read_file(
+            filesystem_manager.get_file_path_to_facts(playthrough_name)
+        )
+
         return render_template(
             "story-hub.html",
             concepts=concepts,
             interesting_situations=interesting_situations,
             interesting_dilemmas=interesting_dilemmas,
             goals=goals,
+            facts=facts,
         )
 
     def post(self):
@@ -120,14 +138,17 @@ class StoryHubView(MethodView):
                 player_and_followers_information_factory,
             )
 
-            command = GenerateConceptsCommand(playthrough_name, concepts_factory)
+            command = GenerateConceptsAlgorithm(playthrough_name, concepts_factory)
 
             try:
-                command.execute()
+                concepts = command.do_algorithm()
 
+                # Return the concepts along with the response so that they get added
+                # as items to the collapsible section of Concepts.
                 response = {
                     "success": True,
                     "message": "Concepts generated successfully.",
+                    "concepts": concepts,
                 }
             except Exception as e:
                 response = {
@@ -195,13 +216,14 @@ class StoryHubView(MethodView):
             )
 
             try:
-                GenerateInterestingSituationsCommand(
+                interesting_situations = GenerateInterestingSituationsAlgorithms(
                     playthrough_name, interesting_situations_factory
-                ).execute()
+                ).do_algorithm()
 
                 response = {
                     "success": True,
                     "message": f"Generated interesting situations successfully.",
+                    "interesting_situations": interesting_situations,
                 }
 
             except Exception as e:
@@ -252,19 +274,21 @@ class StoryHubView(MethodView):
             )
 
             interesting_dilemmas_factory = InterestingDilemmasFactory(
+                PlaythroughName(playthrough_name),
                 produce_tool_response_strategy_factory,
                 places_descriptions_factory,
                 player_and_followers_information_factory,
             )
 
             try:
-                GenerateInterestingDilemmasCommand(
+                interesting_dilemmas = GenerateInterestingDilemmasAlgorithms(
                     playthrough_name, interesting_dilemmas_factory
-                ).execute()
+                ).do_algorithm()
 
                 response = {
                     "success": True,
                     "message": "Interesting dilemmas generated successfully.",
+                    "interesting_dilemmas": interesting_dilemmas,
                 }
 
             except Exception as e:
@@ -329,9 +353,15 @@ class StoryHubView(MethodView):
             )
 
             try:
-                GenerateGoalsCommand(playthrough_name, goals_factory).execute()
+                goals = GenerateGoalsAlgorithm(
+                    playthrough_name, goals_factory
+                ).do_algorithm()
 
-                response = {"success": True, "message": "Generated goals successfully."}
+                response = {
+                    "success": True,
+                    "message": "Generated goals successfully.",
+                    "goals": goals,
+                }
             except Exception as e:
                 response = {
                     "success": False,
@@ -342,5 +372,18 @@ class StoryHubView(MethodView):
                 return jsonify(response)
             else:
                 return redirect(url_for("story-hub"))
+        elif action == "save_facts":
+            facts = request.form.get("facts", "")
+
+            # Clean facts of excessive newline characters
+            facts = WebInterfaceManager.remove_excessive_newline_characters(facts)
+
+            filesystem_manager.write_file(
+                filesystem_manager.get_file_path_to_facts(playthrough_name),
+                facts,
+            )
+
+            flash("Facts saved.", "success")
+            return redirect(url_for("story-hub"))
         else:
             return redirect(url_for("story-hub"))

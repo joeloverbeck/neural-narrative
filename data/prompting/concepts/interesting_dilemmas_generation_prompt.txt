@@ -6,4 +6,6 @@ Each dilemma should be described in two or three sentences. Do not precede each 
 Provided Elements:
 {places_descriptions}
 {player_and_followers_information}
+Known Facts:
+{known_facts}
 Important: you are prohibited from repeating verbatim any of the player and followers information, as well as the memories. Do not write any preamble, just do as ordered.

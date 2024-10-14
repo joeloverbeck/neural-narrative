@@ -11,4 +11,6 @@ Please provide clear and concise descriptions for each goal, ensuring they inspi
 Provided Elements:
 {places_descriptions}
 {player_and_followers_information}
+Known Facts:
+{known_facts}
 Important: You are prohibited from repeating verbatim in your answer any of the information provided.

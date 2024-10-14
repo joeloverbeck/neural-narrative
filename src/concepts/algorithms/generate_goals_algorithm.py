@@ -1,7 +1,6 @@
 import logging
-from typing import cast, Optional
+from typing import cast, Optional, List
 
-from src.abstracts.command import Command
 from src.concepts.factories.goals_factory import GoalsFactory
 from src.concepts.products.goals_product import GoalsProduct
 from src.filesystem.filesystem_manager import FilesystemManager
@@ -9,7 +8,7 @@ from src.filesystem.filesystem_manager import FilesystemManager
 logger = logging.getLogger(__name__)
 
 
-class GenerateGoalsCommand(Command):
+class GenerateGoalsAlgorithm:
     def __init__(
         self,
         playthrough_name: str,
@@ -21,14 +20,17 @@ class GenerateGoalsCommand(Command):
 
         self._filesystem_manager = filesystem_manager or FilesystemManager()
 
-    def execute(self) -> None:
+    def do_algorithm(self) -> List[str]:
 
         product = cast(GoalsProduct, self._goals_factory.generate_product())
 
         if not product.is_valid():
-            raise ValueError(
+            error_message = (
                 f"Was unable to generate goals. Error: {product.get_error()}"
             )
+            logger.error(error_message)
+
+            raise ValueError(error_message)
 
         generated_goals = product.get()
 
@@ -45,3 +47,5 @@ class GenerateGoalsCommand(Command):
         )
 
         logger.info("Saved goals.")
+
+        return product.get()
