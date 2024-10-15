@@ -62,6 +62,7 @@ function placeDescriptionGenerationSuccess(data, context) {
             const playIcon = document.createElement('i');
             playIcon.classList.add('fas', 'play-icon');
             newPlaceDescriptionDiv.appendChild(playIcon);
+            newPlaceDescriptionDiv.appendChild(createWaveformDiv());
 
             contentDiv.innerHTML = ''; // Clear existing content
             contentDiv.appendChild(newPlaceDescriptionDiv);

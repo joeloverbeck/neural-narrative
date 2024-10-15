@@ -78,6 +78,18 @@ function initAudioPlayback() {
     });
 }
 
+function createWaveformDiv(){
+    const waveformDiv = document.createElement('div');
+    waveformDiv.className = 'waveform';
+
+    for (let i = 0; i < 5; i++) {
+        const barDiv = document.createElement('div');
+        waveformDiv.appendChild(barDiv);
+    }
+    
+    return waveformDiv;
+}
+
 function updateGrid(containerSelector, items, createItemElement) {
     var grid = document.querySelector(containerSelector);
     if (!grid) return;
