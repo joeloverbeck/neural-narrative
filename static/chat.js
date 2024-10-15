@@ -17,18 +17,9 @@ function createMessageElement(message) {
         const playIcon = document.createElement('i');
         playIcon.className = 'fas fa-play play-icon';
 
-        // Create waveform
-        const waveformDiv = document.createElement('div');
-        waveformDiv.className = 'waveform';
-
-        for (let i = 0; i < 5; i++) {
-            const barDiv = document.createElement('div');
-            waveformDiv.appendChild(barDiv);
-        }
-
         messageDiv.appendChild(messageTextDiv);
         messageDiv.appendChild(playIcon);
-        messageDiv.appendChild(waveformDiv);
+        messageDiv.appendChild(createWaveformDiv());
 
     } else {
         // For chat bubbles
@@ -69,7 +60,7 @@ function createMessageElement(message) {
         messageDiv.appendChild(avatarImg);
         messageDiv.appendChild(messageContentDiv);
         messageDiv.appendChild(playIcon);
-        messageDiv.appendChild(waveformDiv);
+        messageDiv.appendChild(createWaveformDiv());
     }
 
     return messageDiv;
