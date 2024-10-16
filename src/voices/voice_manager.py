@@ -60,6 +60,12 @@ class VoiceManager:
             output_file (str): Path to save the output concatenated file.
             silence_duration (float): Duration of silence (in seconds) between each file.
         """
+        if len(file_paths) <= 1:
+            logger.info(
+                f"Attempted to concatenate voice lines where there weren't at least two: {file_paths}"
+            )
+            return
+
         data = []
         params = None
         silence_frames = None

@@ -47,6 +47,9 @@ class DirectVoiceLineGenerationAlgorithm:
 
         # Split text into parts
         parts = re.split(r"(\*.*?\*)", self._text)
+
+        parts = [part for part in parts if part]
+
         temp_file_paths = []
         timestamp = time.strftime("%Y%m%d%H%M%S")
 
