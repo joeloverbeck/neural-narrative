@@ -184,6 +184,13 @@ class FilesystemManager:
             sys.exit(f"An unexpected error occurred: {str(e)}")
 
     @staticmethod
+    def get_temporary_folder_to_store_voice_parts(timestamp: str) -> str:
+        temp_dir = os.path.join("temp_voice_lines", timestamp)
+        os.makedirs(temp_dir, exist_ok=True)
+
+        return temp_dir
+
+    @staticmethod
     def get_file_path_to_playthroughs_folder():
         # Ensure the playthroughs folder exists
         if not os.path.exists(PLAYTHROUGHS_FOLDER):

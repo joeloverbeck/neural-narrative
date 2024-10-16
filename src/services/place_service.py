@@ -27,31 +27,29 @@ from src.prompting.factories.openrouter_llm_client_factory import (
 from src.prompting.factories.produce_tool_response_strategy_factory import (
     ProduceToolResponseStrategyFactory,
 )
-from src.voices.voice_manager import VoiceManager
+from src.voices.factories.direct_voice_line_generation_algorithm_factory import (
+    DirectVoiceLineGenerationAlgorithmFactory,
+)
 
 
 class PlaceService:
     def __init__(
         self,
         config_manager: Optional[ConfigManager] = None,
-        voice_manager: Optional[VoiceManager] = None,
     ):
         self._config_manager = config_manager or ConfigManager()
-        self._voice_manager = voice_manager or VoiceManager()
 
-    def _generate_place_description_voice_line(
-        self, playthrough_name, description_text
-    ):
-
+    @staticmethod
+    def _generate_place_description_voice_line(playthrough_name, description_text):
         # Load the player's voice model.
         player = Character(
             playthrough_name,
             PlaythroughManager(playthrough_name).get_player_identifier(),
         )
 
-        return self._voice_manager.generate_voice_line(
+        return DirectVoiceLineGenerationAlgorithmFactory.create_algorithm(
             player.name, description_text, player.voice_model
-        )
+        ).direct_voice_line_generation()
 
     def describe_place(self, playthrough_name):
         playthrough_manager = PlaythroughManager(playthrough_name)

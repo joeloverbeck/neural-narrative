@@ -1,7 +1,9 @@
 from typing import Dict, Optional
 
 from src.maps.map_manager import MapManager
+from src.maps.weathers_manager import WeathersManager
 from src.playthrough_manager import PlaythroughManager
+from src.playthrough_name import PlaythroughName
 
 
 class PlaceDescriptionsForPromptFactory:
@@ -24,23 +26,33 @@ class PlaceDescriptionsForPromptFactory:
     def create_place_descriptions_for_prompt(self) -> Dict[str, str]:
         world_description = self._map_manager.get_world_description()
 
-        place_data = self._map_manager.get_place_full_data(
+        place_full_data = self._map_manager.get_place_full_data(
             self._playthrough_manager.get_current_place_identifier()
         )
 
-        region_description = place_data["region_data"]["description"]
-        area_description = place_data["area_data"]["description"]
+        area = self._map_manager.get_current_area()
+
+        region_description = place_full_data["region_data"]["description"]
 
         location_description = ""
 
-        if place_data["location_data"] and place_data["location_data"]["description"]:
+        if (
+            place_full_data["location_data"]
+            and place_full_data["location_data"]["description"]
+        ):
             location_description = (
-                "Location Description: " + place_data["location_data"]["description"]
+                "Location Description: "
+                + place_full_data["location_data"]["description"]
             )
+
+        weathers_manager = WeathersManager(PlaythroughName(self._playthrough_name))
 
         return {
             "world_description": world_description,
             "region_description": region_description,
-            "area_description": area_description,
+            "area_description": place_full_data["area_data"]["description"],
+            "weather": weathers_manager.get_weather_description(
+                weathers_manager.get_current_weather_identifier()
+            ),
             "location_description": location_description,
         }

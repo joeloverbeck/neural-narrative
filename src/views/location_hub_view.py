@@ -18,7 +18,10 @@ from src.maps.factories.create_map_entry_for_playthrough_command_factory import 
     CreateMapEntryForPlaythroughCommandFactory,
 )
 from src.maps.map_manager import MapManager
+from src.maps.weather_identifier import WeatherIdentifier
+from src.maps.weathers_manager import WeathersManager
 from src.playthrough_manager import PlaythroughManager
+from src.playthrough_name import PlaythroughName
 from src.services.character_service import CharacterService
 from src.services.place_service import PlaceService
 from src.services.web_service import WebService
@@ -75,6 +78,29 @@ class LocationHubView(MethodView):
         current_hour = time_manager.get_hour()
         current_time_of_day = time_manager.get_time_of_the_day()
 
+        weathers_manager = WeathersManager(PlaythroughName(playthrough_name))
+        current_weather = weathers_manager.get_current_weather_identifier()
+        current_weather_description = weathers_manager.get_weather_description(
+            current_weather
+        )
+
+        weather_icon_mapping = {
+            "sunny": "fas fa-sun",
+            "rainy": "fas fa-cloud-showers-heavy",
+            "cloudy": "fas fa-cloud",
+            "stormy": "fas fa-cloud-bolt",
+            "snowy": "fas fa-snowflake",
+            "foggy": "fas fa-smog",
+            "windy": "fas fa-wind",
+            "misty": "fas fa-smog",
+            "hail": "fas fa-cloud-rain",
+            "overcast": "fas fa-cloud",
+        }
+
+        weather_icon_class = weather_icon_mapping.get(
+            current_weather.value, "fas fa-cloud-sun"
+        )
+
         return render_template(
             "location-hub.html",
             current_place=current_place,
@@ -85,13 +111,17 @@ class LocationHubView(MethodView):
                 "place_description_voice_line_url", None
             ),
             current_place_type=current_place_type,
+            can_search_for_location=can_search_for_location,
             locations_present=locations_present,
             cardinal_connections=cardinal_connections,
             current_hour=current_hour,
             current_time_of_day=current_time_of_day,
             exploration_result_message=exploration_result_message,
-            location_types=available_location_types,  # Available types for searching
-            can_search_for_location=can_search_for_location,  # New flag
+            location_types=available_location_types,
+            current_weather=current_weather.value,
+            current_weather_description=current_weather_description,
+            all_weathers=weathers_manager.get_all_weather_identifiers(),
+            weather_icon_class=weather_icon_class,
         )
 
     def post(self):
@@ -139,6 +169,12 @@ class LocationHubView(MethodView):
     def handle_remove_from_followers(playthrough_name):
         selected_remove = request.form.getlist("remove_followers")
         CharacterService.remove_followers(playthrough_name, selected_remove)
+        return redirect(url_for("location-hub"))
+
+    @staticmethod
+    def handle_change_weather(playthrough_name):
+        new_weather = request.form.get("weather_identifier")
+        MapManager(playthrough_name).set_current_weather(WeatherIdentifier(new_weather))
         return redirect(url_for("location-hub"))
 
     @staticmethod

@@ -16,29 +16,15 @@ Explore the character's psyche, shaped by war, oppression, personal loss, etc.
 Portray authentic struggles without making them overly heroic or optimistic.
 - Conversational Engagement:
 Design the bio to encourage engaging, natural dialogue reflecting the character's voice.
-- Speech Style:
-Use an informal, conversational tone, akin to chatting in a tavern.
-Incorporate contractions, slang, and colloquial expressions.
-Avoid formal or archaic language and clichés.
-3. Sample Utterances:
-Provide 10 examples of things the character might say, reflecting their personality and coping mechanisms. Format without quotation marks.
-...
-Situations to inspire the utterances (feel free to be creative):
-- Expressing moderate hunger and casually seeking food.
-- Commenting on fatigue from a long or challenging journey.
-- Reflecting on a deep, personal question (e.g., "What does friendship mean to me?").
-- Answering a quirky question, such as "Which bothers you most: being tickled, papercuts, nails on slate, or silence?" Begin by referencing the question.
-- Sharing a humorous anecdote appropriate to their background and coping mechanisms.
-4. Character Creation Guidelines:
+3. Character Creation Guidelines:
 - The character can be male or female and may belong to any sentient species supported by the provided background.
 - Incorporate elements from the world's culture and environment.
 - Extend and enhance any information provided by the author, using creative freedom to develop the character further.
-5. Prohibited Names:
+4. Prohibited Names:
 - Do not use any of the following names for the character: {prohibited_names}.
 - Create a unique name fitting the world's cultural context.
 Important Notes:
-- Dialogue Formatting:
-Do not include quotation marks around the character's speech.
-Keep the tone informal and authentic.
 - Avoid Clichés:
-Strive for originality in the character's expressions and stories.
+Strive for originality in the character's bio.
+- You are prohibited from repeating verbatim the information you were provided to perform this task.
+- Do not write any preface to the tool call, just answer with the tool call structure as instructed.

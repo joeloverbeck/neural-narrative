@@ -50,6 +50,10 @@ OPENAI_SECRET_KEY_FILE: str = "OPENAI_SECRET_KEY.txt"
 OPENAI_PROJECT_KEY_FILE: str = "OPENAI_PROJECT_KEY.txt"
 RUNPOD_SECRET_KEY_FILE: str = "RUNPOD_SECRET_KEY.txt"
 
+# Weathers
+
+WEATHERS_FILE: str = "data/weathers/weathers.json"
+
 # Templates
 
 WORLD_TEMPLATES_FILE: str = "data/templates/worlds.json"
@@ -67,7 +71,10 @@ PLAYER_AND_FOLLOWERS_INFORMATION_BLOCK: str = (
 # Tools
 
 CHARACTER_GENERATOR_TOOL_FILE: str = (
-    "data/prompting/characters/character_generation_tool.json"
+    "data/prompting/characters/base_character_data_generation_tool.json"
+)
+SPEECH_PATTERNS_GENERATION_TOOL_FILE: str = (
+    "data/prompting/characters/speech_patterns_generation_tool.json"
 )
 SPEECH_GENERATOR_TOOL_FILE: str = "data/prompting/speech_generator_tool.json"
 SPEECH_TURN_TOOL_FILE: str = "data/prompting/speech_turn_tool.json"
@@ -123,7 +130,10 @@ CONNECTION_GENERATION_TOOL_FILE: str = (
 # Prompts
 
 CHARACTER_GENERATION_INSTRUCTIONS_FILE: str = (
-    "data/prompting/characters/character_generation_prompt.txt"
+    "data/prompting/characters/base_character_data_generation_prompt.txt"
+)
+SPEECH_PATTERNS_GENERATION_PROMPT_FILE: str = (
+    "data/prompting/characters/speech_patterns_generation_prompt.txt"
 )
 TOOL_INSTRUCTIONS_FILE: str = "data/prompting/tool_instructions.txt"
 DIALOGUE_PROMPT_FILE: str = "data/prompting/dialogue_prompt.txt"
@@ -203,6 +213,7 @@ VOICE_EMOTIONS = [
     "ANGRY/AGGRESSIVE",
     "ANXIOUS/FRIGHTENED",
     "CONFIDENT/DETERMINED",
+    "SERIOUS/FIRM",
     "HOPEFUL",
     "SURPRISED",
     "PLAYFUL",
@@ -282,25 +293,26 @@ VOICE_SPECIAL_EFFECTS = [
 ]
 
 LOCATION_TYPES = [
-    "BAR",
-    "POLICE STATION",
-    "BROTHEL",
-    "MALL",
     "APARTMENT BUILDING",
-    "MANSION",
-    "CAVE SYSTEM",
-    "LABYRINTH",
+    "BAR",
     "BURIAL SITE",
-    "FORTRESS",
-    "HOSPITAL",
-    "TRAINING GROUND",
-    "FORGE",
+    "BROTHEL",
+    "CAVE SYSTEM",
     "CHAMBER",
+    "CLEARING",
+    "COLLEGE",
+    "FORGE",
+    "FORTRESS",
+    "GREENHOUSE",
+    "HOSPITAL",
     "INN",
+    "LABYRINTH",
+    "LIBRARY",
+    "MALL",
+    "MANSION",
     "MINE",
     "OASIS",
-    "GREENHOUSE",
-    "CLEARING",
+    "POLICE STATION",
+    "TRAINING GROUND",
     "WOODS",
-    "COLLEGE",
 ]

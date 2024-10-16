@@ -13,6 +13,7 @@ from src.filesystem.filesystem_manager import FilesystemManager
 from src.identifiers_manager import IdentifiersManager
 from src.maps.enums import CardinalDirection
 from src.maps.places_templates_parameter import PlacesTemplatesParameter
+from src.maps.weather_identifier import WeatherIdentifier
 from src.playthrough_manager import PlaythroughManager
 
 logger = logging.getLogger(__name__)
@@ -178,6 +179,25 @@ class MapManager:
         place = self._get_place(current_place_id, map_file)
 
         return self._get_place_template(place)
+
+    def get_current_area(self) -> dict:
+        # The current place may already be an area.
+        map_file = self._load_map_file()
+
+        if self.get_current_place_type() == PlaceType.AREA:
+            return map_file[self._playthrough_manager.get_current_place_identifier()]
+
+        # At this point, the current place type must be an area.
+        if not self.get_current_place_type() == PlaceType.LOCATION:
+            raise ValueError(
+                f"At this point, wasn't expecting the current location to be {self.get_current_place_type()}"
+            )
+
+        current_area_identifier = map_file[
+            self._playthrough_manager.get_current_place_identifier()
+        ]["area"]
+
+        return map_file[current_area_identifier]
 
     def get_world_description(self):
         worlds_templates_file = self._filesystem_manager.load_existing_or_new_json_file(
@@ -403,14 +423,18 @@ class MapManager:
                 template_name = self._get_place_template(place)
                 templates = self._load_template_file(PlaceType(place_type))
                 template_data = templates.get(template_name)
+
                 if not template_data:
                     raise ValueError(
                         f"{place_type.capitalize()} template '{template_name}' not found."
                     )
-                result[f"{place_type}_data"] = {
+
+                result_data: Dict[str, str] = {
                     "name": template_name,
                     "description": template_data.get("description", ""),
                 }
+
+                result[f"{place_type}_data"] = result_data
 
         return result
 
@@ -604,5 +628,19 @@ class MapManager:
         map_file[self._playthrough_manager.get_current_place_identifier()][
             "locations"
         ].append(place_identifier)
+
+        self._save_map_file(map_file)
+
+    def set_current_weather(self, weather_identifier: WeatherIdentifier) -> None:
+        if not self.get_current_place_type() == PlaceType.AREA:
+            raise ValueError(
+                "Attempting to change the weather when the current place isn't an area!"
+            )
+
+        map_file = self._load_map_file()
+
+        map_file[self._playthrough_manager.get_current_place_identifier()][
+            "weather_identifier"
+        ] = weather_identifier.value
 
         self._save_map_file(map_file)

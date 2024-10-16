@@ -39,6 +39,9 @@ from src.prompting.factories.openrouter_llm_client_factory import (
 from src.prompting.factories.produce_tool_response_strategy_factory import (
     ProduceToolResponseStrategyFactory,
 )
+from src.voices.factories.direct_voice_line_generation_algorithm_factory import (
+    DirectVoiceLineGenerationAlgorithmFactory,
+)
 
 
 class ResearchView(MethodView):
@@ -113,7 +116,9 @@ class ResearchView(MethodView):
             )
 
             produce_voice_lines_for_action_resolution_algorithm = (
-                ProduceVoiceLinesForActionResolutionAlgorithm()
+                ProduceVoiceLinesForActionResolutionAlgorithm(
+                    DirectVoiceLineGenerationAlgorithmFactory()
+                )
             )
 
             research_resolution_algorithm = ProduceActionResolutionAlgorithm(

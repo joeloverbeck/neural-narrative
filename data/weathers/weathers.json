@@ -1,0 +1,32 @@
+{
+  "rainy": {
+    "description": "The rain falls in a steady drizzle, casting a gloomy veil over the landscape. Puddles form on the ground, reflecting the gray skies above."
+  },
+  "sunny": {
+    "description": "The sun shines brightly in the clear blue sky, its warmth enveloping the earth below. Birds chirp merrily, and a gentle breeze rustles the leaves on the trees."
+  },
+  "cloudy": {
+    "description": "Thick gray clouds cover the sky, obscuring the sun and casting a dull light over the world. The air feels heavy and still, as if nature itself was holding its breath."
+  },
+  "stormy": {
+    "description": "Dark, ominous clouds gather on the horizon, their billowing forms threatening to unleash a tempest. The wind picks up, howling through the trees and sending debris flying."
+  },
+  "snowy": {
+    "description": "Soft, white flakes drift down from the heavens, blanketing the ground in a pristine layer of snow. The world seems hushed and still, as if the snow had absorbed all sound."
+  },
+  "foggy": {
+    "description": "A dense fog creeps along the ground, obscuring the landscape in a veil of gray. The world seems muffled and distant, as if viewed through a hazy dream."
+  },
+  "windy": {
+    "description": "The wind whips through the air, rustling leaves and sending branches swaying. Loose debris skitters along the ground, and the air is filled with a constant whistling sound."
+  },
+  "misty": {
+    "description": "A fine mist hangs in the air, blurring the lines between earth and sky. The world seems soft and ethereal, as if painted in watercolors."
+  },
+  "hail": {
+    "description": "Pellets of ice fall from the sky, bouncing off the ground and creating a staccato rhythm. The air is alive with the sound of hailstones, a cacophony of nature's fury."
+  },
+  "overcast": {
+    "description": "A uniform layer of gray clouds covers the sky, diffusing the sunlight into a flat, directionless glow. The world seems drained of color and contrast, existing in a perpetual twilight."
+  }
+}

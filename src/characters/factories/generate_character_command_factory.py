@@ -9,6 +9,9 @@ from src.characters.factories.character_generation_tool_response_provider_factor
 from src.characters.factories.player_guided_user_content_for_character_generation_factory import (
     PlayerGuidedUserContentForCharacterGenerationFactory,
 )
+from src.characters.factories.speech_patterns_provider_factory import (
+    SpeechPatternsProviderFactory,
+)
 from src.characters.factories.store_generated_character_command_factory import (
     StoreGeneratedCharacterCommandFactory,
 )
@@ -27,6 +30,7 @@ class GenerateCharacterCommandFactory:
         self,
         playthrough_name: str,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
+        speech_patterns_provider_factory: SpeechPatternsProviderFactory,
         store_generate_character_command_factory: StoreGeneratedCharacterCommandFactory,
         generate_character_image_command_factory: GenerateCharacterImageCommandFactory,
     ):
@@ -37,6 +41,7 @@ class GenerateCharacterCommandFactory:
         self._produce_tool_response_strategy_factory = (
             produce_tool_response_strategy_factory
         )
+        self._speech_patterns_provider_factory = speech_patterns_provider_factory
         self._store_generate_character_command_factory = (
             store_generate_character_command_factory
         )
@@ -64,6 +69,7 @@ class GenerateCharacterCommandFactory:
                     self._produce_tool_response_strategy_factory,
                     AutomaticUserContentForCharacterGenerationFactory(),
                 ).create_response_provider(places_templates_parameter),
+                self._speech_patterns_provider_factory,
                 self._store_generate_character_command_factory,
                 self._generate_character_image_command_factory,
                 place_character_at_current_place,
@@ -77,6 +83,7 @@ class GenerateCharacterCommandFactory:
                     self._produce_tool_response_strategy_factory,
                     PlayerGuidedUserContentForCharacterGenerationFactory(user_content),
                 ).create_response_provider(places_templates_parameter),
+                self._speech_patterns_provider_factory,
                 self._store_generate_character_command_factory,
                 self._generate_character_image_command_factory,
                 place_character_at_current_place,

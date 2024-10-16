@@ -6,9 +6,13 @@ class WorldTemplateNotFoundException(Exception):
     pass
 
 
-class CharacterGenerationFailedError(Exception):
+class CharacterGenerationError(Exception):
     pass
 
 
 class FailedToLoadJsonError(Exception):
+    pass
+
+
+class VoiceLineGenerationError(Exception):
     pass

@@ -5,6 +5,9 @@ from src.characters.factories.character_description_provider_factory import (
 from src.characters.factories.guidelines_based_user_content_for_character_generation_factory import (
     GuidelinesBasedUserContentForCharacterGenerationFactory,
 )
+from src.characters.factories.speech_patterns_provider_factory import (
+    SpeechPatternsProviderFactory,
+)
 from src.characters.factories.store_generated_character_command_factory import (
     StoreGeneratedCharacterCommandFactory,
 )
@@ -123,10 +126,15 @@ class CharacterService:
             url_content_factory,
         )
 
+        speech_patterns_provider_factory = SpeechPatternsProviderFactory(
+            produce_tool_response_strategy_factory
+        )
+
         # Generate the character
         GenerateCharacterCommand(
             playthrough_name,
             guided_character_generation_tool_response_provider,
+            speech_patterns_provider_factory,
             store_generate_character_command_factory,
             generate_character_image_command_factory,
             place_character_at_current_place=True,

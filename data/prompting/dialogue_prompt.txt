@@ -11,8 +11,7 @@ Current Conversation Participants:
 {participant_details}
 (Note: You cannot speak as any of these people.)
 
-Current Time:
-{hour} {time_group}
+Current Time: {hour} {time_group}
 
 Recent Events:
 Events that have occurred since your previous response may be relayed to you between asterisks. If you incorporate these events (the text between asterisks), ensure you end your sentence before the last asterisk with a period.

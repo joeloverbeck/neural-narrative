@@ -42,7 +42,8 @@
         </button>
         <div class="content">
             <form method="post" class="guideline-form ajax-form" id="generate-guidelines-form"
-                  action="{{ url_for('character-generation') }}">
+                  action="{{ url_for('character-generation') }}"
+                  data-success-handler="characterGuidelinesGenerationSuccess">
                 <input name="submit_action" type="hidden" value="Generate Guidelines">
                 <button type="submit" class="action-button" id="generate-guidelines-button">
                     <i class="fas fa-magic"></i> Generate Guidelines
@@ -58,7 +59,7 @@
         </button>
         <div class="content">
             <form method="post" class="guideline-form ajax-form" id="generate-character-form"
-                  action="{{ url_for('character-generation') }}" data-success-handler="characterGenerationSuccess">
+                  action="{{ url_for('character-generation') }}">
                 <label for="guideline_text">Guideline:</label>
                 <textarea id="guideline_text" name="guideline_text" rows="10">{{ selected_guideline }}</textarea>
                 <input name="submit_action" type="hidden" value="Generate Character">

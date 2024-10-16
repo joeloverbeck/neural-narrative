@@ -9,7 +9,9 @@ from src.characters.products.produce_self_reflection_product import (
 )
 from src.characters.products.self_reflection_product import SelfReflectionProduct
 from src.filesystem.filesystem_manager import FilesystemManager
-from src.voices.voice_manager import VoiceManager
+from src.voices.factories.direct_voice_line_generation_algorithm_factory import (
+    DirectVoiceLineGenerationAlgorithmFactory,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -20,19 +22,21 @@ class ProduceSelfReflectionAlgorithm:
         playthrough_name: str,
         character_identifier: str,
         self_reflection_factory: SelfReflectionFactory,
+        direct_voice_line_generation_algorithm_factory: DirectVoiceLineGenerationAlgorithmFactory,
         filesystem_manager: Optional[FilesystemManager] = None,
         characters_manager: Optional[CharactersManager] = None,
-        voice_manager: Optional[VoiceManager] = None,
     ):
         self._playthrough_name = playthrough_name
         self._character_identifier = character_identifier
         self._self_reflection_factory = self_reflection_factory
+        self._direct_voice_line_generation_algorithm_factory = (
+            direct_voice_line_generation_algorithm_factory
+        )
 
         self._filesystem_manager = filesystem_manager or FilesystemManager()
         self._characters_manager = characters_manager or CharactersManager(
             self._playthrough_name
         )
-        self._voice_manager = voice_manager or VoiceManager()
 
     def do_algorithm(self) -> ProduceSelfReflectionProduct:
         product = cast(
@@ -57,8 +61,10 @@ class ProduceSelfReflectionAlgorithm:
             "\n" + product.get(),
         )
 
-        voice_line_file_name = self._voice_manager.generate_voice_line(
-            character.name, product.get(), character.voice_model
+        voice_line_file_name = (
+            self._direct_voice_line_generation_algorithm_factory.create_algorithm(
+                character.name, product.get(), character.voice_model
+            ).direct_voice_line_generation()
         )
 
         logger.info("Generated the self-reflection.")

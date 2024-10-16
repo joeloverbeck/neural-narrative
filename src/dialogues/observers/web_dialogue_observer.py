@@ -5,7 +5,9 @@ from flask import session
 from src.abstracts.observer import Observer
 from src.characters.characters_manager import CharactersManager
 from src.services.web_service import WebService
-from src.voices.voice_manager import VoiceManager
+from src.voices.factories.direct_voice_line_generation_algorithm_factory import (
+    DirectVoiceLineGenerationAlgorithmFactory,
+)
 
 
 class WebDialogueObserver(Observer):
@@ -15,9 +17,9 @@ class WebDialogueObserver(Observer):
 
     def update(self, message: dict) -> None:
         # Generate the voice line and get the file path
-        file_name = VoiceManager().generate_voice_line(
+        file_name = DirectVoiceLineGenerationAlgorithmFactory.create_algorithm(
             message["sender_name"], message["message_text"], message["voice_model"]
-        )
+        ).direct_voice_line_generation()
 
         # Could be that file_name is None, in case the pod isn't running.
         file_url = None
