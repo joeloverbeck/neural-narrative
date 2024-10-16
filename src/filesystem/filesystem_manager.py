@@ -159,7 +159,7 @@ class FilesystemManager:
         # Ensure the 'voice_lines' directory exists
         os.makedirs(VOICE_LINES_FOLDER_PATH, exist_ok=True)
 
-        return file_name, os.path.join(VOICE_LINES_FOLDER_PATH, file_name)
+        return os.path.join(VOICE_LINES_FOLDER_PATH, file_name)
 
     def load_openai_secret_key(self):
         try:

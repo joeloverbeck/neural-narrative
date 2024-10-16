@@ -1,5 +1,6 @@
 import logging
 import os
+import shutil
 from typing import Optional, List
 
 from src.filesystem.filesystem_manager import FilesystemManager
@@ -41,13 +42,27 @@ class VoiceLineFileNameProvider:
             self._character_name, self._voice_model
         )
 
-        # Concatenate the wav files
-        try:
-            self._voice_manager.concatenate_wav_files_from_list(
-                self._temp_file_paths, file_name
-            )
-        except Exception as e:
-            logger.error(f"Error concatenating voice lines: {e}")
+        # temp_file_paths could have more than one file, but it could not.
+        if len(self._temp_file_paths) > 1:
+            # Concatenate the wav files
+            try:
+                self._voice_manager.concatenate_wav_files_from_list(
+                    self._temp_file_paths, file_name
+                )
+            except Exception as e:
+                logger.error(f"Error concatenating voice lines: {e}")
+                return None
+        elif len(self._temp_file_paths) == 1:
+            # Copy the single temporary file to the final destination
+            temp_file = self._temp_file_paths[0]
+            try:
+                shutil.copy(temp_file, file_name)
+                logger.info(f"Copied single temp file {temp_file} to {file_name}")
+            except Exception as e:
+                logger.error(f"Error copying file {temp_file} to {file_name}: {e}")
+                return None
+        else:
+            logger.error("No temporary files to process.")
             return None
 
         # Remove temporary files
@@ -62,5 +77,11 @@ class VoiceLineFileNameProvider:
             os.rmdir(self._temp_dir)
         except OSError as e:
             logger.warning(f"Error removing temporary directory {self._temp_dir}: {e}")
+
+        # Sanity check
+        if not isinstance(file_name, str):
+            raise TypeError(
+                f"This function should return a str, which would be the file name of the created line, but it was '{type(file_name)}'."
+            )
 
         return file_name

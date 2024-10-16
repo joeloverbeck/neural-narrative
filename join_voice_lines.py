@@ -23,4 +23,8 @@ if __name__ == "__main__":
     # Sort the files based on their timestamps
     wav_files_sorted = sorted(wav_files, key=get_timestamp)
 
-    VoiceManager().concatenate_wav_files_from_list(wav_files_sorted, output_file)
+    final_wav_files = [
+        os.path.join(directory, file_name) for file_name in wav_files_sorted
+    ]
+
+    VoiceManager.concatenate_wav_files_from_list(final_wav_files, output_file)
