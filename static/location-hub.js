@@ -91,3 +91,14 @@ function placeDescriptionGenerationSuccess(data, context) {
         showToast(data.error || 'An error occurred', 'error');
     }
 }
+
+function animateWeatherIcon() {
+    const weatherIcon = document.querySelector('.weather-icon i');
+    if (weatherIcon && weatherIcon.classList.contains('fa-sun')) {
+        weatherIcon.classList.add('sun-rotate');
+    }
+}
+
+function pageInit(){
+    animateWeatherIcon();
+}

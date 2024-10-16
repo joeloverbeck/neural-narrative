@@ -5,6 +5,7 @@ Avoid repeating elements of the setting description verbatim: just use them as i
 Avoid repeating previous lines of narration present in the transcription. Provide variety.
 Setting Description: {setting_description}
 Time of Day: {hour} {time_of_day}
+Weather: {weather}
 Player Personality: {personality}
 Ongoing Dialogue:
 {transcription}

@@ -584,7 +584,7 @@
     "SMOOTH",
     "NEUTRAL",
     "CASUAL",
-    "YOUTHFUL",
+    "SKEPTICAL",
     "NO SPECIAL EFFECTS"
   ],
   "npcmliambinet": [
@@ -885,6 +885,54 @@
     "WARM",
     "CASUAL",
     "KIND",
+    "NO SPECIAL EFFECTS"
+  ],
+  "tikridvoice": [
+    "MALE",
+    "YOUNG ADULT/ADULT",
+    "CONFIDENT/DETERMINED",
+    "MODERATE",
+    "NORMAL VOLUME",
+    "SMOOTH",
+    "COLD",
+    "MONOTONE",
+    "STOIC",
+    "NO SPECIAL EFFECTS"
+  ],
+  "sa'chilvoice": [
+    "FEMALE",
+    "TEENAGE",
+    "CONFIDENT/DETERMINED",
+    "MODERATE",
+    "NORMAL VOLUME",
+    "SMOOTH",
+    "NEUTRAL",
+    "FORMAL",
+    "NOBLE",
+    "NO SPECIAL EFFECTS"
+  ],
+  "npcfmrswhitfield": [
+    "FEMALE",
+    "MIDDLE-AGED",
+    "CONFIDENT/DETERMINED",
+    "SLOW",
+    "SOFT-SPOKEN/QUIET",
+    "WHISPERY/AIRY",
+    "NEUTRAL",
+    "FORMAL",
+    "NOBLE",
+    "NO SPECIAL EFFECTS"
+  ],
+  "tsun": [
+    "MALE",
+    "MIDDLE-AGED",
+    "EXCITED",
+    "SLOW",
+    "NORMAL VOLUME",
+    "GRAVELLY/RASPY",
+    "WARM",
+    "CASUAL",
+    "PASSIONATE",
     "NO SPECIAL EFFECTS"
   ]
 }

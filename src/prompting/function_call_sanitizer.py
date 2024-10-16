@@ -5,7 +5,7 @@ import re
 
 class FunctionCallSanitizer:
     INSERT_LINE_BREAK_AFTER_PERIOD_WITH_NO_SPACE_FOLLOWED_BY_LETTER_REGEX = re.compile(
-        r"\.(?=\w)"
+        r"\.(?=[A-Z])"
     )
     REPLACE_INCORRECT_CLOSING_FUNCTION_TAG_REGEX = re.compile(r"\[/function]")
     REMOVE_EXTRA_CHARACTERS_AFTER_JSON_REGEX = re.compile(r"(}.*?)(</function>)")
@@ -16,6 +16,8 @@ class FunctionCallSanitizer:
     REPLACE_INCORRECT_CLOSING_FUNCTION_TAG_AT_END_REGEX = re.compile(
         r"}\s*<function>\s*$"
     )
+    REPLACE_START_TAG_PLACEHOLDER_REGEX = re.compile(r"<\{start_tag\}=(.*?)>")
+    REMOVE_END_TAG_PLACEHOLDER_REGEX = re.compile(r"</end_tag>")
 
     def __init__(self, function_call: str):
         if not function_call:
@@ -26,7 +28,7 @@ class FunctionCallSanitizer:
     @staticmethod
     def _fix_single_quoted_list_items(function_call: str) -> str:
         function_tag_regex = r"<function(?:=|\s+name=)([^\s>]+)>(.*?)</function>"
-        match = re.match(function_tag_regex, function_call)
+        match = re.search(function_tag_regex, function_call)
         if not match:
             # If no match, return the original function_call
             return function_call
@@ -34,16 +36,33 @@ class FunctionCallSanitizer:
         function_name = match.group(1)
         json_content = match.group(2)
 
-        # Step 4: Attempt to parse the JSON-like content using ast.literal_eval
+        # Attempt to parse the JSON-like content using ast.literal_eval
         try:
             data = ast.literal_eval(json_content)
-            # Step 5: Serialize back to JSON string with proper formatting
+
+            # Process the data to fix strings
+            def insert_newline_after_period_followed_by_uppercase(s):
+                return re.sub(r"\.([A-Z])", r".\n\1", s)
+
+            def process_data(data):
+                if isinstance(data, dict):
+                    return {k: process_data(v) for k, v in data.items()}
+                elif isinstance(data, list):
+                    return [process_data(v) for v in data]
+                elif isinstance(data, str):
+                    return insert_newline_after_period_followed_by_uppercase(data)
+                else:
+                    return data
+
+            data = process_data(data)
+
+            # Serialize back to JSON string with proper formatting
             json_str = json.dumps(data)
         except Exception:
             # If parsing fails, return the original function_call
             return function_call
 
-        # Step 6: Reconstruct the sanitized function call
+        # Reconstruct the sanitized function call
         sanitized_function_call = f"<function={function_name}>{json_str}</function>"
         return sanitized_function_call
 
@@ -56,20 +75,22 @@ class FunctionCallSanitizer:
         """
         function_call = (
             self._function_call.strip()
-        )  # Remove leading/trailing spaces and newlines
-        function_call = function_call.replace("\n", "").replace(
-            "\r", ""
-        )  # Remove all line breaks
+            .replace("\n", "")
+            .replace("\r", "")
+            .replace("}<>", "}")
+        )
 
-        # Insert a line break after periods with no space followed by a letter
+        # Replace the start tag placeholder with '<function='
         function_call = re.sub(
-            FunctionCallSanitizer.INSERT_LINE_BREAK_AFTER_PERIOD_WITH_NO_SPACE_FOLLOWED_BY_LETTER_REGEX,
-            ".\n",
+            FunctionCallSanitizer.REPLACE_START_TAG_PLACEHOLDER_REGEX,
+            r"<function=\1>",
             function_call,
         )
 
-        # Replace literal newlines with the escaped version
-        function_call = function_call.replace("\n", "\\n").replace("\t", "\\t")
+        # Remove the end tag placeholder
+        function_call = re.sub(
+            FunctionCallSanitizer.REMOVE_END_TAG_PLACEHOLDER_REGEX, "", function_call
+        )
 
         # Replace incorrect closing function tags like '[/function]' with '</function>'
         function_call = re.sub(
@@ -108,7 +129,7 @@ class FunctionCallSanitizer:
 
         function_call = self._fix_single_quoted_list_items(function_call)
 
-        # Step 20: Ensure that the function call ends with '</function>'
+        # Ensure that the function call ends with '</function>'
         if not function_call.endswith("</function>"):
             function_call += "</function>"
 

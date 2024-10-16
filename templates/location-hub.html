@@ -34,6 +34,42 @@
         </div>
     </div>
 
+    <!-- Weather Section -->
+    {% if current_place_type.value == "area" %}
+    <div class="collapsible-section">
+        <button class="collapsible active">
+            <i class="fas fa-cloud-sun"></i> Weather
+        </button>
+        <div class="content" style="display: block;">
+            <!-- Weather Display -->
+            <div class="weather-card">
+                <div class="weather-icon">
+                    <i class="{{ weather_icon_class }}"></i>
+                </div>
+                <div class="weather-info">
+                    <h2>{{ current_weather }}</h2>
+                    <p>{{ current_weather_description }}</p>
+                </div>
+            </div>
+
+            <!-- Dropdown to change weather -->
+            <form method="post" class="change-weather-form">
+                <input name="submit_action" type="hidden" value="Change Weather">
+                <label for="weather_identifier">Choose new weather:</label>
+                <select name="weather_identifier" id="weather_identifier">
+                    {% for weather in all_weathers %}
+                    <option value="{{ weather }}" {% if weather== current_weather %}selected{% endif %}>{{ weather }}
+                    </option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="action-button">
+                    <i class="fas fa-sync"></i> Change Weather
+                </button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
     <!-- Place Actions Section -->
     <div class="collapsible-section">
         <button class="collapsible active">

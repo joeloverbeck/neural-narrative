@@ -44,7 +44,7 @@ Select Playthrough
         </button>
         <div class="content">
             <form action="/" method="post" class="create-playthrough-form">
-                <input type="hidden" name="form_type" value="create_playthrough">
+                <input type="hidden" name="submit_action" value="create_playthrough">
 
                 <label for="playthrough_name">Playthrough Name:</label>
                 <input type="text" id="playthrough_name_for_creation" name="playthrough_name" required>
@@ -73,7 +73,7 @@ Select Playthrough
         </button>
         <div class="content">
             <form action="/" method="post" class="generate-world-form">
-                <input type="hidden" name="form_type" value="generate_world">
+                <input type="hidden" name="submit_action" value="generate_world">
                 <label class="world-label" for="world_notion">Enter your notions about the world:</label>
                 <textarea id="world_notion" name="world_notion" rows="4" cols="50" required></textarea>
                 <button type="submit" class="action-button">
@@ -90,7 +90,7 @@ Select Playthrough
         </button>
         <div class="content">
             <form action="/" method="post" class="generate-region-form">
-                <input type="hidden" name="form_type" value="generate_region">
+                <input type="hidden" name="submit_action" value="generate_region">
                 <label for="world_name">Select the world:</label>
                 <select id="world_name" name="world_name" required onchange="updateDescription('world')">
                     {% for key,value in worlds.items() %}
@@ -143,8 +143,9 @@ Select Playthrough
             <i class="fas fa-location-arrow"></i> Generate Location
         </button>
         <div class="content">
-            <form action="/" method="post" class="generate-location-form">
-                <input type="hidden" name="form_type" value="generate_location">
+            <form method="post" class="ajax-form generate-location-form" action="/"
+                  data-success-handler="generateLocationSuccess">
+                <input type="hidden" name="submit_action" value="generate_location">
                 <label for="area_name">Select the area:</label>
                 <select id="area_name" name="area_name" required onchange="updateDescription('area')">
                     {% for key,value in areas.items() %}

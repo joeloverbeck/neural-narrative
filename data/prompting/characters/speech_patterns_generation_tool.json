@@ -1,0 +1,64 @@
+{
+  "type": "function",
+  "function": {
+    "name": "generate_speech_patterns",
+    "description": "generate 10 unique and compelling speech patterns that reflect the character's distinct narrative voice.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "speech_pattern_1": {
+          "type": "string",
+          "description": "A quote in the character's voice. Focus on creating a compelling, unique narrative voice for the character."
+        },
+        "speech_pattern_2": {
+          "type": "string",
+          "description": "A quote in the character's voice. Focus on creating a compelling, unique narrative voice for the character."
+        },
+        "speech_pattern_3": {
+          "type": "string",
+          "description": "A quote in the character's voice. Focus on creating a compelling, unique narrative voice for the character."
+        },
+        "speech_pattern_4": {
+          "type": "string",
+          "description": "A quote in the character's voice. Focus on creating a compelling, unique narrative voice for the character."
+        },
+        "speech_pattern_5": {
+          "type": "string",
+          "description": "A quote in the character's voice. Focus on creating a compelling, unique narrative voice for the character."
+        },
+        "speech_pattern_6": {
+          "type": "string",
+          "description": "A quote in the character's voice. Focus on creating a compelling, unique narrative voice for the character."
+        },
+        "speech_pattern_7": {
+          "type": "string",
+          "description": "A quote in the character's voice. Focus on creating a compelling, unique narrative voice for the character."
+        },
+        "speech_pattern_8": {
+          "type": "string",
+          "description": "A quote in the character's voice. Focus on creating a compelling, unique narrative voice for the character."
+        },
+        "speech_pattern_9": {
+          "type": "string",
+          "description": "A quote in the character's voice. Focus on creating a compelling, unique narrative voice for the character."
+        },
+        "speech_pattern_10": {
+          "type": "string",
+          "description": "A quote in the character's voice. Focus on creating a compelling, unique narrative voice for the character."
+        }
+      },
+      "required": [
+        "speech_pattern_1",
+        "speech_pattern_2",
+        "speech_pattern_3",
+        "speech_pattern_4",
+        "speech_pattern_5",
+        "speech_pattern_6",
+        "speech_pattern_7",
+        "speech_pattern_8",
+        "speech_pattern_9",
+        "speech_pattern_10"
+      ]
+    }
+  }
+}

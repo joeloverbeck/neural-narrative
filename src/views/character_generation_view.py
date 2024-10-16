@@ -1,3 +1,5 @@
+import logging
+
 from flask import session, redirect, url_for, render_template, request, jsonify, flash
 from flask.views import MethodView
 
@@ -12,7 +14,7 @@ from src.characters.factories.character_generation_guidelines_factory import (
 )
 from src.config.config_manager import ConfigManager
 from src.constants import CHARACTER_GENERATION_GUIDELINES_FILE
-from src.exceptions import CharacterGenerationFailedError
+from src.exceptions import CharacterGenerationError
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.factories.place_descriptions_for_prompt_factory import (
     PlaceDescriptionsForPromptFactory,
@@ -28,6 +30,8 @@ from src.prompting.factories.produce_tool_response_strategy_factory import (
 )
 from src.services.character_service import CharacterService
 from src.services.web_service import WebService
+
+logger = logging.getLogger(__name__)
 
 
 class CharacterGenerationView(MethodView):
@@ -159,13 +163,15 @@ class CharacterGenerationView(MethodView):
                 "success": True,
                 "message": f"Character '{Character(playthrough_name, latest_identifier).name}' generated successfully.",
             }
-        except CharacterGenerationFailedError as e:
+        except CharacterGenerationError as e:
+            logger.error("Failed to generate character. Error: %s", e)
             response = {
                 "success": False,
                 "error": f"Character generation failed. Error: {str(e)}",
             }
         except Exception as e:
-            response = {"success": False, "error": f"Unspecific error: {str(e)}"}
+            logger.error("Unspecified error. Error: %s", e)
+            response = {"success": False, "error": f"Unspecified error: {str(e)}"}
 
         if request.headers.get("X-Requested-With") == "XMLHttpRequest":
             return jsonify(response)
@@ -228,6 +234,7 @@ class CharacterGenerationView(MethodView):
                 "guidelines": guidelines,  # Include the guidelines in the response
             }
         except Exception as e:
+            logger.error("Failed to generate guidelines. Error: %s", e)
             response = {
                 "success": False,
                 "error": f"Failed to generate guidelines. Error: {str(e)}",

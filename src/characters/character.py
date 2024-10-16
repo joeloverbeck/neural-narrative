@@ -15,8 +15,7 @@ class Character:
         "likes",
         "dislikes",
         "secrets",
-        "first message",
-        "speech patterns",
+        "speech_patterns",
         "health",
         "equipment",
         "voice_gender",
@@ -147,12 +146,8 @@ class Character:
         return self._data["secrets"]
 
     @property
-    def first_message(self) -> str:
-        return self._data["first message"]
-
-    @property
     def speech_patterns(self) -> str:
-        return self._data["speech patterns"]
+        return self._data["speech_patterns"]
 
     @property
     def health(self) -> str:

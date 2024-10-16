@@ -431,3 +431,80 @@ def test_sanitizer_does_not_alter_correct_function_call():
     sanitizer = FunctionCallSanitizer(function_call)
     sanitized_output = sanitizer.sanitize()
     assert sanitized_output == expected_output
+
+
+def test_sanitize_replaces_start_tag_placeholder():
+    input_str = '<{start_tag}=create_character_bio>{"key": "value"}</function>'
+    expected_output = '<function=create_character_bio>{"key": "value"}</function>'
+    sanitizer = FunctionCallSanitizer(input_str)
+    assert sanitizer.sanitize() == expected_output
+
+
+def test_sanitize_removes_end_tag_placeholder():
+    input_str = '<function=create_character_bio>{"key": "value"}</end_tag></function>'
+    expected_output = '<function=create_character_bio>{"key": "value"}</function>'
+    sanitizer = FunctionCallSanitizer(input_str)
+    assert sanitizer.sanitize() == expected_output
+
+
+def test_sanitize_full_error_case():
+    input_str = (
+        "Here is the character bio you requested:<{start_tag}=create_character_bio>"
+        '{"name": "Ezekiel Zephyr", "description": "An enigmatic...", "key": "value"}'
+        "</end_tag></function>"
+    )
+    expected_output = '<function=create_character_bio>{"name": "Ezekiel Zephyr", "description": "An enigmatic...", "key": "value"}</function>'
+    sanitizer = FunctionCallSanitizer(input_str)
+    assert sanitizer.sanitize() == expected_output
+
+
+def test_sanitize_handles_no_errors():
+    input_str = '<function=create_character_bio>{"key": "value"}</function>'
+    sanitizer = FunctionCallSanitizer(input_str)
+    assert sanitizer.sanitize() == input_str  # Should remain unchanged
+
+
+def test_sanitize_appends_missing_closing_tag():
+    input_str = '<function=create_character_bio>{"key": "value"}'
+    expected_output = '<function=create_character_bio>{"key": "value"}</function>'
+    sanitizer = FunctionCallSanitizer(input_str)
+    assert sanitizer.sanitize() == expected_output
+
+
+def test_sanitize_handles_multiple_errors():
+    input_str = (
+        '<{start_tag}=create_character_bio>{"key": "value"}</end_tag></function>'
+    )
+    expected_output = '<function=create_character_bio>{"key": "value"}</function>'
+    sanitizer = FunctionCallSanitizer(input_str)
+    assert sanitizer.sanitize() == expected_output
+
+
+def test_sanitize_with_extra_characters_after_json():
+    input_str = (
+        '<function=create_character_bio>{"key": "value"} some extra text</function>'
+    )
+    expected_output = '<function=create_character_bio>{"key": "value"}</function>'
+    sanitizer = FunctionCallSanitizer(input_str)
+    assert sanitizer.sanitize() == expected_output
+
+
+def test_sanitize_with_incorrect_closing_tag():
+    input_str = '<function=create_character_bio>{"key": "value"}[/function]'
+    expected_output = '<function=create_character_bio>{"key": "value"}</function>'
+    sanitizer = FunctionCallSanitizer(input_str)
+    assert sanitizer.sanitize() == expected_output
+
+
+def test_sanitize_with_missing_function_keyword_in_closing_tag():
+    input_str = '<function=create_character_bio>{"key": "value"}<>'
+    expected_output = '<function=create_character_bio>{"key": "value"}</function>'
+    sanitizer = FunctionCallSanitizer(input_str)
+    assert sanitizer.sanitize() == expected_output
+
+
+def test_sanitize_with_self_closing_function_tag():
+    input_str = '<function=create_character_bio>{"key": "value"}<function />'
+    expected_output = '<function=create_character_bio>{"key": "value"}</function>'
+    sanitizer = FunctionCallSanitizer(input_str)
+    assert sanitizer.sanitize() == expected_output

@@ -126,6 +126,17 @@ h1.page-title {
     display: block;
 }
 
+/* Optionally, style disabled select and button */
+select:disabled {
+    background-color: #e0e0e0;
+    cursor: not-allowed;
+}
+
+button:disabled {
+    background-color: #a0a0a0;
+    cursor: not-allowed;
+}
+
 /* Playing State */
 .playing {
     background: linear-gradient(90deg, #e0f7fa, #ffffff);

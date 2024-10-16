@@ -20,6 +20,9 @@ from src.prompting.factories.produce_tool_response_strategy_factory import (
     ProduceToolResponseStrategyFactory,
 )
 from src.services.web_service import WebService
+from src.voices.factories.direct_voice_line_generation_algorithm_factory import (
+    DirectVoiceLineGenerationAlgorithmFactory,
+)
 
 
 class CharacterMemoriesView(MethodView):
@@ -110,6 +113,7 @@ class CharacterMemoriesView(MethodView):
                     produce_tool_response_strategy_factory,
                     character_information_factory,
                 ),
+                DirectVoiceLineGenerationAlgorithmFactory(),
             )
 
             # Execute the algorithm and get the result

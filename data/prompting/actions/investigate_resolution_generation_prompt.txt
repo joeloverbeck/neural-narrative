@@ -31,7 +31,7 @@ Ensure consistency with the established world setting and the player's character
 
 Provided Information:
 
-Time of Day: {hour} {time_of_day}
+Current Time: {hour} {time_of_day}
 {places_descriptions}
 Facts Already Known: {facts_already_known}
 {player_and_followers_information}

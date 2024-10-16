@@ -10,6 +10,8 @@ from src.constants import (
 )
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.map_manager import MapManager
+from src.maps.weathers_manager import WeathersManager
+from src.playthrough_name import PlaythroughName
 from src.prompting.abstracts.abstract_factories import (
     FilteredPlaceDescriptionGenerationFactory,
 )
@@ -33,10 +35,10 @@ class ConcreteFilteredPlaceDescriptionGenerationFactory(
         place_identifier: str,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         character_information_factory: CharacterInformationProvider,
-        map_manager: MapManager = None,
-        characters_manager: CharactersManager = None,
-        filesystem_manager: FilesystemManager = None,
-        time_manager: TimeManager = None,
+        map_manager: Optional[MapManager] = None,
+        characters_manager: Optional[CharactersManager] = None,
+        filesystem_manager: Optional[FilesystemManager] = None,
+        time_manager: Optional[TimeManager] = None,
     ):
         super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
 
@@ -75,10 +77,15 @@ class ConcreteFilteredPlaceDescriptionGenerationFactory(
 
         place_data = place_full_data[f"{place_type.value}_data"]
 
+        weathers_manager = WeathersManager(PlaythroughName(self._playthrough_name))
+
         data_for_prompt = {
             "hour": self._time_manager.get_hour(),
             "time_of_the_day": self._time_manager.get_time_of_the_day(),
-            "place_type": place_type,
+            "weather": weathers_manager.get_weather_description(
+                weathers_manager.get_current_weather_identifier()
+            ),
+            "place_type": place_type.value,
             "place_template": place_data["name"],
             "place_description": place_data["description"],
         }

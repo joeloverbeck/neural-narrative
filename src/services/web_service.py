@@ -19,7 +19,7 @@ class WebService:
         if not folder:
             raise ValueError("folder can't be empty.")
         if not file_name:
-            raise ValueError("file_name can't be empty.")
+            file_name = "NONE"
 
         return url_for("static", filename=f"{folder}/" + os.path.basename(file_name))
 

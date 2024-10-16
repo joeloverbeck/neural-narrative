@@ -15,7 +15,7 @@ sample_character_data = {
         "dislikes": "Laziness",
         "secrets": "None",
         "first message": "Hello there!",
-        "speech patterns": "Formal",
+        "speech_patterns": "Formal",
         "health": "100",
         "equipment": "Sword",
         "voice_gender": "Male",
@@ -292,7 +292,6 @@ def test_properties_return_correct_values(mock_filesystem_manager):
     # Note: we aren't testing likes because there are racing issues with other tests.
     assert character.dislikes == "Laziness"
     assert character.secrets == "None"
-    assert character.first_message == "Hello there!"
     assert character.speech_patterns == "Formal"
     assert character.health == "100"
     assert character.equipment == "Sword"

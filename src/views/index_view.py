@@ -1,4 +1,4 @@
-from flask import render_template, request, session, redirect, url_for, flash
+from flask import render_template, request, session, redirect, url_for, flash, jsonify
 from flask.views import MethodView
 
 from src.constants import (
@@ -37,9 +37,9 @@ class IndexView(MethodView):
         )
 
     def post(self):
-        form_type = request.form.get("form_type")
+        action = request.form.get("submit_action")
 
-        if form_type == "create_playthrough":
+        if action == "create_playthrough":
             playthrough_name = request.form["playthrough_name"]
             world_template = request.form["world_name"]
             player_notion = request.form.get("player_notion", "")
@@ -55,7 +55,7 @@ class IndexView(MethodView):
 
             return redirect(url_for("index"))
 
-        elif form_type == "generate_world":
+        elif action == "generate_world":
             world_notion = request.form["world_notion"]
 
             try:
@@ -65,7 +65,7 @@ class IndexView(MethodView):
             except Exception as e:
                 flash(f"World generation failed: {str(e)}", "error")
             return redirect(url_for("index"))
-        elif form_type == "generate_region":
+        elif action == "generate_region":
             world_name = request.form["world_name"]
             region_notion = request.form.get("region_notion", "")
             try:
@@ -75,7 +75,7 @@ class IndexView(MethodView):
             except Exception as e:
                 flash(f"Region generation failed: {str(e)}", "error")
             return redirect(url_for("index"))
-        elif form_type == "generate_area":
+        elif action == "generate_area":
             region_name = request.form["region_name"]
             area_notion = request.form.get("area_notion", "")
             try:
@@ -85,16 +85,25 @@ class IndexView(MethodView):
             except Exception as e:
                 flash(f"Area generation failed: {str(e)}", "error")
             return redirect(url_for("index"))
-        elif form_type == "generate_location":
+        elif action == "generate_location":
             area_name = request.form["area_name"]
             location_notion = request.form.get("location_notion", "")
             try:
                 place_service = PlaceService()
                 place_service.generate_location(area_name, location_notion)
-                flash("Location generated successfully!", "success")
+                response = {
+                    "success": True,
+                    "message": "Location generated successfully.",
+                }
             except Exception as e:
-                flash(f"Location generation failed: {str(e)}", "error")
-            return redirect(url_for("index"))
+                response = {
+                    "success": False,
+                    "error": f"Failed to generate location. Error: {str(e)}",
+                }
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return jsonify(response)
+            else:
+                return redirect(url_for("story-hub"))
         else:
             filesystem_manager = FilesystemManager()
 

@@ -6,7 +6,9 @@ from flask import session, url_for
 from src.abstracts.observer import Observer
 from src.characters.characters_manager import CharactersManager
 from src.constants import NARRATOR_VOICE_MODEL
-from src.voices.voice_manager import VoiceManager
+from src.voices.factories.direct_voice_line_generation_algorithm_factory import (
+    DirectVoiceLineGenerationAlgorithmFactory,
+)
 
 
 class WebAmbientNarrationObserver(Observer):
@@ -25,9 +27,10 @@ class WebAmbientNarrationObserver(Observer):
             )
 
         # Generate the voice line and get the file path
-        file_name = VoiceManager().generate_voice_line(
+        file_name = DirectVoiceLineGenerationAlgorithmFactory.create_algorithm(
             "narrator", message["message_text"], NARRATOR_VOICE_MODEL
-        )
+        ).direct_voice_line_generation()
+
         # Append the message with the file path
         self._messages.append(
             {

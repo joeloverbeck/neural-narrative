@@ -1,7 +1,9 @@
 from src.constants import VOICE_MODELS_FILE
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.requests.requests_manager import RequestsManager
-from src.voices.voice_manager import VoiceManager
+from src.voices.factories.direct_voice_line_generation_algorithm_factory import (
+    DirectVoiceLineGenerationAlgorithmFactory,
+)
 
 
 def main():
@@ -33,11 +35,10 @@ def main():
     )
 
     for available_speaker in unimplemented_speakers:
-        file_path = VoiceManager().generate_voice_line(
-            "test",
-            text_to_read,
-            available_speaker,
-        )
+        file_path = DirectVoiceLineGenerationAlgorithmFactory.create_algorithm(
+            "test", text_to_read, available_speaker
+        ).direct_voice_line_generation()
+
         print(f"Generated voice line for '{file_path}'")
 
 

@@ -10,7 +10,9 @@ from src.dialogues.products.ambient_narration_product import AmbientNarrationPro
 from src.dialogues.transcription import Transcription
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.map_manager import MapManager
+from src.maps.weathers_manager import WeathersManager
 from src.playthrough_manager import PlaythroughManager
+from src.playthrough_name import PlaythroughName
 from src.prompting.factories.produce_tool_response_strategy_factory import (
     ProduceToolResponseStrategyFactory,
 )
@@ -70,10 +72,15 @@ class AmbientNarrationProvider(BaseToolResponseProvider):
             self._playthrough_name, self._playthrough_manager.get_player_identifier()
         ).personality
 
+        weathers_manager = WeathersManager(PlaythroughName(self._playthrough_name))
+
         return {
             "setting_description": setting_description,
             "hour": self._time_manager.get_hour(),
             "time_of_day": self._time_manager.get_time_of_the_day(),
+            "weather": weathers_manager.get_weather_description(
+                weathers_manager.get_current_weather_identifier()
+            ),
             "personality": personality,
             "transcription": self._transcription.get_prettified_transcription(),
         }
