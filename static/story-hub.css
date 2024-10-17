@@ -20,7 +20,7 @@ form input[type="submit"] {
     margin-top: 15px;
 }
 
-.plot-blueprints-list, .interesting-situations-list, .interesting-dilemmas-list, .goals-list {
+.plot-blueprints-list, .interesting-situations-list, .interesting-dilemmas-list, .goals-list, .plot-twists-list {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;

@@ -1,0 +1,29 @@
+{
+  "type": "function",
+  "function": {
+    "name": "generate_plot_twists",
+    "description": "generate three captivating plot twists that could dramatically alter the storyline.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "plot_twist_1": {
+          "type": "string",
+          "description": "A captivating plot twist that could dramatically alter the storyline. Follow the provided instructions."
+        },
+        "plot_twist_2": {
+          "type": "string",
+          "description": "A captivating plot twist that could dramatically alter the storyline. Follow the provided instructions."
+        },
+        "plot_twist_3": {
+          "type": "string",
+          "description": "A captivating plot twist that could dramatically alter the storyline. Follow the provided instructions."
+        }
+      },
+      "required": [
+        "plot_twist_1",
+        "plot_twist_2",
+        "plot_twist_3"
+      ]
+    }
+  }
+}

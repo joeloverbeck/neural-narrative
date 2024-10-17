@@ -114,6 +114,9 @@ GOAL_RESOLUTION_GENERATION_TOOL_FILE: str = (
     "data/prompting/goal_resolution_generation_tool.json"
 )
 GOALS_GENERATION_TOOL_FILE: str = "data/prompting/concepts/goals_generation_tool.json"
+PLOT_TWISTS_GENERATION_TOOL_FILE: str = (
+    "data/prompting/concepts/plot_twists_generation_tool.json"
+)
 RESEARCH_RESOLUTION_GENERATION_TOOL_FILE: str = (
     "data/prompting/actions/research_resolution_generation_tool.json"
 )
@@ -178,6 +181,9 @@ GOAL_RESOLUTION_GENERATION_PROMPT_FILE: str = (
 )
 GOALS_GENERATION_PROMPT_FILE: str = (
     "data/prompting/concepts/goals_generation_prompt.txt"
+)
+PLOT_TWISTS_GENERATION_PROMPT_FILE: str = (
+    "data/prompting/concepts/plot_twists_generation_prompt.txt"
 )
 RESEARCH_RESOLUTION_GENERATION_PROMPT_FILE: str = (
     "data/prompting/actions/research_resolution_generation_prompt.txt"

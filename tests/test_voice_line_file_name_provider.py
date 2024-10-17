@@ -143,7 +143,7 @@ def test_provide_file_name_removes_temp_dir():
         filesystem_manager,
     )
 
-    with patch("os.remove"), patch("os.rmdir") as mock_rmdir:
+    with patch("os.remove"), patch("os.rmdir") as mock_rmdir, patch("shutil.copy"):
         provider.provide_file_name()
 
     mock_rmdir.assert_called_once_with("temp_dir")
@@ -163,7 +163,7 @@ def test_provide_file_name_returns_file_name():
         filesystem_manager,
     )
 
-    with patch("os.remove"), patch("os.rmdir"):
+    with patch("os.remove"), patch("os.rmdir"), patch("shutil.copy"):
         result = provider.provide_file_name()
 
     assert result == "final.wav"

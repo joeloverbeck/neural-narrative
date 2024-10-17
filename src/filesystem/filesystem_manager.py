@@ -23,6 +23,7 @@ from src.constants import (
     VOICE_LINES_FOLDER_PATH,
 )
 from src.exceptions import FailedToLoadJsonError
+from src.playthrough_name import PlaythroughName
 
 
 class FilesystemManager:
@@ -236,13 +237,21 @@ class FilesystemManager:
 
         return folder_path
 
-    def get_file_path_to_interesting_situations(self, playthrough_name: str) -> str:
+    def get_file_path_to_interesting_situations(
+        self, playthrough_name: PlaythroughName
+    ) -> str:
         if not playthrough_name:
             raise ValueError("playthrough_name should not be empty.")
 
         return os.path.join(
-            self.get_file_path_to_playthrough_folder(playthrough_name),
+            self.get_file_path_to_playthrough_folder(playthrough_name.value),
             "interesting_situations.txt",
+        )
+
+    def get_file_path_to_plot_twists(self, playthrough_name: PlaythroughName) -> str:
+        return os.path.join(
+            self.get_file_path_to_playthrough_folder(playthrough_name.value),
+            "plot_twists.txt",
         )
 
     def get_file_path_to_facts(self, playthrough_name: str) -> str:
@@ -253,21 +262,24 @@ class FilesystemManager:
             self.get_file_path_to_playthrough_folder(playthrough_name), "facts.txt"
         )
 
-    def get_file_path_to_interesting_dilemmas(self, playthrough_name: str) -> str:
+    def get_file_path_to_interesting_dilemmas(
+        self, playthrough_name: PlaythroughName
+    ) -> str:
         if not playthrough_name:
             raise ValueError("playthrough_name should not be empty.")
 
         return os.path.join(
-            self.get_file_path_to_playthrough_folder(playthrough_name),
+            self.get_file_path_to_playthrough_folder(playthrough_name.value),
             "interesting_dilemmas.txt",
         )
 
-    def get_file_path_to_goals(self, playthrough_name: str) -> str:
+    def get_file_path_to_goals(self, playthrough_name: PlaythroughName) -> str:
         if not playthrough_name:
             raise ValueError("playthrough_name can't be empty.")
 
         return os.path.join(
-            self.get_file_path_to_playthrough_folder(playthrough_name), "goals.txt"
+            self.get_file_path_to_playthrough_folder(playthrough_name.value),
+            "goals.txt",
         )
 
     @staticmethod
@@ -303,12 +315,14 @@ class FilesystemManager:
             "adventure.txt",
         )
 
-    def get_file_path_to_plot_blueprints(self, playthrough_name: str):
-        if not playthrough_name:
-            raise ValueError("playthrough_name can't be empty.")
+    def get_file_path_to_plot_blueprints(self, playthrough_name: PlaythroughName):
+        if not isinstance(playthrough_name, PlaythroughName):
+            raise TypeError(
+                f"Expected playthrough_name to be PlaythroughName, but it was {type(playthrough_name)}."
+            )
 
         return os.path.join(
-            self.get_file_path_to_playthrough_folder(playthrough_name),
+            self.get_file_path_to_playthrough_folder(playthrough_name.value),
             "plot_blueprints.txt",
         )
 
