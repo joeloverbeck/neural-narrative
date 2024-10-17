@@ -93,16 +93,16 @@ CHARACTER_GENERATION_GUIDELINES_TOOL_FILE: str = (
     "data/prompting/characters/character_generation_guidelines_tool.json"
 )
 INTERESTING_SITUATIONS_GENERATION_TOOL_FILE: str = (
-    "data/prompting/concepts/interesting_situations_generation_tool.json"
+    "data/prompting/concepts/situations_generation_tool.json"
 )
 INTERESTING_DILEMMAS_GENERATION_TOOL_FILE: str = (
-    "data/prompting/concepts/interesting_dilemmas_generation_tool.json"
+    "data/prompting/concepts/dilemmas_generation_tool.json"
 )
 CHARACTER_DESCRIPTION_GENERATION_TOOL_FILE: str = (
     "data/prompting/characters/character_description_generation_tool.json"
 )
-CONCEPTS_GENERATION_TOOL_FILE: str = (
-    "data/prompting/concepts/concepts_generation_tool.json"
+PLOT_BLUEPRINTS_GENERATION_TOOL_FILE: str = (
+    "data/prompting/concepts/plot_blueprints_generation_tool.json"
 )
 AMBIENT_NARRATION_GENERATION_TOOL_FILE: str = (
     "data/prompting/ambient_narration_generation_tool.json"
@@ -155,17 +155,17 @@ CHARACTER_GENERATION_GUIDELINES_PROMPT_FILE: str = (
     "data/prompting/characters/character_generation_guidelines_prompt.txt"
 )
 INTERESTING_SITUATIONS_GENERATION_PROMPT_FILE: str = (
-    "data/prompting/concepts/interesting_situations_generation_prompt.txt"
+    "data/prompting/concepts/situations_generation_prompt.txt"
 )
 INTERESTING_DILEMMAS_GENERATION_PROMPT_FILE: str = (
-    "data/prompting/concepts/interesting_dilemmas_generation_prompt.txt"
+    "data/prompting/concepts/dilemmas_generation_prompt.txt"
 )
 IMAGE_GENERATION_PROMPT_FILE: str = "data/prompting/image_generation_prompt.txt"
 CHARACTER_DESCRIPTION_GENERATION_PROMPT_FILE: str = (
     "data/prompting/characters/character_description_generation_prompt.txt"
 )
-CONCEPTS_GENERATION_PROMPT_FILE: str = (
-    "data/prompting/concepts/concepts_generation_prompt.txt"
+PLOT_BLUEPRINTS_GENERATION_PROMPT_FILE: str = (
+    "data/prompting/concepts/plot_blueprints_generation_prompt.txt"
 )
 AMBIENT_NARRATION_GENERATION_PROMPT_FILE: str = (
     "data/prompting/ambient_narration_generation_prompt.txt"

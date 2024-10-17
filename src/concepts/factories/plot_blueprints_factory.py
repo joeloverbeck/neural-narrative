@@ -3,9 +3,12 @@ from typing import Optional
 from src.characters.factories.player_and_followers_information_factory import (
     PlayerAndFollowersInformationFactory,
 )
-from src.concepts.concepts_manager import ConceptsManager
-from src.concepts.products.concepts_product import ConceptsProduct
-from src.constants import CONCEPTS_GENERATION_TOOL_FILE, CONCEPTS_GENERATION_PROMPT_FILE
+from src.concepts.plot_blueprints_manager import PlotBlueprintsManager
+from src.concepts.products.plot_blueprints_product import PlotBlueprintsProduct
+from src.constants import (
+    PLOT_BLUEPRINTS_GENERATION_TOOL_FILE,
+    PLOT_BLUEPRINTS_GENERATION_PROMPT_FILE,
+)
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.factories.places_descriptions_factory import PlacesDescriptionsFactory
 from src.playthrough_name import PlaythroughName
@@ -15,7 +18,7 @@ from src.prompting.factories.produce_tool_response_strategy_factory import (
 from src.prompting.providers.base_tool_response_provider import BaseToolResponseProvider
 
 
-class ConceptsFactory(BaseToolResponseProvider):
+class PlotBlueprintsFactory(BaseToolResponseProvider):
     def __init__(
         self,
         playthrough_name: str,
@@ -36,24 +39,33 @@ class ConceptsFactory(BaseToolResponseProvider):
         )
 
     def get_tool_file(self) -> str:
-        return CONCEPTS_GENERATION_TOOL_FILE
+        return PLOT_BLUEPRINTS_GENERATION_TOOL_FILE
 
     def get_user_content(self) -> str:
-        return "Generate a magnificent concept for a full story. Follow the provided instructions."
+        return "Generate a magnificent plot blueprint for a full story. Follow the provided instructions."
 
     def create_product(self, arguments: dict):
-        return ConceptsProduct(
-            [
-                arguments.get("concept"),
-            ],
+        plot_blueprint = arguments.get("plot_blueprint")
+
+        if not plot_blueprint:
+            return PlotBlueprintsProduct(
+                None,
+                is_valid=False,
+                error="The LLM failed to produce a plot blueprint.",
+            )
+
+        return PlotBlueprintsProduct(
+            [plot_blueprint],
             is_valid=True,
         )
 
     def get_prompt_file(self) -> Optional[str]:
-        return CONCEPTS_GENERATION_PROMPT_FILE
+        return PLOT_BLUEPRINTS_GENERATION_PROMPT_FILE
 
     def get_prompt_kwargs(self) -> dict:
-        return ConceptsManager(PlaythroughName(self._playthrough_name)).get_prompt_data(
+        return PlotBlueprintsManager(
+            PlaythroughName(self._playthrough_name)
+        ).get_prompt_data(
             self._places_descriptions_factory,
             self._player_and_followers_information_factory,
         )

@@ -26,10 +26,8 @@ function placeDescriptionGenerationSuccess(data, context) {
 
             // Update or remove the voice line URL
             if (data.voice_line_url && data.voice_line_url !== 'None' && data.voice_line_url !== 'null') {
-                console.log('Voice line url was correct. Replacing the previous file url with the new one.')
                 placeDescriptionDiv.setAttribute('data-file-url', data.voice_line_url);
             } else {
-                console.log('Voice line not valid. Removing data-file-url.')
                 placeDescriptionDiv.removeAttribute('data-file-url');
             }
 
@@ -44,14 +42,12 @@ function placeDescriptionGenerationSuccess(data, context) {
             // Initialize audio playback for the updated element
             initAudioPlayback();
         } else {
-            console.log('place-description div didn\'t exist, so I will create it.')
             // If place-description div doesn't exist, create it
             const newPlaceDescriptionDiv = document.createElement('div');
             newPlaceDescriptionDiv.classList.add('place-description', 'new-place-description');
             newPlaceDescriptionDiv.id = 'place-description';
 
             if (data.voice_line_url && data.voice_line_url !== 'None' && data.voice_line_url !== 'null') {
-                console.log('Voice line url was correct. Replacing the previous file url with the new one.')
                 newPlaceDescriptionDiv.setAttribute('data-file-url', data.voice_line_url);
             }
 

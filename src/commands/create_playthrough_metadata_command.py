@@ -12,8 +12,8 @@ from src.constants import (
     WORLD_TEMPLATES_FILE,
 )
 from src.exceptions import (
-    WorldTemplateNotFoundException,
-    PlaythroughAlreadyExistsException,
+    WorldTemplateNotFoundError,
+    PlaythroughAlreadyExistsError,
 )
 from src.filesystem.filesystem_manager import FilesystemManager
 
@@ -45,7 +45,7 @@ class CreatePlaythroughMetadataCommand(Command):
                 self._playthrough_name
             )
         ):
-            raise PlaythroughAlreadyExistsException(
+            raise PlaythroughAlreadyExistsError(
                 f"A playthrough with the name '{self._playthrough_name}' already exists."
             )
 
@@ -55,7 +55,7 @@ class CreatePlaythroughMetadataCommand(Command):
         )
 
         if self._world_template not in worlds_file:
-            raise WorldTemplateNotFoundException(
+            raise WorldTemplateNotFoundError(
                 f"There is no such world template '{self._world_template}'"
             )
 

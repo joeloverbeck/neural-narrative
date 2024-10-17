@@ -1,8 +1,8 @@
-class PlaythroughAlreadyExistsException(Exception):
+class PlaythroughAlreadyExistsError(Exception):
     pass
 
 
-class WorldTemplateNotFoundException(Exception):
+class WorldTemplateNotFoundError(Exception):
     pass
 
 
@@ -15,4 +15,8 @@ class FailedToLoadJsonError(Exception):
 
 
 class VoiceLineGenerationError(Exception):
+    pass
+
+
+class PlotBlueprintGenerationError(Exception):
     pass

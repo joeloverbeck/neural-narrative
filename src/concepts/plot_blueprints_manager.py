@@ -8,7 +8,7 @@ from src.maps.factories.places_descriptions_factory import PlacesDescriptionsFac
 from src.playthrough_name import PlaythroughName
 
 
-class ConceptsManager:
+class PlotBlueprintsManager:
     def __init__(
         self,
         playthrough_name: PlaythroughName,

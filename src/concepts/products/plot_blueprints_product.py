@@ -1,16 +1,19 @@
 from typing import List, Optional
 
 
-class ConceptsProduct:
+class PlotBlueprintsProduct:
     def __init__(
-        self, concepts: List[str], is_valid: bool, error: Optional[str] = None
+        self,
+        plot_blueprints: Optional[List[str]],
+        is_valid: bool,
+        error: Optional[str] = None,
     ):
-        self._concepts = concepts
+        self._plot_blueprints = plot_blueprints
         self._is_valid = is_valid
         self._error = error
 
     def get(self) -> List[str]:
-        return self._concepts
+        return self._plot_blueprints
 
     def is_valid(self) -> bool:
         return self._is_valid

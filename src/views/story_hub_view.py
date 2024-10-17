@@ -12,9 +12,6 @@ from src.characters.factories.player_and_followers_information_factory import (
 from src.characters.factories.player_data_for_prompt_factory import (
     PlayerDataForPromptFactory,
 )
-from src.concepts.algorithms.generate_concepts_algorithm import (
-    GenerateConceptsAlgorithm,
-)
 from src.concepts.algorithms.generate_goals_algorithm import GenerateGoalsAlgorithm
 from src.concepts.algorithms.generate_interesting_dilemmas_algorithm import (
     GenerateInterestingDilemmasAlgorithms,
@@ -22,7 +19,9 @@ from src.concepts.algorithms.generate_interesting_dilemmas_algorithm import (
 from src.concepts.algorithms.generate_interesting_situations_algorithms import (
     GenerateInterestingSituationsAlgorithms,
 )
-from src.concepts.factories.concepts_factory import ConceptsFactory
+from src.concepts.algorithms.generate_plot_blueprints_algorithm import (
+    GeneratePlotBlueprintsAlgorithm,
+)
 from src.concepts.factories.goals_factory import GoalsFactory
 from src.concepts.factories.interesting_dilemmas_factory import (
     InterestingDilemmasFactory,
@@ -30,6 +29,7 @@ from src.concepts.factories.interesting_dilemmas_factory import (
 from src.concepts.factories.interesting_situations_factory import (
     InterestingSituationsFactory,
 )
+from src.concepts.factories.plot_blueprints_factory import PlotBlueprintsFactory
 from src.config.config_manager import ConfigManager
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.interfaces.web_interface_manager import WebInterfaceManager
@@ -54,9 +54,9 @@ class StoryHubView(MethodView):
 
         filesystem_manager = FilesystemManager()
 
-        # Load Concepts
-        concepts = filesystem_manager.read_file_lines(
-            filesystem_manager.get_file_path_to_concepts(playthrough_name)
+        # Load Plot Blueprints
+        plot_blueprints = filesystem_manager.read_file_lines(
+            filesystem_manager.get_file_path_to_plot_blueprints(playthrough_name)
         )
 
         # Load Interesting Situations
@@ -89,7 +89,7 @@ class StoryHubView(MethodView):
 
         return render_template(
             "story-hub.html",
-            concepts=concepts,
+            plot_blueprints=plot_blueprints,
             interesting_situations=interesting_situations,
             interesting_dilemmas=interesting_dilemmas,
             goals=goals,
@@ -105,7 +105,7 @@ class StoryHubView(MethodView):
 
         filesystem_manager = FilesystemManager()
 
-        if action == "generate_concepts":
+        if action == "generate_plot_blueprints":
             produce_tool_response_strategy_factory = ProduceToolResponseStrategyFactory(
                 OpenRouterLlmClientFactory().create_llm_client(),
                 ConfigManager().get_heavy_llm(),
@@ -131,54 +131,60 @@ class StoryHubView(MethodView):
                 place_descriptions_for_prompt_factory
             )
 
-            concepts_factory = ConceptsFactory(
+            plot_blueprints_factory = PlotBlueprintsFactory(
                 playthrough_name,
                 produce_tool_response_strategy_factory,
                 places_descriptions_factory,
                 player_and_followers_information_factory,
             )
 
-            command = GenerateConceptsAlgorithm(playthrough_name, concepts_factory)
+            algorithm = GeneratePlotBlueprintsAlgorithm(
+                playthrough_name, plot_blueprints_factory
+            )
 
             try:
-                concepts = command.do_algorithm()
+                plot_blueprints = algorithm.do_algorithm()
 
-                # Return the concepts along with the response so that they get added
-                # as items to the collapsible section of Concepts.
+                # Return the plot blueprints along with the response so that they get added
+                # as items to the collapsible section of Plot Blueprints.
                 response = {
                     "success": True,
-                    "message": "Concepts generated successfully.",
-                    "concepts": concepts,
+                    "message": "Plot blueprints generated successfully.",
+                    "plot_blueprints": plot_blueprints,
                 }
             except Exception as e:
                 response = {
                     "success": False,
-                    "error": f"Failed to generate concepts. Error: {str(e)}",
+                    "error": f"Failed to generate plot blueprints. Error: {str(e)}",
                 }
 
             if request.headers.get("X-Requested-With") == "XMLHttpRequest":
                 return jsonify(response)
             else:
                 return redirect(url_for("story-hub"))
-        elif action == "delete_concept":
-            concept_index = int(request.form.get("item_index"))
+        elif action == "delete_plot_blueprint":
+            plot_blueprint_index = int(request.form.get("item_index"))
 
             filesystem_manager = FilesystemManager()
-            concepts_file_path = filesystem_manager.get_file_path_to_concepts(
-                playthrough_name
+            plot_blueprints_file_path = (
+                filesystem_manager.get_file_path_to_plot_blueprints(playthrough_name)
             )
 
-            if os.path.exists(concepts_file_path):
-                concepts_content = filesystem_manager.read_file(concepts_file_path)
-                concepts = (
-                    concepts_content.strip().split("\n") if concepts_content else []
+            if os.path.exists(plot_blueprints_file_path):
+                plot_blueprints_content = filesystem_manager.read_file(
+                    plot_blueprints_file_path
+                )
+                plot_blueprints = (
+                    plot_blueprints_content.strip().split("\n")
+                    if plot_blueprints_content
+                    else []
                 )
 
-                if 0 <= concept_index < len(concepts):
-                    del concepts[concept_index]
+                if 0 <= plot_blueprint_index < len(plot_blueprints):
+                    del plot_blueprints[plot_blueprint_index]
                     # Write back to file
                     filesystem_manager.write_file(
-                        concepts_file_path, "\n".join(concepts)
+                        plot_blueprints_file_path, "\n".join(plot_blueprints)
                     )
 
             return redirect(url_for("story-hub"))
