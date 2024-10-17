@@ -12,6 +12,9 @@
     <h1 class="page-title"><i class="fas fa-book"></i> Research</h1>
     <p class="current-place">Current Place: {{ current_place }}</p>
 
+    <!-- Empty container for AJAX-injected content -->
+    <div id="research-result-container"></div>
+
     {% if result %}
     <!-- Research Result Section -->
     <div class="collapsible-section">
@@ -69,7 +72,8 @@
             <i class="fas fa-book"></i> Enter Research Goal
         </button>
         <div class="content" style="display: block;">
-            <form action="{{ url_for('research') }}" method="post" class="research-form">
+            <form action="{{ url_for('research') }}" method="post" class="ajax-form research-form"
+                  data-success-handler="resolveResearchSuccess">
                 <input type="hidden" name="form_type" value="resolve_research">
                 <label for="research_goal">Research Goal:</label>
                 <input type="text" id="research_goal" name="research_goal" required>
@@ -107,4 +111,5 @@
 
 {% block scripts %}
 <script src="{{ url_for('static', filename='main.js') }}"></script>
+<script src="{{ url_for('static', filename='research.js') }}"></script>
 {% endblock %}

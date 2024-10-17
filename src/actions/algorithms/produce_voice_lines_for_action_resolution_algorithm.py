@@ -23,5 +23,5 @@ class ProduceVoiceLinesForActionResolutionAlgorithm:
         product.set_outcome_voice_line_file_name(
             self._direct_voice_line_generation_algorithm_factory.create_algorithm(
                 "narrator", product.get_outcome(), NARRATOR_VOICE_MODEL
-            )
+            ).direct_voice_line_generation()
         )
