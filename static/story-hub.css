@@ -16,17 +16,17 @@ form input[type="submit"] {
 }
 
 /* Adjust margin for content */
-.content .concepts-list {
+.content .plot-blueprints-list {
     margin-top: 15px;
 }
 
-.concepts-list, .interesting-situations-list, .interesting-dilemmas-list, .goals-list {
+.plot-blueprints-list, .interesting-situations-list, .interesting-dilemmas-list, .goals-list {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     margin-bottom: 20px;
 }
-.concept-form {
+.plot-blueprint-form {
     display: inline-block;
     margin: 0;
     padding: 0;
@@ -34,8 +34,8 @@ form input[type="submit"] {
     background: none;
 }
 
-/* Concept item styling */
-.concept-item {
+/* Plot Blueprint item styling */
+.plot-blueprint-item {
     background-color: #fff;
     padding: 20px;
     margin: 15px;
@@ -46,7 +46,7 @@ form input[type="submit"] {
     width: 90%;
 }
 
-.concept-item:hover {
+.plot-blueprint-item:hover {
     background-color: #f9f9f9;
 }
 

@@ -33,6 +33,11 @@ function generateItemsSuccess(data, context, options) {
                 const itemIndex = startIndex + i;
                 const itemElement = options.createItemElement(item, itemIndex);
                 itemsList.appendChild(itemElement);
+
+                // Call afterItemAdded if provided
+                if (typeof options.afterItemAdded === 'function') {
+                    options.afterItemAdded(item, itemIndex, context, options);
+                }
             });
 
             // Re-initialize event listeners for new forms
@@ -97,7 +102,7 @@ function closeModal(index) {
     document.getElementById('modal-' + index).style.display = 'none';
 }
 
-function createModal(concept, index) {
+function createModal(plotBlueprint, index) {
     // Create the modal div
     const modal = document.createElement('div');
     modal.id = `modal-${index}`;
@@ -115,15 +120,15 @@ function createModal(concept, index) {
         closeModal(index);
     };
 
-    // Create h2 element for Concept title
+    // Create h2 element for Plot Blueprint title
     const h2 = document.createElement('h2');
-    h2.textContent = `Concept ${index + 1}`;
+    h2.textContent = `Plot Blueprint ${index + 1}`;
 
-    // Create p element for concept text
+    // Create p element for plot blueprint text
     const p = document.createElement('p');
-    p.textContent = concept;
+    p.textContent = plotBlueprint;
 
-    // Create form for deleting concept
+    // Create form for deleting plot blueprint
     const form = document.createElement('form');
     form.action = window.location.href; // Use current URL
     form.method = 'post';
@@ -138,7 +143,7 @@ function createModal(concept, index) {
     const inputAction = document.createElement('input');
     inputAction.type = 'hidden';
     inputAction.name = 'submit_action';
-    inputAction.value = 'delete_concept';
+    inputAction.value = 'delete_plot_blueprint';
 
     // Create delete button
     const button = document.createElement('button');
@@ -167,44 +172,50 @@ function createModal(concept, index) {
     return modal;
 }
 
-function createConceptItem(concept, index) {
-    // Create a concept-item div
-    const conceptItem = document.createElement('div');
-    conceptItem.classList.add('concept-item');
-    conceptItem.setAttribute('data-index', index);
+function createPlotBlueprintItem(plotBlueprint, index) {
+    // Create a plot-blueprint-item div
+    const plotBlueprintItem = document.createElement('div');
+    plotBlueprintItem.classList.add('plot-blueprint-item');
+    plotBlueprintItem.setAttribute('data-index', index);
 
     // Set the onclick attribute to call openModal with the current index
-    conceptItem.onclick = function() {
+    plotBlueprintItem.onclick = function() {
         openModal(index);
     };
 
-    // Create the h3 element for the concept title
+    // Create the h3 element for the plot blueprint title
     const header = document.createElement('h3');
-    header.textContent = `Concept ${index + 1}`; // Assuming index starts at 0
+    header.textContent = `Plot Blueprint ${index + 1}`; // Assuming index starts at 0
 
-    // Create the p element for the concept description
+    // Create the p element for the plot blueprint description
     const paragraph = document.createElement('p');
 
-    // Truncate the concept text to 150 characters and add ellipsis if necessary
-    const truncatedConcept = concept.length > 150 ? `${concept.substring(0, 150)}...` : concept;
-    paragraph.textContent = truncatedConcept;
+    // Truncate the plot blueprint text to 150 characters and add ellipsis if necessary
+    const truncatedPlotBlueprint = plotBlueprint.length > 150 ? `${plotBlueprint.substring(0, 150)}...` : plotBlueprint;
+    paragraph.textContent = truncatedPlotBlueprint;
 
-    // Append the header and paragraph to the concept-item div
-    conceptItem.appendChild(header);
-    conceptItem.appendChild(paragraph);
+    // Append the header and paragraph to the plot-blueprint-item div
+    plotBlueprintItem.appendChild(header);
+    plotBlueprintItem.appendChild(paragraph);
 
-    return conceptItem;
+    return plotBlueprintItem;
 }
 
-function generateConceptsSuccess(data, context) {
+function generatePlotBlueprintsSuccess(data, context) {
     generateItemsSuccess(data, context, {
-        defaultSuccessMessage: 'Concepts generated successfully.',
-        itemsKey: 'concepts',
-        listSelector: '.concepts-list',
-        listClass: 'concepts-list',
-        itemSelector: '.concepts-list .concept-item',
-        createItemElement: createConceptItem,
-        initItemForms: initConceptItemForms
+        defaultSuccessMessage: 'Plot blueprints generated successfully.',
+        itemsKey: 'plot_blueprints',
+        listSelector: '.plot-blueprints-list',
+        listClass: 'plot-blueprints-list',
+        itemSelector: '.plot-blueprints-list .plot-blueprint-item',
+        createItemElement: createPlotBlueprintItem,
+        initItemForms: initPlotBlueprintItemForms,
+        afterItemAdded: function(item, itemIndex, context, options) {
+            // Create and append the modal
+            const contentDiv = context.form.closest('.content');
+            const modal = createModal(item, itemIndex);
+            contentDiv.appendChild(modal);
+        }
     });
 }
 
@@ -254,10 +265,10 @@ window.onclick = function(event) {
     });
 }
 
-function initConceptItemForms() {
-    const conceptItems = document.querySelectorAll('.concept-item');
+function initPlotBlueprintItemForms() {
+    const plotBlueprintItems = document.querySelectorAll('.plot-blueprint-item');
 
-    conceptItems.forEach(function(item) {
+    plotBlueprintItems.forEach(function(item) {
         item.onclick = function() {
             const index = parseInt(this.getAttribute('data-index'));
             openModal(index);
@@ -285,8 +296,8 @@ function initItemForms() {
 }
 
 function pageInit() {
-    // Initialize event listeners for concept items
-    initConceptItemForms();
+    // Initialize event listeners for plot blueprint items
+    initPlotBlueprintItemForms();
 
     // Initialize event listeners for item forms
     initItemForms();

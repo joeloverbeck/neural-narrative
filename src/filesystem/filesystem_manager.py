@@ -303,12 +303,13 @@ class FilesystemManager:
             "adventure.txt",
         )
 
-    def get_file_path_to_concepts(self, playthrough_name: str):
+    def get_file_path_to_plot_blueprints(self, playthrough_name: str):
         if not playthrough_name:
             raise ValueError("playthrough_name can't be empty.")
 
         return os.path.join(
-            self.get_file_path_to_playthrough_folder(playthrough_name), "concepts.txt"
+            self.get_file_path_to_playthrough_folder(playthrough_name),
+            "plot_blueprints.txt",
         )
 
     def get_file_path_to_map(self, playthrough_name: str):

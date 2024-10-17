@@ -3,7 +3,7 @@ from typing import Optional
 from src.characters.factories.player_and_followers_information_factory import (
     PlayerAndFollowersInformationFactory,
 )
-from src.concepts.concepts_manager import ConceptsManager
+from src.concepts.plot_blueprints_manager import PlotBlueprintsManager
 from src.concepts.products.interesting_situations_product import (
     InterestingSituationsProduct,
 )
@@ -43,7 +43,9 @@ class InterestingSituationsFactory(BaseToolResponseProvider):
         return INTERESTING_SITUATIONS_GENERATION_PROMPT_FILE
 
     def get_prompt_kwargs(self) -> dict:
-        return ConceptsManager(PlaythroughName(self._playthrough_name)).get_prompt_data(
+        return PlotBlueprintsManager(
+            PlaythroughName(self._playthrough_name)
+        ).get_prompt_data(
             self._places_descriptions_factory,
             self._player_and_followers_information_factory,
         )

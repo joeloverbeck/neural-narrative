@@ -13,33 +13,33 @@ Story Hub
 <div class="story-hub-container">
     <h1 class="page-title"><i class="fas fa-feather-alt" aria-hidden="true"></i> <span>Story Hub</span></h1>
 
-    <!-- Concepts Section -->
+    <!-- Plot Blueprints Section -->
     <div class="collapsible-section">
         <button class="collapsible">
-            <i class="fas fa-lightbulb"></i> Concepts
+            <i class="fas fa-lightbulb"></i> Plot Blueprints
         </button>
         <div class="content">
-            {% if concepts %}
-            <!-- Concepts list -->
-            <div class="concepts-list">
-                {% for concept in concepts %}
-                <div class="concept-item" onclick="openModal({{ loop.index0 }})" data-index="{{ loop.index0 }}">
-                    <h3>Concept {{ loop.index }}</h3>
-                    <p>{{ concept[:150] }}...</p>
+            {% if plot_blueprints %}
+            <!-- Plot Blueprints list -->
+            <div class="plot-blueprints-list">
+                {% for plot_blueprint in plot_blueprints %}
+                <div class="plot-blueprint-item" onclick="openModal({{ loop.index0 }})" data-index="{{ loop.index0 }}">
+                    <h3>Plot Blueprint {{ loop.index }}</h3>
+                    <p>{{ plot_blueprint[:150] }}...</p>
                 </div>
                 {% endfor %}
             </div>
 
             <!-- Modals -->
-            {% for concept in concepts %}
+            {% for plot_blueprint in plot_blueprints %}
             <div id="modal-{{ loop.index0 }}" class="modal">
                 <div class="modal-content">
                     <span class="close" onclick="closeModal({{ loop.index0 }})">&times;</span>
-                    <h2>Concept {{ loop.index }}</h2>
-                    <p>{{ concept }}</p>
+                    <h2>Plot Blueprint {{ loop.index }}</h2>
+                    <p>{{ plot_blueprint }}</p>
                     <form action="{{ url_for('story-hub') }}" method="post">
                         <input type="hidden" name="item_index" value="{{ loop.index0 }}">
-                        <input type="hidden" name="submit_action" value="delete_concept">
+                        <input type="hidden" name="submit_action" value="delete_plot_blueprint">
                         <button type="submit" class="delete-button">
                             <i class="fas fa-trash-alt"></i> Delete
                         </button>
@@ -48,14 +48,14 @@ Story Hub
             </div>
             {% endfor %}
             {% else %}
-            <p>No concepts generated yet.</p>
+            <p>No plot blueprints generated yet.</p>
             {% endif %}
 
             <form method="post" class="ajax-form" action="{{ url_for('story-hub') }}"
-                  data-success-handler="generateConceptsSuccess">
-                <input type="hidden" name="submit_action" value="generate_concepts">
-                <button type="submit" class="action-button" id="generate-concepts-button">
-                    <i class="fas fa-lightbulb"></i> Generate Concepts
+                  data-success-handler="generatePlotBlueprintsSuccess">
+                <input type="hidden" name="submit_action" value="generate_plot_blueprints">
+                <button type="submit" class="action-button" id="generate-plot-blueprints-button">
+                    <i class="fas fa-lightbulb"></i> Generate Plot Blueprints
                 </button>
             </form>
         </div>
@@ -64,7 +64,7 @@ Story Hub
     <!-- Interesting Situations Section -->
     <div class="collapsible-section">
         <button class="collapsible">
-            <i class="fas fa-exclamation-circle"></i> Interesting Situations
+            <i class="fas fa-exclamation-circle"></i> Situations
         </button>
         <div class="content">
             {% if interesting_situations %}
@@ -87,7 +87,7 @@ Story Hub
                   data-success-handler="generateInterestingSituationsSuccess">
                 <input type="hidden" name="submit_action" value="generate_situations">
                 <button type="submit" class="action-button" id="generate-interesting-situations-button">
-                    <i class="fas fa-exclamation-circle"></i> Generate Interesting Situations
+                    <i class="fas fa-exclamation-circle"></i> Generate Situations
                 </button>
             </form>
         </div>
@@ -96,7 +96,7 @@ Story Hub
     <!-- Interesting Dilemmas Section -->
     <div class="collapsible-section">
         <button class="collapsible">
-            <i class="fas fa-question-circle"></i> Interesting Dilemmas
+            <i class="fas fa-question-circle"></i> Dilemmas
         </button>
         <div class="content">
             {% if interesting_dilemmas %}
@@ -119,7 +119,7 @@ Story Hub
                   data-success-handler="generateInterestingDilemmasSuccess">
                 <input type="hidden" name="submit_action" value="generate_dilemmas">
                 <button type="submit" class="action-button" id="generate-interesting-dilemmas-button">
-                    <i class="fas fa-question-circle"></i> Generate Interesting Dilemmas
+                    <i class="fas fa-question-circle"></i> Generate Dilemmas
                 </button>
             </form>
         </div>
