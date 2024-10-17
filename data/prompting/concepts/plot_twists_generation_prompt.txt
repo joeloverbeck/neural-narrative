@@ -1,0 +1,17 @@
+Using the following detailed descriptions, generate three captivating plot twists that could dramatically alter the storyline.
+Each plot twist should:
+- Be unexpected and surprising, yet plausible within the context of the story.
+- Significantly impact the player character and alter the narrative direction.
+- Involve elements such as sudden betrayals, hidden identities, shocking revelations, or unforeseen consequences of the player's actions.
+- Deepen the characters' relationships, reveal hidden motives, or expose secrets.
+- Challenge the player's perceptions and force them to reconsider their choices and strategies.
+- Enhance the emotional depth and complexity of the story.
+- Each plot twist should be described in two or three sentences. Do not precede each plot twist with a number (it shouldn't be a numbered list).
+Provided Elements:
+{places_descriptions}
+{player_and_followers_information}
+Known Facts:
+{known_facts}
+Important:
+- You are prohibited from repeating verbatim any of the information provided.
+- Do not write any preamble, just do as ordered.

@@ -255,6 +255,18 @@ function generateGoalsSuccess(data, context) {
     });
 }
 
+function generatePlotTwistsSuccess(data, context) {
+    generateItemsSuccess(data, context, {
+        defaultSuccessMessage: 'Plot twists generated successfully.',
+        itemsKey: 'plot_twists',
+        listSelector: '.plot-twists-list',
+        listClass: 'plot-twists-list',
+        itemSelector: '.plot-twists-list .item-form',
+        createItemElement: createItemForm.bind(null, 'delete_plot_twist'),
+        initItemForms: initItemForms
+    });
+}
+
 // Close modal when clicking outside of content
 window.onclick = function(event) {
     let modals = document.querySelectorAll('.modal');

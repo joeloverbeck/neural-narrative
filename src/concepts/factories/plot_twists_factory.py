@@ -1,17 +1,16 @@
-# src/concepts/factories/interesting_situations_factory.py
+# src/concepts/factories/plot_twists_factory.py
 
+import logging
 from typing import Optional
 
 from src.characters.factories.player_and_followers_information_factory import (
     PlayerAndFollowersInformationFactory,
 )
 from src.concepts.factories.base_concept_factory import BaseConceptFactory
-from src.concepts.products.interesting_situations_product import (
-    InterestingSituationsProduct,
-)
+from src.concepts.products.plot_twists_product import PlotTwistsProduct
 from src.constants import (
-    INTERESTING_SITUATIONS_GENERATION_PROMPT_FILE,
-    INTERESTING_SITUATIONS_GENERATION_TOOL_FILE,
+    PLOT_TWISTS_GENERATION_TOOL_FILE,
+    PLOT_TWISTS_GENERATION_PROMPT_FILE,
 )
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.factories.places_descriptions_factory import PlacesDescriptionsFactory
@@ -20,8 +19,10 @@ from src.prompting.factories.produce_tool_response_strategy_factory import (
     ProduceToolResponseStrategyFactory,
 )
 
+logger = logging.getLogger(__name__)
 
-class InterestingSituationsFactory(BaseConceptFactory):
+
+class PlotTwistsFactory(BaseConceptFactory):
     def __init__(
         self,
         playthrough_name: PlaythroughName,
@@ -35,18 +36,18 @@ class InterestingSituationsFactory(BaseConceptFactory):
             produce_tool_response_strategy_factory,
             places_descriptions_factory,
             player_and_followers_information_factory,
-            tool_file=INTERESTING_SITUATIONS_GENERATION_TOOL_FILE,
-            prompt_file=INTERESTING_SITUATIONS_GENERATION_PROMPT_FILE,
-            user_content=(
-                "Write three very interesting and intriguing situations "
-                "that could stem from the information about the player, his possible followers, and the combined memories, as per the above instructions."
-            ),
+            tool_file=PLOT_TWISTS_GENERATION_TOOL_FILE,
+            prompt_file=PLOT_TWISTS_GENERATION_PROMPT_FILE,
+            user_content="Generate three captivating plot twists that could dramatically alter the storyline. Follow the provided instructions.",
             filesystem_manager=filesystem_manager,
         )
 
     def create_product(self, arguments: dict):
-        situations = []
+        plot_twists = []
         for i in range(1, 4):
-            key = f"interesting_situation_{i}"
-            situations.append(arguments.get(key))
-        return InterestingSituationsProduct(situations, is_valid=True)
+            key = f"plot_twist_{i}"
+            twist = arguments.get(key)
+            if not twist:
+                logger.warning(f"LLM didn't produce {key}")
+            plot_twists.append(twist)
+        return PlotTwistsProduct(plot_twists, is_valid=True)

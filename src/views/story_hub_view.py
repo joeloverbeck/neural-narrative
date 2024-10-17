@@ -1,3 +1,5 @@
+# src/views/story_hub_view
+import logging
 import os
 
 from flask import session, redirect, url_for, render_template, request, jsonify, flash
@@ -14,13 +16,16 @@ from src.characters.factories.player_data_for_prompt_factory import (
 )
 from src.concepts.algorithms.generate_goals_algorithm import GenerateGoalsAlgorithm
 from src.concepts.algorithms.generate_interesting_dilemmas_algorithm import (
-    GenerateInterestingDilemmasAlgorithms,
+    GenerateInterestingDilemmasAlgorithm,
 )
-from src.concepts.algorithms.generate_interesting_situations_algorithms import (
-    GenerateInterestingSituationsAlgorithms,
+from src.concepts.algorithms.generate_interesting_situations_algorithm import (
+    GenerateInterestingSituationsAlgorithm,
 )
 from src.concepts.algorithms.generate_plot_blueprints_algorithm import (
     GeneratePlotBlueprintsAlgorithm,
+)
+from src.concepts.algorithms.generate_plot_twists_algorithm import (
+    GeneratePlotTwistsAlgorithm,
 )
 from src.concepts.factories.goals_factory import GoalsFactory
 from src.concepts.factories.interesting_dilemmas_factory import (
@@ -30,6 +35,7 @@ from src.concepts.factories.interesting_situations_factory import (
     InterestingSituationsFactory,
 )
 from src.concepts.factories.plot_blueprints_factory import PlotBlueprintsFactory
+from src.concepts.factories.plot_twists_factory import PlotTwistsFactory
 from src.config.config_manager import ConfigManager
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.interfaces.web_interface_manager import WebInterfaceManager
@@ -45,6 +51,8 @@ from src.prompting.factories.produce_tool_response_strategy_factory import (
     ProduceToolResponseStrategyFactory,
 )
 
+logger = logging.getLogger(__name__)
+
 
 class StoryHubView(MethodView):
     def get(self):
@@ -56,22 +64,35 @@ class StoryHubView(MethodView):
 
         # Load Plot Blueprints
         plot_blueprints = filesystem_manager.read_file_lines(
-            filesystem_manager.get_file_path_to_plot_blueprints(playthrough_name)
+            filesystem_manager.get_file_path_to_plot_blueprints(
+                PlaythroughName(playthrough_name)
+            )
         )
 
         # Load Interesting Situations
         interesting_situations = filesystem_manager.read_file_lines(
-            filesystem_manager.get_file_path_to_interesting_situations(playthrough_name)
+            filesystem_manager.get_file_path_to_interesting_situations(
+                PlaythroughName(playthrough_name)
+            )
         )
 
         # Load Interesting Dilemmas
         interesting_dilemmas = filesystem_manager.read_file_lines(
-            filesystem_manager.get_file_path_to_interesting_dilemmas(playthrough_name)
+            filesystem_manager.get_file_path_to_interesting_dilemmas(
+                PlaythroughName(playthrough_name)
+            )
         )
 
         # Load Goals
         goals = filesystem_manager.read_file_lines(
-            filesystem_manager.get_file_path_to_goals(playthrough_name)
+            filesystem_manager.get_file_path_to_goals(PlaythroughName(playthrough_name))
+        )
+
+        # Load Plot Twists
+        plot_twists = filesystem_manager.read_file_lines(
+            filesystem_manager.get_file_path_to_plot_twists(
+                PlaythroughName(playthrough_name)
+            )
         )
 
         # Could be that the facts don't exist.
@@ -94,6 +115,7 @@ class StoryHubView(MethodView):
             interesting_dilemmas=interesting_dilemmas,
             goals=goals,
             facts=facts,
+            plot_twists=plot_twists,
         )
 
     def post(self):
@@ -131,6 +153,8 @@ class StoryHubView(MethodView):
                 place_descriptions_for_prompt_factory
             )
 
+            playthrough_name = PlaythroughName(playthrough_name)
+
             plot_blueprints_factory = PlotBlueprintsFactory(
                 playthrough_name,
                 produce_tool_response_strategy_factory,
@@ -167,7 +191,9 @@ class StoryHubView(MethodView):
 
             filesystem_manager = FilesystemManager()
             plot_blueprints_file_path = (
-                filesystem_manager.get_file_path_to_plot_blueprints(playthrough_name)
+                filesystem_manager.get_file_path_to_plot_blueprints(
+                    PlaythroughName(playthrough_name)
+                )
             )
 
             if os.path.exists(plot_blueprints_file_path):
@@ -214,6 +240,8 @@ class StoryHubView(MethodView):
                 place_descriptions_for_prompt_factory
             )
 
+            playthrough_name = PlaythroughName(playthrough_name)
+
             interesting_situations_factory = InterestingSituationsFactory(
                 playthrough_name,
                 produce_tool_response_strategy_factory,
@@ -222,7 +250,7 @@ class StoryHubView(MethodView):
             )
 
             try:
-                interesting_situations = GenerateInterestingSituationsAlgorithms(
+                interesting_situations = GenerateInterestingSituationsAlgorithm(
                     playthrough_name, interesting_situations_factory
                 ).do_algorithm()
 
@@ -233,6 +261,7 @@ class StoryHubView(MethodView):
                 }
 
             except Exception as e:
+                logger.error(e)
                 response = {
                     "success": False,
                     "error": f"Failed to generate interesting situations. Error: {str(e)}",
@@ -247,7 +276,7 @@ class StoryHubView(MethodView):
             index = int(request.form.get("item_index"))
             filesystem_manager.remove_item_from_file(
                 filesystem_manager.get_file_path_to_interesting_situations(
-                    playthrough_name
+                    PlaythroughName(playthrough_name)
                 ),
                 index,
             )
@@ -279,15 +308,17 @@ class StoryHubView(MethodView):
                 places_descriptions_for_prompt_factory
             )
 
+            playthrough_name = PlaythroughName(playthrough_name)
+
             interesting_dilemmas_factory = InterestingDilemmasFactory(
-                PlaythroughName(playthrough_name),
+                playthrough_name,
                 produce_tool_response_strategy_factory,
                 places_descriptions_factory,
                 player_and_followers_information_factory,
             )
 
             try:
-                interesting_dilemmas = GenerateInterestingDilemmasAlgorithms(
+                interesting_dilemmas = GenerateInterestingDilemmasAlgorithm(
                     playthrough_name, interesting_dilemmas_factory
                 ).do_algorithm()
 
@@ -311,7 +342,7 @@ class StoryHubView(MethodView):
             index = int(request.form.get("item_index"))
             filesystem_manager.remove_item_from_file(
                 filesystem_manager.get_file_path_to_interesting_dilemmas(
-                    playthrough_name
+                    PlaythroughName(playthrough_name)
                 ),
                 index,
             )
@@ -320,7 +351,9 @@ class StoryHubView(MethodView):
         elif action == "delete_goal":
             index = int(request.form.get("item_index"))
             filesystem_manager.remove_item_from_file(
-                filesystem_manager.get_file_path_to_goals(playthrough_name),
+                filesystem_manager.get_file_path_to_goals(
+                    PlaythroughName(playthrough_name)
+                ),
                 index,
             )
 
@@ -351,6 +384,8 @@ class StoryHubView(MethodView):
                 party_data_for_prompt_factory
             )
 
+            playthrough_name = PlaythroughName(playthrough_name)
+
             goals_factory = GoalsFactory(
                 playthrough_name,
                 produce_tool_response_strategy_factory,
@@ -372,6 +407,71 @@ class StoryHubView(MethodView):
                 response = {
                     "success": False,
                     "error": f"Failed to generate goals. Error: {str(e)}",
+                }
+
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return jsonify(response)
+            else:
+                return redirect(url_for("story-hub"))
+        elif action == "delete_plot_twist":
+            index = int(request.form.get("item_index"))
+            filesystem_manager.remove_item_from_file(
+                filesystem_manager.get_file_path_to_plot_twists(
+                    PlaythroughName(playthrough_name)
+                ),
+                index,
+            )
+
+            return redirect(url_for("story-hub"))
+        elif action == "generate_plot_twists":
+            produce_tool_response_strategy_factory = ProduceToolResponseStrategyFactory(
+                OpenRouterLlmClientFactory().create_llm_client(),
+                ConfigManager().get_heavy_llm(),
+            )
+
+            places_descriptions_for_prompt_factory = PlaceDescriptionsForPromptFactory(
+                playthrough_name
+            )
+
+            player_data_for_prompt_factory = PlayerDataForPromptFactory(
+                playthrough_name
+            )
+
+            party_data_for_prompt_factory = PartyDataForPromptFactory(
+                playthrough_name, player_data_for_prompt_factory
+            )
+
+            places_descriptions_factory = PlacesDescriptionsFactory(
+                places_descriptions_for_prompt_factory
+            )
+
+            player_and_followers_factory = PlayerAndFollowersInformationFactory(
+                party_data_for_prompt_factory
+            )
+
+            playthrough_name = PlaythroughName(playthrough_name)
+
+            plot_twists_factory = PlotTwistsFactory(
+                playthrough_name,
+                produce_tool_response_strategy_factory,
+                places_descriptions_factory,
+                player_and_followers_factory,
+            )
+
+            try:
+                plot_twists = GeneratePlotTwistsAlgorithm(
+                    playthrough_name, plot_twists_factory
+                ).do_algorithm()
+
+                response = {
+                    "success": True,
+                    "message": "Generated plot twists successfully.",
+                    "plot_twists": plot_twists,
+                }
+            except Exception as e:
+                response = {
+                    "success": False,
+                    "error": f"Failed to generate plot twists. Error: {str(e)}",
                 }
 
             if request.headers.get("X-Requested-With") == "XMLHttpRequest":
