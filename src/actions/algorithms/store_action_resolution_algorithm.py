@@ -34,9 +34,5 @@ class StoreActionResolutionAlgorithm:
             self._store_character_memory_command_factory.create_store_character_memory_command(
                 participant_identifier, product.get_outcome()
             ).execute()
-            self._store_character_memory_command_factory.create_store_character_memory_command(
-                participant_identifier, product.get_consequences()
-            ).execute()
 
         self._playthrough_manager.add_to_adventure(product.get_outcome() + "\n")
-        self._playthrough_manager.add_to_adventure(product.get_consequences() + "\n")

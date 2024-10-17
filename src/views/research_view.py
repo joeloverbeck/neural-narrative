@@ -1,4 +1,6 @@
-from flask import session, redirect, url_for, render_template, request, flash
+# src/views/research_view.py
+
+from flask import session, redirect, url_for, render_template, request, flash, jsonify
 from flask.views import MethodView
 
 from src.actions.algorithms.produce_action_resolution_algorithm import (
@@ -58,7 +60,10 @@ class ResearchView(MethodView):
     def post(self):
         playthrough_name = session.get("playthrough_name")
         if not playthrough_name:
-            return redirect(url_for("index"))
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return jsonify(success=False, error="Playthrough not found."), 400
+            else:
+                return redirect(url_for("index"))
 
         form_type = request.form.get("form_type")
 
@@ -66,8 +71,14 @@ class ResearchView(MethodView):
             # Handle research resolution
             research_goal = request.form.get("research_goal")
             if not research_goal:
-                flash("Please enter a research goal.", "error")
-                return redirect(url_for("research"))
+                if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                    return (
+                        jsonify(success=False, error="Please enter a research goal."),
+                        400,
+                    )
+                else:
+                    flash("Please enter a research goal.", "error")
+                    return redirect(url_for("research"))
 
             # Initialize necessary components
             produce_tool_response_strategy_factory = ProduceToolResponseStrategyFactory(
@@ -131,8 +142,11 @@ class ResearchView(MethodView):
             try:
                 result = research_resolution_algorithm.do_algorithm()
             except ValueError as e:
-                flash(str(e), "error")
-                return redirect(url_for("research"))
+                if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                    return jsonify(success=False, error=str(e)), 400
+                else:
+                    flash(str(e), "error")
+                    return redirect(url_for("research"))
 
             # Get current place
             map_manager = MapManager(playthrough_name)
@@ -148,12 +162,38 @@ class ResearchView(MethodView):
 
             character_list = [player] + characters_manager.get_followers()
 
-            return render_template(
-                "research.html",
-                current_place=current_place,
-                result=result,
-                characters=character_list,
-            )
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                # Return JSON response
+                response_data = {
+                    "success": True,
+                    "message": "Research resolved successfully.",
+                    "result": {
+                        "narrative": result.get_narrative(),
+                        "outcome": result.get_outcome(),
+                        "narrative_voice_line_url": result.get_narrative_voice_line_url(),
+                        "outcome_voice_line_url": result.get_outcome_voice_line_url(),
+                    },
+                    "current_place": current_place,
+                    "characters": [
+                        {
+                            "identifier": char.identifier,
+                            "name": char.name,
+                            "description": char.description,
+                            "equipment": char.equipment,
+                            "health": char.health,
+                        }
+                        for char in character_list
+                    ],
+                    "form_action": url_for("research"),
+                }
+                return jsonify(response_data), 200
+            else:
+                return render_template(
+                    "research.html",
+                    current_place=current_place,
+                    result=result,
+                    characters=character_list,
+                )
 
         elif form_type == "modify_characters":
             # Handle character modification
@@ -183,9 +223,20 @@ class ResearchView(MethodView):
                 # Save changes
                 character.save()
 
-            flash("Character changes saved successfully.", "success")
-            return redirect(url_for("research"))
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return (
+                    jsonify(
+                        success=True, message="Character changes saved successfully."
+                    ),
+                    200,
+                )
+            else:
+                flash("Character changes saved successfully.", "success")
+                return redirect(url_for("research"))
 
         else:
-            flash("Unknown action.", "error")
-            return redirect(url_for("research"))
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return jsonify(success=False, error="Unknown action."), 400
+            else:
+                flash("Unknown action.", "error")
+                return redirect(url_for("research"))
