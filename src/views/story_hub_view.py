@@ -61,62 +61,37 @@ class StoryHubView(MethodView):
             return redirect(url_for("index"))
 
         filesystem_manager = FilesystemManager()
+        playthrough_name_obj = PlaythroughName(playthrough_name)
 
-        # Load Plot Blueprints
-        plot_blueprints = filesystem_manager.read_file_lines(
-            filesystem_manager.get_file_path_to_plot_blueprints(
-                PlaythroughName(playthrough_name)
-            )
-        )
+        # List of items to load
+        items_to_load = [
+            ("plot_blueprints", filesystem_manager.get_file_path_to_plot_blueprints),
+            (
+                "interesting_situations",
+                filesystem_manager.get_file_path_to_interesting_situations,
+            ),
+            (
+                "interesting_dilemmas",
+                filesystem_manager.get_file_path_to_interesting_dilemmas,
+            ),
+            ("goals", filesystem_manager.get_file_path_to_goals),
+            ("plot_twists", filesystem_manager.get_file_path_to_plot_twists),
+        ]
 
-        # Load Interesting Situations
-        interesting_situations = filesystem_manager.read_file_lines(
-            filesystem_manager.get_file_path_to_interesting_situations(
-                PlaythroughName(playthrough_name)
-            )
-        )
+        data = {}
+        for var_name, file_path_method in items_to_load:
+            file_path = file_path_method(playthrough_name_obj)
+            data[var_name] = filesystem_manager.read_file_lines(file_path)
 
-        # Load Interesting Dilemmas
-        interesting_dilemmas = filesystem_manager.read_file_lines(
-            filesystem_manager.get_file_path_to_interesting_dilemmas(
-                PlaythroughName(playthrough_name)
-            )
-        )
-
-        # Load Goals
-        goals = filesystem_manager.read_file_lines(
-            filesystem_manager.get_file_path_to_goals(PlaythroughName(playthrough_name))
-        )
-
-        # Load Plot Twists
-        plot_twists = filesystem_manager.read_file_lines(
-            filesystem_manager.get_file_path_to_plot_twists(
-                PlaythroughName(playthrough_name)
-            )
-        )
-
-        # Could be that the facts don't exist.
+        # Ensure facts file exists
         facts_file_path = filesystem_manager.get_file_path_to_facts(playthrough_name)
-
-        if not os.path.exists(
-            filesystem_manager.get_file_path_to_facts(playthrough_name)
-        ):
+        if not os.path.exists(facts_file_path):
             filesystem_manager.write_file(facts_file_path, "")
 
         # Load Facts
-        facts = filesystem_manager.read_file(
-            filesystem_manager.get_file_path_to_facts(playthrough_name)
-        )
+        data["facts"] = filesystem_manager.read_file(facts_file_path)
 
-        return render_template(
-            "story-hub.html",
-            plot_blueprints=plot_blueprints,
-            interesting_situations=interesting_situations,
-            interesting_dilemmas=interesting_dilemmas,
-            goals=goals,
-            facts=facts,
-            plot_twists=plot_twists,
-        )
+        return render_template("story-hub.html", **data)
 
     def post(self):
         playthrough_name = session.get("playthrough_name")
@@ -124,372 +99,151 @@ class StoryHubView(MethodView):
             return redirect(url_for("index"))
 
         action = request.form.get("submit_action")
-
         filesystem_manager = FilesystemManager()
+        playthrough_name_obj = PlaythroughName(playthrough_name)
 
-        if action == "generate_plot_blueprints":
-            produce_tool_response_strategy_factory = ProduceToolResponseStrategyFactory(
-                OpenRouterLlmClientFactory().create_llm_client(),
-                ConfigManager().get_heavy_llm(),
-            )
+        # Common factories
+        produce_tool_response_strategy_factory = ProduceToolResponseStrategyFactory(
+            OpenRouterLlmClientFactory().create_llm_client(),
+            ConfigManager().get_heavy_llm(),
+        )
+        player_data_for_prompt_factory = PlayerDataForPromptFactory(playthrough_name)
+        party_data_for_prompt_factory = PartyDataForPromptFactory(
+            playthrough_name, player_data_for_prompt_factory
+        )
+        place_descriptions_for_prompt_factory = PlaceDescriptionsForPromptFactory(
+            playthrough_name
+        )
+        player_and_followers_information_factory = PlayerAndFollowersInformationFactory(
+            party_data_for_prompt_factory
+        )
+        places_descriptions_factory = PlacesDescriptionsFactory(
+            place_descriptions_for_prompt_factory
+        )
 
-            player_data_for_prompt_factory = PlayerDataForPromptFactory(
-                playthrough_name
-            )
+        # Handle generate actions
+        if action.startswith("generate_"):
+            action_name = action[len("generate_") :]
+            generate_action_mapping = {
+                "plot_blueprints": {
+                    "factory_class": PlotBlueprintsFactory,
+                    "algorithm_class": GeneratePlotBlueprintsAlgorithm,
+                    "response_key": "plot_blueprints",
+                    "factory_args": [
+                        playthrough_name_obj,
+                        produce_tool_response_strategy_factory,
+                        places_descriptions_factory,
+                        player_and_followers_information_factory,
+                    ],
+                },
+                "situations": {
+                    "factory_class": InterestingSituationsFactory,
+                    "algorithm_class": GenerateInterestingSituationsAlgorithm,
+                    "response_key": "interesting_situations",
+                    "factory_args": [
+                        playthrough_name_obj,
+                        produce_tool_response_strategy_factory,
+                        places_descriptions_factory,
+                        player_and_followers_information_factory,
+                    ],
+                },
+                "dilemmas": {
+                    "factory_class": InterestingDilemmasFactory,
+                    "algorithm_class": GenerateInterestingDilemmasAlgorithm,
+                    "response_key": "interesting_dilemmas",
+                    "factory_args": [
+                        playthrough_name_obj,
+                        produce_tool_response_strategy_factory,
+                        places_descriptions_factory,
+                        player_and_followers_information_factory,
+                    ],
+                },
+                "goals": {
+                    "factory_class": GoalsFactory,
+                    "algorithm_class": GenerateGoalsAlgorithm,
+                    "response_key": "goals",
+                    "factory_args": [
+                        playthrough_name_obj,
+                        produce_tool_response_strategy_factory,
+                        places_descriptions_factory,
+                        player_and_followers_information_factory,
+                    ],
+                },
+                "plot_twists": {
+                    "factory_class": PlotTwistsFactory,
+                    "algorithm_class": GeneratePlotTwistsAlgorithm,
+                    "response_key": "plot_twists",
+                    "factory_args": [
+                        playthrough_name_obj,
+                        produce_tool_response_strategy_factory,
+                        places_descriptions_factory,
+                        player_and_followers_information_factory,
+                    ],
+                },
+            }
 
-            party_data_for_prompt_factory = PartyDataForPromptFactory(
-                playthrough_name, player_data_for_prompt_factory
-            )
-
-            place_descriptions_for_prompt_factory = PlaceDescriptionsForPromptFactory(
-                playthrough_name
-            )
-
-            player_and_followers_information_factory = (
-                PlayerAndFollowersInformationFactory(party_data_for_prompt_factory)
-            )
-
-            places_descriptions_factory = PlacesDescriptionsFactory(
-                place_descriptions_for_prompt_factory
-            )
-
-            playthrough_name = PlaythroughName(playthrough_name)
-
-            plot_blueprints_factory = PlotBlueprintsFactory(
-                playthrough_name,
-                produce_tool_response_strategy_factory,
-                places_descriptions_factory,
-                player_and_followers_information_factory,
-            )
-
-            algorithm = GeneratePlotBlueprintsAlgorithm(
-                playthrough_name, plot_blueprints_factory
-            )
-
-            try:
-                plot_blueprints = algorithm.do_algorithm()
-
-                # Return the plot blueprints along with the response so that they get added
-                # as items to the collapsible section of Plot Blueprints.
-                response = {
-                    "success": True,
-                    "message": "Plot blueprints generated successfully.",
-                    "plot_blueprints": plot_blueprints,
-                }
-            except Exception as e:
-                response = {
-                    "success": False,
-                    "error": f"Failed to generate plot blueprints. Error: {str(e)}",
-                }
-
-            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-                return jsonify(response)
-            else:
-                return redirect(url_for("story-hub"))
-        elif action == "delete_plot_blueprint":
-            plot_blueprint_index = int(request.form.get("item_index"))
-
-            filesystem_manager = FilesystemManager()
-            plot_blueprints_file_path = (
-                filesystem_manager.get_file_path_to_plot_blueprints(
-                    PlaythroughName(playthrough_name)
+            if action_name in generate_action_mapping:
+                mapping = generate_action_mapping[action_name]
+                factory_instance = mapping["factory_class"](*mapping["factory_args"])
+                algorithm_instance = mapping["algorithm_class"](
+                    playthrough_name_obj, factory_instance
                 )
-            )
 
-            if os.path.exists(plot_blueprints_file_path):
-                plot_blueprints_content = filesystem_manager.read_file(
-                    plot_blueprints_file_path
-                )
-                plot_blueprints = (
-                    plot_blueprints_content.strip().split("\n")
-                    if plot_blueprints_content
-                    else []
-                )
+                try:
+                    items = algorithm_instance.do_algorithm()
+                    response = {
+                        "success": True,
+                        "message": f"{mapping['response_key'].replace('_', ' ').capitalize()} generated successfully.",
+                        mapping["response_key"]: items,
+                    }
+                except Exception as e:
+                    logger.error(e)
+                    response = {
+                        "success": False,
+                        "error": f"Failed to generate {mapping['response_key'].replace('_', ' ')}. Error: {str(e)}",
+                    }
 
-                if 0 <= plot_blueprint_index < len(plot_blueprints):
-                    del plot_blueprints[plot_blueprint_index]
-                    # Write back to file
-                    filesystem_manager.write_file(
-                        plot_blueprints_file_path, "\n".join(plot_blueprints)
-                    )
+                if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                    return jsonify(response)
+                else:
+                    return redirect(url_for("story-hub"))
 
-            return redirect(url_for("story-hub"))
-        elif action == "generate_situations":
-            produce_tool_response_strategy_factory = ProduceToolResponseStrategyFactory(
-                OpenRouterLlmClientFactory().create_llm_client(),
-                ConfigManager().get_heavy_llm(),
-            )
+        # Handle delete actions
+        elif action.startswith("delete_"):
+            action_name = action[len("delete_") :]
+            index = int(request.form.get("item_index"))
+            delete_action_mapping = {
+                "plot_blueprint": filesystem_manager.get_file_path_to_plot_blueprints(
+                    playthrough_name_obj
+                ),
+                "situation": filesystem_manager.get_file_path_to_interesting_situations(
+                    playthrough_name_obj
+                ),
+                "dilemma": filesystem_manager.get_file_path_to_interesting_dilemmas(
+                    playthrough_name_obj
+                ),
+                "goal": filesystem_manager.get_file_path_to_goals(playthrough_name_obj),
+                "plot_twist": filesystem_manager.get_file_path_to_plot_twists(
+                    playthrough_name_obj
+                ),
+            }
 
-            player_data_for_prompt_factory = PlayerDataForPromptFactory(
-                playthrough_name
-            )
-
-            party_data_for_prompt_factory = PartyDataForPromptFactory(
-                playthrough_name, player_data_for_prompt_factory
-            )
-
-            place_descriptions_for_prompt_factory = PlaceDescriptionsForPromptFactory(
-                playthrough_name
-            )
-
-            player_and_followers_information_factory = (
-                PlayerAndFollowersInformationFactory(party_data_for_prompt_factory)
-            )
-
-            places_descriptions_factory = PlacesDescriptionsFactory(
-                place_descriptions_for_prompt_factory
-            )
-
-            playthrough_name = PlaythroughName(playthrough_name)
-
-            interesting_situations_factory = InterestingSituationsFactory(
-                playthrough_name,
-                produce_tool_response_strategy_factory,
-                places_descriptions_factory,
-                player_and_followers_information_factory,
-            )
-
-            try:
-                interesting_situations = GenerateInterestingSituationsAlgorithm(
-                    playthrough_name, interesting_situations_factory
-                ).do_algorithm()
-
-                response = {
-                    "success": True,
-                    "message": f"Generated interesting situations successfully.",
-                    "interesting_situations": interesting_situations,
-                }
-
-            except Exception as e:
-                logger.error(e)
-                response = {
-                    "success": False,
-                    "error": f"Failed to generate interesting situations. Error: {str(e)}",
-                }
-
-            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-                return jsonify(response)
-            else:
+            if action_name in delete_action_mapping:
+                file_path = delete_action_mapping[action_name]
+                filesystem_manager.remove_item_from_file(file_path, index)
                 return redirect(url_for("story-hub"))
 
-        elif action == "delete_situation":
-            index = int(request.form.get("item_index"))
-            filesystem_manager.remove_item_from_file(
-                filesystem_manager.get_file_path_to_interesting_situations(
-                    PlaythroughName(playthrough_name)
-                ),
-                index,
-            )
-
-            return redirect(url_for("story-hub"))
-        elif action == "generate_dilemmas":
-            produce_tool_response_strategy_factory = ProduceToolResponseStrategyFactory(
-                OpenRouterLlmClientFactory().create_llm_client(),
-                ConfigManager().get_heavy_llm(),
-            )
-
-            places_descriptions_for_prompt_factory = PlaceDescriptionsForPromptFactory(
-                playthrough_name
-            )
-
-            player_data_for_prompt_factory = PlayerDataForPromptFactory(
-                playthrough_name
-            )
-
-            party_data_for_prompt_factory = PartyDataForPromptFactory(
-                playthrough_name, player_data_for_prompt_factory
-            )
-
-            player_and_followers_information_factory = (
-                PlayerAndFollowersInformationFactory(party_data_for_prompt_factory)
-            )
-
-            places_descriptions_factory = PlacesDescriptionsFactory(
-                places_descriptions_for_prompt_factory
-            )
-
-            playthrough_name = PlaythroughName(playthrough_name)
-
-            interesting_dilemmas_factory = InterestingDilemmasFactory(
-                playthrough_name,
-                produce_tool_response_strategy_factory,
-                places_descriptions_factory,
-                player_and_followers_information_factory,
-            )
-
-            try:
-                interesting_dilemmas = GenerateInterestingDilemmasAlgorithm(
-                    playthrough_name, interesting_dilemmas_factory
-                ).do_algorithm()
-
-                response = {
-                    "success": True,
-                    "message": "Interesting dilemmas generated successfully.",
-                    "interesting_dilemmas": interesting_dilemmas,
-                }
-
-            except Exception as e:
-                response = {
-                    "success": False,
-                    "error": f"Failed to generate interesting dilemmas. Error: {str(e)}",
-                }
-
-            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-                return jsonify(response)
-            else:
-                return redirect(url_for("story-hub"))
-        elif action == "delete_dilemma":
-            index = int(request.form.get("item_index"))
-            filesystem_manager.remove_item_from_file(
-                filesystem_manager.get_file_path_to_interesting_dilemmas(
-                    PlaythroughName(playthrough_name)
-                ),
-                index,
-            )
-
-            return redirect(url_for("story-hub"))
-        elif action == "delete_goal":
-            index = int(request.form.get("item_index"))
-            filesystem_manager.remove_item_from_file(
-                filesystem_manager.get_file_path_to_goals(
-                    PlaythroughName(playthrough_name)
-                ),
-                index,
-            )
-
-            return redirect(url_for("story-hub"))
-        elif action == "generate_goals":
-            produce_tool_response_strategy_factory = ProduceToolResponseStrategyFactory(
-                OpenRouterLlmClientFactory().create_llm_client(),
-                ConfigManager().get_heavy_llm(),
-            )
-
-            places_descriptions_for_prompt_factory = PlaceDescriptionsForPromptFactory(
-                playthrough_name
-            )
-
-            player_data_for_prompt_factory = PlayerDataForPromptFactory(
-                playthrough_name
-            )
-
-            party_data_for_prompt_factory = PartyDataForPromptFactory(
-                playthrough_name, player_data_for_prompt_factory
-            )
-
-            places_descriptions_factory = PlacesDescriptionsFactory(
-                places_descriptions_for_prompt_factory
-            )
-
-            player_and_followers_factory = PlayerAndFollowersInformationFactory(
-                party_data_for_prompt_factory
-            )
-
-            playthrough_name = PlaythroughName(playthrough_name)
-
-            goals_factory = GoalsFactory(
-                playthrough_name,
-                produce_tool_response_strategy_factory,
-                places_descriptions_factory,
-                player_and_followers_factory,
-            )
-
-            try:
-                goals = GenerateGoalsAlgorithm(
-                    playthrough_name, goals_factory
-                ).do_algorithm()
-
-                response = {
-                    "success": True,
-                    "message": "Generated goals successfully.",
-                    "goals": goals,
-                }
-            except Exception as e:
-                response = {
-                    "success": False,
-                    "error": f"Failed to generate goals. Error: {str(e)}",
-                }
-
-            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-                return jsonify(response)
-            else:
-                return redirect(url_for("story-hub"))
-        elif action == "delete_plot_twist":
-            index = int(request.form.get("item_index"))
-            filesystem_manager.remove_item_from_file(
-                filesystem_manager.get_file_path_to_plot_twists(
-                    PlaythroughName(playthrough_name)
-                ),
-                index,
-            )
-
-            return redirect(url_for("story-hub"))
-        elif action == "generate_plot_twists":
-            produce_tool_response_strategy_factory = ProduceToolResponseStrategyFactory(
-                OpenRouterLlmClientFactory().create_llm_client(),
-                ConfigManager().get_heavy_llm(),
-            )
-
-            places_descriptions_for_prompt_factory = PlaceDescriptionsForPromptFactory(
-                playthrough_name
-            )
-
-            player_data_for_prompt_factory = PlayerDataForPromptFactory(
-                playthrough_name
-            )
-
-            party_data_for_prompt_factory = PartyDataForPromptFactory(
-                playthrough_name, player_data_for_prompt_factory
-            )
-
-            places_descriptions_factory = PlacesDescriptionsFactory(
-                places_descriptions_for_prompt_factory
-            )
-
-            player_and_followers_factory = PlayerAndFollowersInformationFactory(
-                party_data_for_prompt_factory
-            )
-
-            playthrough_name = PlaythroughName(playthrough_name)
-
-            plot_twists_factory = PlotTwistsFactory(
-                playthrough_name,
-                produce_tool_response_strategy_factory,
-                places_descriptions_factory,
-                player_and_followers_factory,
-            )
-
-            try:
-                plot_twists = GeneratePlotTwistsAlgorithm(
-                    playthrough_name, plot_twists_factory
-                ).do_algorithm()
-
-                response = {
-                    "success": True,
-                    "message": "Generated plot twists successfully.",
-                    "plot_twists": plot_twists,
-                }
-            except Exception as e:
-                response = {
-                    "success": False,
-                    "error": f"Failed to generate plot twists. Error: {str(e)}",
-                }
-
-            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-                return jsonify(response)
-            else:
-                return redirect(url_for("story-hub"))
+        # Handle saving facts
         elif action == "save_facts":
             facts = request.form.get("facts", "")
-
             # Clean facts of excessive newline characters
             facts = WebInterfaceManager.remove_excessive_newline_characters(facts)
-
             filesystem_manager.write_file(
                 filesystem_manager.get_file_path_to_facts(playthrough_name),
                 facts,
             )
-
             flash("Facts saved.", "success")
             return redirect(url_for("story-hub"))
+
         else:
             return redirect(url_for("story-hub"))
