@@ -59,7 +59,9 @@ class ActionResolutionFactory(BaseToolResponseProvider):
             "hour": self._time_manager.get_hour(),
             "time_of_day": self._time_manager.get_time_of_the_day(),
             "facts_known": self._filesystem_manager.read_file(
-                self._filesystem_manager.get_file_path_to_facts(self._playthrough_name)
+                self._filesystem_manager.get_file_path_to_facts(
+                    self._playthrough_name.value
+                )
             ),
         }
 

@@ -17,12 +17,12 @@
 
 /* Styles for player character */
 .player-character {
-    width: 400px;
+    width: 600px;
     margin: 0 auto; /* Center the player character horizontally */
 }
 
 .player-character img {
-    width: 400px; /* Significantly larger image */
+    width: 600px; /* Significantly larger image */
     height: auto;
     border-radius: 10px; /* Optional: change to 10px for a softer corner */
 }
