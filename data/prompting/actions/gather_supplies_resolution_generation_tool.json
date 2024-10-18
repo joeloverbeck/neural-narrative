@@ -1,0 +1,24 @@
+{
+  "type": "function",
+  "function": {
+    "name": "generate_gather_supplies_resolution",
+    "description": "generate a detailed narrative describing the player's attempt at a Gather Supplies action within a rich, immersive world.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "narrative": {
+          "type": "string",
+          "description": "A few descriptive paragraphs detailing the player's endeavor to gather supplies."
+        },
+        "outcome": {
+          "type": "string",
+          "description": "The results of the Gather Supplies action based on the assessment."
+        }
+      },
+      "required": [
+        "narrative",
+        "outcome"
+      ]
+    }
+  }
+}

@@ -1,15 +1,14 @@
+# src/actions/factories/action_resolution_factory.py
+
 from typing import Optional
 
 from src.actions.products.action_resolution_product import ActionResolutionProduct
 from src.characters.factories.player_and_followers_information_factory import (
     PlayerAndFollowersInformationFactory,
 )
-from src.constants import (
-    RESEARCH_RESOLUTION_GENERATION_PROMPT_FILE,
-    RESEARCH_RESOLUTION_GENERATION_TOOL_FILE,
-)
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.factories.places_descriptions_factory import PlacesDescriptionsFactory
+from src.playthrough_name import PlaythroughName
 from src.prompting.factories.produce_tool_response_strategy_factory import (
     ProduceToolResponseStrategyFactory,
 )
@@ -17,36 +16,43 @@ from src.prompting.providers.base_tool_response_provider import BaseToolResponse
 from src.time.time_manager import TimeManager
 
 
-class ResearchResolutionFactory(BaseToolResponseProvider):
+class ActionResolutionFactory(BaseToolResponseProvider):
     def __init__(
         self,
-        playthrough_name: str,
-        research_goal: str,
+        playthrough_name: PlaythroughName,
+        action_name: str,
+        action_goal: str,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         places_descriptions_factory: PlacesDescriptionsFactory,
         players_and_followers_information_factory: PlayerAndFollowersInformationFactory,
+        prompt_file: str,
+        tool_file: str,
         filesystem_manager: Optional[FilesystemManager] = None,
         time_manager: Optional[TimeManager] = None,
     ):
-        if not playthrough_name:
-            raise ValueError("playthrough_name can't be empty.")
-        if not research_goal:
-            raise ValueError("research_goal can't be empty.")
+        if not action_name:
+            raise ValueError("action_name can't be empty.")
+        if not action_goal:
+            raise ValueError("action_goal can't be empty.")
 
         super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
 
         self._playthrough_name = playthrough_name
-        self._research_goal = research_goal
+        self._action_name = action_name
+        self._action_goal = action_goal
 
         self._places_descriptions_factory = places_descriptions_factory
         self._players_and_followers_information_factory = (
             players_and_followers_information_factory
         )
 
-        self._time_manager = time_manager or TimeManager(self._playthrough_name)
+        self._prompt_file = prompt_file
+        self._tool_file = tool_file
+
+        self._time_manager = time_manager or TimeManager(self._playthrough_name.value)
 
     def get_prompt_file(self) -> str:
-        return RESEARCH_RESOLUTION_GENERATION_PROMPT_FILE
+        return self._prompt_file
 
     def get_prompt_kwargs(self) -> dict:
         prompt_data = {
@@ -70,13 +76,13 @@ class ResearchResolutionFactory(BaseToolResponseProvider):
         return prompt_data
 
     def get_tool_file(self) -> str:
-        return RESEARCH_RESOLUTION_GENERATION_TOOL_FILE
+        return self._tool_file
 
     def get_user_content(self) -> str:
         return (
-            "Generate a detailed narrative describing the player's attempt at a Research action within a rich, immersive world. "
+            f"Generate a detailed narrative describing the player's attempt at a {self._action_name} action within a rich, immersive world. "
             "Use the provided information about the player, their followers, the world's conditions, and the specific locations involved. "
-            f"Research goal: {self._research_goal}"
+            f"{self._action_name} goal: {self._action_goal}"
         )
 
     def create_product(self, arguments: dict):
