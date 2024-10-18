@@ -1,4 +1,6 @@
-from flask import session, redirect, url_for, render_template, request, flash
+import logging
+
+from flask import session, redirect, url_for, render_template, request, flash, jsonify
 from flask.views import MethodView
 
 from src.actions.algorithms.produce_action_resolution_algorithm import (
@@ -45,6 +47,8 @@ from src.voices.factories.direct_voice_line_generation_algorithm_factory import 
     DirectVoiceLineGenerationAlgorithmFactory,
 )
 
+logger = logging.getLogger(__name__)
+
 
 class InvestigateView(MethodView):
     def get(self):
@@ -60,16 +64,27 @@ class InvestigateView(MethodView):
     def post(self):
         playthrough_name = session.get("playthrough_name")
         if not playthrough_name:
-            return redirect(url_for("index"))
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return jsonify(success=False, error="Playthrough not found."), 400
+            else:
+                return redirect(url_for("index"))
 
         form_type = request.form.get("form_type")
 
-        if form_type == "resolve_investigate":
+        if form_type == "resolve_action":
             # Handle investigate resolution
             investigation_goal = request.form.get("investigation_goal")
             if not investigation_goal:
-                flash("Please enter an investigation goal.", "error")
-                return redirect(url_for("investigate"))
+                if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                    return (
+                        jsonify(
+                            success=False, error="Please enter an investigation goal."
+                        ),
+                        400,
+                    )
+                else:
+                    flash("Please enter an investigation goal.", "error")
+                    return redirect(url_for("investigation"))
 
             # Initialize necessary components
             produce_tool_response_strategy_factory = ProduceToolResponseStrategyFactory(
@@ -88,8 +103,6 @@ class InvestigateView(MethodView):
                 playthrough_name
             )
 
-            facts_already_known = request.form.get("facts_already_known")
-
             players_and_followers_information_factory = (
                 PlayerAndFollowersInformationFactory(party_data_for_prompt_factory)
             )
@@ -101,7 +114,6 @@ class InvestigateView(MethodView):
             investigate_resolution_factory = InvestigateResolutionFactory(
                 playthrough_name,
                 investigation_goal,
-                facts_already_known,
                 produce_tool_response_strategy_factory,
                 places_descriptions_factory,
                 players_and_followers_information_factory,
@@ -136,8 +148,12 @@ class InvestigateView(MethodView):
             try:
                 result = investigate_resolution_algorithm.do_algorithm()
             except ValueError as e:
-                flash(str(e), "error")
-                return redirect(url_for("investigate"))
+                logger.error("Unexpected error: %s", e)
+                if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                    return jsonify(success=False, error=str(e)), 400
+                else:
+                    flash(str(e), "error")
+                    return redirect(url_for("investigate"))
 
             # Get current place
             map_manager = MapManager(playthrough_name)
@@ -153,12 +169,38 @@ class InvestigateView(MethodView):
 
             character_list = [player] + characters_manager.get_followers()
 
-            return render_template(
-                "investigate.html",
-                current_place=current_place,
-                result=result,
-                characters=character_list,
-            )
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                # Return JSON response
+                response_data = {
+                    "success": True,
+                    "message": "Investigate resolved successfully.",
+                    "result": {
+                        "narrative": result.get_narrative(),
+                        "outcome": result.get_outcome(),
+                        "narrative_voice_line_url": result.get_narrative_voice_line_url(),
+                        "outcome_voice_line_url": result.get_outcome_voice_line_url(),
+                    },
+                    "current_place": current_place,
+                    "characters": [
+                        {
+                            "identifier": char.identifier,
+                            "name": char.name,
+                            "description": char.description,
+                            "equipment": char.equipment,
+                            "health": char.health,
+                        }
+                        for char in character_list
+                    ],
+                    "form_action": url_for("investigate"),
+                }
+                return jsonify(response_data), 200
+            else:
+                return render_template(
+                    "investigate.html",
+                    current_place=current_place,
+                    result=result,
+                    characters=character_list,
+                )
 
         elif form_type == "modify_characters":
             # Handle character modification
@@ -189,9 +231,20 @@ class InvestigateView(MethodView):
                 # Save changes
                 character.save()
 
-            flash("Character changes saved successfully.", "success")
-            return redirect(url_for("investigate"))
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return (
+                    jsonify(
+                        success=True, message="Character changes saved successfully."
+                    ),
+                    200,
+                )
+            else:
+                flash("Character changes saved successfully.", "success")
+                return redirect(url_for("research"))
 
         else:
-            flash("Unknown action.", "error")
-            return redirect(url_for("investigate"))
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return jsonify(success=False, error="Unknown action."), 400
+            else:
+                flash("Unknown action.", "error")
+                return redirect(url_for("investigate"))

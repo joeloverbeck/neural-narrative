@@ -52,7 +52,9 @@ class ResearchResolutionFactory(BaseToolResponseProvider):
         prompt_data = {
             "hour": self._time_manager.get_hour(),
             "time_of_day": self._time_manager.get_time_of_the_day(),
-            "research_goal": self._research_goal,
+            "facts_known": self._filesystem_manager.read_file(
+                self._filesystem_manager.get_file_path_to_facts(self._playthrough_name)
+            ),
         }
 
         prompt_data.update(
@@ -72,8 +74,9 @@ class ResearchResolutionFactory(BaseToolResponseProvider):
 
     def get_user_content(self) -> str:
         return (
-            "Generate a detailed narrative describing the player's attempt at a Research action within a rich,"
-            "immersive world. Use the provided information about the player, their followers, the world's conditions, and the specific locations involved."
+            "Generate a detailed narrative describing the player's attempt at a Research action within a rich, immersive world. "
+            "Use the provided information about the player, their followers, the world's conditions, and the specific locations involved. "
+            f"Research goal: {self._research_goal}"
         )
 
     def create_product(self, arguments: dict):
