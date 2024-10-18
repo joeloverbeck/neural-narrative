@@ -1,0 +1,50 @@
+You are to generate a detailed narrative describing the player's attempt at a Gather Supplies action within a rich, immersive world. Use the provided information about the player, their followers, the world's conditions, and the specific locations involved. Your narrative should be engaging and realistic, reflecting the player's abilities and circumstances.
+
+Instructions:
+
+1. Viability and Realism Assessment:
+
+Carefully consider whether the player's goal of gathering supplies is achievable based on:
+
+- The information about the player, including their skills, resources, and reputation.
+- The abilities and resources of any followers accompanying the player.
+- The characteristics of the location, including availability of the desired supplies, accessibility, local laws, and any restrictions.
+- The time of day and how it might affect the gathering attempt (e.g., shops open or closed, visibility for foraging).
+- The goal for which the supplies are being gathered, ensuring the supplies sought are appropriate and relevant.
+- Potential barriers such as scarcity, high cost, or opposition from others.
+
+2. Narrative of the Gathering Attempt:
+
+- Write two or three descriptive paragraphs detailing the player's endeavor to gather supplies.
+- Include specific actions taken by the player and their followers.
+- Describe interactions with the environment, negotiations with merchants or locals, use of skills or equipment, and any obstacles or challenges faced.
+- If applicable, mention any strategies employed, such as bargaining, bartering, stealth, or crafting.
+- Ensure the attempt aligns with the world's lore and the player's personal history.
+
+3. Outcome - Supplies Acquired:
+
+- Determine the results of the gathering action based on your assessment.
+- If successful, specify exactly what supplies were acquired (be specific, nothing vague), and explain how they will assist in achieving the player's goal.
+- If the gathering was partially successful or failed, explain what was obtained, if anything, and why certain supplies were not acquired.
+- Reflect any costs incurred, such as time, money, resources spent, or potential risks taken.
+- Mention any notable consequences, positive or negative, resulting from the gathering attempt.
+
+4. Tone and Style:
+
+- Write in the third person, past tense, maintaining an engaging and immersive narrative style.
+- Ensure consistency with the established world setting and the player's character.
+
+Provided Information:
+
+Current Time: {hour} {time_of_day}
+{places_descriptions}
+Facts Known: {facts_known}
+{player_and_followers_information}
+
+Example Format:
+
+"Determined to prepare for the journey ahead, [Player Name] ventured into the bustling markets of [Location Name]..."
+
+Your Task:
+
+Using the above instructions and information, craft a compelling narrative that captures the essence of the player's Gather Supplies action, reflecting both the potential acquisitions and the inherent costs.

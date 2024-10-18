@@ -12,10 +12,7 @@ from src.actions.algorithms.produce_voice_lines_for_action_resolution_algorithm 
 from src.actions.algorithms.store_action_resolution_algorithm import (
     StoreActionResolutionAlgorithm,
 )
-from src.actions.factories.investigate_resolution_factory import (
-    InvestigateResolutionFactory,
-)
-from src.actions.factories.research_resolution_factory import ResearchResolutionFactory
+from src.actions.factories.action_resolution_factory import ActionResolutionFactory
 from src.characters.character import Character
 from src.characters.characters_manager import CharactersManager
 from src.characters.factories.party_data_for_prompt_factory import (
@@ -32,6 +29,12 @@ from src.characters.factories.store_character_memory_command_factory import (
 )
 from src.characters.participants_manager import ParticipantsManager
 from src.config.config_manager import ConfigManager
+from src.constants import (
+    RESEARCH_RESOLUTION_GENERATION_PROMPT_FILE,
+    RESEARCH_RESOLUTION_GENERATION_TOOL_FILE,
+    INVESTIGATE_RESOLUTION_GENERATION_PROMPT_FILE,
+    INVESTIGATE_RESOLUTION_GENERATION_TOOL_FILE,
+)
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.factories.place_descriptions_for_prompt_factory import (
     PlaceDescriptionsForPromptFactory,
@@ -165,12 +168,15 @@ def research():
                 place_descriptions_for_prompt_factory
             )
 
-            research_resolution_factory = ResearchResolutionFactory(
-                playthrough_name,
-                research_goal,
-                produce_tool_response_strategy_factory,
-                places_descriptions_factory,
-                players_and_followers_information_factory,
+            research_resolution_factory = ActionResolutionFactory(
+                playthrough_name=playthrough_name,
+                action_name="Research",
+                action_goal=research_goal,
+                produce_tool_response_strategy_factory=produce_tool_response_strategy_factory,
+                places_descriptions_factory=places_descriptions_factory,
+                players_and_followers_information_factory=players_and_followers_information_factory,
+                prompt_file=RESEARCH_RESOLUTION_GENERATION_PROMPT_FILE,
+                tool_file=RESEARCH_RESOLUTION_GENERATION_TOOL_FILE,
             )
 
             store_character_memory_command_factory = StoreCharacterMemoryCommandFactory(
@@ -371,14 +377,16 @@ def investigate():
                 place_descriptions_for_prompt_factory
             )
 
-            investigate_resolution_factory = InvestigateResolutionFactory(
-                playthrough_name,
-                investigation_goal,
-                produce_tool_response_strategy_factory,
-                places_descriptions_factory,
-                players_and_followers_information_factory,
+            investigate_resolution_factory = ActionResolutionFactory(
+                playthrough_name=playthrough_name,
+                action_name="Investigate",
+                action_goal=investigation_goal,
+                produce_tool_response_strategy_factory=produce_tool_response_strategy_factory,
+                places_descriptions_factory=places_descriptions_factory,
+                players_and_followers_information_factory=players_and_followers_information_factory,
+                prompt_file=INVESTIGATE_RESOLUTION_GENERATION_PROMPT_FILE,
+                tool_file=INVESTIGATE_RESOLUTION_GENERATION_TOOL_FILE,
             )
-
             store_character_memory_command_factory = StoreCharacterMemoryCommandFactory(
                 playthrough_name,
             )

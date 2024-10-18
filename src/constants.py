@@ -123,6 +123,9 @@ RESEARCH_RESOLUTION_GENERATION_TOOL_FILE: str = (
 INVESTIGATE_RESOLUTION_GENERATION_TOOL_FILE: str = (
     "data/prompting/actions/investigate_resolution_generation_tool.json"
 )
+GATHER_SUPPLIES_RESOLUTION_GENERATION_TOOL_FILE: str = (
+    "data/prompting/actions/gather_supplies_resolution_generation_tool.json"
+)
 SECRETS_GENERATION_TOOL_FILE: str = (
     "data/prompting/characters/secrets_generation_tool.json"
 )
@@ -190,6 +193,9 @@ RESEARCH_RESOLUTION_GENERATION_PROMPT_FILE: str = (
 )
 INVESTIGATE_RESOLUTION_GENERATION_PROMPT_FILE: str = (
     "data/prompting/actions/investigate_resolution_generation_prompt.txt"
+)
+GATHER_SUPPLIES_RESOLUTION_GENERATION_PROMPT_FILE: str = (
+    "data/prompting/actions/gather_supplies_resolution_generation_prompt.txt"
 )
 SECRETS_GENERATION_PROMPT_FILE: str = (
     "data/prompting/characters/secrets_generation_prompt.txt"

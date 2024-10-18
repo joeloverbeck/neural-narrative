@@ -5,29 +5,29 @@ Instructions:
 1. Viability and Realism Assessment:
 
 Carefully consider whether the player's research goal is achievable based on:
-The information about the player.
-The abilities and resources of any followers accompanying the player.
-The characteristics of the location, including available resources, accessibility, and any restrictions.
-The time of day and how it might affect the research attempt.
+- The information about the player.
+- The abilities and resources of any followers accompanying the player.
+- The characteristics of the location, including available resources, accessibility, and any restrictions.
+- The time of day and how it might affect the research attempt.
 
 2. Narrative of the Research Attempt:
 
-Write two or three descriptive paragraphs detailing the player's research endeavor.
-Include specific actions taken by the player and their followers.
-Describe interactions with the environment, use of equipment, and any obstacles or challenges faced.
-Ensure the attempt aligns with the world's lore and the player's personal history.
+- Write two or three descriptive paragraphs detailing the player's research endeavor.
+- Include specific actions taken by the player and their followers.
+- Describe interactions with the environment, use of equipment, and any obstacles or challenges faced.
+- Ensure the attempt aligns with the world's lore and the player's personal history.
 
 3. Outcome - Impact of the Research:
 
-Determine the results of the research action based on the assessment.
-If successful, you must be very specific (nothing vague) about what the player has discovered.
-Detail any new knowledge gained, abilities unlocked, or crucial information discovered.
-If the research was partially successful or failed, explain what was learned or why it didn't succeed fully.
+- Determine the results of the research action based on the assessment.
+- If successful, you must be very specific (nothing vague) about what the player has discovered.
+- Detail any new knowledge gained, abilities unlocked, or crucial information discovered.
+- If the research was partially successful or failed, explain what was learned or why it didn't succeed fully.
 
 4. Tone and Style:
 
-Write in the third person, past tense, maintaining an engaging and immersive narrative style.
-Ensure consistency with the established world setting and the player's character.
+- Write in the third person, past tense, maintaining an engaging and immersive narrative style.
+- Ensure consistency with the established world setting and the player's character.
 
 Provided Information:
 
