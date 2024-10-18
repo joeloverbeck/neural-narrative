@@ -168,4 +168,4 @@ cython_debug/
 /static/playthroughs
 /static/voice_lines
 /voice_models
-/playthroughs/
+/playthroughs/*
