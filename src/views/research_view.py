@@ -1,4 +1,5 @@
 # src/views/research_view.py
+import logging
 
 from flask import session, redirect, url_for, render_template, request, flash, jsonify
 from flask.views import MethodView
@@ -45,6 +46,8 @@ from src.voices.factories.direct_voice_line_generation_algorithm_factory import 
     DirectVoiceLineGenerationAlgorithmFactory,
 )
 
+logger = logging.getLogger(__name__)
+
 
 class ResearchView(MethodView):
     def get(self):
@@ -67,7 +70,7 @@ class ResearchView(MethodView):
 
         form_type = request.form.get("form_type")
 
-        if form_type == "resolve_research":
+        if form_type == "resolve_action":
             # Handle research resolution
             research_goal = request.form.get("research_goal")
             if not research_goal:
@@ -142,6 +145,7 @@ class ResearchView(MethodView):
             try:
                 result = research_resolution_algorithm.do_algorithm()
             except ValueError as e:
+                logger.error("Unexpected error: %s", e)
                 if request.headers.get("X-Requested-With") == "XMLHttpRequest":
                     return jsonify(success=False, error=str(e)), 400
                 else:

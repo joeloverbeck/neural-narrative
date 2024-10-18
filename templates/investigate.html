@@ -4,13 +4,15 @@
 
 {% block styles %}
 {{ super() }}
-<link href="{{ url_for('static', filename='investigate.css') }}" rel="stylesheet" type="text/css">
 {% endblock %}
 
 {% block content %}
-<div class="investigate-container">
+<div class="action-container">
     <h1 class="page-title"><i class="fas fa-search"></i> Investigate</h1>
     <p class="current-place">Current Place: {{ current_place }}</p>
+
+    <!-- Empty container for AJAX-injected content -->
+    <div id="action-result-container"></div>
 
     {% if result %}
     <!-- Investigation Result Section -->
@@ -19,16 +21,30 @@
             <i class="fas fa-check"></i> Investigation Resolution Result
         </button>
         <div class="content">
-            <div class="investigation-result">
+            <div class="action-result">
                 <div class="narration" data-file-url="{{ result.get_narrative_voice_line_url() }}">
                     <h3>Narration</h3>
                     <p>{{ result.get_narrative() }}</p>
-                    <i class="fas play-icon"></i>
+                    <i class="fas fa-play play-icon"></i>
+                    <div class="waveform">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
                 </div>
                 <div class="outcome" data-file-url="{{ result.get_outcome_voice_line_url() }}">
                     <h3>Outcome</h3>
                     <p>{{ result.get_outcome() }}</p>
-                    <i class="fas play-icon"></i>
+                    <i class="fas fa-play play-icon"></i>
+                    <div class="waveform">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -69,12 +85,11 @@
             <i class="fas fa-search"></i> Enter Investigation Goal
         </button>
         <div class="content" style="display: block;">
-            <form action="{{ url_for('investigate') }}" method="post" class="investigation-form">
-                <input type="hidden" name="form_type" value="resolve_investigate">
+            <form action="{{ url_for('investigate') }}" method="post" class="ajax-form"
+                  data-success-handler="resolveActionSuccess">
+                <input type="hidden" name="form_type" value="resolve_action">
                 <label for="investigation_goal">Investigation Goal:</label>
                 <input type="text" id="investigation_goal" name="investigation_goal" required>
-                <label for="investigation_goal">Facts Known:</label>
-                <input type="text" id="facts_already_known" name="facts_already_known">
                 <button type="submit" class="action-button">
                     <i class="fas fa-magic"></i> Resolve Investigation
                 </button>
@@ -109,5 +124,5 @@
 
 {% block scripts %}
 <script src="{{ url_for('static', filename='main.js') }}"></script>
-<script src="{{ url_for('static', filename='audio-playback.js') }}"></script>
+<script src="{{ url_for('static', filename='investigate.js') }}"></script>
 {% endblock %}

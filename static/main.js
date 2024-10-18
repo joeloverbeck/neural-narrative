@@ -83,8 +83,7 @@ function createWaveformDiv(){
     waveformDiv.className = 'waveform';
 
     for (let i = 0; i < 5; i++) {
-        const barDiv = document.createElement('div');
-        waveformDiv.appendChild(barDiv);
+        waveformDiv.appendChild(document.createElement('div'));
     }
     
     return waveformDiv;
@@ -229,6 +228,144 @@ function replaceFlashes(){
     if (flashList) {
         flashList.remove();
     }
+}
+
+function createCollapsibleSection(title, iconClass, contentElement, isActive = false) {
+    const collapsibleSection = document.createElement('div');
+    collapsibleSection.classList.add('collapsible-section');
+
+    const collapsibleButton = document.createElement('button');
+    collapsibleButton.classList.add('collapsible');
+    if (isActive) {
+        collapsibleButton.classList.add('active');
+    }
+    const icon = document.createElement('i');
+    icon.classList.add('fas', iconClass);
+    collapsibleButton.appendChild(icon);
+    collapsibleButton.appendChild(document.createTextNode(` ${title}`));
+
+    const contentDiv = document.createElement('div');
+    contentDiv.classList.add('content');
+    if (isActive) {
+        contentDiv.style.display = 'block';
+    }
+
+    contentDiv.appendChild(contentElement);
+
+    collapsibleSection.appendChild(collapsibleButton);
+    collapsibleSection.appendChild(contentDiv);
+
+    // Initialize the collapsible behavior
+    collapsibleButton.addEventListener('click', function () {
+        this.classList.toggle('active');
+        contentDiv.style.display = contentDiv.style.display === 'block' ? 'none' : 'block';
+    });
+
+    return collapsibleSection;
+}
+
+function createNarrationOutcomeDiv(sectionTitle, textContent, voiceLineUrl) {
+    const sectionDiv = document.createElement('div');
+    sectionDiv.classList.add(sectionTitle.toLowerCase());
+    sectionDiv.setAttribute('data-file-url', voiceLineUrl || '');
+
+    const h3 = document.createElement('h3');
+    h3.textContent = sectionTitle;
+
+    const p = document.createElement('p');
+    p.textContent = textContent;
+
+    const playIcon = document.createElement('i');
+    playIcon.classList.add('fas', 'fa-play', 'play-icon');
+
+    const waveformDiv = createWaveformDiv();
+
+    sectionDiv.append(h3, p, playIcon, waveformDiv);
+
+    return sectionDiv;
+}
+
+function createActionResultDiv(dataResult) {
+    const actionResultDiv = document.createElement('div');
+    actionResultDiv.classList.add('action-result');
+
+    const narrationDiv = createNarrationOutcomeDiv(
+        'Narration',
+        dataResult.narrative,
+        dataResult.narrative_voice_line_url
+    );
+    const outcomeDiv = createNarrationOutcomeDiv(
+        'Outcome',
+        dataResult.outcome,
+        dataResult.outcome_voice_line_url
+    );
+
+    actionResultDiv.append(narrationDiv, outcomeDiv);
+
+    return actionResultDiv;
+}
+
+function createCharacterModificationForm(characters, formAction) {
+    const form = document.createElement('form');
+    form.action = formAction || '';
+    form.method = 'post';
+    form.classList.add('ajax-form');
+    form.dataset.successHandler = 'modifyCharactersSuccess';
+
+    const inputFormType = document.createElement('input');
+    inputFormType.type = 'hidden';
+    inputFormType.name = 'form_type';
+    inputFormType.value = 'modify_characters';
+    form.appendChild(inputFormType);
+
+    characters.forEach((character) => {
+        const characterDiv = document.createElement('div');
+        characterDiv.classList.add('character-modification');
+
+        const h3 = document.createElement('h3');
+        h3.textContent = character.name;
+
+        const fields = [
+            { label: 'Description:', key: 'description', value: character.description },
+            { label: 'Equipment:', key: 'equipment', value: character.equipment },
+            { label: 'Health:', key: 'health', value: character.health },
+        ];
+
+        characterDiv.appendChild(h3);
+
+        fields.forEach((field) => {
+            const id = `${field.key}_${character.identifier}`;
+            const label = document.createElement('label');
+            label.setAttribute('for', id);
+            label.textContent = field.label;
+
+            const textarea = document.createElement('textarea');
+            textarea.id = id;
+            textarea.name = id;
+            textarea.textContent = field.value;
+
+            characterDiv.append(label, textarea);
+        });
+
+        form.appendChild(characterDiv);
+    });
+
+    const submitButton = document.createElement('button');
+    submitButton.type = 'submit';
+    submitButton.classList.add('action-button');
+
+    const saveIcon = document.createElement('i');
+    saveIcon.classList.add('fas', 'fa-save');
+    submitButton.append(saveIcon, document.createTextNode(' Save Changes'));
+
+    form.appendChild(submitButton);
+
+    // Initialize the AJAX form submission
+    handleAjaxFormSubmit(form, {
+        onSuccess: window['modifyCharactersSuccess'],
+    });
+
+    return form;
 }
 
 document.addEventListener('DOMContentLoaded', () => {

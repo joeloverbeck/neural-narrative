@@ -4,16 +4,15 @@
 
 {% block styles %}
 {{ super() }}
-<link href="{{ url_for('static', filename='research.css') }}" rel="stylesheet" type="text/css">
 {% endblock %}
 
 {% block content %}
-<div class="research-container">
+<div class="action-container">
     <h1 class="page-title"><i class="fas fa-book"></i> Research</h1>
     <p class="current-place">Current Place: {{ current_place }}</p>
 
     <!-- Empty container for AJAX-injected content -->
-    <div id="research-result-container"></div>
+    <div id="action-result-container"></div>
 
     {% if result %}
     <!-- Research Result Section -->
@@ -22,16 +21,30 @@
             <i class="fas fa-check"></i> Research Resolution Result
         </button>
         <div class="content">
-            <div class="research-result">
+            <div class="action-result">
                 <div class="narration" data-file-url="{{ result.get_narrative_voice_line_url() }}">
                     <h3>Narration</h3>
                     <p>{{ result.get_narrative() }}</p>
-                    <i class="fas play-icon"></i>
+                    <i class="fas fa-play play-icon"></i>
+                    <div class="waveform">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
                 </div>
                 <div class="outcome" data-file-url="{{ result.get_outcome_voice_line_url() }}">
                     <h3>Outcome</h3>
                     <p>{{ result.get_outcome() }}</p>
-                    <i class="fas play-icon"></i>
+                    <i class="fas fa-play play-icon"></i>
+                    <div class="waveform">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -72,9 +85,9 @@
             <i class="fas fa-book"></i> Enter Research Goal
         </button>
         <div class="content" style="display: block;">
-            <form action="{{ url_for('research') }}" method="post" class="ajax-form research-form"
-                  data-success-handler="resolveResearchSuccess">
-                <input type="hidden" name="form_type" value="resolve_research">
+            <form action="{{ url_for('research') }}" method="post" class="ajax-form"
+                  data-success-handler="resolveActionSuccess">
+                <input type="hidden" name="form_type" value="resolve_action">
                 <label for="research_goal">Research Goal:</label>
                 <input type="text" id="research_goal" name="research_goal" required>
                 <button type="submit" class="action-button">

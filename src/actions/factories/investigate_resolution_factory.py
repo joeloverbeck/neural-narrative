@@ -22,7 +22,6 @@ class InvestigateResolutionFactory(BaseToolResponseProvider):
         self,
         playthrough_name: str,
         investigation_goal: str,
-        facts_already_known: str,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         places_descriptions_factory: PlacesDescriptionsFactory,
         players_and_followers_information_factory: PlayerAndFollowersInformationFactory,
@@ -38,7 +37,6 @@ class InvestigateResolutionFactory(BaseToolResponseProvider):
 
         self._playthrough_name = playthrough_name
         self._investigation_goal = investigation_goal
-        self._facts_already_known = facts_already_known
 
         self._places_descriptions_factory = places_descriptions_factory
         self._players_and_followers_information_factory = (
@@ -54,8 +52,9 @@ class InvestigateResolutionFactory(BaseToolResponseProvider):
         prompt_data = {
             "hour": self._time_manager.get_hour(),
             "time_of_day": self._time_manager.get_time_of_the_day(),
-            "investigation_goal": self._investigation_goal,
-            "facts_already_known": self._facts_already_known,
+            "facts_known": self._filesystem_manager.read_file(
+                self._filesystem_manager.get_file_path_to_facts(self._playthrough_name)
+            ),
         }
 
         prompt_data.update(
@@ -75,8 +74,9 @@ class InvestigateResolutionFactory(BaseToolResponseProvider):
 
     def get_user_content(self) -> str:
         return (
-            "Generate a detailed narrative describing the player's attempt at an Investigate action within a rich,"
-            "immersive world. Use the provided information about the player, their followers, the world's conditions, and the specific locations involved."
+            "Generate a detailed narrative describing the player's attempt at an Investigate action within a rich, immersive world. "
+            "Use the provided information about the player, their followers, the world's conditions, and the specific locations involved. "
+            f"Investigation goal: {self._investigation_goal}"
         )
 
     def create_product(self, arguments: dict):
