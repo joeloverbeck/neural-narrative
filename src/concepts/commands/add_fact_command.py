@@ -2,7 +2,7 @@ import logging
 import os
 from typing import Optional
 
-from src.abstracts.command import Command
+from src.base.abstracts.command import Command
 from src.filesystem.filesystem_manager import FilesystemManager
 
 logger = logging.getLogger(__name__)

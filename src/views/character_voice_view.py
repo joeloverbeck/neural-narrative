@@ -1,9 +1,7 @@
 from flask import session, redirect, url_for, render_template, request, flash
 from flask.views import MethodView
 
-from src.characters.character import Character
-from src.characters.characters_manager import CharactersManager
-from src.constants import (
+from src.base.constants import (
     VOICE_GENDERS,
     VOICE_AGES,
     VOICE_EMOTIONS,
@@ -15,6 +13,8 @@ from src.constants import (
     VOICE_PERSONALITIES,
     VOICE_SPECIAL_EFFECTS,
 )
+from src.characters.character import Character
+from src.characters.characters_manager import CharactersManager
 from src.voices.algorithms.match_voice_data_to_voice_model_algorithm import (
     MatchVoiceDataToVoiceModelAlgorithm,
 )

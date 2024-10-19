@@ -1,12 +1,12 @@
 from abc import abstractmethod
 from typing import Optional
 
-from src.constants import TOOL_INSTRUCTIONS_FILE
+from src.base.constants import TOOL_INSTRUCTIONS_FILE
+from src.base.tools import generate_tool_prompt
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.prompting.factories.produce_tool_response_strategy_factory import (
     ProduceToolResponseStrategyFactory,
 )
-from src.tools import generate_tool_prompt
 
 
 class BaseToolResponseProvider:

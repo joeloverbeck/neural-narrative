@@ -1,17 +1,17 @@
 import logging
 from typing import Optional
 
-from src.characters.products.character_generation_guidelines_product import (
-    CharacterGenerationGuidelinesProduct,
-)
-from src.constants import (
+from src.base.constants import (
     CHARACTER_GENERATION_GUIDELINES_PROMPT_FILE,
     CHARACTER_GENERATION_GUIDELINES_TOOL_FILE,
+)
+from src.base.playthrough_manager import PlaythroughManager
+from src.characters.products.character_generation_guidelines_product import (
+    CharacterGenerationGuidelinesProduct,
 )
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.factories.places_descriptions_factory import PlacesDescriptionsFactory
 from src.maps.map_manager import MapManager
-from src.playthrough_manager import PlaythroughManager
 from src.prompting.factories.produce_tool_response_strategy_factory import (
     ProduceToolResponseStrategyFactory,
 )

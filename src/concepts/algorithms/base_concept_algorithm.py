@@ -3,8 +3,8 @@
 import logging
 from typing import Generic, TypeVar, List, Optional
 
+from src.base.playthrough_name import RequiredString
 from src.filesystem.filesystem_manager import FilesystemManager
-from src.playthrough_name import PlaythroughName
 
 logger = logging.getLogger(__name__)
 
@@ -15,11 +15,11 @@ TFactory = TypeVar("TFactory")
 class BaseConceptAlgorithm(Generic[TProduct, TFactory]):
     def __init__(
         self,
-        playthrough_name: PlaythroughName,
+        playthrough_name: RequiredString,
         concept_factory: TFactory,
         filesystem_manager: Optional[FilesystemManager] = None,
     ):
-        if not isinstance(playthrough_name, PlaythroughName):
+        if not isinstance(playthrough_name, RequiredString):
             raise TypeError(
                 f"Expected playthrough_name to be of type PlaythroughName, but it was {type(playthrough_name)}."
             )

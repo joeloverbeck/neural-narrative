@@ -2,7 +2,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from src.enums import PlaceType
+from src.base.enums import PlaceType
 from src.maps.map_manager import MapManager
 
 

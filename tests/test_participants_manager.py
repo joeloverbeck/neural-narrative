@@ -4,9 +4,9 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
+from src.base.playthrough_manager import PlaythroughManager
 from src.characters.characters_manager import CharactersManager
 from src.characters.participants_manager import ParticipantsManager
-from src.playthrough_manager import PlaythroughManager
 
 
 @pytest.fixture
@@ -24,7 +24,9 @@ def mock_character_manager():
 
 @pytest.fixture
 def mock_playthrough_manager():
-    with patch("src.playthrough_manager.PlaythroughManager") as MockPlaythroughManager:
+    with patch(
+        "src.base.playthrough_manager.PlaythroughManager"
+    ) as MockPlaythroughManager:
         yield MockPlaythroughManager
 
 

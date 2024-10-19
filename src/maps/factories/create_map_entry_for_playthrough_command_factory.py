@@ -1,6 +1,6 @@
 from typing import Optional
 
-from src.enums import PlaceType
+from src.base.enums import PlaceType
 from src.maps.commands.create_map_entry_for_playthrough_command import (
     CreateMapEntryForPlaythroughCommand,
 )

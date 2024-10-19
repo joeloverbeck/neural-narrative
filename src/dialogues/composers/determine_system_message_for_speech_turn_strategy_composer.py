@@ -1,5 +1,6 @@
 from typing import Optional
 
+from src.base.playthrough_manager import PlaythroughManager
 from src.dialogues.abstracts.strategies import (
     DetermineSystemMessageForSpeechTurnStrategy,
 )
@@ -21,7 +22,6 @@ from src.maps.factories.place_descriptions_for_prompt_factory import (
     PlaceDescriptionsForPromptFactory,
 )
 from src.maps.factories.places_descriptions_factory import PlacesDescriptionsFactory
-from src.playthrough_manager import PlaythroughManager
 
 
 class DetermineSystemMessageForSpeechTurnStrategyComposer:

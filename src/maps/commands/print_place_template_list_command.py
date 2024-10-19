@@ -1,11 +1,11 @@
-from src.abstracts.command import Command
-from src.constants import (
-    WORLD_TEMPLATES_FILE,
+from src.base.abstracts.command import Command
+from src.base.constants import (
+    WORLDS_TEMPLATES_FILE,
     LOCATIONS_TEMPLATES_FILE,
     AREAS_TEMPLATES_FILE,
     REGIONS_TEMPLATES_FILE,
 )
-from src.enums import TemplateType
+from src.base.enums import TemplateType
 from src.filesystem.filesystem_manager import FilesystemManager
 
 
@@ -22,7 +22,7 @@ class PrintPlaceTemplateListCommand(Command):
 
         if self._template_type == TemplateType.WORLD:
             templates_file = filesystem_manager.load_existing_or_new_json_file(
-                WORLD_TEMPLATES_FILE
+                WORLDS_TEMPLATES_FILE
             )
         elif self._template_type == TemplateType.REGION:
             templates_file = filesystem_manager.load_existing_or_new_json_file(

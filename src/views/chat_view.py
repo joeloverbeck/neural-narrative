@@ -3,10 +3,10 @@ import logging
 from flask import redirect, session, render_template, url_for, flash, request, jsonify
 from flask.views import MethodView
 
-from src.constants import MAX_DIALOGUE_ENTRIES_FOR_WEB
+from src.base.constants import MAX_DIALOGUE_ENTRIES_FOR_WEB
+from src.base.playthrough_manager import PlaythroughManager
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.map_manager import MapManager
-from src.playthrough_manager import PlaythroughManager
 from src.services.dialogue_service import DialogueService
 from src.time.time_manager import TimeManager
 

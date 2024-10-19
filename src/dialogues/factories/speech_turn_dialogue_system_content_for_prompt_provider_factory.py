@@ -1,5 +1,5 @@
+from src.base.constants import SPEECH_GENERATOR_TOOL_FILE
 from src.characters.character import Character
-from src.constants import SPEECH_GENERATOR_TOOL_FILE
 from src.dialogues.factories.prompt_formatter_for_dialogue_strategy_factory import (
     PromptFormatterForDialogueStrategyFactory,
 )

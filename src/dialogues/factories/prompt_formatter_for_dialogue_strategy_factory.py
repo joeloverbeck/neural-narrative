@@ -1,8 +1,8 @@
+from src.base.constants import DIALOGUE_PROMPT_FILE
 from src.characters.character import Character
 from src.characters.factories.character_information_provider import (
     CharacterInformationProvider,
 )
-from src.constants import DIALOGUE_PROMPT_FILE
 from src.dialogues.abstracts.strategies import PromptFormatterForDialogueStrategy
 from src.dialogues.participants import Participants
 from src.dialogues.strategies.concrete_prompt_formatter_for_dialogue_strategy import (

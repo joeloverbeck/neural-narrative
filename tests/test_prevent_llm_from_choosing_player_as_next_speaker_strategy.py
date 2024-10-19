@@ -2,11 +2,11 @@ from unittest.mock import MagicMock
 
 import pytest
 
+from src.base.playthrough_manager import PlaythroughManager
 from src.dialogues.participants import Participants
 from src.dialogues.strategies.prevent_llm_from_choosing_player_as_next_speaker_strategy import (
     PreventLlmFromChoosingPlayerAsNextSpeakerStrategy,
 )
-from src.playthrough_manager import PlaythroughManager
 
 
 def test_prevent_llm_replaces_player_identifier():

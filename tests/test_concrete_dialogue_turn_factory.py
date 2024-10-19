@@ -1,6 +1,7 @@
 from unittest.mock import MagicMock, patch
 
-from src.abstracts.observer import Observer
+from src.base.abstracts.observer import Observer
+
 # Import the ConcreteDialogueTurnFactory and related exceptions
 from src.dialogues.factories.concrete_dialogue_turn_factory import (
     ConcreteDialogueTurnFactory,

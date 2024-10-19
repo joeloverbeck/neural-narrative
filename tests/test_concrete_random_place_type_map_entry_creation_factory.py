@@ -3,7 +3,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from src.enums import PlaceType
+from src.base.enums import PlaceType
 from src.maps.abstracts.abstract_factories import (
     RandomPlaceTemplateBasedOnCategoriesFactory,
 )

@@ -2,7 +2,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from src.exceptions import VoiceLineGenerationError
+from src.base.exceptions import VoiceLineGenerationError
 from src.voices.algorithms.direct_voice_line_generation_algorithm import (
     DirectVoiceLineGenerationAlgorithm,
 )

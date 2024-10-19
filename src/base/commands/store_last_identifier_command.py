@@ -1,5 +1,5 @@
-from src.abstracts.command import Command
-from src.enums import IdentifierType
+from src.base.abstracts.command import Command
+from src.base.enums import IdentifierType
 from src.filesystem.filesystem_manager import FilesystemManager
 
 

@@ -1,6 +1,6 @@
 from typing import Optional, Dict, List
 
-from src.constants import CHARACTER_GENERATION_GUIDELINES_FILE
+from src.base.constants import CHARACTER_GENERATION_GUIDELINES_FILE
 from src.filesystem.filesystem_manager import FilesystemManager
 
 

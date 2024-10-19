@@ -5,7 +5,7 @@ from typing import Optional, Any
 import requests
 import runpod
 
-from src.constants import XTTS_CONFIG_FILE
+from src.base.constants import XTTS_CONFIG_FILE
 from src.filesystem.filesystem_manager import FilesystemManager
 
 logger = logging.getLogger(__name__)

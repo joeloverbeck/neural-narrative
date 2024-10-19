@@ -1,10 +1,10 @@
 from typing import Optional
 
+from src.base.playthrough_manager import PlaythroughManager
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.abstracts.abstract_factories import CurrentPlaceFactory
 from src.maps.abstracts.factory_products import CurrentPlaceProduct
 from src.maps.products.concrete_current_place_product import ConcreteCurrentPlaceProduct
-from src.playthrough_manager import PlaythroughManager
 
 
 class ConcreteCurrentPlaceFactory(CurrentPlaceFactory):

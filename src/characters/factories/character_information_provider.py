@@ -1,8 +1,8 @@
 from typing import Optional
 
+from src.base.constants import CHARACTER_INFORMATION_BLOCK
 from src.characters.character import Character
 from src.characters.character_memories import CharacterMemories
-from src.constants import CHARACTER_INFORMATION_BLOCK
 from src.filesystem.filesystem_manager import FilesystemManager
 
 

@@ -1,6 +1,6 @@
 import logging
 
-from src.abstracts.command import Command
+from src.base.abstracts.command import Command
 from src.characters.factories.store_character_memory_command_factory import StoreCharacterMemoryCommandFactory
 from src.dialogues.factories.dialogue_summary_provider_factory import DialogueSummaryProviderFactory
 from src.dialogues.participants import Participants

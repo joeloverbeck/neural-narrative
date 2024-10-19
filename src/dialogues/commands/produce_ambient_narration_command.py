@@ -1,6 +1,6 @@
 from typing import cast
 
-from src.abstracts.command import Command
+from src.base.abstracts.command import Command
 from src.dialogues.commands.store_temporary_dialogue_command import (
     StoreTemporaryDialogueCommand,
 )

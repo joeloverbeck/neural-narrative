@@ -2,7 +2,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from src.abstracts.command import Command
+from src.base.abstracts.command import Command
 from src.dialogues.commands.produce_ambient_narration_command import (
     ProduceAmbientNarrationCommand,
 )

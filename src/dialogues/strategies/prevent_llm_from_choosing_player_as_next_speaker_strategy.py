@@ -1,8 +1,8 @@
 import logging
 import random
 
+from src.base.playthrough_manager import PlaythroughManager
 from src.dialogues.participants import Participants
-from src.playthrough_manager import PlaythroughManager
 
 logger = logging.getLogger(__name__)
 

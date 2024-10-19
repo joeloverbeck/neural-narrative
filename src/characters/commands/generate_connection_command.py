@@ -1,6 +1,6 @@
 from typing import cast
 
-from src.abstracts.command import Command
+from src.base.abstracts.command import Command
 from src.characters.factories.connection_factory import ConnectionFactory
 from src.characters.factories.store_character_memory_command_factory import (
     StoreCharacterMemoryCommandFactory,

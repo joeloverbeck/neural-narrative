@@ -1,5 +1,6 @@
+from src.base.constants import TOOL_INSTRUCTIONS_FILE
+from src.base.tools import generate_tool_prompt
 from src.characters.character import Character
-from src.constants import TOOL_INSTRUCTIONS_FILE
 from src.dialogues.abstracts.strategies import PromptFormatterForDialogueStrategy
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.prompting.abstracts.abstract_factories import SystemContentForPromptProvider
@@ -7,7 +8,6 @@ from src.prompting.abstracts.factory_products import SystemContentForPromptProdu
 from src.prompting.products.concrete_system_content_for_prompt_product import (
     ConcreteSystemContentForPromptProduct,
 )
-from src.tools import generate_tool_prompt
 
 
 class SpeechTurnDialogueSystemContentForPromptProvider(SystemContentForPromptProvider):

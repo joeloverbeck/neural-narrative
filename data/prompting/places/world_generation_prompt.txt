@@ -1,3 +1,5 @@
+Given the following story universe, named {father_place_name}:
+{father_place_description}
 You are tasked with coming up with a world for a narrative. A world is understood as a physical space the size of a planet or a moon.
 Your description of the world should be at the most six paragraphs long, and it should contain the following information:
 - What are the world's major geographical features (continents, oceans, mountains, deserts)?
@@ -19,5 +21,5 @@ Your description of the world should be at the most six paragraphs long, and it 
 - Who inhabits the world (humans, aliens, mythical creatures)?
 - What are the relationships between different species or races? Are there prevalent biases or alliances?
 You are prohibited from using the following names for the new world (because those names are already used for other worlds):
-{world_names}
+{current_place_type_names}
 Remember to include in your function call response the two fitting categories for this world.

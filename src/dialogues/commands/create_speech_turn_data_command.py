@@ -1,9 +1,9 @@
 import logging
 from typing import List
 
-from src.abstracts.command import Command
-from src.abstracts.observer import Observer
-from src.abstracts.subject import Subject
+from src.base.abstracts.command import Command
+from src.base.abstracts.observer import Observer
+from src.base.abstracts.subject import Subject
 from src.dialogues.abstracts.strategies import MessageDataProducerForSpeechTurnStrategy
 from src.dialogues.factories.llm_speech_data_provider_factory import (
     LlmSpeechDataProviderFactory,

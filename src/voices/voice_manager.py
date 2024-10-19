@@ -2,7 +2,7 @@ import logging
 import wave
 from typing import Optional, List
 
-from src.constants import VOICE_MODELS_FILE
+from src.base.constants import VOICE_MODELS_FILE
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.requests.requests_manager import RequestsManager
 

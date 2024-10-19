@@ -1,3 +1,5 @@
+from src.base.enums import TemplateType
+
 DEFAULT_PLAYER_IDENTIFIER = "-1"
 DEFAULT_CURRENT_PLACE = "-1"
 DEFAULT_IDENTIFIER = "0"
@@ -56,10 +58,28 @@ WEATHERS_FILE: str = "data/weathers/weathers.json"
 
 # Templates
 
-WORLD_TEMPLATES_FILE: str = "data/templates/worlds.json"
+STORY_UNIVERSES_TEMPLATE_FILE: str = "data/templates/story_universes.json"
+WORLDS_TEMPLATES_FILE: str = "data/templates/worlds.json"
 REGIONS_TEMPLATES_FILE: str = "data/templates/regions.json"
 AREAS_TEMPLATES_FILE: str = "data/templates/areas.json"
 LOCATIONS_TEMPLATES_FILE: str = "data/templates/locations.json"
+
+# Mapping of place types to their expected parent types
+PARENT_TEMPLATE_TYPE = {
+    TemplateType.WORLD: TemplateType.STORY_UNIVERSE,
+    TemplateType.REGION: TemplateType.WORLD,
+    TemplateType.AREA: TemplateType.REGION,
+    TemplateType.LOCATION: TemplateType.AREA,
+}
+
+# Mapping of template types to their corresponding template files
+TEMPLATE_FILES = {
+    TemplateType.STORY_UNIVERSE: STORY_UNIVERSES_TEMPLATE_FILE,
+    TemplateType.WORLD: WORLDS_TEMPLATES_FILE,
+    TemplateType.REGION: REGIONS_TEMPLATES_FILE,
+    TemplateType.AREA: AREAS_TEMPLATES_FILE,
+    TemplateType.LOCATION: LOCATIONS_TEMPLATES_FILE,
+}
 
 # Prompting Blocks
 CHARACTER_INFORMATION_BLOCK: str = "data/prompting/blocks/character_information.txt"
@@ -80,6 +100,9 @@ SPEECH_GENERATOR_TOOL_FILE: str = "data/prompting/speech_generator_tool.json"
 SPEECH_TURN_TOOL_FILE: str = "data/prompting/speech_turn_tool.json"
 DIALOGUE_SUMMARIZATION_TOOL_FILE: str = (
     "data/prompting/dialogue_summarization_tool.json"
+)
+STORY_UNIVERSE_GENERATION_TOOL_FILE: str = (
+    "data/prompting/base/story_universe_generation_tool.json"
 )
 WORLD_GENERATION_TOOL_FILE: str = "data/prompting/places/world_generation_tool.json"
 REGION_GENERATION_TOOL_FILE: str = "data/prompting/places/region_generation_tool.json"
@@ -145,6 +168,9 @@ TOOL_INSTRUCTIONS_FILE: str = "data/prompting/tool_instructions.txt"
 DIALOGUE_PROMPT_FILE: str = "data/prompting/dialogue_prompt.txt"
 CHOOSING_SPEECH_TURN_PROMPT_FILE: str = "data/prompting/choosing_speech_turn_prompt.txt"
 SUMMARIZE_DIALOGUE_PROMPT_FILE: str = "data/prompting/summarize_dialogue_prompt.txt"
+STORY_UNIVERSE_GENERATION_PROMPT_FILE: str = (
+    "data/prompting/base/story_universe_generation_prompt.txt"
+)
 WORLD_GENERATION_PROMPT_FILE: str = "data/prompting/places/world_generation_prompt.txt"
 REGION_GENERATION_PROMPT_FILE: str = (
     "data/prompting/places/region_generation_prompt.txt"
@@ -324,6 +350,7 @@ LOCATION_TYPES = [
     "MANSION",
     "MINE",
     "OASIS",
+    "PARK",
     "POLICE STATION",
     "TRAINING GROUND",
     "WOODS",

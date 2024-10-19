@@ -1,15 +1,15 @@
 import logging
 import shutil
 
-from src.abstracts.command import Command
+from src.base.abstracts.command import Command
+from src.base.constants import (
+    DEFAULT_IMAGE_FILE,
+    IMAGE_GENERATION_PROMPT_FILE,
+)
 from src.characters.character import Character
 from src.characters.characters_manager import CharactersManager
 from src.characters.factories.character_description_provider_factory import (
     CharacterDescriptionProviderFactory,
-)
-from src.constants import (
-    DEFAULT_IMAGE_FILE,
-    IMAGE_GENERATION_PROMPT_FILE,
 )
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.images.abstracts.abstract_factories import GeneratedImageFactory

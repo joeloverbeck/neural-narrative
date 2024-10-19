@@ -1,10 +1,10 @@
-from src.abstracts.command import Command
+from src.base.abstracts.command import Command
+from src.base.playthrough_manager import PlaythroughManager
 from src.characters.characters_manager import CharactersManager
 from src.characters.factories.generate_character_command_factory import (
     GenerateCharacterCommandFactory,
 )
 from src.maps.map_manager import MapManager
-from src.playthrough_manager import PlaythroughManager
 
 
 class GeneratePlayerCharacterCommand(Command):

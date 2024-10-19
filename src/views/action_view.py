@@ -12,6 +12,8 @@ from src.actions.algorithms.store_action_resolution_algorithm import (
     StoreActionResolutionAlgorithm,
 )
 from src.actions.factories.action_resolution_factory import ActionResolutionFactory
+from src.base.playthrough_manager import PlaythroughManager
+from src.base.playthrough_name import RequiredString
 from src.characters.character import Character
 from src.characters.characters_manager import CharactersManager
 from src.characters.factories.party_data_for_prompt_factory import (
@@ -33,8 +35,6 @@ from src.maps.factories.place_descriptions_for_prompt_factory import (
 )
 from src.maps.factories.places_descriptions_factory import PlacesDescriptionsFactory
 from src.maps.map_manager import MapManager
-from src.playthrough_manager import PlaythroughManager
-from src.playthrough_name import PlaythroughName
 from src.prompting.factories.openrouter_llm_client_factory import (
     OpenRouterLlmClientFactory,
 )
@@ -117,7 +117,7 @@ def action_view(action_name, action_icon, action_endpoint, prompt_file, tool_fil
             )
 
             action_resolution_factory = ActionResolutionFactory(
-                playthrough_name=PlaythroughName(playthrough_name),
+                playthrough_name=RequiredString(playthrough_name),
                 action_name=action_name,
                 action_goal=action_goal,
                 produce_tool_response_strategy_factory=produce_tool_response_strategy_factory,

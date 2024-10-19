@@ -1,3 +1,4 @@
+from src.base.playthrough_manager import PlaythroughManager
 from src.characters.commands.generate_character_command import GenerateCharacterCommand
 from src.characters.factories.character_description_provider_factory import (
     CharacterDescriptionProviderFactory,
@@ -27,7 +28,6 @@ from src.maps.factories.place_descriptions_for_prompt_factory import (
 from src.maps.factories.places_descriptions_factory import PlacesDescriptionsFactory
 from src.maps.map_manager import MapManager
 from src.movements.movement_manager import MovementManager
-from src.playthrough_manager import PlaythroughManager
 from src.prompting.factories.openai_llm_client_factory import OpenAILlmClientFactory
 from src.prompting.factories.openrouter_llm_client_factory import (
     OpenRouterLlmClientFactory,

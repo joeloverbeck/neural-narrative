@@ -1,4 +1,4 @@
-from src.constants import HERMES_405B, HERMES_405B_FREE, HERMES_70B, CONFIG_FILE
+from src.base.constants import HERMES_405B, HERMES_405B_FREE, HERMES_70B, CONFIG_FILE
 from src.filesystem.filesystem_manager import FilesystemManager
 
 

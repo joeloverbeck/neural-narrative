@@ -1,4 +1,4 @@
-from src.playthrough_manager import PlaythroughManager
+from src.base.playthrough_manager import PlaythroughManager
 
 
 class TimeManager:

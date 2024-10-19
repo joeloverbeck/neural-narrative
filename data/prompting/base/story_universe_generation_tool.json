@@ -1,0 +1,34 @@
+{
+  "type": "function",
+  "function": {
+    "name": "generate_story_universe",
+    "description": "generate the name, description, and two fitting categories of a story universe.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the generated story universe."
+        },
+        "description": {
+          "type": "string",
+          "description": "The description of the generated story universe. Follow the instructions provided to produce this description."
+        },
+        "category_1": {
+          "type": "string",
+          "description": "Given your created description, reduce this story universe to a fitting category (such as high fantasy, dark fantasy, cyberpunk, horror, etc.)."
+        },
+        "category_2": {
+          "type": "string",
+          "description": "Given your created description, reduce this story universe to another fitting category (such as high fantasy, dark fantasy, cyberpunk, horror, etc.)."
+        }
+      },
+      "required": [
+        "name",
+        "description",
+        "category_1",
+        "category_2"
+      ]
+    }
+  }
+}

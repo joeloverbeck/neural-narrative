@@ -1,17 +1,28 @@
 from typing import Optional
 
+from src.base.tools import generate_tool_prompt
 from src.dialogues.participants import Participants
 from src.dialogues.transcription import Transcription
 from src.prompting.abstracts.abstract_factories import SystemContentForPromptProvider
 from src.prompting.abstracts.factory_products import SystemContentForPromptProduct
-from src.prompting.products.concrete_system_content_for_prompt_product import ConcreteSystemContentForPromptProduct
-from src.tools import generate_tool_prompt
+from src.prompting.products.concrete_system_content_for_prompt_product import (
+    ConcreteSystemContentForPromptProduct,
+)
 
 
-class CharacterChoiceDialogueSystemContentForPromptProvider(SystemContentForPromptProvider):
+class CharacterChoiceDialogueSystemContentForPromptProvider(
+    SystemContentForPromptProvider
+):
 
-    def __init__(self, participants: Participants, player_identifier: Optional[str], transcription: Transcription,
-                 prompt_template: str, tool_data: dict, tool_instructions_template: str):
+    def __init__(
+        self,
+        participants: Participants,
+        player_identifier: Optional[str],
+        transcription: Transcription,
+        prompt_template: str,
+        tool_data: dict,
+        tool_instructions_template: str,
+    ):
         self._participants = participants
         self._player_identifier = player_identifier
         self._transcription = transcription
@@ -22,8 +33,10 @@ class CharacterChoiceDialogueSystemContentForPromptProvider(SystemContentForProm
     def create_system_content_for_prompt(self) -> SystemContentForPromptProduct:
 
         all_participants = "\n".join(
-            [f"Identifier: {identifier} / Name: {participant['name']}" for identifier, participant in
-             self._participants.get().items()]
+            [
+                f"Identifier: {identifier} / Name: {participant['name']}"
+                for identifier, participant in self._participants.get().items()
+            ]
         )
 
         if self._player_identifier:
@@ -41,6 +54,12 @@ class CharacterChoiceDialogueSystemContentForPromptProvider(SystemContentForProm
             assert all_participants != participants_without_player
 
         return ConcreteSystemContentForPromptProduct(
-            self._prompt_template.format(all_participants=all_participants, dialogue=self._transcription.get(),
-                                         participants_without_player=participants_without_player) + "\n\n" + generate_tool_prompt(
-                self._tool_data, self._tool_instructions_template), is_valid=True)
+            self._prompt_template.format(
+                all_participants=all_participants,
+                dialogue=self._transcription.get(),
+                participants_without_player=participants_without_player,
+            )
+            + "\n\n"
+            + generate_tool_prompt(self._tool_data, self._tool_instructions_template),
+            is_valid=True,
+        )

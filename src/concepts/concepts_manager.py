@@ -1,17 +1,17 @@
 from typing import Dict, Optional
 
+from src.base.playthrough_name import RequiredString
 from src.characters.factories.player_and_followers_information_factory import (
     PlayerAndFollowersInformationFactory,
 )
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.factories.places_descriptions_factory import PlacesDescriptionsFactory
-from src.playthrough_name import PlaythroughName
 
 
 class ConceptsManager:
     def __init__(
         self,
-        playthrough_name: PlaythroughName,
+        playthrough_name: RequiredString,
         filesystem_manager: Optional[FilesystemManager] = None,
     ):
         self._playthrough_name = playthrough_name

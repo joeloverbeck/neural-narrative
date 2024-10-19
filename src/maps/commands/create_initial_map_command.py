@@ -1,5 +1,5 @@
-from src.abstracts.command import Command
-from src.enums import PlaceType
+from src.base.abstracts.command import Command
+from src.base.enums import PlaceType
 from src.maps.abstracts.abstract_factories import (
     RandomPlaceTemplateBasedOnCategoriesFactory,
 )

@@ -1,12 +1,12 @@
 from typing import Optional, List
 
+from src.base.playthrough_manager import PlaythroughManager
 from src.characters.character import Character
 from src.characters.character_memories import CharacterMemories
 from src.characters.characters_manager import CharactersManager
 from src.characters.factories.player_data_for_prompt_factory import (
     PlayerDataForPromptFactory,
 )
-from src.playthrough_manager import PlaythroughManager
 
 
 class PartyDataForPromptFactory:

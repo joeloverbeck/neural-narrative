@@ -1,4 +1,4 @@
-from src.constants import CHOOSING_SPEECH_TURN_PROMPT_FILE, SPEECH_TURN_TOOL_FILE, TOOL_INSTRUCTIONS_FILE
+from src.base.constants import CHOOSING_SPEECH_TURN_PROMPT_FILE, SPEECH_TURN_TOOL_FILE, TOOL_INSTRUCTIONS_FILE
 from src.dialogues.participants import Participants
 from src.dialogues.providers.character_choice_dialogue_system_content_for_prompt_provider import \
     CharacterChoiceDialogueSystemContentForPromptProvider

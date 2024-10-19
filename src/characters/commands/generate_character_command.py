@@ -1,7 +1,8 @@
 import logging
 from typing import cast
 
-from src.abstracts.command import Command
+from src.base.abstracts.command import Command
+from src.base.exceptions import CharacterGenerationError
 from src.characters.characters_manager import CharactersManager
 from src.characters.factories.speech_patterns_provider_factory import (
     SpeechPatternsProviderFactory,
@@ -13,7 +14,6 @@ from src.characters.products.speech_patterns_product import SpeechPatternsProduc
 from src.characters.providers.character_generation_tool_response_provider import (
     CharacterGenerationToolResponseProvider,
 )
-from src.exceptions import CharacterGenerationError
 from src.images.factories.generate_character_image_command_factory import (
     GenerateCharacterImageCommandFactory,
 )

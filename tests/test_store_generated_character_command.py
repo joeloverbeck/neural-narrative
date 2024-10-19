@@ -2,10 +2,10 @@ from unittest.mock import Mock, patch
 
 import pytest
 
+from src.base.enums import IdentifierType
 from src.characters.commands.store_generated_character_command import (
     StoreGeneratedCharacterCommand,
 )
-from src.enums import IdentifierType
 
 
 # Helper function to generate valid character data
@@ -88,7 +88,7 @@ def test_init_with_valid_character_data():
 
 
 @patch("src.filesystem.filesystem_manager.FilesystemManager")
-@patch("src.identifiers_manager.IdentifiersManager")
+@patch("src.base.identifiers_manager.IdentifiersManager")
 def test_execute_calls_filesystem_manager_methods(
     mock_identifiers_manager_class, mock_filesystem_manager_class
 ):
@@ -156,7 +156,7 @@ def test_compose_speech_patterns():
 
 
 @patch("src.filesystem.filesystem_manager.FilesystemManager")
-@patch("src.identifiers_manager.IdentifiersManager")
+@patch("src.base.identifiers_manager.IdentifiersManager")
 def test_execute_with_existing_characters(
     mock_identifiers_manager_class, mock_filesystem_manager_class
 ):

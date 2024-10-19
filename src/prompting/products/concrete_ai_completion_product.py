@@ -3,12 +3,12 @@ from typing import Optional
 
 from openai.types.chat import ChatCompletion
 
-from src.constants import (
+from src.base.constants import (
     TOO_MANY_REQUESTS_ERROR_NUMBER,
     UNAUTHORIZED_ERROR_NUMBER,
     PAYMENT_REQUIRED,
 )
-from src.enums import AiCompletionErrorType
+from src.base.enums import AiCompletionErrorType
 from src.prompting.abstracts.ai_completion_product import AiCompletionProduct
 
 logger = logging.getLogger(__name__)

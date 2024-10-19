@@ -2,6 +2,7 @@
 
 {% block styles %}
 {{ super() }}
+<link href="{{ url_for('static', filename='common.css') }}" rel="stylesheet" type="text/css">
 <link href="{{ url_for('static', filename='index.css') }}" rel="stylesheet" type="text/css">
 {% endblock %}
 
@@ -43,123 +44,46 @@ Select Playthrough
             <i class="fas fa-plus-circle"></i> Create Playthrough
         </button>
         <div class="content">
-            <form action="/" method="post" class="create-playthrough-form">
+            <form action="/" method="post" class="ajax-form">
                 <input type="hidden" name="submit_action" value="create_playthrough">
 
                 <label for="playthrough_name">Playthrough Name:</label>
                 <input type="text" id="playthrough_name_for_creation" name="playthrough_name" required>
 
-                <label for="world_name_create">Select World:</label>
-                <select id="world_name_create" name="world_name" required onchange="updateDescription('world_create')">
-                    {% for key, value in worlds.items() %}
+                <label for="story_universe_name">Select Story Universe:</label>
+                <select id="story_universe_name" name="story_universe_name" required
+                        onchange="updateDescription('story_universe')">
+                    {% for key, value in story_universes.items() %}
                     <option value="{{ key }}" data-description="{{ value['description'] }}">{{ key }}</option>
                     {% endfor %}
                 </select>
-
+                <div id="story_universe_description" class="description-box">
+                    <h3>Story Universe Description</h3>
+                    <p></p>
+                </div>
                 <label for="player_notion">Your Notions for the Player Character (optional):</label>
                 <textarea id="player_notion" name="player_notion" rows="4" cols="50"></textarea>
 
                 <button type="submit" class="action-button">
-                    <i class="fas fa-plus-circle"></i> Create Playthrough
+                    <i class="fas fa-cogs"></i> Create Playthrough
                 </button>
             </form>
         </div>
     </div>
 
-    <!-- Generate World Section -->
+    <!-- Generate Story Universe Section -->
     <div class="collapsible-section">
         <button class="collapsible">
-            <i class="fas fa-globe"></i> Generate World
+            <i class="fa-solid fa-infinity"></i> Generate Story Universe
         </button>
         <div class="content">
-            <form action="/" method="post" class="generate-world-form">
-                <input type="hidden" name="submit_action" value="generate_world">
-                <label class="world-label" for="world_notion">Enter your notions about the world:</label>
-                <textarea id="world_notion" name="world_notion" rows="4" cols="50" required></textarea>
+            <form action="/" method="post" class="ajax-form" data-success-handler="generateStoryUniverseSuccess">
+                <input type="hidden" name="submit_action" value="generate_story_universe">
+                <label for="story_universe_notion">Enter your notions about the story universe:</label>
+                <textarea id="story_universe_notion" name="story_universe_notion" rows="4" cols="50"
+                          required></textarea>
                 <button type="submit" class="action-button">
-                    <i class="fas fa-cogs"></i> Generate World
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Generate Region Section -->
-    <div class="collapsible-section">
-        <button class="collapsible">
-            <i class="fas fa-map"></i> Generate Region
-        </button>
-        <div class="content">
-            <form action="/" method="post" class="generate-region-form">
-                <input type="hidden" name="submit_action" value="generate_region">
-                <label for="world_name">Select the world:</label>
-                <select id="world_name" name="world_name" required onchange="updateDescription('world')">
-                    {% for key,value in worlds.items() %}
-                    <option value="{{ key }}" data-description="{{ value['description'] }}">{{ key }}</option>
-                    {% endfor %}
-                </select>
-                <div id="world_description" class="description-box">
-                    <h3>World Description</h3>
-                    <p></p>
-                </div>
-                <label for="region_notion">Enter your notions about the region (optional):</label>
-                <textarea id="region_notion" name="region_notion" rows="4" cols="50"></textarea>
-                <button type="submit" class="action-button">
-                    <i class="fas fa-cogs"></i> Generate Region
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Generate Area Section -->
-    <div class="collapsible-section">
-        <button class="collapsible">
-            <i class="fas fa-map-marker-alt"></i> Generate Area
-        </button>
-        <div class="content">
-            <form action="/" method="post" class="generate-area-form">
-                <input type="hidden" name="form_type" value="generate_area">
-                <label for="region_name">Select the region:</label>
-                <select id="region_name" name="region_name" required onchange="updateDescription('region')">
-                    {% for key,value in regions.items() %}
-                    <option value="{{ key }}" data-description="{{ value['description'] }}">{{ key }}</option>
-                    {% endfor %}
-                </select>
-                <div id="region_description" class="description-box">
-                    <h3>Region Description</h3>
-                    <p></p>
-                </div>
-                <label for="area_notion">Enter your notions about the area (optional):</label>
-                <textarea id="area_notion" name="area_notion" rows="4" cols="50"></textarea>
-                <button type="submit" class="action-button">
-                    <i class="fas fa-cogs"></i> Generate Area
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Generate Location Section -->
-    <div class="collapsible-section">
-        <button class="collapsible">
-            <i class="fas fa-location-arrow"></i> Generate Location
-        </button>
-        <div class="content">
-            <form method="post" class="ajax-form generate-location-form" action="/"
-                  data-success-handler="generateLocationSuccess">
-                <input type="hidden" name="submit_action" value="generate_location">
-                <label for="area_name">Select the area:</label>
-                <select id="area_name" name="area_name" required onchange="updateDescription('area')">
-                    {% for key,value in areas.items() %}
-                    <option value="{{ key }}" data-description="{{ value['description'] }}">{{ key }}</option>
-                    {% endfor %}
-                </select>
-                <div id="area_description" class="description-box">
-                    <h3>Area Description</h3>
-                    <p></p>
-                </div>
-                <label for="location_notion">Enter your notions about the location (optional):</label>
-                <textarea id="location_notion" name="location_notion" rows="4" cols="50"></textarea>
-                <button type="submit" class="action-button">
-                    <i class="fas fa-cogs"></i> Generate Location
+                    <i class="fas fa-cogs"></i> Generate Story Universe
                 </button>
             </form>
         </div>
@@ -167,6 +91,10 @@ Select Playthrough
 
     <!-- Navigation Buttons -->
     <div class="buttons">
+        <a href="{{ url_for('places') }}" class="button">
+            <i class="fas fa-map"></i> Places
+        </a>
+        {% if session.get("playthrough_name") %}
         <a href="{{ url_for('story-hub') }}" class="button">
             <i class="fas fa-feather-alt"></i> Story Hub
         </a>
@@ -182,6 +110,7 @@ Select Playthrough
         <a href="{{ url_for('actions') }}" class="button">
             <i class="fas fa-bolt"></i> Actions
         </a>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

@@ -1,4 +1,5 @@
-from src.enums import PlaceType
+from src.base.enums import PlaceType
+from src.base.playthrough_manager import PlaythroughManager
 from src.maps.abstracts.abstract_factories import CardinalConnectionCreationFactory
 from src.maps.abstracts.factory_products import CardinalConnectionCreationProduct
 from src.maps.enums import RandomPlaceTypeMapEntryCreationResultType, CardinalDirection
@@ -15,7 +16,6 @@ from src.maps.map_manager import MapManager
 from src.maps.products.concrete_cardinal_connection_creation_product import (
     ConcreteCardinalConnectionCreationProduct,
 )
-from src.playthrough_manager import PlaythroughManager
 
 
 class ConcreteCardinalConnectionCreationFactory(CardinalConnectionCreationFactory):

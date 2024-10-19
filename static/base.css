@@ -133,8 +133,12 @@ select:disabled {
 }
 
 button:disabled {
-    background-color: #a0a0a0;
+    background-color: #A9A9A9;
     cursor: not-allowed;
+}
+
+button:disabled:hover {
+    background-color: #D2122E;
 }
 
 /* Playing State */

@@ -1,15 +1,15 @@
 import logging
 from time import sleep
 
-from src.constants import (
+from src.base.constants import (
     WAIT_TIME_WHEN_TOO_MANY_REQUESTS_ERROR,
     WAIT_TIME_WHEN_UNAUTHORIZED_ERROR,
     WAIT_TIME_WHEN_EMPTY_CONTENT,
     MAX_RETRIES,
     WAIT_TIME_WHEN_MALFORMED_COMPLETION,
 )
+from src.base.enums import AiCompletionErrorType
 from src.dialogues.messages_to_llm import MessagesToLlm
-from src.enums import AiCompletionErrorType
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.prompting.abstracts.abstract_factories import LlmContentProvider
 from src.prompting.abstracts.factory_products import LlmContentProduct

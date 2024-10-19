@@ -1,5 +1,5 @@
-from src.abstracts.command import Command
-from src.abstracts.observer import Observer
+from src.base.abstracts.command import Command
+from src.base.abstracts.observer import Observer
 from src.dialogues.abstracts.abstract_factories import PlayerInputFactory
 from src.dialogues.abstracts.strategies import (
     MessageDataProducerForIntroducePlayerInputIntoDialogueStrategy,

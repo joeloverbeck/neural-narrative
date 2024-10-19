@@ -1,6 +1,6 @@
 import os
 
-from src.abstracts.command import Command
+from src.base.abstracts.command import Command
 from src.dialogues.abstracts.strategies import ChooseParticipantsStrategy
 from src.dialogues.dialogue_manager import DialogueManager
 from src.dialogues.factories.load_data_from_ongoing_dialogue_command_factory import (

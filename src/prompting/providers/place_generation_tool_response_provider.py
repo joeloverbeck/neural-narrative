@@ -1,19 +1,23 @@
 from typing import Optional, Dict
 
-from src.constants import (
+from src.base.constants import (
     AREA_GENERATION_PROMPT_FILE,
     REGION_GENERATION_PROMPT_FILE,
     LOCATION_GENERATION_PROMPT_FILE,
     REGION_GENERATION_TOOL_FILE,
     AREA_GENERATION_TOOL_FILE,
     LOCATION_GENERATION_TOOL_FILE,
-    WORLD_TEMPLATES_FILE,
+    WORLDS_TEMPLATES_FILE,
     LOCATIONS_TEMPLATES_FILE,
     AREAS_TEMPLATES_FILE,
     REGIONS_TEMPLATES_FILE,
     LOCATION_TYPES,
+    WORLD_GENERATION_PROMPT_FILE,
+    STORY_UNIVERSES_TEMPLATE_FILE,
+    WORLD_GENERATION_TOOL_FILE,
 )
-from src.enums import TemplateType
+from src.base.enums import TemplateType
+from src.base.playthrough_name import RequiredString
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.template_type_data import TemplateTypeData
 from src.prompting.abstracts.abstract_factories import ToolResponseProvider
@@ -31,45 +35,55 @@ class PlaceGenerationToolResponseProvider(
 ):
     def __init__(
         self,
-        place_identifier: str,
+        father_place_identifier: RequiredString,
         template_type: TemplateType,
-        notion: str,
+        notion: RequiredString,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
-        filesystem_manager: FilesystemManager = None,
+        filesystem_manager: Optional[FilesystemManager] = None,
     ):
         super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
 
-        if not place_identifier:
-            raise ValueError("place_identifier can't be empty.")
+        if not father_place_identifier:
+            raise ValueError("father_place_identifier can't be empty.")
 
-        self._place_identifier = place_identifier
+        self._father_place_identifier = father_place_identifier
         self._template_type = template_type
         self._notion = notion
 
     def _read_and_format_tool_file(self, tool_file: str) -> dict:
-        template_copy = self._filesystem_manager.load_existing_or_new_json_file(
-            LOCATION_GENERATION_TOOL_FILE
-        )
-
-        try:
-            template_copy["function"]["parameters"]["properties"]["type"][
-                "enum"
-            ] = LOCATION_TYPES
-        except Exception as e:
-            raise ValueError(
-                f"Was unable to format the location generation tool file: {e}"
+        # Have in mind that here we need to handle all possible tool files.
+        if tool_file == LOCATION_GENERATION_TOOL_FILE:
+            template_copy = self._filesystem_manager.load_existing_or_new_json_file(
+                LOCATION_GENERATION_TOOL_FILE
             )
 
-        return template_copy
+            try:
+                template_copy["function"]["parameters"]["properties"]["type"][
+                    "enum"
+                ] = LOCATION_TYPES
+            except Exception as e:
+                raise ValueError(
+                    f"Was unable to format the location generation tool file: {e}"
+                )
+
+            return template_copy
+
+        return self._filesystem_manager.read_json_file(tool_file)
 
     def _read_tool_file(self, tool_file: str) -> dict:
         return self._read_and_format_tool_file(tool_file)
 
     def _get_template_type_data(self) -> Optional[TemplateTypeData]:
         data_mapping: Dict[TemplateType, TemplateTypeData] = {
+            TemplateType.WORLD: TemplateTypeData(
+                prompt_file=WORLD_GENERATION_PROMPT_FILE,
+                father_templates_file_path=STORY_UNIVERSES_TEMPLATE_FILE,
+                current_place_templates_file_path=WORLDS_TEMPLATES_FILE,
+                tool_file=WORLD_GENERATION_TOOL_FILE,
+            ),
             TemplateType.REGION: TemplateTypeData(
                 prompt_file=REGION_GENERATION_PROMPT_FILE,
-                father_templates_file_path=WORLD_TEMPLATES_FILE,
+                father_templates_file_path=WORLDS_TEMPLATES_FILE,
                 current_place_templates_file_path=REGIONS_TEMPLATES_FILE,
                 tool_file=REGION_GENERATION_TOOL_FILE,
             ),
@@ -91,6 +105,11 @@ class PlaceGenerationToolResponseProvider(
     def get_prompt_file(self) -> str:
         template_data = self._get_template_type_data()
 
+        if not template_data:
+            raise ValueError(
+                f"Failed to produce template data for father place identifier '{self._father_place_identifier.value}' and template type {self._template_type.value}."
+            )
+
         return template_data.prompt_file
 
     def get_prompt_kwargs(self) -> dict:
@@ -98,7 +117,7 @@ class PlaceGenerationToolResponseProvider(
         father_templates_file = self._filesystem_manager.load_existing_or_new_json_file(
             template_data.father_templates_file_path
         )
-        place_template = father_templates_file[self._place_identifier]
+        place_template = father_templates_file[self._father_place_identifier.value]
         current_place_type_templates = (
             self._filesystem_manager.load_existing_or_new_json_file(
                 template_data.current_place_templates_file_path
@@ -106,7 +125,7 @@ class PlaceGenerationToolResponseProvider(
         )
 
         return {
-            "father_place_name": self._place_identifier,
+            "father_place_name": self._father_place_identifier.value,
             "father_place_description": place_template["description"],
             "father_place_categories": place_template["categories"],
             "current_place_type_names": list(current_place_type_templates.keys()),

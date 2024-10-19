@@ -1,9 +1,9 @@
-from src.constants import (
+from src.base.constants import (
     LOCATIONS_TEMPLATES_FILE,
     AREAS_TEMPLATES_FILE,
     REGIONS_TEMPLATES_FILE,
 )
-from src.enums import PlaceType
+from src.base.enums import PlaceType
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.abstracts.abstract_factories import PlaceDataFactory
 from src.maps.abstracts.factory_products import PlaceDataProduct

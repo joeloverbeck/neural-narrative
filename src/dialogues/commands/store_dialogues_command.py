@@ -1,13 +1,13 @@
 import logging
 from typing import Optional
 
-from src.abstracts.command import Command
+from src.base.abstracts.command import Command
+from src.base.playthrough_manager import PlaythroughManager
 from src.characters.character import Character
 from src.characters.characters_manager import CharactersManager
 from src.dialogues.participants import Participants
 from src.dialogues.transcription import Transcription
 from src.filesystem.filesystem_manager import FilesystemManager
-from src.playthrough_manager import PlaythroughManager
 
 logger = logging.getLogger(__name__)
 

@@ -1,15 +1,18 @@
 // static/index.js
 
-function updateDescription(type) {
-    var select = document.getElementById(type + '_name');
-    var selectedOption = select.options[select.selectedIndex];
-    var description = selectedOption.getAttribute('data-description');
-    var descriptionElement = document.getElementById(type + '_description').querySelector('p');
-    descriptionElement.innerText = description;
+window.onload = function() {
+    updateDescription('story_universe');
 }
 
-window.onload = function() {
-    updateDescription('world');
-    updateDescription('region');
-    updateDescription('area');
+function generateStoryUniverseSuccess(data,context){
+    if (data.success) {
+       showToast(data.message || 'Story universe generated successfully', 'success');
+        setTimeout(() => {
+            window.location.href = '/';
+        }, 4000); // Redirects after 4 seconds
+    }
+    else
+    {
+        showToast(data.error || 'An error occurred', 'error');
+    }
 }

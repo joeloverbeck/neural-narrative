@@ -5,7 +5,7 @@ from datetime import datetime
 from json import JSONDecodeError
 from typing import List, Any
 
-from src.constants import (
+from src.base.constants import (
     CHARACTERS_FOLDER_NAME,
     PLAYTHROUGHS_FOLDER,
     CHARACTERS_FILE,
@@ -22,8 +22,8 @@ from src.constants import (
     RUNPOD_SECRET_KEY_FILE,
     VOICE_LINES_FOLDER_PATH,
 )
-from src.exceptions import FailedToLoadJsonError
-from src.playthrough_name import PlaythroughName
+from src.base.exceptions import FailedToLoadJsonError
+from src.base.playthrough_name import RequiredString
 
 
 class FilesystemManager:
@@ -238,7 +238,7 @@ class FilesystemManager:
         return folder_path
 
     def get_file_path_to_interesting_situations(
-        self, playthrough_name: PlaythroughName
+        self, playthrough_name: RequiredString
     ) -> str:
         if not playthrough_name:
             raise ValueError("playthrough_name should not be empty.")
@@ -248,7 +248,7 @@ class FilesystemManager:
             "interesting_situations.txt",
         )
 
-    def get_file_path_to_plot_twists(self, playthrough_name: PlaythroughName) -> str:
+    def get_file_path_to_plot_twists(self, playthrough_name: RequiredString) -> str:
         return os.path.join(
             self.get_file_path_to_playthrough_folder(playthrough_name.value),
             "plot_twists.txt",
@@ -263,7 +263,7 @@ class FilesystemManager:
         )
 
     def get_file_path_to_interesting_dilemmas(
-        self, playthrough_name: PlaythroughName
+        self, playthrough_name: RequiredString
     ) -> str:
         if not playthrough_name:
             raise ValueError("playthrough_name should not be empty.")
@@ -273,7 +273,7 @@ class FilesystemManager:
             "interesting_dilemmas.txt",
         )
 
-    def get_file_path_to_goals(self, playthrough_name: PlaythroughName) -> str:
+    def get_file_path_to_goals(self, playthrough_name: RequiredString) -> str:
         if not playthrough_name:
             raise ValueError("playthrough_name can't be empty.")
 
@@ -315,8 +315,8 @@ class FilesystemManager:
             "adventure.txt",
         )
 
-    def get_file_path_to_plot_blueprints(self, playthrough_name: PlaythroughName):
-        if not isinstance(playthrough_name, PlaythroughName):
+    def get_file_path_to_plot_blueprints(self, playthrough_name: RequiredString):
+        if not isinstance(playthrough_name, RequiredString):
             raise TypeError(
                 f"Expected playthrough_name to be PlaythroughName, but it was {type(playthrough_name)}."
             )

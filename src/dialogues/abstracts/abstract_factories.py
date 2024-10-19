@@ -3,7 +3,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Protocol
 
-from src.abstracts.subject import Subject
+from src.base.abstracts.subject import Subject
 from src.dialogues.abstracts.factory_products import (
     DialogueProduct,
     PlayerInputProduct,

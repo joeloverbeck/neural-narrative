@@ -2,8 +2,8 @@
 from flask import session, redirect, url_for, render_template
 from flask.views import MethodView
 
+from src.base.playthrough_manager import PlaythroughManager
 from src.characters.character import Character
-from src.playthrough_manager import PlaythroughManager
 
 
 class CharactersHubView(MethodView):

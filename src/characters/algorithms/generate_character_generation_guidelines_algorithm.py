@@ -1,6 +1,7 @@
 import logging
 from typing import Optional, cast
 
+from src.base.playthrough_manager import PlaythroughManager
 from src.characters.character_guidelines_manager import CharacterGuidelinesManager
 from src.characters.factories.character_generation_guidelines_factory import (
     CharacterGenerationGuidelinesFactory,
@@ -9,7 +10,6 @@ from src.characters.products.character_generation_guidelines_product import (
     CharacterGenerationGuidelinesProduct,
 )
 from src.maps.map_manager import MapManager
-from src.playthrough_manager import PlaythroughManager
 
 logger = logging.getLogger(__name__)
 

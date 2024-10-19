@@ -2,19 +2,19 @@ import logging
 import random
 from typing import List, Dict, Optional
 
-from src.constants import (
-    WORLD_TEMPLATES_FILE,
+from src.base.constants import (
+    WORLDS_TEMPLATES_FILE,
     LOCATIONS_TEMPLATES_FILE,
     AREAS_TEMPLATES_FILE,
     REGIONS_TEMPLATES_FILE,
 )
-from src.enums import PlaceType
+from src.base.enums import PlaceType
+from src.base.identifiers_manager import IdentifiersManager
+from src.base.playthrough_manager import PlaythroughManager
 from src.filesystem.filesystem_manager import FilesystemManager
-from src.identifiers_manager import IdentifiersManager
 from src.maps.enums import CardinalDirection
 from src.maps.places_templates_parameter import PlacesTemplatesParameter
 from src.maps.weather_identifier import WeatherIdentifier
-from src.playthrough_manager import PlaythroughManager
 
 logger = logging.getLogger(__name__)
 
@@ -55,7 +55,7 @@ class MapManager:
     def _load_template_file(self, place_type: PlaceType) -> Dict:
         """Load the template file based on place type."""
         file_path = {
-            PlaceType.WORLD: WORLD_TEMPLATES_FILE,
+            PlaceType.WORLD: WORLDS_TEMPLATES_FILE,
             PlaceType.REGION: REGIONS_TEMPLATES_FILE,
             PlaceType.AREA: AREAS_TEMPLATES_FILE,
             PlaceType.LOCATION: LOCATIONS_TEMPLATES_FILE,
@@ -201,7 +201,7 @@ class MapManager:
 
     def get_world_description(self):
         worlds_templates_file = self._filesystem_manager.load_existing_or_new_json_file(
-            WORLD_TEMPLATES_FILE
+            WORLDS_TEMPLATES_FILE
         )
 
         return worlds_templates_file[self._playthrough_manager.get_world_template()][

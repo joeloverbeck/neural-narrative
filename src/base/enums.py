@@ -19,6 +19,7 @@ class TemplateType(Enum):
     AREA = "area"
     REGION = "region"
     WORLD = "world"
+    STORY_UNIVERSE = "story_universe"
 
 
 class AiCompletionErrorType(Enum):

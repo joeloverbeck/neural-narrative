@@ -1,5 +1,5 @@
 from src.actions.products.action_resolution_product import ActionResolutionProduct
-from src.constants import NARRATOR_VOICE_MODEL
+from src.base.constants import NARRATOR_VOICE_MODEL
 from src.voices.factories.direct_voice_line_generation_algorithm_factory import (
     DirectVoiceLineGenerationAlgorithmFactory,
 )

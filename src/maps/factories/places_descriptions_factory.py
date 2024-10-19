@@ -1,6 +1,6 @@
 from typing import Optional
 
-from src.constants import PLACES_DESCRIPTIONS_BLOCK
+from src.base.constants import PLACES_DESCRIPTIONS_BLOCK
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.factories.place_descriptions_for_prompt_factory import (
     PlaceDescriptionsForPromptFactory,

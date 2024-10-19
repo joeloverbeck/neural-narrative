@@ -1,7 +1,7 @@
+from src.base.playthrough_name import RequiredString
 from src.characters.commands.store_generated_character_command import (
     StoreGeneratedCharacterCommand,
 )
-from src.playthrough_name import PlaythroughName
 from src.voices.algorithms.match_voice_data_to_voice_model_algorithm import (
     MatchVoiceDataToVoiceModelAlgorithm,
 )
@@ -26,7 +26,7 @@ class StoreGeneratedCharacterCommandFactory:
         self, character_data: dict
     ) -> StoreGeneratedCharacterCommand:
         return StoreGeneratedCharacterCommand(
-            PlaythroughName(self._playthrough_name),
+            RequiredString(self._playthrough_name),
             character_data,
             self._match_voice_data_to_voice_model_algorithm,
         )
