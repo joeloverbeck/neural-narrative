@@ -1,6 +1,6 @@
 from typing import Protocol
 
-from src.abstracts.subject import Subject
+from src.base.abstracts.subject import Subject
 from src.dialogues.abstracts.strategies import InvolvePlayerInDialogueStrategy
 
 

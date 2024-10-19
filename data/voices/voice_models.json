@@ -934,5 +934,29 @@
     "CASUAL",
     "PASSIONATE",
     "NO SPECIAL EFFECTS"
+  ],
+  "gunnersmale01": [
+    "MALE",
+    "YOUNG ADULT/ADULT",
+    "EXCITED",
+    "MODERATE",
+    "LOUD",
+    "SMOOTH",
+    "WARM",
+    "INTENSE/DRAMATIC",
+    "ENERGETIC",
+    "NO SPECIAL EFFECTS"
+  ],
+  "npcmrexgoodman": [
+    "MALE",
+    "MIDDLE-AGED",
+    "HOPEFUL",
+    "SLOW",
+    "NORMAL VOLUME",
+    "SMOOTH",
+    "WARM",
+    "INTENSE/DRAMATIC",
+    "PASSIONATE",
+    "NO SPECIAL EFFECTS"
   ]
 }

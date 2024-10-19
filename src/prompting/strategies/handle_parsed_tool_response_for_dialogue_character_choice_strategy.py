@@ -1,8 +1,8 @@
+from src.base.playthrough_manager import PlaythroughManager
 from src.dialogues.participants import Participants
 from src.dialogues.strategies.prevent_llm_from_choosing_player_as_next_speaker_strategy import (
     PreventLlmFromChoosingPlayerAsNextSpeakerStrategy,
 )
-from src.playthrough_manager import PlaythroughManager
 from src.prompting.abstracts.factory_products import (
     LlmToolResponseProduct,
     LlmContentProduct,

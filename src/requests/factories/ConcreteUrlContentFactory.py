@@ -1,6 +1,6 @@
 import requests
 
-from src.constants import REQUEST_OK
+from src.base.constants import REQUEST_OK
 from src.requests.abstracts.abstract_factories import UrlContentFactory
 from src.requests.abstracts.factory_products import UrlContentProduct
 from src.requests.products.ConcreteUrlContentProduct import ConcreteUrlContentProduct

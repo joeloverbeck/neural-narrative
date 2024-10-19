@@ -2,7 +2,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from src.constants import MAX_RETRIES_WHEN_FAILED_TO_RETURN_FUNCTION_CALL
+from src.base.constants import MAX_RETRIES_WHEN_FAILED_TO_RETURN_FUNCTION_CALL
 from src.dialogues.providers.llm_speech_data_provider import LlmSpeechDataProvider
 
 

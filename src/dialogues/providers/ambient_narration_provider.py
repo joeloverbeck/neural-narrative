@@ -1,18 +1,18 @@
 from typing import Optional
 
-from src.characters.character import Character
-from src.characters.characters_manager import CharactersManager
-from src.constants import (
+from src.base.constants import (
     AMBIENT_NARRATION_GENERATION_PROMPT_FILE,
     AMBIENT_NARRATION_GENERATION_TOOL_FILE,
 )
+from src.base.playthrough_manager import PlaythroughManager
+from src.base.playthrough_name import RequiredString
+from src.characters.character import Character
+from src.characters.characters_manager import CharactersManager
 from src.dialogues.products.ambient_narration_product import AmbientNarrationProduct
 from src.dialogues.transcription import Transcription
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.map_manager import MapManager
 from src.maps.weathers_manager import WeathersManager
-from src.playthrough_manager import PlaythroughManager
-from src.playthrough_name import PlaythroughName
 from src.prompting.factories.produce_tool_response_strategy_factory import (
     ProduceToolResponseStrategyFactory,
 )
@@ -72,7 +72,7 @@ class AmbientNarrationProvider(BaseToolResponseProvider):
             self._playthrough_name, self._playthrough_manager.get_player_identifier()
         ).personality
 
-        weathers_manager = WeathersManager(PlaythroughName(self._playthrough_name))
+        weathers_manager = WeathersManager(RequiredString(self._playthrough_name))
 
         return {
             "setting_description": setting_description,

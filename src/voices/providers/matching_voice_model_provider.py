@@ -2,7 +2,7 @@ import logging
 import random
 from typing import Optional
 
-from src.constants import VOICE_MODELS_FILE
+from src.base.constants import VOICE_MODELS_FILE
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.voices.products.matching_voice_model_product import MatchingVoiceModelProduct
 from src.voices.voice_attributes import VoiceAttributes

@@ -1,6 +1,6 @@
 from typing import Optional
 
-from src.abstracts.command import Command
+from src.base.abstracts.command import Command
 from src.dialogues.messages_to_llm import MessagesToLlm
 from src.dialogues.participants import Participants
 from src.dialogues.transcription import Transcription

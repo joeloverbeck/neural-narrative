@@ -1,6 +1,6 @@
 from collections import Counter
 
-from src.constants import (
+from src.base.constants import (
     VOICE_MODELS_FILE,
     VOICE_GENDERS,
     VOICE_AGES,

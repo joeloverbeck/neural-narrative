@@ -2,10 +2,10 @@ import logging
 import logging.config
 from typing import Optional
 
-from src.abstracts.command import Command
-from src.enums import PlaceType, IdentifierType
+from src.base.abstracts.command import Command
+from src.base.enums import PlaceType, IdentifierType
+from src.base.identifiers_manager import IdentifiersManager
 from src.filesystem.filesystem_manager import FilesystemManager
-from src.identifiers_manager import IdentifiersManager
 
 logger = logging.getLogger(__name__)
 

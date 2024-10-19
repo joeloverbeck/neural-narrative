@@ -1,15 +1,15 @@
 from typing import Optional
 
+from src.base.constants import (
+    SELF_REFLECTION_GENERATION_PROMPT_FILE,
+    SELF_REFLECTION_GENERATION_TOOL_FILE,
+)
 from src.characters.character import Character
 from src.characters.characters_manager import CharactersManager
 from src.characters.factories.character_information_provider import (
     CharacterInformationProvider,
 )
 from src.characters.products.self_reflection_product import SelfReflectionProduct
-from src.constants import (
-    SELF_REFLECTION_GENERATION_PROMPT_FILE,
-    SELF_REFLECTION_GENERATION_TOOL_FILE,
-)
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.prompting.factories.produce_tool_response_strategy_factory import (
     ProduceToolResponseStrategyFactory,

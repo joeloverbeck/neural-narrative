@@ -3,7 +3,7 @@ import re
 import time
 from typing import Optional
 
-from src.exceptions import VoiceLineGenerationError
+from src.base.exceptions import VoiceLineGenerationError
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.requests.requests_manager import RequestsManager
 from src.voices.configs.voice_part_provider_config import VoicePartProviderConfig

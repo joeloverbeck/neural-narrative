@@ -3,9 +3,9 @@ from typing import List
 
 from flask import session, url_for
 
-from src.abstracts.observer import Observer
+from src.base.abstracts.observer import Observer
+from src.base.constants import NARRATOR_VOICE_MODEL
 from src.characters.characters_manager import CharactersManager
-from src.constants import NARRATOR_VOICE_MODEL
 from src.voices.factories.direct_voice_line_generation_algorithm_factory import (
     DirectVoiceLineGenerationAlgorithmFactory,
 )

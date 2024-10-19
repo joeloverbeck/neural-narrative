@@ -1,17 +1,17 @@
 from typing import Optional
 
+from src.base.constants import (
+    PLACE_DESCRIPTION_PROMPT_FILE,
+    PLACE_DESCRIPTION_TOOL_FILE,
+)
+from src.base.playthrough_name import RequiredString
 from src.characters.characters_manager import CharactersManager
 from src.characters.factories.character_information_provider import (
     CharacterInformationProvider,
 )
-from src.constants import (
-    PLACE_DESCRIPTION_PROMPT_FILE,
-    PLACE_DESCRIPTION_TOOL_FILE,
-)
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.map_manager import MapManager
 from src.maps.weathers_manager import WeathersManager
-from src.playthrough_name import PlaythroughName
 from src.prompting.abstracts.abstract_factories import (
     FilteredPlaceDescriptionGenerationFactory,
 )
@@ -77,7 +77,7 @@ class ConcreteFilteredPlaceDescriptionGenerationFactory(
 
         place_data = place_full_data[f"{place_type.value}_data"]
 
-        weathers_manager = WeathersManager(PlaythroughName(self._playthrough_name))
+        weathers_manager = WeathersManager(RequiredString(self._playthrough_name))
 
         data_for_prompt = {
             "hour": self._time_manager.get_hour(),

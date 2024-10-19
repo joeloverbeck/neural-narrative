@@ -1,11 +1,11 @@
 from typing import Optional
 
 from src.actions.products.action_resolution_product import ActionResolutionProduct
+from src.base.playthrough_manager import PlaythroughManager
 from src.characters.factories.store_character_memory_command_factory import (
     StoreCharacterMemoryCommandFactory,
 )
 from src.dialogues.participants import Participants
-from src.playthrough_manager import PlaythroughManager
 
 
 class StoreActionResolutionAlgorithm:

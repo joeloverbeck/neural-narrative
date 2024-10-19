@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from src.enums import TemplateType
+from src.base.enums import TemplateType
 from src.maps.commands.print_place_template_list_command import (
     PrintPlaceTemplateListCommand,
 )

@@ -1,9 +1,9 @@
 from typing import Optional
 
+from src.base.playthrough_manager import PlaythroughManager
 from src.characters.character import Character
 from src.characters.character_memories import CharacterMemories
 from src.characters.products.player_data_for_prompt import PlayerDataForPrompt
-from src.playthrough_manager import PlaythroughManager
 
 
 class PlayerDataForPromptFactory:

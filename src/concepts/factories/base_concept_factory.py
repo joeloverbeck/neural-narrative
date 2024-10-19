@@ -2,13 +2,13 @@
 
 from typing import Optional
 
+from src.base.playthrough_name import RequiredString
 from src.characters.factories.player_and_followers_information_factory import (
     PlayerAndFollowersInformationFactory,
 )
 from src.concepts.concepts_manager import ConceptsManager
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.factories.places_descriptions_factory import PlacesDescriptionsFactory
-from src.playthrough_name import PlaythroughName
 from src.prompting.factories.produce_tool_response_strategy_factory import (
     ProduceToolResponseStrategyFactory,
 )
@@ -18,7 +18,7 @@ from src.prompting.providers.base_tool_response_provider import BaseToolResponse
 class BaseConceptFactory(BaseToolResponseProvider):
     def __init__(
         self,
-        playthrough_name: PlaythroughName,
+        playthrough_name: RequiredString,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         places_descriptions_factory: PlacesDescriptionsFactory,
         player_and_followers_information_factory: PlayerAndFollowersInformationFactory,

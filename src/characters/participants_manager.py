@@ -1,9 +1,9 @@
 from typing import Optional
 
+from src.base.playthrough_manager import PlaythroughManager
 from src.characters.character import Character
 from src.characters.characters_manager import CharactersManager
 from src.dialogues.participants import Participants
-from src.playthrough_manager import PlaythroughManager
 
 
 class ParticipantsManager:

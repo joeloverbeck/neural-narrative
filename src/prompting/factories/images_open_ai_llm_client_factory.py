@@ -1,6 +1,6 @@
 from openai import OpenAI
 
-from src.constants import OPENROUTER_API_URL
+from src.base.constants import OPENROUTER_API_URL
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.prompting.abstracts.abstract_factories import LlmClientFactory
 from src.prompting.abstracts.llm_client import LlmClient

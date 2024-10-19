@@ -1,14 +1,14 @@
 from typing import Optional
 
+from src.base.constants import (
+    CONNECTION_GENERATION_PROMPT_FILE,
+    CONNECTION_GENERATION_TOOL_FILE,
+)
 from src.characters.character import Character
 from src.characters.factories.character_information_provider_factory import (
     CharacterInformationProviderFactory,
 )
 from src.characters.products.connection_product import ConnectionProduct
-from src.constants import (
-    CONNECTION_GENERATION_PROMPT_FILE,
-    CONNECTION_GENERATION_TOOL_FILE,
-)
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.prompting.factories.produce_tool_response_strategy_factory import (
     ProduceToolResponseStrategyFactory,

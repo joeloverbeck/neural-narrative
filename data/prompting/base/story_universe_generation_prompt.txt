@@ -1,0 +1,11 @@
+You are tasked with coming up with a universe for a narrative. A universe is understood as the overarching reality that encompasses all worlds, dimensions, and planes of existence where stories unfold.
+Your description of the universe should be at most 6-7 paragraphs long, and it should contain the following information:
+- Fundamental Laws and Principles: What are the unique physical laws, magical systems, or cosmic forces that govern this universe? Are there elements like time manipulation, elemental magic, or technology so advanced it appears magical?
+- Conceptual Peculiarities: What specific features make this universe stand out? For example, does it have rifts in reality allowing interdimensional travel, sentient stars, a cosmic game played by deities influencing events, or a universe where thoughts can manifest physically?
+- Creation and Cosmology: How was the universe created? Are there creation myths involving deities, cosmic beings, or cataclysmic events? What is the origin story that shapes the universe's existence?
+- Structure of Reality: Describe the makeup of the universe. Does it consist of multiple dimensions, parallel worlds, or interconnected realms? How do these different parts interact or affect each other?
+- Themes and Philosophies: What overarching themes or philosophical questions are explored within this universe? Examples include the balance between chaos and order, the cycle of creation and destruction, or the nature of consciousness and existence.
+- Influence on Inhabitants and Stories: How do the universe's characteristics influence the worlds, beings, and stories within it? What possibilities does it offer for conflict, exploration, and discovery?
+You are prohibited from using the following names for the new universe (because those names are already used for other universes):
+{story_universe_names}
+Remember to include in your function call response the two fitting categories for this universe.

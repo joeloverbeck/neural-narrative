@@ -1,6 +1,6 @@
 import logging
 
-from src.constants import MAX_RETRIES_WHEN_FAILED_TO_RETURN_FUNCTION_CALL
+from src.base.constants import MAX_RETRIES_WHEN_FAILED_TO_RETURN_FUNCTION_CALL
 from src.dialogues.abstracts.abstract_factories import SpeechDataFactory
 from src.dialogues.abstracts.factory_products import SpeechDataProduct
 from src.dialogues.abstracts.strategies import ProcessLlmContentIntoSpeechDataStrategy

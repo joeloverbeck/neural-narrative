@@ -138,7 +138,7 @@ function handleAjaxFormSubmit(form, options = {}) {
         submitButtons.forEach((button, index) => {
             originalButtonHTMLs[index] = button.innerHTML;
             button.disabled = true;
-            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            button.innerHTML = '<i class="fa-solid fa-arrows-rotate fa-spin"></i> Processing...';
         });
 
         const formData = new FormData(form);
@@ -262,6 +262,51 @@ function createCollapsibleSection(title, iconClass, contentElement, isActive = f
     });
 
     return collapsibleSection;
+}
+
+function updateDescription(type) {
+    // Construct the select element's ID based on the type
+    const selectId = `${type}_name`;
+    const select = document.getElementById(selectId);
+
+    // Ensure the select element exists
+    if (!select) {
+        console.warn(`Select element with ID "${selectId}" not found.`);
+        return;
+    }
+
+    const descriptionElement = document.getElementById(`${type}_description`)?.querySelector('p');
+
+    // Ensure the description element exists
+    if (!descriptionElement) {
+        console.warn(`Description element for type "${type}" not found.`);
+        return;
+    }
+
+    // Check if the select has any options
+    if (select.options.length === 0) {
+        // Handle the case when there are no options
+        descriptionElement.innerText = 'No description available.';
+        return;
+    }
+
+    // Get the currently selected option
+    const selectedIndex = select.selectedIndex;
+
+    // Ensure a valid option is selected
+    if (selectedIndex === -1) {
+        // No option is selected; possibly set a default description
+        descriptionElement.innerText = 'No item selected.';
+        return;
+    }
+
+    const selectedOption = select.options[selectedIndex];
+
+    // Retrieve the 'data-description' attribute from the selected option
+    const description = selectedOption.getAttribute('data-description');
+
+    // Set the description text, fallback to a default message if not available
+    descriptionElement.innerText = description || 'No description provided for the selected item.';
 }
 
 document.addEventListener('DOMContentLoaded', () => {

@@ -1,6 +1,6 @@
 from typing import Protocol
 
-from src.enums import AiCompletionErrorType
+from src.base.enums import AiCompletionErrorType
 
 
 class AiCompletionProduct(Protocol):

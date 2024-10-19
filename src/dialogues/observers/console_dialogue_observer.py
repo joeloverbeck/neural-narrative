@@ -1,6 +1,6 @@
 from termcolor import colored
 
-from src.abstracts.observer import Observer
+from src.base.abstracts.observer import Observer
 
 
 class ConsoleDialogueObserver(Observer):

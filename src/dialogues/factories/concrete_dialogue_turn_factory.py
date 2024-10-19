@@ -1,7 +1,8 @@
 import logging
 from typing import List
 
-from src.abstracts.observer import Observer
+from src.base.abstracts.observer import Observer
+from src.base.playthrough_manager import PlaythroughManager
 from src.dialogues.abstracts.abstract_factories import (
     DialogueTurnFactorySubject,
 )
@@ -17,7 +18,6 @@ from src.dialogues.exceptions import InvalidNextSpeakerError, DialogueProcessing
 from src.dialogues.messages_to_llm import MessagesToLlm
 from src.dialogues.products.concrete_dialogue_product import ConcreteDialogueProduct
 from src.dialogues.transcription import Transcription
-from src.playthrough_manager import PlaythroughManager
 from src.prompting.abstracts.factory_products import LlmToolResponseProduct
 from src.prompting.products.concrete_llm_tool_response_product import (
     ConcreteLlmToolResponseProduct,

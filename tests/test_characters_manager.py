@@ -4,10 +4,10 @@ from unittest.mock import Mock, patch
 
 import pytest
 
+from src.base.identifiers_manager import IdentifiersManager
+from src.base.playthrough_manager import PlaythroughManager
 from src.characters.characters_manager import CharactersManager
 from src.filesystem.filesystem_manager import FilesystemManager
-from src.identifiers_manager import IdentifiersManager
-from src.playthrough_manager import PlaythroughManager
 
 
 def test_init_with_valid_playthrough_name():

@@ -1,8 +1,8 @@
 import logging
 import os
 
-from src.constants import NARRATOR_VOICE_MODEL
-from src.exceptions import VoiceLineGenerationError
+from src.base.constants import NARRATOR_VOICE_MODEL
+from src.base.exceptions import VoiceLineGenerationError
 from src.voices.configs.voice_part_provider_config import VoicePartProviderConfig
 from src.voices.factories.generate_voice_line_algorithm_factory import (
     GenerateVoiceLineAlgorithmFactory,

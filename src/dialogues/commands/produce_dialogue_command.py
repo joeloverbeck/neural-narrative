@@ -1,8 +1,8 @@
 import logging
 from typing import Optional
 
-from src.abstracts.command import Command
-from src.constants import TIME_ADVANCED_DUE_TO_DIALOGUE
+from src.base.abstracts.command import Command
+from src.base.constants import TIME_ADVANCED_DUE_TO_DIALOGUE
 from src.dialogues.abstracts.abstract_factories import DialogueTurnFactory
 from src.dialogues.abstracts.factory_products import DialogueProduct
 from src.dialogues.commands.store_temporary_dialogue_command import (

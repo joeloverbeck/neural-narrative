@@ -1,6 +1,6 @@
 import logging
 
-from src.constants import DEFAULT_VOICE_MODEL
+from src.base.constants import DEFAULT_VOICE_MODEL
 from src.voices.providers.matching_voice_model_provider import (
     MatchingVoiceModelProvider,
 )

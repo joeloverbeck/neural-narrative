@@ -1,8 +1,8 @@
 from typing import List, Optional
 
-from src.abstracts.command import Command
-from src.abstracts.observer import Observer
-from src.abstracts.subject import Subject
+from src.base.abstracts.command import Command
+from src.base.abstracts.observer import Observer
+from src.base.abstracts.subject import Subject
 from src.characters.character import Character
 from src.characters.characters_manager import CharactersManager
 from src.dialogues.abstracts.factory_products import PlayerInputProduct

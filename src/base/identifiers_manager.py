@@ -1,7 +1,7 @@
 import logging.config
 
-from src.commands.store_last_identifier_command import StoreLastIdentifierCommand
-from src.enums import IdentifierType
+from src.base.commands.store_last_identifier_command import StoreLastIdentifierCommand
+from src.base.enums import IdentifierType
 from src.filesystem.filesystem_manager import FilesystemManager
 
 logger = logging.getLogger(__name__)

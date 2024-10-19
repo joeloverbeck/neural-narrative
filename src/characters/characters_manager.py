@@ -1,9 +1,9 @@
 from typing import List, Dict, Optional
 
+from src.base.identifiers_manager import IdentifiersManager
+from src.base.playthrough_manager import PlaythroughManager
 from src.characters.character import Character
 from src.filesystem.filesystem_manager import FilesystemManager
-from src.identifiers_manager import IdentifiersManager
-from src.playthrough_manager import PlaythroughManager
 
 
 class CharactersManager:

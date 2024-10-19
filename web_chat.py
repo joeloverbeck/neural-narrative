@@ -2,7 +2,7 @@ import logging.config
 
 from flask import Flask
 
-from src.constants import (
+from src.base.constants import (
     RESEARCH_RESOLUTION_GENERATION_PROMPT_FILE,
     RESEARCH_RESOLUTION_GENERATION_TOOL_FILE,
     INVESTIGATE_RESOLUTION_GENERATION_PROMPT_FILE,
@@ -23,6 +23,7 @@ from src.views.connections_view import ConnectionsView
 from src.views.index_view import IndexView
 from src.views.location_hub_view import LocationHubView
 from src.views.participants_view import ParticipantsView
+from src.views.places_view import PlacesView
 from src.views.story_hub_view import StoryHubView
 from src.views.travel_view import TravelView
 
@@ -36,6 +37,7 @@ logger = logging.getLogger(__name__)
 
 # Register the view
 app.add_url_rule("/", view_func=IndexView.as_view("index"))
+app.add_url_rule("/places", view_func=PlacesView.as_view("places"))
 app.add_url_rule("/story-hub", view_func=StoryHubView.as_view("story-hub"))
 app.add_url_rule(
     "/characters-hub", view_func=CharactersHubView.as_view("characters-hub")

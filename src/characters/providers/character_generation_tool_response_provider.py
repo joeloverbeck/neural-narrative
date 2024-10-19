@@ -1,10 +1,9 @@
 from typing import Optional
 
-from src.characters.characters_manager import CharactersManager
-from src.constants import (
+from src.base.constants import (
     CHARACTER_GENERATOR_TOOL_FILE,
     CHARACTER_GENERATION_INSTRUCTIONS_FILE,
-    WORLD_TEMPLATES_FILE,
+    WORLDS_TEMPLATES_FILE,
     LOCATIONS_TEMPLATES_FILE,
     AREAS_TEMPLATES_FILE,
     REGIONS_TEMPLATES_FILE,
@@ -19,6 +18,7 @@ from src.constants import (
     VOICE_PERSONALITIES,
     VOICE_SPECIAL_EFFECTS,
 )
+from src.characters.characters_manager import CharactersManager
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.factories.places_descriptions_factory import PlacesDescriptionsFactory
 from src.maps.places_templates_parameter import PlacesTemplatesParameter
@@ -162,7 +162,7 @@ class CharacterGenerationToolResponseProvider(
             )
         )
         worlds_templates = self._filesystem_manager.load_existing_or_new_json_file(
-            WORLD_TEMPLATES_FILE
+            WORLDS_TEMPLATES_FILE
         )
         regions_templates = self._filesystem_manager.load_existing_or_new_json_file(
             REGIONS_TEMPLATES_FILE

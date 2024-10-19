@@ -1,9 +1,11 @@
 from flask import session, redirect, url_for, render_template, request, jsonify
 from flask.views import MethodView
 
+from src.base.constants import TIME_ADVANCED_DUE_TO_SEARCHING_FOR_LOCATION
+from src.base.enums import PlaceType
+from src.base.playthrough_manager import PlaythroughManager
+from src.base.playthrough_name import RequiredString
 from src.characters.characters_manager import CharactersManager
-from src.constants import TIME_ADVANCED_DUE_TO_SEARCHING_FOR_LOCATION
-from src.enums import PlaceType
 from src.maps.enums import CardinalDirection, RandomPlaceTypeMapEntryCreationResultType
 from src.maps.factories.concrete_cardinal_connection_creation_factory import (
     ConcreteCardinalConnectionCreationFactory,
@@ -20,8 +22,6 @@ from src.maps.factories.create_map_entry_for_playthrough_command_factory import 
 from src.maps.map_manager import MapManager
 from src.maps.weather_identifier import WeatherIdentifier
 from src.maps.weathers_manager import WeathersManager
-from src.playthrough_manager import PlaythroughManager
-from src.playthrough_name import PlaythroughName
 from src.services.character_service import CharacterService
 from src.services.place_service import PlaceService
 from src.services.web_service import WebService
@@ -78,7 +78,7 @@ class LocationHubView(MethodView):
         current_hour = time_manager.get_hour()
         current_time_of_day = time_manager.get_time_of_the_day()
 
-        weathers_manager = WeathersManager(PlaythroughName(playthrough_name))
+        weathers_manager = WeathersManager(RequiredString(playthrough_name))
         current_weather = weathers_manager.get_current_weather_identifier()
         current_weather_description = weathers_manager.get_weather_description(
             current_weather

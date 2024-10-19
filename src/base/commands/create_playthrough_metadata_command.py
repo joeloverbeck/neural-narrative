@@ -3,15 +3,15 @@ import logging.config
 import os
 import random
 
-from src.abstracts.command import Command
-from src.builders.playthrough_metadata_builder import PlaythroughMetadataBuilder
-from src.constants import (
+from src.base.abstracts.command import Command
+from src.base.builders.playthrough_metadata_builder import PlaythroughMetadataBuilder
+from src.base.constants import (
     DEFAULT_PLAYER_IDENTIFIER,
     DEFAULT_CURRENT_PLACE,
     DEFAULT_IDENTIFIER,
-    WORLD_TEMPLATES_FILE,
+    WORLDS_TEMPLATES_FILE,
 )
-from src.exceptions import (
+from src.base.exceptions import (
     WorldTemplateNotFoundError,
     PlaythroughAlreadyExistsError,
 )
@@ -51,7 +51,7 @@ class CreatePlaythroughMetadataCommand(Command):
 
         # Checks here if there is such a world template:
         worlds_file = self._filesystem_manager.load_existing_or_new_json_file(
-            WORLD_TEMPLATES_FILE
+            WORLDS_TEMPLATES_FILE
         )
 
         if self._world_template not in worlds_file:

@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+
+{% block styles %}
+{{ super() }}
+<link href="{{ url_for('static', filename='common.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ url_for('static', filename='places.css') }}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block title %}
+Places Generation
+{% endblock %}
+
+{% block content %}
+<div class="places-container">
+    <h1 class="page-title"><i class="fas fa-map" aria-hidden="true"></i> Places Generation</h1>
+
+    <!-- Generate World Section -->
+    <div class="collapsible-section">
+        <button class="collapsible">
+            <i class="fas fa-globe"></i> Generate World
+        </button>
+        <div class="content">
+            <form action="{{ url_for('places') }}" method="post" class="ajax-form"
+                  data-success-handler="generatePlaceSuccessHandler" data-place-type="world">
+                <input type="hidden" name="submit_action" value="generate_world">
+                <label for="story_universe_name">Select the story universe:</label>
+                <select id="story_universe_name" name="story_universe_name" required
+                        onchange="updateDescription('story_universe')">
+                    {% for key,value in story_universes.items() %}
+                    <option value="{{ key }}" data-description="{{ value['description'] }}">{{ key }}</option>
+                    {% endfor %}
+                </select>
+                <div id="story_universe_description" class="description-box">
+                    <h3>Story Universe Description</h3>
+                    <p></p>
+                </div>
+                <label class="notion" for="world_notion">Enter your notions about the world (optional):</label>
+                <textarea id="world_notion" name="world_notion" rows="4" cols="50"></textarea>
+                <button type="submit" class="action-button">
+                    <i class="fas fa-cogs"></i> Generate World
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Generate Region Section -->
+    <div class="collapsible-section">
+        <button class="collapsible">
+            <i class="fas fa-border-style"></i> Generate Region
+        </button>
+        <div class="content">
+            <form action="{{ url_for('places') }}" method="post" class="ajax-form"
+                  data-success-handler="generatePlaceSuccessHandler" data-place-type="region">
+                <input type="hidden" name="submit_action" value="generate_region">
+                <label for="world_name">Select the world:</label>
+                <select id="world_name" name="world_name" required onchange="updateDescription('world')">
+                    {% for key,value in worlds.items() %}
+                    <option value="{{ key }}" data-description="{{ value['description'] }}">{{ key }}</option>
+                    {% endfor %}
+                </select>
+                <div id="world_description" class="description-box">
+                    <h3>World Description</h3>
+                    <p></p>
+                </div>
+                <label class="notion" for="region_notion">Enter your notions about the region (optional):</label>
+                <textarea id="region_notion" name="region_notion" rows="4" cols="50"></textarea>
+                <button type="submit" class="action-button">
+                    <i class="fas fa-cogs"></i> Generate Region
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Generate Area Section -->
+    <div class="collapsible-section">
+        <button class="collapsible">
+            <i class="fas fa-city"></i> Generate Area
+        </button>
+        <div class="content">
+            <form action="{{ url_for('places') }}" method="post" class="ajax-form"
+                  data-success-handler="generatePlaceSuccessHandler" data-place-type="area">
+                <input type="hidden" name="submit_action" value="generate_area">
+                <label for="region_name">Select the region:</label>
+                <select id="region_name" name="region_name" required onchange="updateDescription('region')">
+                    {% for key, value in regions.items() %}
+                    <option value="{{ key }}" data-description="{{ value['description'] }}">{{ key }}</option>
+                    {% endfor %}
+                </select>
+                <div id="region_description" class="description-box">
+                    <h3>Region Description</h3>
+                    <p></p>
+                </div>
+                <label class="notion" for="area_notion">Enter your notions about the area (optional):</label>
+                <textarea id="area_notion" name="area_notion" rows="4" cols="50"></textarea>
+                <button type="submit" class="action-button">
+                    <i class="fas fa-cogs"></i> Generate Area
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Generate Location Section -->
+    <div class="collapsible-section">
+        <button class="collapsible">
+            <i class="fas fa-map-marker-alt"></i> Generate Location
+        </button>
+        <div class="content">
+            <form action="{{ url_for('places') }}" method="post" class="ajax-form"
+                  data-success-handler="generatePlaceSuccessHandler" data-place-type="location">
+                <input type="hidden" name="submit_action" value="generate_location">
+                <label for="area_name">Select the area:</label>
+                <select id="area_name" name="area_name" required onchange="updateDescription('area')">
+                    {% for key, value in areas.items() %}
+                    <option value="{{ key }}" data-description="{{ value['description'] }}">{{ key }}</option>
+                    {% endfor %}
+                </select>
+                <div id="area_description" class="description-box">
+                    <h3>Area Description</h3>
+                    <p></p>
+                </div>
+                <label class="notion" for="location_notion">Enter your notions about the location (optional):</label>
+                <textarea id="location_notion" name="location_notion" rows="4" cols="50"></textarea>
+                <button type="submit" class="action-button">
+                    <i class="fas fa-cogs"></i> Generate Location
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div class="buttons">
+        <a href="{{ url_for('index') }}" class="button">
+            <i class="fa-solid fa-dungeon"></i> Home
+        </a>
+        {% if session.get("playthrough_name") %}
+        <a href="{{ url_for('story-hub') }}" class="button">
+            <i class="fas fa-feather-alt"></i> Story Hub
+        </a>
+        <a href="{{ url_for('characters-hub') }}" class="button">
+            <i class="fas fa-users"></i> Characters Hub
+        </a>
+        <a href="{{ url_for('location-hub') }}" class="button">
+            <i class="fas fa-map-marker-alt"></i> Location Hub
+        </a>
+        <a href="{{ url_for('chat') }}" class="button">
+            <i class="fas fa-comments"></i> Chat
+        </a>
+        <a href="{{ url_for('actions') }}" class="button">
+            <i class="fas fa-bolt"></i> Actions
+        </a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='main.js') }}"></script>
+<script src="{{ url_for('static', filename='places.js') }}"></script>
+{% endblock %}

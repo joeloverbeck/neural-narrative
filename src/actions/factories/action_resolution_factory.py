@@ -3,12 +3,12 @@
 from typing import Optional
 
 from src.actions.products.action_resolution_product import ActionResolutionProduct
+from src.base.playthrough_name import RequiredString
 from src.characters.factories.player_and_followers_information_factory import (
     PlayerAndFollowersInformationFactory,
 )
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.factories.places_descriptions_factory import PlacesDescriptionsFactory
-from src.playthrough_name import PlaythroughName
 from src.prompting.factories.produce_tool_response_strategy_factory import (
     ProduceToolResponseStrategyFactory,
 )
@@ -19,7 +19,7 @@ from src.time.time_manager import TimeManager
 class ActionResolutionFactory(BaseToolResponseProvider):
     def __init__(
         self,
-        playthrough_name: PlaythroughName,
+        playthrough_name: RequiredString,
         action_name: str,
         action_goal: str,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,

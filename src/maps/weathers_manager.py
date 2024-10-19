@@ -1,18 +1,18 @@
 from typing import Optional, List, Dict
 
-from src.constants import WEATHERS_FILE
+from src.base.constants import WEATHERS_FILE
+from src.base.playthrough_manager import PlaythroughManager
+from src.base.playthrough_name import RequiredString
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.map_manager import MapManager
 from src.maps.weather_identifier import WeatherIdentifier
-from src.playthrough_manager import PlaythroughManager
-from src.playthrough_name import PlaythroughName
 
 
 class WeathersManager:
 
     def __init__(
         self,
-        playthrough_name: PlaythroughName,
+        playthrough_name: RequiredString,
         map_manager: Optional[MapManager] = None,
         playthrough_manager: Optional[PlaythroughManager] = None,
         filesystem_manager: Optional[FilesystemManager] = None,

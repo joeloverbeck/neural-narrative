@@ -1,9 +1,10 @@
-from src.constants import (
+from src.base.constants import (
     SUMMARIZE_DIALOGUE_PROMPT_FILE,
     DIALOGUE_SUMMARIZATION_TOOL_FILE,
     TOOL_INSTRUCTIONS_FILE,
     MAX_RETRIES,
 )
+from src.base.tools import generate_tool_prompt
 from src.dialogues.abstracts.abstract_factories import DialogueSummaryProvider
 from src.dialogues.abstracts.factory_products import SummaryProduct
 from src.dialogues.messages_to_llm import MessagesToLlm
@@ -20,7 +21,6 @@ from src.prompting.providers.concrete_llm_content_provider import (
 from src.prompting.providers.concrete_tool_response_parsing_provider import (
     ConcreteToolResponseParsingProvider,
 )
-from src.tools import generate_tool_prompt
 
 
 class ConcreteDialogueSummaryProvider(DialogueSummaryProvider):

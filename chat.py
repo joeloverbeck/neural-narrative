@@ -3,6 +3,7 @@ import logging.config
 
 import colorama
 
+from src.base.playthrough_manager import PlaythroughManager
 from src.dialogues.commands.setup_dialogue_command import SetupDialogueCommand
 from src.dialogues.factories.console_player_input_factory import (
     ConsolePlayerInputFactory,
@@ -28,7 +29,6 @@ from src.dialogues.strategies.console_message_data_producer_for_speech_turn_stra
 # Import from local modules
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.interfaces.console_interface_manager import ConsoleInterfaceManager
-from src.playthrough_manager import PlaythroughManager
 
 
 def main():

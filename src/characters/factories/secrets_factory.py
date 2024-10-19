@@ -1,9 +1,9 @@
 from typing import Optional
 
+from src.base.constants import SECRETS_GENERATION_PROMPT_FILE, SECRETS_GENERATION_TOOL_FILE
 from src.characters.character import Character
 from src.characters.character_memories import CharacterMemories
 from src.characters.products.secrets_product import SecretsProduct
-from src.constants import SECRETS_GENERATION_PROMPT_FILE, SECRETS_GENERATION_TOOL_FILE
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.factories.places_descriptions_factory import PlacesDescriptionsFactory
 from src.prompting.factories.produce_tool_response_strategy_factory import (

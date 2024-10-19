@@ -1,6 +1,6 @@
 from typing import cast, Optional
 
-from src.abstracts.command import Command
+from src.base.abstracts.command import Command
 from src.characters.character import Character
 from src.characters.characters_manager import CharactersManager
 from src.characters.factories.secrets_factory import SecretsFactory

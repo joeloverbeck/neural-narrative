@@ -1,9 +1,9 @@
 from typing import Optional
 
+from src.base.constants import PLAYER_AND_FOLLOWERS_INFORMATION_BLOCK
 from src.characters.factories.party_data_for_prompt_factory import (
     PartyDataForPromptFactory,
 )
-from src.constants import PLAYER_AND_FOLLOWERS_INFORMATION_BLOCK
 from src.filesystem.filesystem_manager import FilesystemManager
 
 

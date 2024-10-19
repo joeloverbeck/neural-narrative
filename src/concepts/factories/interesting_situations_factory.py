@@ -2,6 +2,11 @@
 
 from typing import Optional
 
+from src.base.constants import (
+    INTERESTING_SITUATIONS_GENERATION_PROMPT_FILE,
+    INTERESTING_SITUATIONS_GENERATION_TOOL_FILE,
+)
+from src.base.playthrough_name import RequiredString
 from src.characters.factories.player_and_followers_information_factory import (
     PlayerAndFollowersInformationFactory,
 )
@@ -9,13 +14,8 @@ from src.concepts.factories.base_concept_factory import BaseConceptFactory
 from src.concepts.products.interesting_situations_product import (
     InterestingSituationsProduct,
 )
-from src.constants import (
-    INTERESTING_SITUATIONS_GENERATION_PROMPT_FILE,
-    INTERESTING_SITUATIONS_GENERATION_TOOL_FILE,
-)
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.factories.places_descriptions_factory import PlacesDescriptionsFactory
-from src.playthrough_name import PlaythroughName
 from src.prompting.factories.produce_tool_response_strategy_factory import (
     ProduceToolResponseStrategyFactory,
 )
@@ -24,7 +24,7 @@ from src.prompting.factories.produce_tool_response_strategy_factory import (
 class InterestingSituationsFactory(BaseConceptFactory):
     def __init__(
         self,
-        playthrough_name: PlaythroughName,
+        playthrough_name: RequiredString,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         places_descriptions_factory: PlacesDescriptionsFactory,
         player_and_followers_information_factory: PlayerAndFollowersInformationFactory,

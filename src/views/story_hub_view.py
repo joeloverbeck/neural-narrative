@@ -5,6 +5,7 @@ import os
 from flask import session, redirect, url_for, render_template, request, jsonify, flash
 from flask.views import MethodView
 
+from src.base.playthrough_name import RequiredString
 from src.characters.factories.party_data_for_prompt_factory import (
     PartyDataForPromptFactory,
 )
@@ -43,7 +44,6 @@ from src.maps.factories.place_descriptions_for_prompt_factory import (
     PlaceDescriptionsForPromptFactory,
 )
 from src.maps.factories.places_descriptions_factory import PlacesDescriptionsFactory
-from src.playthrough_name import PlaythroughName
 from src.prompting.factories.openrouter_llm_client_factory import (
     OpenRouterLlmClientFactory,
 )
@@ -61,7 +61,7 @@ class StoryHubView(MethodView):
             return redirect(url_for("index"))
 
         filesystem_manager = FilesystemManager()
-        playthrough_name_obj = PlaythroughName(playthrough_name)
+        playthrough_name_obj = RequiredString(playthrough_name)
 
         # List of items to load
         items_to_load = [
@@ -100,7 +100,7 @@ class StoryHubView(MethodView):
 
         action = request.form.get("submit_action")
         filesystem_manager = FilesystemManager()
-        playthrough_name_obj = PlaythroughName(playthrough_name)
+        playthrough_name_obj = RequiredString(playthrough_name)
 
         # Common factories
         produce_tool_response_strategy_factory = ProduceToolResponseStrategyFactory(

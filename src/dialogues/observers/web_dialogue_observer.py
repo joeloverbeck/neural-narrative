@@ -2,7 +2,7 @@ from typing import List
 
 from flask import session
 
-from src.abstracts.observer import Observer
+from src.base.abstracts.observer import Observer
 from src.characters.characters_manager import CharactersManager
 from src.services.web_service import WebService
 from src.voices.factories.direct_voice_line_generation_algorithm_factory import (

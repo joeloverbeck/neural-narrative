@@ -3,9 +3,9 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from src.constants import MAX_RETRIES
+from src.base.constants import MAX_RETRIES
 from src.dialogues.messages_to_llm import MessagesToLlm
-from src.enums import AiCompletionErrorType
+from src.base.enums import AiCompletionErrorType
 from src.prompting.abstracts.llm_client import LlmClient
 from src.prompting.providers.concrete_llm_content_provider import ConcreteLlmContentProvider
 

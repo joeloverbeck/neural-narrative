@@ -1,12 +1,12 @@
 import logging.config
 from typing import Optional
 
-from src.abstracts.command import Command
+from src.base.abstracts.command import Command
+from src.base.enums import IdentifierType
+from src.base.identifiers_manager import IdentifiersManager
+from src.base.playthrough_name import RequiredString
 from src.characters.character_data import CharacterDataForStorage
-from src.enums import IdentifierType
 from src.filesystem.filesystem_manager import FilesystemManager
-from src.identifiers_manager import IdentifiersManager
-from src.playthrough_name import PlaythroughName
 from src.voices.algorithms.match_voice_data_to_voice_model_algorithm import (
     MatchVoiceDataToVoiceModelAlgorithm,
 )
@@ -19,7 +19,7 @@ class StoreGeneratedCharacterCommand(Command):
 
     def __init__(
         self,
-        playthrough_name: PlaythroughName,
+        playthrough_name: RequiredString,
         character_data: dict,
         match_voice_data_to_voice_model_algorithm: MatchVoiceDataToVoiceModelAlgorithm,
         filesystem_manager: Optional[FilesystemManager] = None,

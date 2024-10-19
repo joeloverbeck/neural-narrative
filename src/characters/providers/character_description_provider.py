@@ -1,12 +1,12 @@
 from typing import Optional
 
+from src.base.constants import (
+    CHARACTER_DESCRIPTION_GENERATION_PROMPT_FILE,
+    CHARACTER_DESCRIPTION_GENERATION_TOOL_FILE,
+)
 from src.characters.character import Character
 from src.characters.products.character_description_product import (
     CharacterDescriptionProduct,
-)
-from src.constants import (
-    CHARACTER_DESCRIPTION_GENERATION_PROMPT_FILE,
-    CHARACTER_DESCRIPTION_GENERATION_TOOL_FILE,
 )
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.prompting.factories.produce_tool_response_strategy_factory import (

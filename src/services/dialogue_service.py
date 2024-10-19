@@ -1,5 +1,6 @@
 from flask import session, url_for
 
+from src.base.playthrough_manager import PlaythroughManager
 from src.config.config_manager import ConfigManager
 from src.dialogues.commands.produce_ambient_narration_command import (
     ProduceAmbientNarrationCommand,
@@ -36,7 +37,6 @@ from src.dialogues.strategies.web_message_data_producer_for_speech_turn_strategy
 )
 from src.dialogues.transcription import Transcription
 from src.filesystem.filesystem_manager import FilesystemManager
-from src.playthrough_manager import PlaythroughManager
 from src.prompting.factories.openrouter_llm_client_factory import (
     OpenRouterLlmClientFactory,
 )

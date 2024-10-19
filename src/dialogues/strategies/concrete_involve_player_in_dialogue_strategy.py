@@ -1,6 +1,6 @@
 from typing import Optional, List
 
-from src.abstracts.observer import Observer
+from src.base.abstracts.observer import Observer
 from src.dialogues.abstracts.abstract_factories import PlayerInputFactory
 from src.dialogues.abstracts.factory_products import PlayerInputProduct
 from src.dialogues.abstracts.protocols import InvolvePlayerInDialogueStrategySubject

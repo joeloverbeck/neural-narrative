@@ -1,6 +1,7 @@
 import logging
 from typing import Optional
 
+from src.base.playthrough_manager import PlaythroughManager
 from src.characters.character import Character
 from src.characters.characters_manager import CharactersManager
 from src.dialogues.factories.character_choice_dialogue_initial_prompting_messages_provider_factory import (
@@ -8,7 +9,6 @@ from src.dialogues.factories.character_choice_dialogue_initial_prompting_message
 )
 from src.dialogues.participants import Participants
 from src.dialogues.transcription import Transcription
-from src.playthrough_manager import PlaythroughManager
 from src.prompting.abstracts.abstract_factories import ToolResponseProvider
 from src.prompting.abstracts.factory_products import LlmToolResponseProduct
 from src.prompting.factories.character_choice_dialogue_llm_content_provider_factory import (

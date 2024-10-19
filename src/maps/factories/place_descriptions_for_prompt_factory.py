@@ -1,9 +1,9 @@
 from typing import Dict, Optional
 
+from src.base.playthrough_manager import PlaythroughManager
+from src.base.playthrough_name import RequiredString
 from src.maps.map_manager import MapManager
 from src.maps.weathers_manager import WeathersManager
-from src.playthrough_manager import PlaythroughManager
-from src.playthrough_name import PlaythroughName
 
 
 class PlaceDescriptionsForPromptFactory:
@@ -45,7 +45,7 @@ class PlaceDescriptionsForPromptFactory:
                 + place_full_data["location_data"]["description"]
             )
 
-        weathers_manager = WeathersManager(PlaythroughName(self._playthrough_name))
+        weathers_manager = WeathersManager(RequiredString(self._playthrough_name))
 
         return {
             "world_description": world_description,
