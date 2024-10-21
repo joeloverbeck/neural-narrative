@@ -4,7 +4,7 @@ from typing import Optional
 from src.base.abstracts.command import Command
 from src.base.constants import TEMPLATE_FILES, PARENT_TEMPLATE_TYPE
 from src.base.enums import TemplateType
-from src.base.playthrough_name import RequiredString
+from src.base.required_string import RequiredString
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.factories.store_generated_place_command_factory import (
     StoreGeneratedPlaceCommandFactory,

@@ -4,14 +4,14 @@ import logging
 from typing import Optional
 
 from src.base.constants import GOALS_GENERATION_TOOL_FILE, GOALS_GENERATION_PROMPT_FILE
-from src.base.playthrough_name import RequiredString
+from src.base.required_string import RequiredString
 from src.characters.factories.player_and_followers_information_factory import (
     PlayerAndFollowersInformationFactory,
 )
 from src.concepts.factories.base_concept_factory import BaseConceptFactory
 from src.concepts.products.goals_product import GoalsProduct
 from src.filesystem.filesystem_manager import FilesystemManager
-from src.maps.factories.places_descriptions_factory import PlacesDescriptionsFactory
+from src.maps.providers.places_descriptions_provider import PlacesDescriptionsProvider
 from src.prompting.factories.produce_tool_response_strategy_factory import (
     ProduceToolResponseStrategyFactory,
 )
@@ -24,7 +24,7 @@ class GoalsFactory(BaseConceptFactory):
         self,
         playthrough_name: RequiredString,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
-        places_descriptions_factory: PlacesDescriptionsFactory,
+            places_descriptions_factory: PlacesDescriptionsProvider,
         player_and_followers_information_factory: PlayerAndFollowersInformationFactory,
         filesystem_manager: Optional[FilesystemManager] = None,
     ):
@@ -35,7 +35,9 @@ class GoalsFactory(BaseConceptFactory):
             player_and_followers_information_factory,
             tool_file=GOALS_GENERATION_TOOL_FILE,
             prompt_file=GOALS_GENERATION_PROMPT_FILE,
-            user_content="Generate three intriguing and engaging short-term goals for the player to pursue. Follow the provided instructions.",
+            user_content=RequiredString(
+                "Generate three intriguing and engaging short-term goals for the player to pursue. Follow the provided instructions."
+            ),
             filesystem_manager=filesystem_manager,
         )
 
@@ -45,6 +47,6 @@ class GoalsFactory(BaseConceptFactory):
             key = f"goal_{i}"
             goal = arguments.get(key)
             if not goal:
-                logger.warning(f"LLM didn't produce {key}")
-            goals.append(goal)
+                raise ValueError(f"LLM didn't produce goal {key}.")
+            goals.append(RequiredString(goal))
         return GoalsProduct(goals, is_valid=True)

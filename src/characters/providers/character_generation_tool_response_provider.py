@@ -1,3 +1,4 @@
+import logging
 from typing import Optional
 
 from src.base.constants import (
@@ -18,25 +19,28 @@ from src.base.constants import (
     VOICE_PERSONALITIES,
     VOICE_SPECIAL_EFFECTS,
 )
+from src.base.required_string import RequiredString
+from src.base.tools import capture_traceback
 from src.characters.characters_manager import CharactersManager
 from src.filesystem.filesystem_manager import FilesystemManager
-from src.maps.factories.places_descriptions_factory import PlacesDescriptionsFactory
 from src.maps.places_templates_parameter import PlacesTemplatesParameter
 from src.prompting.abstracts.abstract_factories import (
     ToolResponseProvider,
     UserContentForCharacterGenerationFactory,
 )
 from src.prompting.abstracts.factory_products import LlmToolResponseProduct
+from src.prompting.factories.character_generation_instructions_formatter_factory import (
+    CharacterGenerationInstructionsFormatterFactory,
+)
 from src.prompting.factories.produce_tool_response_strategy_factory import (
     ProduceToolResponseStrategyFactory,
-)
-from src.prompting.formatters.character_generation_instructions_formatter import (
-    CharacterGenerationInstructionsFormatter,
 )
 from src.prompting.products.concrete_llm_tool_response_product import (
     ConcreteLlmToolResponseProduct,
 )
 from src.prompting.providers.base_tool_response_provider import BaseToolResponseProvider
+
+logger = logging.getLogger(__name__)
 
 
 class CharacterGenerationToolResponseProvider(
@@ -44,25 +48,24 @@ class CharacterGenerationToolResponseProvider(
 ):
     def __init__(
         self,
-        playthrough_name: str,
+            playthrough_name: RequiredString,
         places_parameter: PlacesTemplatesParameter,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         user_content_for_character_generation_factory: UserContentForCharacterGenerationFactory,
-        places_description_factory: PlacesDescriptionsFactory,
+            character_generation_instructions_formatter_factory: CharacterGenerationInstructionsFormatterFactory,
         filesystem_manager: Optional[FilesystemManager] = None,
         characters_manager: Optional[CharactersManager] = None,
     ):
         super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
-
-        if not playthrough_name:
-            raise ValueError("playthrough_name can't be empty.")
 
         self._playthrough_name = playthrough_name
         self._places_parameter = places_parameter
         self._user_content_for_character_generation_factory = (
             user_content_for_character_generation_factory
         )
-        self._places_description_factory = places_description_factory
+        self._character_generation_instructions_formatter_factory = (
+            character_generation_instructions_formatter_factory
+        )
 
         self._characters_manager = characters_manager or CharactersManager(
             self._playthrough_name
@@ -70,7 +73,7 @@ class CharacterGenerationToolResponseProvider(
 
     def _read_and_format_tool_file(self, tool_file: str) -> dict:
         template_copy = self._filesystem_manager.load_existing_or_new_json_file(
-            CHARACTER_GENERATOR_TOOL_FILE
+            tool_file
         )
 
         try:
@@ -117,14 +120,13 @@ class CharacterGenerationToolResponseProvider(
     def get_formatted_prompt(self) -> str:
         templates = self._load_templates()
 
-        instructions = CharacterGenerationInstructionsFormatter(
-            self._playthrough_name,
-            self._places_description_factory.get_information(),
-            templates,
-            self._places_parameter,
-        ).format()
+        instructions = (
+            self._character_generation_instructions_formatter_factory.create_formatter(
+                templates
+            ).format()
+        )
 
-        return instructions
+        return instructions.value
 
     def get_tool_file(self) -> str:
         return CHARACTER_GENERATOR_TOOL_FILE
@@ -148,6 +150,7 @@ class CharacterGenerationToolResponseProvider(
         try:
             return self.generate_product()
         except Exception as e:
+            capture_traceback()
             return ConcreteLlmToolResponseProduct(
                 {},
                 is_valid=False,
@@ -191,8 +194,10 @@ class CharacterGenerationToolResponseProvider(
         location_template = self._places_parameter.get_location_template()
 
         if location_template:
-            location_name = f"Location: {location_template}:\n"
-            location_description = locations_templates[location_template]["description"]
+            location_name = f"Location: {location_template.value}:\n"
+            location_description = locations_templates[location_template.value][
+                "description"
+            ]
             return location_name, location_description
 
         return "", ""

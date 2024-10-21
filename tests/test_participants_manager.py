@@ -5,6 +5,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from src.base.playthrough_manager import PlaythroughManager
+from src.base.required_string import RequiredString
 from src.characters.characters_manager import CharactersManager
 from src.characters.participants_manager import ParticipantsManager
 
@@ -34,7 +35,7 @@ def mock_playthrough_manager():
 def participants_manager(
     playthrough_name, mock_character_manager, mock_playthrough_manager
 ):
-    return ParticipantsManager(playthrough_name)
+    return ParticipantsManager(RequiredString(playthrough_name))
 
 
 def test_initialization_with_provided_managers(
@@ -44,7 +45,7 @@ def test_initialization_with_provided_managers(
     custom_play_manager = MagicMock(spec=PlaythroughManager)
 
     pm = ParticipantsManager(
-        playthrough_name,
+        RequiredString(playthrough_name),
         character_manager=custom_char_manager,
         playthrough_manager=custom_play_manager,
     )

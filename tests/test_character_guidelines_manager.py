@@ -1,218 +1,368 @@
-from unittest.mock import patch
+from typing import cast
 
 import pytest
 
+from src.base.required_string import RequiredString
 from src.characters.character_guidelines_manager import CharacterGuidelinesManager
+from src.filesystem.filesystem_manager import FilesystemManager
 
-# Mock constant
-CHARACTER_GENERATION_GUIDELINES_FILE = (
-    "data/guidelines/character_generation_guidelines.json"
-)
+# Mock constants and dependencies
+CHARACTER_GENERATION_GUIDELINES_FILE = "character_guidelines.json"
+
+
+# Mock FilesystemManager
+class MockFilesystemManager:
+    def __init__(self):
+        # Simulate a JSON file with a dictionary
+        self.files = {}
+
+    def load_existing_or_new_json_file(self, file_name):
+        return self.files.get(file_name.value, {})
+
+    def save_json_file(self, data, file_name):
+        self.files[file_name.value] = data
+
+
+# Begin writing the tests
 
 
 @pytest.fixture
 def mock_filesystem_manager():
-    """Fixture to create a mock FilesystemManager."""
-    with patch("src.filesystem.filesystem_manager.FilesystemManager") as MockFS:
-        mock_fs_instance = MockFS.return_value
-        # Mock the load_existing_or_new_json_file to return an empty dict by default
-        mock_fs_instance.load_existing_or_new_json_file.return_value = {}
-        yield mock_fs_instance
+    return MockFilesystemManager()
 
 
 @pytest.fixture
 def manager(mock_filesystem_manager):
-    """Fixture to create a CharacterGuidelinesManager with a mocked FilesystemManager."""
-    return CharacterGuidelinesManager(filesystem_manager=mock_filesystem_manager)
-
-
-class TestCharacterGuidelinesManager:
-    def test_init_loads_guidelines_file(self, mock_filesystem_manager):
-        """Test that the constructor loads the guidelines file."""
-        CharacterGuidelinesManager(filesystem_manager=mock_filesystem_manager)
-        mock_filesystem_manager.load_existing_or_new_json_file.assert_called_once_with(
-            CHARACTER_GENERATION_GUIDELINES_FILE
-        )
-
-    @pytest.mark.parametrize(
-        "world, region, area, location, expected_key",
-        [
-            ("Earth", "North", "Forest", None, "Earth:North:Forest"),
-            ("Mars", "South", "Desert", "Oasis", "Mars:South:Desert:Oasis"),
-            ("", "Region", "Area", None, ValueError),
-            ("World", "", "Area", None, ValueError),
-            ("World", "Region", "", None, ValueError),
-        ],
+    return CharacterGuidelinesManager(
+        filesystem_manager=cast(FilesystemManager, mock_filesystem_manager)
     )
-    def test_create_key(self, world, region, area, location, expected_key):
-        """Test the create_key static method."""
-        if expected_key == ValueError:
-            with pytest.raises(
-                ValueError, match="World, region, and area can't be empty."
-            ):
-                CharacterGuidelinesManager.create_key(world, region, area, location)
-        else:
-            key = CharacterGuidelinesManager.create_key(world, region, area, location)
-            assert key == expected_key
 
-    def test_load_guidelines_existing_key(self, manager, mock_filesystem_manager):
-        """Test loading guidelines for an existing key."""
-        # Setup
-        key = "Earth:North:Forest"
-        guidelines = ["Guideline1", "Guideline2"]
-        manager._guidelines_file[key] = guidelines
 
-        # Action
-        result = manager.load_guidelines("Earth", "North", "Forest")
-
-        # Assert
-        assert result == guidelines
-
-    def test_load_guidelines_with_location(self, manager, mock_filesystem_manager):
-        """Test loading guidelines with location."""
-        key = "Mars:South:Desert:Oasis"
-        guidelines = ["GuidelineA", "GuidelineB"]
-        manager._guidelines_file[key] = guidelines
-
-        result = manager.load_guidelines("Mars", "South", "Desert", "Oasis")
-
-        assert result == guidelines
-
-    def test_load_guidelines_non_existing_key(self, manager):
-        """Test loading guidelines for a non-existing key raises ValueError."""
-        with pytest.raises(
-            ValueError, match="No guidelines found for key 'Earth:East:Mountain'."
-        ):
-            manager.load_guidelines("Earth", "East", "Mountain")
-
-    def test_save_guidelines(self, manager, mock_filesystem_manager):
-        """Test saving guidelines updates the internal dictionary and calls save."""
-        world, region, area, location = "Venus", "West", "Lake", "Dock"
-        guidelines = ["NewGuideline1", "NewGuideline2"]
-
-        manager.save_guidelines(world, region, area, guidelines, location)
-
-        # Check if the internal dictionary was updated correctly
-        expected_key = "Venus:West:Lake:Dock"
-        assert manager._guidelines_file[expected_key] == guidelines
-
-        # Check if save_json_file was called with correct parameters
-        mock_filesystem_manager.save_json_file.assert_called_once_with(
-            manager._guidelines_file,
-            CHARACTER_GENERATION_GUIDELINES_FILE,
-        )
-
-    def test_save_guidelines_without_location(self, manager, mock_filesystem_manager):
-        """Test saving guidelines without a location."""
-        world, region, area = "Jupiter", "North", "Storm"
-        guidelines = ["StormGuideline1"]
-
-        manager.save_guidelines(world, region, area, guidelines)
-
-        expected_key = "Jupiter:North:Storm"
-        assert manager._guidelines_file[expected_key] == guidelines
-
-        mock_filesystem_manager.save_json_file.assert_called_once_with(
-            manager._guidelines_file,
-            CHARACTER_GENERATION_GUIDELINES_FILE,
-        )
-
-    @pytest.mark.parametrize(
-        "world, region, area, location, expected",
-        [
-            ("Earth", "North", "Forest", None, False),
-            ("Mars", "South", "Desert", "Oasis", False),
-            ("Venus", "West", "Lake", "Dock", True),
-            ("Jupiter", "North", "Storm", None, True),
-        ],
+def test_create_key_without_location():
+    key = CharacterGuidelinesManager.create_key(
+        RequiredString("Universe"),
+        RequiredString("Earth"),
+        RequiredString("Europe"),
+        RequiredString("France"),
     )
-    def test_guidelines_exist(
-        self, manager, mock_filesystem_manager, world, region, area, location, expected
-    ):
-        """Test checking if guidelines exist for a given key."""
-        if expected:
-            key = CharacterGuidelinesManager.create_key(world, region, area, location)
-            manager._guidelines_file[key] = ["Some guideline"]
+    assert key.value == "Universe:Earth:Europe:France"
 
-        exists = manager.guidelines_exist(world, region, area, location)
-        assert exists == expected
 
-    def test_guidelines_exist_with_location(self, manager):
-        """Test guidelines_exist method with location."""
-        key_existing = "Saturn:East:Ring:Gateway"
-        key_non_existing = "Saturn:West:Moon"
+def test_create_key_with_location():
+    key = CharacterGuidelinesManager.create_key(
+        RequiredString("Universe"),
+        RequiredString("Earth"),
+        RequiredString("Europe"),
+        RequiredString("France"),
+        RequiredString("Paris"),
+    )
+    assert key.value == "Universe:Earth:Europe:France:Paris"
 
-        manager._guidelines_file[key_existing] = ["GuidelineX"]
 
-        assert manager.guidelines_exist("Saturn", "East", "Ring", "Gateway") is True
-        assert manager.guidelines_exist("Saturn", "West", "Moon") is False
+def test_save_and_load_guidelines(manager):
+    # Prepare test data
+    guidelines = [RequiredString("Be brave"), RequiredString("Be smart")]
+    # Save guidelines
+    manager.save_guidelines(
+        RequiredString("Universe"),
+        RequiredString("Earth"),
+        RequiredString("Europe"),
+        RequiredString("France"),
+        guidelines,
+        location=RequiredString("Paris"),
+    )
+    # Load guidelines
+    loaded_guidelines = manager.load_guidelines(
+        RequiredString("Universe"),
+        RequiredString("Earth"),
+        RequiredString("Europe"),
+        RequiredString("France"),
+        location=RequiredString("Paris"),
+    )
+    assert loaded_guidelines == guidelines
 
-    def test_create_key_with_empty_world(self, manager):
-        """Test create_key raises ValueError when world is empty."""
-        with pytest.raises(ValueError, match="World, region, and area can't be empty."):
-            manager.create_key("", "Region", "Area")
 
-    def test_create_key_with_empty_region(self, manager):
-        """Test create_key raises ValueError when region is empty."""
-        with pytest.raises(ValueError, match="World, region, and area can't be empty."):
-            manager.create_key("World", "", "Area")
+def test_guidelines_exist(manager):
+    guidelines = [RequiredString("Be brave")]
+    manager.save_guidelines(
+        RequiredString("Universe"),
+        RequiredString("Earth"),
+        RequiredString("Asia"),
+        RequiredString("Japan"),
+        guidelines,
+    )
+    exists = manager.guidelines_exist(
+        RequiredString("Universe"),
+        RequiredString("Earth"),
+        RequiredString("Asia"),
+        RequiredString("Japan"),
+    )
+    assert exists is True
 
-    def test_create_key_with_empty_area(self, manager):
-        """Test create_key raises ValueError when area is empty."""
-        with pytest.raises(ValueError, match="World, region, and area can't be empty."):
-            manager.create_key("World", "Region", "")
 
-    def test_init_with_default_filesystem_manager(self):
-        """Test that CharacterGuidelinesManager initializes FilesystemManager when none is provided."""
-        with patch(
-            "src.characters.character_guidelines_manager.FilesystemManager"
-        ) as MockFS:
-            mock_fs_instance = MockFS.return_value
-            mock_fs_instance.load_existing_or_new_json_file.return_value = {}
-            manager = CharacterGuidelinesManager()
-            MockFS.assert_called_once()
-            mock_fs_instance.load_existing_or_new_json_file.assert_called_once_with(
-                CHARACTER_GENERATION_GUIDELINES_FILE
-            )
+def test_guidelines_not_exist(manager):
+    exists = manager.guidelines_exist(
+        RequiredString("Universe"),
+        RequiredString("Mars"),
+        RequiredString("Olympus Mons"),
+        RequiredString("Base Camp"),
+    )
+    assert exists is False
 
-    def test_load_guidelines_with_empty_world_region_area(self, manager):
-        """Test load_guidelines with empty world, region, or area raises ValueError."""
-        with pytest.raises(ValueError, match="World, region, and area can't be empty."):
-            manager.load_guidelines("", "North", "Forest")
 
-        with pytest.raises(ValueError, match="World, region, and area can't be empty."):
-            manager.load_guidelines("Earth", "", "Forest")
-
-        with pytest.raises(ValueError, match="World, region, and area can't be empty."):
-            manager.load_guidelines("Earth", "North", "")
-
-    def test_save_guidelines_with_empty_world_region_area(self, manager):
-        """Test save_guidelines with empty world, region, or area raises ValueError."""
-        with pytest.raises(ValueError, match="World, region, and area can't be empty."):
-            manager.save_guidelines("", "North", "Forest", ["Guideline1"])
-
-        with pytest.raises(ValueError, match="World, region, and area can't be empty."):
-            manager.save_guidelines("Earth", "", "Forest", ["Guideline1"])
-
-        with pytest.raises(ValueError, match="World, region, and area can't be empty."):
-            manager.save_guidelines("Earth", "North", "", ["Guideline1"])
-
-    def test_filesystem_manager_save_json_file_called_correctly(
-        self, manager, mock_filesystem_manager
-    ):
-        """Test that _save_guidelines_file calls save_json_file with correct parameters."""
-        manager._guidelines_file = {"Earth:North:Forest": ["Guideline1"]}
-        manager._save_guidelines_file()
-        mock_filesystem_manager.save_json_file.assert_called_once_with(
-            manager._guidelines_file,
-            CHARACTER_GENERATION_GUIDELINES_FILE,
+def test_load_guidelines_nonexistent_key(manager):
+    with pytest.raises(ValueError) as exc_info:
+        manager.load_guidelines(
+            RequiredString("Universe"),
+            RequiredString("Mars"),
+            RequiredString("Olympus Mons"),
+            RequiredString("Base Camp"),
         )
+    assert "No guidelines found for key 'Universe:Mars:Olympus Mons:Base Camp'." in str(
+        exc_info.value
+    )
 
-    def test_filesystem_manager_load_existing_or_new_json_file_called_once(
-        self, mock_filesystem_manager
-    ):
-        """Test that FilesystemManager.load_existing_or_new_json_file is called once during initialization."""
-        CharacterGuidelinesManager(filesystem_manager=mock_filesystem_manager)
-        mock_filesystem_manager.load_existing_or_new_json_file.assert_called_once_with(
-            CHARACTER_GENERATION_GUIDELINES_FILE
+
+def test_save_guidelines_append(manager):
+    # First, save some guidelines
+    initial_guidelines = [RequiredString("Be cautious")]
+    manager.save_guidelines(
+        RequiredString("Universe"),
+        RequiredString("Earth"),
+        RequiredString("Africa"),
+        RequiredString("Egypt"),
+        initial_guidelines,
+    )
+    # Now, save additional guidelines to the same key
+    additional_guidelines = [RequiredString("Respect the culture")]
+    manager.save_guidelines(
+        RequiredString("Universe"),
+        RequiredString("Earth"),
+        RequiredString("Africa"),
+        RequiredString("Egypt"),
+        additional_guidelines,
+    )
+    # Load guidelines and check they include both initial and additional
+    loaded_guidelines = manager.load_guidelines(
+        RequiredString("Universe"),
+        RequiredString("Earth"),
+        RequiredString("Africa"),
+        RequiredString("Egypt"),
+    )
+    all_guidelines = initial_guidelines + additional_guidelines
+    assert loaded_guidelines == all_guidelines
+
+
+def test_init_with_filesystem_manager(mock_filesystem_manager):
+    # Instantiate with a provided filesystem_manager
+    manager = CharacterGuidelinesManager(
+        filesystem_manager=cast(FilesystemManager, mock_filesystem_manager)
+    )
+    assert manager._filesystem_manager is mock_filesystem_manager
+
+
+def test_required_string_empty():
+    with pytest.raises(ValueError) as exc_info:
+        RequiredString("")
+    assert "value can't be empty." in str(exc_info.value)
+
+
+def test_required_string_non_string():
+    with pytest.raises(TypeError) as exc_info:
+        RequiredString(123)
+    assert "value must be a string" in str(exc_info.value)
+
+
+def test_required_string_comparison():
+    str1 = RequiredString("abc")
+    str2 = RequiredString("def")
+    assert str1 < str2
+    assert str1 != str2
+    assert str1 == RequiredString("abc")
+
+
+def test_required_string_repr():
+    str1 = RequiredString("test")
+    assert repr(str1) == "RequiredString(value='test')"
+
+
+def test_guidelines_exist_with_location(manager):
+    guidelines = [RequiredString("Stay hidden")]
+    manager.save_guidelines(
+        RequiredString("Universe"),
+        RequiredString("Planet X"),
+        RequiredString("Unknown Region"),
+        RequiredString("Sector 7"),
+        guidelines,
+        location=RequiredString("Area 51"),
+    )
+    exists = manager.guidelines_exist(
+        RequiredString("Universe"),
+        RequiredString("Planet X"),
+        RequiredString("Unknown Region"),
+        RequiredString("Sector 7"),
+        location=RequiredString("Area 51"),
+    )
+    assert exists is True
+
+
+def test_guidelines_not_exist_different_location(manager):
+    guidelines = [RequiredString("Stay hidden")]
+    manager.save_guidelines(
+        RequiredString("Universe"),
+        RequiredString("Planet X"),
+        RequiredString("Unknown Region"),
+        RequiredString("Sector 7"),
+        guidelines,
+        location=RequiredString("Area 51"),
+    )
+    # Check that guidelines do not exist for a different location
+    exists = manager.guidelines_exist(
+        RequiredString("Universe"),
+        RequiredString("Planet X"),
+        RequiredString("Unknown Region"),
+        RequiredString("Sector 7"),
+        location=RequiredString("Area 52"),
+    )
+    assert exists is False
+
+
+def test_save_and_load_guidelines_without_location(manager):
+    guidelines = [RequiredString("Explore the unknown")]
+    manager.save_guidelines(
+        RequiredString("Universe"),
+        RequiredString("Planet Y"),
+        RequiredString("Mystery Region"),
+        RequiredString("Sector 9"),
+        guidelines,
+    )
+    loaded_guidelines = manager.load_guidelines(
+        RequiredString("Universe"),
+        RequiredString("Planet Y"),
+        RequiredString("Mystery Region"),
+        RequiredString("Sector 9"),
+    )
+    assert loaded_guidelines == guidelines
+
+
+def test_guidelines_file_persistence(manager):
+    # Save guidelines
+    guidelines = [RequiredString("Rule 1"), RequiredString("Rule 2")]
+    manager.save_guidelines(
+        RequiredString("Game"),
+        RequiredString("World"),
+        RequiredString("Region"),
+        RequiredString("Area"),
+        guidelines,
+    )
+    # Simulate reloading the manager (e.g., restarting the application)
+    new_manager = CharacterGuidelinesManager(
+        filesystem_manager=manager._filesystem_manager
+    )
+    loaded_guidelines = new_manager.load_guidelines(
+        RequiredString("Game"),
+        RequiredString("World"),
+        RequiredString("Region"),
+        RequiredString("Area"),
+    )
+    assert loaded_guidelines == guidelines
+
+
+def test_invalid_required_string_in_guidelines(manager):
+    # Attempt to save a guideline with an empty RequiredString
+    with pytest.raises(ValueError) as exc_info:
+        manager.save_guidelines(
+            RequiredString("Universe"),
+            RequiredString("Earth"),
+            RequiredString("Europe"),
+            RequiredString("Germany"),
+            [RequiredString("")],
+        )
+    assert "value can't be empty." in str(exc_info.value)
+
+
+def test_save_guidelines_duplicate_entries(manager):
+    guidelines = [RequiredString("Be kind"), RequiredString("Be kind")]
+    manager.save_guidelines(
+        RequiredString("Universe"),
+        RequiredString("Earth"),
+        RequiredString("Australia"),
+        RequiredString("Sydney"),
+        guidelines,
+    )
+    loaded_guidelines = manager.load_guidelines(
+        RequiredString("Universe"),
+        RequiredString("Earth"),
+        RequiredString("Australia"),
+        RequiredString("Sydney"),
+    )
+    # Both entries should be present
+    assert loaded_guidelines == guidelines
+
+
+def test_save_guidelines_special_characters(manager):
+    guidelines = [
+        RequiredString("Don't panic!"),
+        RequiredString("Keep calm & carry on."),
+    ]
+    manager.save_guidelines(
+        RequiredString("Universe"),
+        RequiredString("Earth"),
+        RequiredString("UK"),
+        RequiredString("London"),
+        guidelines,
+    )
+    loaded_guidelines = manager.load_guidelines(
+        RequiredString("Universe"),
+        RequiredString("Earth"),
+        RequiredString("UK"),
+        RequiredString("London"),
+    )
+    assert loaded_guidelines == guidelines
+
+
+def test_create_key_with_special_characters():
+    key = CharacterGuidelinesManager.create_key(
+        RequiredString("Uni:verse"),
+        RequiredString("Wor:ld"),
+        RequiredString("Re:gion"),
+        RequiredString("Ar:ea"),
+    )
+    assert key.value == "Uni:verse:Wor:ld:Re:gion:Ar:ea"
+
+
+def test_guidelines_exist_case_sensitivity(manager):
+    guidelines = [RequiredString("Mind the gap")]
+    manager.save_guidelines(
+        RequiredString("Universe"),
+        RequiredString("Earth"),
+        RequiredString("UK"),
+        RequiredString("London"),
+        guidelines,
+    )
+    # Check with different case
+    exists = manager.guidelines_exist(
+        RequiredString("universe"),
+        RequiredString("earth"),
+        RequiredString("uk"),
+        RequiredString("london"),
+    )
+    assert exists is False  # Assuming the keys are case-sensitive
+
+
+def test_load_guidelines_case_sensitivity(manager):
+    guidelines = [RequiredString("Mind the gap")]
+    manager.save_guidelines(
+        RequiredString("Universe"),
+        RequiredString("Earth"),
+        RequiredString("UK"),
+        RequiredString("London"),
+        guidelines,
+    )
+    with pytest.raises(ValueError):
+        manager.load_guidelines(
+            RequiredString("universe"),
+            RequiredString("earth"),
+            RequiredString("uk"),
+            RequiredString("london"),
         )

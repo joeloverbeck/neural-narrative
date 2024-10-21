@@ -1,4 +1,5 @@
 # Assuming parse_tool_response is defined as given in the question
+from src.base.required_string import RequiredString
 from src.prompting.providers.concrete_tool_response_parsing_provider import (
     ConcreteToolResponseParsingProvider,
 )
@@ -36,7 +37,9 @@ def test_parse_tool_response():
     }
 
     # Actual result from parse_tool_response
-    actual_result = ConcreteToolResponseParsingProvider(response).parse_tool_response()
+    actual_result = ConcreteToolResponseParsingProvider(
+        RequiredString(response)
+    ).parse_tool_response()
 
     assert actual_result.is_valid()
 

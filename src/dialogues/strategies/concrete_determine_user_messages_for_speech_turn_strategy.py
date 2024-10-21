@@ -1,5 +1,6 @@
 from typing import Optional
 
+from src.base.required_string import RequiredString
 from src.characters.character import Character
 from src.characters.characters_manager import CharactersManager
 from src.dialogues.abstracts.factory_products import PlayerInputProduct
@@ -15,17 +16,12 @@ class ConcreteDetermineUserMessagesForSpeechTurnStrategy(
 ):
     def __init__(
         self,
-        playthrough_name: str,
-        player_identifier: Optional[str],
+            playthrough_name: RequiredString,
+            player_identifier: Optional[RequiredString],
         player_input_product: PlayerInputProduct,
         messages_to_llm: MessagesToLlm,
         characters_manager: CharactersManager = None,
     ):
-        if player_identifier and not isinstance(player_identifier, str):
-            raise TypeError(
-                f"Received a player identifier that wasn't a string, but a {type(player_identifier)}: {player_identifier}."
-            )
-
         self._playthrough_name = playthrough_name
         self._player_identifier = player_identifier
         self._player_input_product = player_input_product
@@ -40,15 +36,21 @@ class ConcreteDetermineUserMessagesForSpeechTurnStrategy(
         if not self._player_identifier or self._player_input_product.is_silent():
             # Should prompt the LLM to speak given the chosen next character.
             self._messages_to_llm.add_message(
-                "user",
-                f"Produce {speech_turn_tool_response_product.get()["name"]}'s speech.",
+                RequiredString("user"),
+                RequiredString(
+                    f"Produce {speech_turn_tool_response_product.get()["name"]}'s speech."
+                ),
             )
         else:
             self._messages_to_llm.add_message(
-                "user",
-                f"{Character(self._playthrough_name, self._player_identifier).name}: {self._player_input_product.get()}",
+                RequiredString("user"),
+                RequiredString(
+                    f"{Character(self._playthrough_name, self._player_identifier).name}: {self._player_input_product.get()}"
+                ),
             )
             self._messages_to_llm.add_message(
-                "user",
-                f"Next, write {speech_turn_tool_response_product.get()["name"]}'s speech.",
+                RequiredString("user"),
+                RequiredString(
+                    f"Next, write {speech_turn_tool_response_product.get()["name"]}'s speech."
+                ),
             )

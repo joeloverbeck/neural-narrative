@@ -1,3 +1,4 @@
+from src.base.required_string import RequiredString
 from src.characters.character import Character
 from src.dialogues.abstracts.abstract_factories import InitialPromptingMessagesProvider
 from src.dialogues.abstracts.factory_products import InitialPromptingMessagesProduct
@@ -16,7 +17,6 @@ class DialogueInitialPromptingMessagesProvider(InitialPromptingMessagesProvider)
         self,
         participants: Participants,
         character: Character,
-        memories: str,
         speech_turn_dialogue_system_content_for_prompt_provider_factory: SpeechTurnDialogueSystemContentForPromptProviderFactory,
     ):
         if not participants.enough_participants():
@@ -24,7 +24,6 @@ class DialogueInitialPromptingMessagesProvider(InitialPromptingMessagesProvider)
 
         self._participants = participants
         self._character = character
-        self._memories = memories
         self._speech_turn_dialogue_system_content_for_prompt_provider_factory = (
             speech_turn_dialogue_system_content_for_prompt_provider_factory
         )
@@ -38,7 +37,7 @@ class DialogueInitialPromptingMessagesProvider(InitialPromptingMessagesProvider)
                 break
 
         system_content_for_prompt_product = self._speech_turn_dialogue_system_content_for_prompt_provider_factory.create_speech_turn_dialogue_system_content_for_prompt_provider(
-            self._participants, self._character, self._memories
+            self._participants, self._character
         ).create_system_content_for_prompt()
 
         if not system_content_for_prompt_product.is_valid():
@@ -48,26 +47,32 @@ class DialogueInitialPromptingMessagesProvider(InitialPromptingMessagesProvider)
 
         messages_to_llm = MessagesToLlm()
 
-        messages_to_llm.add_message("system", system_content_for_prompt_product.get())
+        messages_to_llm.add_message(
+            RequiredString("system"), system_content_for_prompt_product.get()
+        )
 
         messages_to_llm.add_message(
-            "user",
-            f"Here's an example: {other_character_name}: What's up?",
+            RequiredString("user"),
+            RequiredString(f"Here's an example: {other_character_name}: What's up?"),
             is_guiding_message=True,
         )
         messages_to_llm.add_message(
-            "assistant",
-            f'<function=generate_speech>{{"name": "{self._character.name}", "speech": "What\'s up with you?", "narration_text": "{self._character.name} stares at {other_character_name}." }}</function>',
+            RequiredString("assistant"),
+            RequiredString(
+                f'<function=generate_speech>{{"name": "{self._character.name}", "speech": "What\'s up with you?", "narration_text": "{self._character.name} stares at {other_character_name}." }}</function>'
+            ),
             is_guiding_message=True,
         )
         messages_to_llm.add_message(
-            "user",
-            f"Here's a second example: {other_character_name}: Hello.",
+            RequiredString("user"),
+            RequiredString(f"Here's a second example: {other_character_name}: Hello."),
             is_guiding_message=True,
         )
         messages_to_llm.add_message(
-            "assistant",
-            f'<function=generate_speech>{{"name": "{self._character.name}", "speech": "Hey.", "narration_text": "{self._character.name} stares at {other_character_name}." }}</function>',
+            RequiredString("assistant"),
+            RequiredString(
+                f'<function=generate_speech>{{"name": "{self._character.name}", "speech": "Hey.", "narration_text": "{self._character.name} stares at {other_character_name}." }}</function>'
+            ),
             is_guiding_message=True,
         )
 

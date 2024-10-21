@@ -1,3 +1,4 @@
+Story Universe Description: {story_universe_description}
 World Description: {world_description}
 Region Description: {region_description}
 Area Description: {area_description}

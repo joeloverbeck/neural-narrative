@@ -6,6 +6,7 @@ from src.base.constants import (
     DEFAULT_IMAGE_FILE,
     IMAGE_GENERATION_PROMPT_FILE,
 )
+from src.base.required_string import RequiredString
 from src.characters.character import Character
 from src.characters.characters_manager import CharactersManager
 from src.characters.factories.character_description_provider_factory import (
@@ -22,8 +23,8 @@ class GenerateCharacterImageCommand(Command):
 
     def __init__(
         self,
-        playthrough_name: str,
-        character_identifier: str,
+            playthrough_name: RequiredString,
+            character_identifier: RequiredString,
         character_description_provider_factory: CharacterDescriptionProviderFactory,
         generated_image_factory: GeneratedImageFactory,
         url_content_factory: UrlContentFactory,
@@ -67,14 +68,16 @@ class GenerateCharacterImageCommand(Command):
             character.save()
 
         prompt = self._filesystem_manager.read_file(
-            IMAGE_GENERATION_PROMPT_FILE
-        ).format(character_description=character.description_for_portrait)
+            RequiredString(IMAGE_GENERATION_PROMPT_FILE)
+        ).value.format(character_description=character.description_for_portrait)
 
         target_image_path = self._filesystem_manager.get_file_path_to_character_image(
-            self._playthrough_name, self._character_identifier
+            self._playthrough_name.value, self._character_identifier.value
         )
 
-        generated_image_product = self._generated_image_factory.generate_image(prompt)
+        generated_image_product = self._generated_image_factory.generate_image(
+            RequiredString(prompt)
+        )
 
         if not generated_image_product.is_valid():
             logger.warning(

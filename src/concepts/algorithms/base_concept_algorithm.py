@@ -3,7 +3,7 @@
 import logging
 from typing import Generic, TypeVar, List, Optional
 
-from src.base.playthrough_name import RequiredString
+from src.base.required_string import RequiredString
 from src.filesystem.filesystem_manager import FilesystemManager
 
 logger = logging.getLogger(__name__)
@@ -20,9 +20,7 @@ class BaseConceptAlgorithm(Generic[TProduct, TFactory]):
         filesystem_manager: Optional[FilesystemManager] = None,
     ):
         if not isinstance(playthrough_name, RequiredString):
-            raise TypeError(
-                f"Expected playthrough_name to be of type PlaythroughName, but it was {type(playthrough_name)}."
-            )
+            playthrough_name = RequiredString(playthrough_name)
 
         self._playthrough_name = playthrough_name
         self._concept_factory = concept_factory
@@ -51,11 +49,27 @@ class BaseConceptAlgorithm(Generic[TProduct, TFactory]):
 
         return generated_items
 
-    def save_generated_items(self, items: List[str]):
+    def save_generated_items(self, items: List[RequiredString]):
+        # Ensure that there are items to save.
+        if not items:
+            raise ValueError("There weren't items to save.")
+
         file_path = self.get_save_file_path()
-        content = "\n".join(filter(None, items))
-        self._filesystem_manager.append_to_file(file_path, content)
+
+        curated_items = []
+        for item in items:
+            if not item:
+                raise ValueError(
+                    f"Received a list with at least an invalid item: {items}"
+                )
+            if isinstance(item, RequiredString):
+                curated_items.append(item)
+            elif isinstance(item, str):
+                curated_items.append(RequiredString(item))
+
+        content = "\n".join(filter(None, [item.value for item in curated_items]))
+        self._filesystem_manager.append_to_file(file_path, RequiredString(content))
         logger.info(f"Saved generated items to '{file_path}'.")
 
-    def get_save_file_path(self) -> str:
+    def get_save_file_path(self) -> RequiredString:
         raise NotImplementedError("Subclasses must implement get_save_file_path.")

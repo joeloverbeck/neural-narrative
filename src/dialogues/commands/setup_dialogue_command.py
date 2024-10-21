@@ -1,5 +1,8 @@
+from typing import Optional
+
 from src.base.abstracts.command import Command
 from src.base.abstracts.observer import Observer
+from src.base.required_string import RequiredString
 from src.dialogues.abstracts.abstract_factories import PlayerInputFactory
 from src.dialogues.abstracts.strategies import (
     MessageDataProducerForIntroducePlayerInputIntoDialogueStrategy,
@@ -20,10 +23,10 @@ from src.dialogues.transcription import Transcription
 class SetupDialogueCommand(Command):
     def __init__(
         self,
-        playthrough_name: str,
-        player_identifier: str,
+        playthrough_name: RequiredString,
+        player_identifier: RequiredString,
         participants: Participants,
-        purpose: str,
+        purpose: Optional[RequiredString],
         dialogue_observer: Observer,
         player_input_factory: PlayerInputFactory,
         handle_possible_existence_of_ongoing_conversation_command_factory: HandlePossibleExistenceOfOngoingConversationCommandFactory,

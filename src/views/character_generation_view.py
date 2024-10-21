@@ -6,28 +6,18 @@ from flask.views import MethodView
 from src.base.constants import CHARACTER_GENERATION_GUIDELINES_FILE
 from src.base.exceptions import CharacterGenerationError
 from src.base.playthrough_manager import PlaythroughManager
+from src.base.required_string import RequiredString
 from src.characters.algorithms.generate_character_generation_guidelines_algorithm import (
     GenerateCharacterGenerationGuidelinesAlgorithm,
 )
 from src.characters.character import Character
 from src.characters.character_guidelines_manager import CharacterGuidelinesManager
 from src.characters.characters_manager import CharactersManager
-from src.characters.factories.character_generation_guidelines_factory import (
-    CharacterGenerationGuidelinesFactory,
+from src.characters.composers.character_generation_guidelines_provider_factory_composer import (
+    CharacterGenerationGuidelinesProviderFactoryComposer,
 )
-from src.config.config_manager import ConfigManager
 from src.filesystem.filesystem_manager import FilesystemManager
-from src.maps.factories.place_descriptions_for_prompt_factory import (
-    PlaceDescriptionsForPromptFactory,
-)
-from src.maps.factories.places_descriptions_factory import PlacesDescriptionsFactory
-from src.maps.map_manager import MapManager
-from src.prompting.factories.openrouter_llm_client_factory import (
-    OpenRouterLlmClientFactory,
-)
-from src.prompting.factories.produce_tool_response_strategy_factory import (
-    ProduceToolResponseStrategyFactory,
-)
+from src.maps.factories.hierarchy_manager_factory import HierarchyManagerFactory
 from src.services.character_service import CharacterService
 from src.services.web_service import WebService
 
@@ -42,16 +32,19 @@ class CharacterGenerationView(MethodView):
 
         # Get current place's details
         playthrough_manager = PlaythroughManager(playthrough_name)
-        map_manager = MapManager(playthrough_name)
 
-        places_templates_parameter = map_manager.fill_places_templates_parameter(
-            playthrough_manager.get_current_place_identifier()
+        places_templates_parameter = (
+            HierarchyManagerFactory(RequiredString(playthrough_name))
+            .create_hierarchy_manager()
+            .fill_places_templates_parameter(
+                RequiredString(playthrough_manager.get_current_place_identifier())
+            )
         )
 
         # Load the guidelines
         character_guidelines_manager = CharacterGuidelinesManager()
 
-        world_template = playthrough_manager.get_world_template()
+        world_template = places_templates_parameter.get_world_template()
         region_template = places_templates_parameter.get_region_template()
         area_template = places_templates_parameter.get_area_template()
         location_template = places_templates_parameter.get_location_template()
@@ -60,45 +53,35 @@ class CharacterGenerationView(MethodView):
 
         character_generation_guidelines = (
             filesystem_manager.load_existing_or_new_json_file(
-                CHARACTER_GENERATION_GUIDELINES_FILE
+                RequiredString(CHARACTER_GENERATION_GUIDELINES_FILE)
             )
         )
 
         # First ensure that the guidelines exist.
         if (
             not character_guidelines_manager.create_key(
-                world_template, region_template, area_template, location_template
+                playthrough_manager.get_story_universe_template(),
+                world_template,
+                region_template,
+                area_template,
+                location_template,
             )
             in character_generation_guidelines
         ):
-            place_descriptions_for_prompt_factory = PlaceDescriptionsForPromptFactory(
-                playthrough_name
-            )
-
-            places_descriptions_factory = PlacesDescriptionsFactory(
-                place_descriptions_for_prompt_factory
-            )
-
             # Need to create the guidelines.
-            character_generation_guidelines_factory = (
-                CharacterGenerationGuidelinesFactory(
-                    playthrough_name,
-                    playthrough_manager.get_current_place_identifier(),
-                    ProduceToolResponseStrategyFactory(
-                        OpenRouterLlmClientFactory().create_llm_client(),
-                        ConfigManager().get_heavy_llm(),
-                    ),
-                    places_descriptions_factory,
-                )
-            )
+            hierarchy_manager_factory = HierarchyManagerFactory(playthrough_name)
 
             GenerateCharacterGenerationGuidelinesAlgorithm(
                 playthrough_name,
-                playthrough_manager.get_current_place_identifier(),
-                character_generation_guidelines_factory,
+                RequiredString(playthrough_manager.get_current_place_identifier()),
+                CharacterGenerationGuidelinesProviderFactoryComposer(
+                    playthrough_name
+                ).compose_factory(),
+                hierarchy_manager_factory,
             ).do_algorithm()
 
         guidelines = character_guidelines_manager.load_guidelines(
+            playthrough_manager.get_story_universe_template(),
             world_template,
             region_template,
             area_template,
@@ -152,7 +135,9 @@ class CharacterGenerationView(MethodView):
         guideline_text = request.form.get("guideline_text")
 
         try:
-            CharacterService.generate_character(playthrough_name, guideline_text)
+            CharacterService.generate_character(
+                playthrough_name, RequiredString(guideline_text)
+            )
 
             latest_identifier = CharactersManager(
                 playthrough_name
@@ -189,34 +174,17 @@ class CharacterGenerationView(MethodView):
 
             place_identifier = playthrough_manager.get_current_place_identifier()
 
-            produce_tool_response_strategy_factory = ProduceToolResponseStrategyFactory(
-                OpenRouterLlmClientFactory().create_llm_client(),
-                ConfigManager().get_heavy_llm(),
-            )
-
-            place_descriptions_for_prompt_factory = PlaceDescriptionsForPromptFactory(
-                playthrough_name
-            )
-
-            places_descriptions_factory = PlacesDescriptionsFactory(
-                place_descriptions_for_prompt_factory
-            )
-
-            character_generation_guidelines_factory = (
-                CharacterGenerationGuidelinesFactory(
-                    playthrough_name,
-                    place_identifier,
-                    produce_tool_response_strategy_factory,
-                    places_descriptions_factory,
-                )
-            )
-
             # Product could be used to return it to the page and show the guidelines
             # without having to refresh the page.
+            hierarchy_manager_factory = HierarchyManagerFactory(playthrough_name)
+
             product = GenerateCharacterGenerationGuidelinesAlgorithm(
                 playthrough_name,
-                place_identifier,
-                character_generation_guidelines_factory,
+                RequiredString(place_identifier),
+                CharacterGenerationGuidelinesProviderFactoryComposer(
+                    playthrough_name
+                ).compose_factory(),
+                hierarchy_manager_factory,
             ).do_algorithm()
 
             # Ensure the product is valid

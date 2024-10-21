@@ -4,6 +4,7 @@ from src.base.constants import (
     SELF_REFLECTION_GENERATION_PROMPT_FILE,
     SELF_REFLECTION_GENERATION_TOOL_FILE,
 )
+from src.base.required_string import RequiredString
 from src.characters.character import Character
 from src.characters.characters_manager import CharactersManager
 from src.characters.factories.character_information_provider import (
@@ -20,8 +21,8 @@ from src.prompting.providers.base_tool_response_provider import BaseToolResponse
 class SelfReflectionFactory(BaseToolResponseProvider):
     def __init__(
         self,
-        playthrough_name: str,
-        character_identifier: str,
+        playthrough_name: RequiredString,
+        character_identifier: RequiredString,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         character_information_factory: CharacterInformationProvider,
         filesystem_manager: Optional[FilesystemManager] = None,

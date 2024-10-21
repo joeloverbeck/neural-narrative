@@ -4,6 +4,7 @@ from typing import List
 from src.base.abstracts.command import Command
 from src.base.abstracts.observer import Observer
 from src.base.abstracts.subject import Subject
+from src.base.required_string import RequiredString
 from src.dialogues.abstracts.strategies import MessageDataProducerForSpeechTurnStrategy
 from src.dialogues.factories.llm_speech_data_provider_factory import (
     LlmSpeechDataProviderFactory,
@@ -69,7 +70,7 @@ class CreateSpeechTurnDataCommand(Command, Subject):
                 f"Speech turn didn't produce narration text. Content: {speech_data_product.get()}"
             )
 
-        name = speech_data_product.get()["name"]
+        name = RequiredString(speech_data_product.get()["name"])
 
         if not narration_text or narration_text.lower() == "none":
             speech_data_product.get()[
@@ -78,7 +79,9 @@ class CreateSpeechTurnDataCommand(Command, Subject):
 
         self._transcription.add_speech_turn(
             name,
-            f"*{speech_data_product.get()['narration_text']}* {speech_data_product.get()['speech']}",
+            RequiredString(
+                f"*{speech_data_product.get()['narration_text']}* {speech_data_product.get()['speech']}"
+            ),
         )
 
         self.notify(

@@ -1,4 +1,5 @@
 from src.base.constants import TOOL_INSTRUCTIONS_FILE
+from src.base.required_string import RequiredString
 from src.base.tools import generate_tool_prompt
 from src.characters.character import Character
 from src.dialogues.abstracts.strategies import PromptFormatterForDialogueStrategy
@@ -14,12 +15,9 @@ class SpeechTurnDialogueSystemContentForPromptProvider(SystemContentForPromptPro
     def __init__(
         self,
         character: Character,
-        tool_file: str,
+        tool_file: RequiredString,
         prompt_formatter_for_dialogue_strategy: PromptFormatterForDialogueStrategy,
     ):
-        assert tool_file
-        assert prompt_formatter_for_dialogue_strategy
-
         self._character = character
         self._tool_file = tool_file
         self._prompt_formatter_for_dialogue_strategy = (
@@ -58,7 +56,8 @@ class SpeechTurnDialogueSystemContentForPromptProvider(SystemContentForPromptPro
             self._prompt_formatter_for_dialogue_strategy.do_algorithm()
             + "\n\n"
             + generate_tool_prompt(
-                tool_data, filesystem_manager.read_file(TOOL_INSTRUCTIONS_FILE)
-            ),
+                tool_data,
+                filesystem_manager.read_file(RequiredString(TOOL_INSTRUCTIONS_FILE)),
+            ).value,
             is_valid=True,
         )

@@ -20,14 +20,14 @@ Voice Personality: {voice_personality}
 Voice Special Effects: {voice_special_effects}
 Using the provided character attributes, generate 10 unique and compelling speech patterns that reflect the character's distinct narrative voice. The speech patterns should:
 Reflect the Character's Attributes: Incorporate elements from the character's name, description, personality, profile, likes, dislikes, secrets, health, equipment, and voice attributes (such as age, gender, texture, style, etc.) into their speech.
-Embody Unique Expressions: Use character-specific idioms, phrases, or catchphrases that mirror their background, culture, and experiences. Subtly hint at their secrets and showcase their emotions and motivations through their words.
+Embody Unique Expressions: Use character-specific idioms, language quirks, phrases, or catchphrases that mirror their background, culture, and experiences. Subtly hint at their secrets and showcase their emotions and motivations through their words.
 Utilize Coping Mechanisms: Let the character's coping mechanisms influence their speech, revealing how they deal with stress, joy, or challenges.
 Integrate Likes and Dislikes: Reference the character's likes and dislikes naturally within their speech.
 Reflect Health and Equipment: If relevant, allow the character's health status or equipment to influence their expressions (e.g., mentioning a trusty sword or a lingering cough).
 Align with Voice Attributes: Ensure the speech patterns match the voice attributes like age, gender, texture, and style.
 Avoid Generic Expressions: Steer clear of clichés and overused phrases; focus on creating authentic and unique expressions true to the character.
 Speech Style:
-- Use an informal, conversational tone, akin to chatting in a tavern.
+- The character's communication style should be engaging and natural, encouraging dynamic conversations.
 - Incorporate contractions, slang, and colloquial expressions.
 - Avoid formal or archaic language.
 Sample Utterances:

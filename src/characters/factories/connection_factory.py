@@ -4,6 +4,7 @@ from src.base.constants import (
     CONNECTION_GENERATION_PROMPT_FILE,
     CONNECTION_GENERATION_TOOL_FILE,
 )
+from src.base.required_string import RequiredString
 from src.characters.character import Character
 from src.characters.factories.character_information_provider_factory import (
     CharacterInformationProviderFactory,
@@ -19,21 +20,15 @@ from src.prompting.providers.base_tool_response_provider import BaseToolResponse
 class ConnectionFactory(BaseToolResponseProvider):
     def __init__(
         self,
-        playthrough_name: str,
-        character_a_identifier: str,
-        character_b_identifier: str,
+            playthrough_name: RequiredString,
+            character_a_identifier: RequiredString,
+            character_b_identifier: RequiredString,
         character_information_provider_factory: CharacterInformationProviderFactory,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         filesystem_manager: Optional[FilesystemManager] = None,
     ):
         super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
 
-        if not playthrough_name:
-            raise ValueError("playthrough_name can't be empty.")
-        if not character_a_identifier:
-            raise ValueError("character_a_identifier can't be empty.")
-        if not character_b_identifier:
-            raise ValueError("character_b_identifier can't be empty.")
         self._character_information_provider_factory = (
             character_information_provider_factory
         )

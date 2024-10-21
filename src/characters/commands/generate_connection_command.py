@@ -1,6 +1,7 @@
 from typing import cast
 
 from src.base.abstracts.command import Command
+from src.base.required_string import RequiredString
 from src.characters.factories.connection_factory import ConnectionFactory
 from src.characters.factories.store_character_memory_command_factory import (
     StoreCharacterMemoryCommandFactory,
@@ -11,8 +12,8 @@ from src.characters.products.connection_product import ConnectionProduct
 class GenerateConnectionCommand(Command):
     def __init__(
         self,
-        character_a_identifier: str,
-        character_b_identifier: str,
+            character_a_identifier: RequiredString,
+            character_b_identifier: RequiredString,
         connection_factory: ConnectionFactory,
         store_character_memory_command_factory: StoreCharacterMemoryCommandFactory,
     ):

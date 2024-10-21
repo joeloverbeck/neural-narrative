@@ -7,13 +7,6 @@ class IdentifierType(Enum):
     CHARACTERS = "characters"
 
 
-class PlaceType(Enum):
-    LOCATION = "location"
-    AREA = "area"
-    REGION = "region"
-    WORLD = "world"
-
-
 class TemplateType(Enum):
     LOCATION = "location"
     AREA = "area"

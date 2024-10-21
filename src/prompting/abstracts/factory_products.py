@@ -3,6 +3,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Protocol
 
+from src.base.required_string import RequiredString
 from src.prompting.abstracts.llm_client import LlmClient
 
 
@@ -48,7 +49,7 @@ class ExtractedDataProduct(ABC):
 
 class LlmContentProduct(ABC):
     @abstractmethod
-    def get(self) -> str:
+    def get(self) -> RequiredString:
         pass
 
     @abstractmethod
@@ -62,7 +63,7 @@ class LlmContentProduct(ABC):
 
 class SystemContentForPromptProduct(ABC):
     @abstractmethod
-    def get(self) -> str:
+    def get(self) -> RequiredString:
         pass
 
     @abstractmethod
@@ -100,7 +101,7 @@ class UserContentForCharacterGenerationProduct(Protocol):
 
 
 class FilteredPlaceDescriptionGenerationProduct(Protocol):
-    def get(self) -> str:
+    def get(self) -> RequiredString:
         pass
 
     def is_valid(self) -> bool:

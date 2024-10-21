@@ -2,6 +2,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
+from src.base.required_string import RequiredString
 from src.characters.character import Character
 
 # Sample character data for testing
@@ -57,8 +58,8 @@ def mock_filesystem_manager():
 
 
 def test_character_init_with_valid_data(mock_filesystem_manager):
-    playthrough_name = "test_playthrough"
-    identifier = "char1"
+    playthrough_name = RequiredString("test_playthrough")
+    identifier = RequiredString("char1")
 
     character = Character(
         playthrough_name, identifier, filesystem_manager=mock_filesystem_manager
@@ -67,8 +68,8 @@ def test_character_init_with_valid_data(mock_filesystem_manager):
     # Assert character attributes
     assert character.playthrough_name == playthrough_name
     assert character.identifier == identifier
-    assert character.name == "Test Character"
-    assert character.description == "A test character."
+    assert character.name == RequiredString("Test Character")
+    assert character.description == RequiredString("A test character.")
 
     # Assert that get_file_path_to_characters_file was called with playthrough_name
     mock_filesystem_manager.get_file_path_to_characters_file.assert_called_with(
@@ -81,23 +82,9 @@ def test_character_init_with_valid_data(mock_filesystem_manager):
     )
 
 
-def test_character_init_with_empty_playthrough_name(mock_filesystem_manager):
-    identifier = "char1"
-    with pytest.raises(ValueError) as excinfo:
-        Character("", identifier, filesystem_manager=mock_filesystem_manager)
-    assert "playthrough_name should not be empty." in str(excinfo.value)
-
-
-def test_character_init_with_empty_identifier(mock_filesystem_manager):
-    playthrough_name = "test_playthrough"
-    with pytest.raises(ValueError) as excinfo:
-        Character(playthrough_name, "", filesystem_manager=mock_filesystem_manager)
-    assert "identifier should not be empty." in str(excinfo.value)
-
-
 def test_character_init_with_nonexistent_identifier(mock_filesystem_manager):
-    playthrough_name = "test_playthrough"
-    identifier = "nonexistent_char"
+    playthrough_name = RequiredString("test_playthrough")
+    identifier = RequiredString("nonexistent_char")
 
     # Modify the mock to return a dict without the identifier
     mock_fs_manager = mock_filesystem_manager
@@ -111,8 +98,8 @@ def test_character_init_with_nonexistent_identifier(mock_filesystem_manager):
 
 
 def test_character_init_with_missing_required_attributes(mock_filesystem_manager):
-    playthrough_name = "test_playthrough"
-    identifier = "char1"
+    playthrough_name = RequiredString("test_playthrough")
+    identifier = RequiredString("char1")
 
     # Remove 'name' from the character data
     incomplete_data = sample_character_data.copy()
@@ -131,8 +118,8 @@ def test_character_init_with_missing_required_attributes(mock_filesystem_manager
 
 
 def test_get_attribute_with_existing_attribute(mock_filesystem_manager):
-    playthrough_name = "test_playthrough"
-    identifier = "char1"
+    playthrough_name = RequiredString("test_playthrough")
+    identifier = RequiredString("char1")
 
     character = Character(
         playthrough_name, identifier, filesystem_manager=mock_filesystem_manager
@@ -143,8 +130,8 @@ def test_get_attribute_with_existing_attribute(mock_filesystem_manager):
 
 
 def test_get_attribute_with_nonexistent_attribute(mock_filesystem_manager):
-    playthrough_name = "test_playthrough"
-    identifier = "char1"
+    playthrough_name = RequiredString("test_playthrough")
+    identifier = RequiredString("char1")
 
     character = Character(
         playthrough_name, identifier, filesystem_manager=mock_filesystem_manager
@@ -155,8 +142,8 @@ def test_get_attribute_with_nonexistent_attribute(mock_filesystem_manager):
 
 
 def test_update_data_with_allowed_fields(mock_filesystem_manager):
-    playthrough_name = "test_playthrough"
-    identifier = "char1"
+    playthrough_name = RequiredString("test_playthrough")
+    identifier = RequiredString("char1")
 
     character = Character(
         playthrough_name, identifier, filesystem_manager=mock_filesystem_manager
@@ -167,7 +154,7 @@ def test_update_data_with_allowed_fields(mock_filesystem_manager):
     character.update_data(updated_data)
 
     # Assert that the data was updated
-    assert character.description == "An updated test character."
+    assert character.description == RequiredString("An updated test character.")
     assert character.likes == "Exploring"
 
     # Assert that save was called
@@ -175,15 +162,15 @@ def test_update_data_with_allowed_fields(mock_filesystem_manager):
 
     # Check that save_json_file was called with updated data
     expected_characters_file = sample_character_data.copy()
-    expected_characters_file[identifier].update(updated_data)
+    expected_characters_file[identifier.value].update(updated_data)
     mock_filesystem_manager.save_json_file.assert_called_with(
         expected_characters_file, "mock_characters_file_path.json"
     )
 
 
 def test_update_data_with_disallowed_fields(mock_filesystem_manager, caplog):
-    playthrough_name = "test_playthrough"
-    identifier = "char1"
+    playthrough_name = RequiredString("test_playthrough")
+    identifier = RequiredString("char1")
 
     # Clear existing logs
     caplog.clear()
@@ -200,7 +187,7 @@ def test_update_data_with_disallowed_fields(mock_filesystem_manager, caplog):
     character.update_data(updated_data)
 
     # Assert that the data was updated for allowed fields
-    assert character.description == "An updated test character."
+    assert character.description == RequiredString("An updated test character.")
     # 'some_disallowed_field' should not be in character._data
     assert "some_disallowed_field" not in character._data
 
@@ -216,8 +203,8 @@ def test_update_data_with_disallowed_fields(mock_filesystem_manager, caplog):
 
 
 def test_update_data_with_empty_dict(mock_filesystem_manager):
-    playthrough_name = "test_playthrough"
-    identifier = "char1"
+    playthrough_name = RequiredString("test_playthrough")
+    identifier = RequiredString("char1")
 
     character = Character(
         playthrough_name, identifier, filesystem_manager=mock_filesystem_manager
@@ -229,12 +216,14 @@ def test_update_data_with_empty_dict(mock_filesystem_manager):
 
 
 def test_has_description_for_portrait_exists_and_nonempty(mock_filesystem_manager):
-    playthrough_name = "test_playthrough"
-    identifier = "char1"
+    playthrough_name = RequiredString("test_playthrough")
+    identifier = RequiredString("char1")
 
     # Add 'description_for_portrait' to character data
     modified_data = sample_character_data.copy()
-    modified_data[identifier]["description_for_portrait"] = "A portrait description"
+    modified_data[identifier.value][
+        "description_for_portrait"
+    ] = "A portrait description"
     mock_filesystem_manager.load_existing_or_new_json_file.return_value = modified_data
 
     character = Character(
@@ -246,12 +235,12 @@ def test_has_description_for_portrait_exists_and_nonempty(mock_filesystem_manage
 
 
 def test_has_description_for_portrait_exists_and_empty(mock_filesystem_manager):
-    playthrough_name = "test_playthrough"
-    identifier = "char1"
+    playthrough_name = RequiredString("test_playthrough")
+    identifier = RequiredString("char1")
 
     # Add 'description_for_portrait' as empty string
     modified_data = sample_character_data.copy()
-    modified_data[identifier]["description_for_portrait"] = ""
+    modified_data[identifier.value]["description_for_portrait"] = ""
     mock_filesystem_manager.load_existing_or_new_json_file.return_value = modified_data
 
     character = Character(
@@ -262,12 +251,12 @@ def test_has_description_for_portrait_exists_and_empty(mock_filesystem_manager):
 
 
 def test_has_description_for_portrait_does_not_exist(mock_filesystem_manager):
-    playthrough_name = "test_playthrough"
-    identifier = "char1"
+    playthrough_name = RequiredString("test_playthrough")
+    identifier = RequiredString("char1")
 
     # Ensure 'description_for_portrait' does not exist
     modified_data = sample_character_data.copy()
-    modified_data[identifier].pop("description_for_portrait", None)
+    modified_data[identifier.value].pop("description_for_portrait", None)
     mock_filesystem_manager.load_existing_or_new_json_file.return_value = modified_data
 
     character = Character(
@@ -278,23 +267,23 @@ def test_has_description_for_portrait_does_not_exist(mock_filesystem_manager):
 
 
 def test_properties_return_correct_values(mock_filesystem_manager):
-    playthrough_name = "test_playthrough"
-    identifier = "char1"
+    playthrough_name = RequiredString("test_playthrough")
+    identifier = RequiredString("char1")
 
     character = Character(
         playthrough_name, identifier, filesystem_manager=mock_filesystem_manager
     )
 
-    assert character.name == "Test Character"
+    assert character.name == RequiredString("Test Character")
     # Note: we aren't testing description because there are racing issues with other tests.
-    assert character.personality == "Friendly"
-    assert character.profile == "Warrior"
+    assert character.personality == RequiredString("Friendly")
+    assert character.profile == RequiredString("Warrior")
     # Note: we aren't testing likes because there are racing issues with other tests.
     assert character.dislikes == "Laziness"
     assert character.secrets == "None"
     assert character.speech_patterns == "Formal"
     assert character.health == "100"
-    assert character.equipment == "Sword"
+    assert character.equipment == RequiredString("Sword")
     assert character.voice_gender == "Male"
     assert character.voice_age == "Young"
     assert character.voice_emotion == "Neutral"
@@ -305,12 +294,12 @@ def test_properties_return_correct_values(mock_filesystem_manager):
     assert character.voice_style == "Narrative"
     assert character.voice_personality == "Calm"
     assert character.voice_special_effects == "None"
-    assert character.voice_model == "Model A"
+    assert character.voice_model == RequiredString("Model A")
 
 
 def test_image_url_property(mock_filesystem_manager):
-    playthrough_name = "test_playthrough"
-    identifier = "char1"
+    playthrough_name = RequiredString("test_playthrough")
+    identifier = RequiredString("char1")
 
     mock_filesystem_manager.get_file_path_to_character_image_for_web.return_value = (
         "mock_image_url"
@@ -330,8 +319,8 @@ def test_image_url_property(mock_filesystem_manager):
 
 
 def test_save_method(mock_filesystem_manager):
-    playthrough_name = "test_playthrough"
-    identifier = "char1"
+    playthrough_name = RequiredString("test_playthrough")
+    identifier = RequiredString("char1")
 
     # We need to reset the mock calls since __init__ calls some methods
     mock_filesystem_manager.reset_mock()
@@ -360,8 +349,8 @@ def test_save_method(mock_filesystem_manager):
 
 
 def test_update_data_with_allowed_special_field(mock_filesystem_manager):
-    playthrough_name = "test_playthrough"
-    identifier = "char1"
+    playthrough_name = RequiredString("test_playthrough")
+    identifier = RequiredString("char1")
 
     character = Character(
         playthrough_name, identifier, filesystem_manager=mock_filesystem_manager
@@ -383,8 +372,8 @@ def test_update_data_with_allowed_special_field(mock_filesystem_manager):
 
 
 def test_update_data_no_data_raises_exception(mock_filesystem_manager):
-    playthrough_name = "test_playthrough"
-    identifier = "char1"
+    playthrough_name = RequiredString("test_playthrough")
+    identifier = RequiredString("char1")
 
     character = Character(
         playthrough_name, identifier, filesystem_manager=mock_filesystem_manager
@@ -396,12 +385,12 @@ def test_update_data_no_data_raises_exception(mock_filesystem_manager):
 
 
 def test_property_access_missing_field_raises_keyerror(mock_filesystem_manager):
-    playthrough_name = "test_playthrough"
-    identifier = "char1"
+    playthrough_name = RequiredString("test_playthrough")
+    identifier = RequiredString("char1")
 
     # Remove 'name' from the character data
     incomplete_data = sample_character_data.copy()
-    incomplete_data[identifier].pop("name", None)
+    incomplete_data[identifier.value].pop("name", None)
     mock_filesystem_manager.load_existing_or_new_json_file.return_value = (
         incomplete_data
     )

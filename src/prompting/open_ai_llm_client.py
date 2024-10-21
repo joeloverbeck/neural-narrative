@@ -3,6 +3,7 @@ from json import JSONDecodeError
 
 from openai import OpenAI
 
+from src.base.required_string import RequiredString
 from src.dialogues.messages_to_llm import MessagesToLlm
 from src.prompting.abstracts.ai_completion_product import AiCompletionProduct
 from src.prompting.abstracts.llm_client import LlmClient
@@ -24,12 +25,16 @@ class OpenAiLlmClient(LlmClient):
         self._client = client
 
     def generate_completion(
-        self, model: str, messages_to_llm: MessagesToLlm, temperature=1.0, top_p=1.0
+        self,
+        model: RequiredString,
+        messages_to_llm: MessagesToLlm,
+        temperature=1.0,
+        top_p=1.0,
     ) -> AiCompletionProduct:
         # Surprisingly, this could fail. I got a JSONDecodeError
         try:
             completion = self._client.chat.completions.create(
-                model=model,
+                model=model.value,
                 messages=messages_to_llm.get(),
                 temperature=temperature,
                 top_p=top_p,
@@ -39,13 +44,16 @@ class OpenAiLlmClient(LlmClient):
             logger.error(f"Failed to decode JSON: %s.", error)
             return ConcreteAiCompletionProduct(None)
 
-    def generate_image(self, prompt: str) -> str:
+    def generate_image(self, prompt: RequiredString) -> RequiredString:
+        if not isinstance(prompt, RequiredString):
+            prompt = RequiredString(prompt)
+
         response = self._client.images.generate(
             model="dall-e-3",
-            prompt=prompt,
+            prompt=prompt.value,
             size="1024x1024",
             quality="standard",
             n=1,
         )
 
-        return response.data[0].url
+        return RequiredString(response.data[0].url)

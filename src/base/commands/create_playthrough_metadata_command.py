@@ -1,7 +1,6 @@
-import logging
 import logging.config
-import os
 import random
+from typing import Optional
 
 from src.base.abstracts.command import Command
 from src.base.builders.playthrough_metadata_builder import PlaythroughMetadataBuilder
@@ -9,12 +8,13 @@ from src.base.constants import (
     DEFAULT_PLAYER_IDENTIFIER,
     DEFAULT_CURRENT_PLACE,
     DEFAULT_IDENTIFIER,
-    WORLDS_TEMPLATES_FILE,
+    STORY_UNIVERSES_TEMPLATE_FILE,
 )
 from src.base.exceptions import (
-    WorldTemplateNotFoundError,
+    StoryUniverseTemplateNotFoundError,
     PlaythroughAlreadyExistsError,
 )
+from src.base.required_string import RequiredString
 from src.filesystem.filesystem_manager import FilesystemManager
 
 logger = logging.getLogger(__name__)
@@ -23,87 +23,75 @@ logger = logging.getLogger(__name__)
 class CreatePlaythroughMetadataCommand(Command):
     def __init__(
         self,
-        playthrough_name: str,
-        world_template: str,
-        filesystem_manager: FilesystemManager = None,
+            playthrough_name: RequiredString,
+            story_universe_template: RequiredString,
+            filesystem_manager: Optional[FilesystemManager] = None,
     ):
-        if not playthrough_name:
-            raise ValueError("playthrough_name must not be empty.")
-        if not world_template:
-            raise ValueError("world_template must not be empty.")
-
         self._playthrough_name = playthrough_name
-        self._world_template = world_template
+        self._story_universe_template = story_universe_template
+
         self._filesystem_manager = filesystem_manager or FilesystemManager()
 
-        logging.config.dictConfig(self._filesystem_manager.get_logging_config_file())
-
-    def execute(self) -> None:
-        # Check if the folder already exists
-        if os.path.exists(
-            self._filesystem_manager.get_file_path_to_playthrough_folder(
-                self._playthrough_name
-            )
-        ):
+    def _validate_playthrough_does_not_exist(self) -> None:
+        if self._filesystem_manager.playthrough_exists(self._playthrough_name.value):
             raise PlaythroughAlreadyExistsError(
                 f"A playthrough with the name '{self._playthrough_name}' already exists."
             )
 
-        # Checks here if there is such a world template:
-        worlds_file = self._filesystem_manager.load_existing_or_new_json_file(
-            WORLDS_TEMPLATES_FILE
-        )
-
-        if self._world_template not in worlds_file:
-            raise WorldTemplateNotFoundError(
-                f"There is no such world template '{self._world_template}'"
-            )
-
-        # Create the playthrough folder
-        os.makedirs(
-            self._filesystem_manager.get_file_path_to_playthrough_folder(
-                self._playthrough_name
+    def _validate_story_universe_template_exists(self) -> None:
+        story_universe_templates = (
+            self._filesystem_manager.load_existing_or_new_json_file(
+                STORY_UNIVERSES_TEMPLATE_FILE
             )
         )
+        if self._story_universe_template.value not in story_universe_templates:
+            raise StoryUniverseTemplateNotFoundError(
+                f"There is no such story universe template '{self._story_universe_template}'."
+            )
 
-        # Generate random hour and assign it as a string
+    def _build_and_save_playthrough_metadata(self) -> None:
         random_hour = random.randint(0, 23)
 
-        metadata_builder = PlaythroughMetadataBuilder()
         playthrough_metadata = (
-            metadata_builder.set_world_template(self._world_template)
+            PlaythroughMetadataBuilder()
+            .set_story_universe_template(self._story_universe_template.value)
             .set_player_identifier(DEFAULT_PLAYER_IDENTIFIER)
-            .set_followers()
+            .set_followers([])
             .set_current_place(DEFAULT_CURRENT_PLACE)
             .set_time_hour(random_hour)
             .set_last_identifiers(DEFAULT_IDENTIFIER, DEFAULT_IDENTIFIER)
             .build()
         )
 
-        # Save the metadata and map files
-        try:
-            # Write the initial values to the JSON file
-            self._filesystem_manager.save_json_file(
-                playthrough_metadata,
-                self._filesystem_manager.get_file_path_to_playthrough_metadata(
-                    self._playthrough_name
-                ),
-            )
+        metadata_path = self._filesystem_manager.get_file_path_to_playthrough_metadata(
+            self._playthrough_name
+        )
 
-            # Must also create the map JSON file
-            self._filesystem_manager.save_json_file(
-                {},
-                self._filesystem_manager.get_file_path_to_map(self._playthrough_name),
-            )
+        self._filesystem_manager.save_json_file(playthrough_metadata, metadata_path)
+
+    def _save_empty_map_file(self) -> None:
+        map_path = self._filesystem_manager.get_file_path_to_map(self._playthrough_name)
+        self._filesystem_manager.save_json_file({}, map_path)
+
+    def _log_playthrough_creation_success(self) -> None:
+        playthrough_path = self._filesystem_manager.get_file_path_to_playthrough_folder(
+            self._playthrough_name
+        )
+        logger.info(
+            f"Playthrough '{self._playthrough_name}' created successfully at {playthrough_path}."
+        )
+
+    def execute(self) -> None:
+        self._validate_playthrough_does_not_exist()
+        self._validate_story_universe_template_exists()
+
+        self._filesystem_manager.create_playthrough_folder(self._playthrough_name)
+
+        try:
+            self._build_and_save_playthrough_metadata()
+            self._save_empty_map_file()
         except IOError as e:
             logger.error(f"Failed to save playthrough files: {e}")
             raise
 
-        playthrough_path = self._filesystem_manager.get_file_path_to_playthrough_folder(
-            self._playthrough_name
-        )
-
-        # Confirm that the playthrough has been successfully created
-        logger.info(
-            f"Playthrough '{self._playthrough_name}' created successfully at {playthrough_path}."
-        )
+        self._log_playthrough_creation_success()

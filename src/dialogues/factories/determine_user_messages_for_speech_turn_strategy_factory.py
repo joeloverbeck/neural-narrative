@@ -1,3 +1,4 @@
+from src.base.required_string import RequiredString
 from src.dialogues.abstracts.factory_products import PlayerInputProduct
 from src.dialogues.abstracts.strategies import (
     DetermineUserMessagesForSpeechTurnStrategy,
@@ -9,12 +10,9 @@ from src.dialogues.strategies.concrete_determine_user_messages_for_speech_turn_s
 
 
 class DetermineUserMessagesForSpeechTurnStrategyFactory:
-    def __init__(self, playthrough_name: str, player_identifier: str):
-        if not playthrough_name:
-            raise ValueError("playthrough_name can't be empty.")
-        if not player_identifier:
-            raise ValueError("player_identifier can't be empty.")
-
+    def __init__(
+            self, playthrough_name: RequiredString, player_identifier: RequiredString
+    ):
         self._playthrough_name = playthrough_name
         self._player_identifier = player_identifier
 

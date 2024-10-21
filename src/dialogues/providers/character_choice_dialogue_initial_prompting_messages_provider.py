@@ -1,3 +1,4 @@
+from src.base.required_string import RequiredString
 from src.dialogues.abstracts.abstract_factories import InitialPromptingMessagesProvider
 from src.dialogues.abstracts.factory_products import InitialPromptingMessagesProduct
 from src.dialogues.messages_to_llm import MessagesToLlm
@@ -24,27 +25,38 @@ class CharacterChoiceDialogueInitialPromptingMessagesProvider(
         messages_to_llm = MessagesToLlm()
 
         messages_to_llm.add_message(
-            "system",
+            RequiredString("system"),
             self._character_choice_dialogue_system_content_for_prompt_factory.create_system_content_for_prompt().get(),
         )
         messages_to_llm.add_message(
-            "user", f"Here's an example: Choose who will speak next in this dialogue."
+            RequiredString("user"),
+            RequiredString(
+                f"Here's an example: Choose who will speak next in this dialogue."
+            ),
         )
         messages_to_llm.add_message(
-            "assistant",
-            f'<function=choose_speech_turn>{{"identifier": "1", "name": "Bob"}}</function>',
+            RequiredString("assistant"),
+            RequiredString(
+                f'<function=choose_speech_turn>{{"identifier": "1", "name": "Bob"}}</function>'
+            ),
         )
         messages_to_llm.add_message(
-            "user",
-            f"Here's another example: Choose who will speak next in this dialogue.",
+            RequiredString("user"),
+            RequiredString(
+                f"Here's another example: Choose who will speak next in this dialogue."
+            ),
         )
         messages_to_llm.add_message(
-            "assistant",
-            f'<function=choose_speech_turn>{{"identifier": "2", "name": "Alice"}}</function>',
+            RequiredString("assistant"),
+            RequiredString(
+                f'<function=choose_speech_turn>{{"identifier": "2", "name": "Alice"}}</function>'
+            ),
         )
         messages_to_llm.add_message(
-            "user",
-            "Choose who will speak next in this dialogue. Choose only among the allowed participants.",
+            RequiredString("user"),
+            RequiredString(
+                "Choose who will speak next in this dialogue. Choose only among the allowed participants."
+            ),
         )
 
         return ConcreteInitialPromptingMessagesProduct(messages_to_llm)

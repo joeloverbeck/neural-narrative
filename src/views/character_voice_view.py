@@ -13,6 +13,7 @@ from src.base.constants import (
     VOICE_PERSONALITIES,
     VOICE_SPECIAL_EFFECTS,
 )
+from src.base.required_string import RequiredString
 from src.characters.character import Character
 from src.characters.characters_manager import CharactersManager
 from src.voices.algorithms.match_voice_data_to_voice_model_algorithm import (
@@ -31,7 +32,9 @@ class CharacterVoiceView(MethodView):
         characters_manager = CharactersManager(playthrough_name)
         all_characters = characters_manager.get_all_characters()
 
-        selected_character_identifier = request.args.get("character_identifier")
+        selected_character_identifier = RequiredString(
+            request.args.get("character_identifier")
+        )
         selected_tags = request.args.getlist("tags")
         selected_voice_model = None
         selected_character = None
@@ -92,12 +95,12 @@ class CharacterVoiceView(MethodView):
         if not playthrough_name:
             return redirect(url_for("index"))
 
-        characters_manager = CharactersManager(playthrough_name)
-
         # Determine which form was submitted
         if "match_voice_model" in request.form:
             # Handle "Match Voice Model" form submission
-            character_identifier = request.form.get("character_identifier")
+            character_identifier = RequiredString(
+                request.form.get("character_identifier")
+            )
             if not character_identifier:
                 flash("Character identifier is missing.", "error")
                 return redirect(url_for("character-voice"))
@@ -149,7 +152,9 @@ class CharacterVoiceView(MethodView):
 
         elif "voice_model" in request.form:
             # Handle "Change Voice Model" form submission
-            character_identifier = request.form.get("character_identifier")
+            character_identifier = RequiredString(
+                request.form.get("character_identifier")
+            )
             new_voice_model = request.form.get("voice_model")
 
             if character_identifier and new_voice_model:

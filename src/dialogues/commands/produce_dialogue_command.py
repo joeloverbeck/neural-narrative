@@ -3,6 +3,7 @@ from typing import Optional
 
 from src.base.abstracts.command import Command
 from src.base.constants import TIME_ADVANCED_DUE_TO_DIALOGUE
+from src.base.required_string import RequiredString
 from src.dialogues.abstracts.abstract_factories import DialogueTurnFactory
 from src.dialogues.abstracts.factory_products import DialogueProduct
 from src.dialogues.commands.store_temporary_dialogue_command import (
@@ -24,9 +25,9 @@ logger = logging.getLogger(__name__)
 class ProduceDialogueCommand(Command):
     def __init__(
         self,
-        playthrough_name: str,
+        playthrough_name: RequiredString,
         participants: Participants,
-        purpose: str,
+        purpose: Optional[RequiredString],
         dialogue_turn_factory: DialogueTurnFactory,
         summarize_dialogue_command_factory: SummarizeDialogueCommandFactory,
         store_dialogues_command_factory: StoreDialoguesCommandFactory,

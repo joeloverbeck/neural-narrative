@@ -1,6 +1,7 @@
 from typing import Optional
 
 from src.base.playthrough_manager import PlaythroughManager
+from src.base.required_string import RequiredString
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.abstracts.abstract_factories import CurrentPlaceFactory
 from src.maps.abstracts.factory_products import CurrentPlaceProduct
@@ -10,7 +11,7 @@ from src.maps.products.concrete_current_place_product import ConcreteCurrentPlac
 class ConcreteCurrentPlaceFactory(CurrentPlaceFactory):
     def __init__(
         self,
-        playthrough_name: str,
+            playthrough_name: RequiredString,
         playthrough_manager: Optional[PlaythroughManager] = None,
     ):
         assert playthrough_name

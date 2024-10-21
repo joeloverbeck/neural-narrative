@@ -1,4 +1,7 @@
+from typing import Dict
+
 from src.base.enums import TemplateType
+from src.base.required_string import RequiredString
 
 DEFAULT_PLAYER_IDENTIFIER = "-1"
 DEFAULT_CURRENT_PLACE = "-1"
@@ -28,9 +31,9 @@ WAIT_TIME_WHEN_MALFORMED_COMPLETION: int = 5
 # Base files and folders
 
 CONFIG_FILE: str = "data/llm/config.json"
-XTTS_CONFIG_FILE: str = "data/voices/xtts_config.json"
+XTTS_CONFIG_FILE: RequiredString = RequiredString("data/voices/xtts_config.json")
 LOGGING_CONFIG_FILE: str = "data/logging/logging_config.json"
-VOICE_MODELS_FILE: str = "data/voices/voice_models.json"
+VOICE_MODELS_FILE: RequiredString = RequiredString("data/voices/voice_models.json")
 VOICE_LINES_FOLDER_PATH: str = "static/voice_lines"
 PLAYTHROUGHS_FOLDER: str = "playthroughs"
 CHARACTERS_FOLDER_NAME: str = "characters"
@@ -43,7 +46,7 @@ MAP_FILE: str = "map.json"
 CHARACTERS_FILE: str = "characters.json"
 MEMORIES_FILE: str = "memories.txt"
 DIALOGUES_FILE: str = "dialogues.txt"
-CHARACTER_GENERATION_GUIDELINES_FILE: str = (
+CHARACTER_GENERATION_GUIDELINES_FILE: RequiredString = RequiredString(
     "data/guidelines/character_generation_guidelines.json"
 )
 
@@ -54,15 +57,19 @@ RUNPOD_SECRET_KEY_FILE: str = "RUNPOD_SECRET_KEY.txt"
 
 # Weathers
 
-WEATHERS_FILE: str = "data/weathers/weathers.json"
+WEATHERS_FILE: RequiredString = RequiredString("data/weathers/weathers.json")
 
 # Templates
 
-STORY_UNIVERSES_TEMPLATE_FILE: str = "data/templates/story_universes.json"
-WORLDS_TEMPLATES_FILE: str = "data/templates/worlds.json"
-REGIONS_TEMPLATES_FILE: str = "data/templates/regions.json"
-AREAS_TEMPLATES_FILE: str = "data/templates/areas.json"
-LOCATIONS_TEMPLATES_FILE: str = "data/templates/locations.json"
+STORY_UNIVERSES_TEMPLATE_FILE: RequiredString = RequiredString(
+    "data/templates/story_universes.json"
+)
+WORLDS_TEMPLATES_FILE: RequiredString = RequiredString("data/templates/worlds.json")
+REGIONS_TEMPLATES_FILE: RequiredString = RequiredString("data/templates/regions.json")
+AREAS_TEMPLATES_FILE: RequiredString = RequiredString("data/templates/areas.json")
+LOCATIONS_TEMPLATES_FILE: RequiredString = RequiredString(
+    "data/templates/locations.json"
+)
 
 # Mapping of place types to their expected parent types
 PARENT_TEMPLATE_TYPE = {
@@ -79,6 +86,12 @@ TEMPLATE_FILES = {
     TemplateType.REGION: REGIONS_TEMPLATES_FILE,
     TemplateType.AREA: AREAS_TEMPLATES_FILE,
     TemplateType.LOCATION: LOCATIONS_TEMPLATES_FILE,
+}
+
+PARENT_KEYS: Dict[TemplateType, str] = {
+    TemplateType.REGION: "world",
+    TemplateType.AREA: "region",
+    TemplateType.LOCATION: "area",
 }
 
 # Prompting Blocks
@@ -104,10 +117,16 @@ DIALOGUE_SUMMARIZATION_TOOL_FILE: str = (
 STORY_UNIVERSE_GENERATION_TOOL_FILE: str = (
     "data/prompting/base/story_universe_generation_tool.json"
 )
-WORLD_GENERATION_TOOL_FILE: str = "data/prompting/places/world_generation_tool.json"
-REGION_GENERATION_TOOL_FILE: str = "data/prompting/places/region_generation_tool.json"
-AREA_GENERATION_TOOL_FILE: str = "data/prompting/places/area_generation_tool.json"
-LOCATION_GENERATION_TOOL_FILE: str = (
+WORLD_GENERATION_TOOL_FILE: RequiredString = RequiredString(
+    "data/prompting/places/world_generation_tool.json"
+)
+REGION_GENERATION_TOOL_FILE: RequiredString = RequiredString(
+    "data/prompting/places/region_generation_tool.json"
+)
+AREA_GENERATION_TOOL_FILE: RequiredString = RequiredString(
+    "data/prompting/places/area_generation_tool.json"
+)
+LOCATION_GENERATION_TOOL_FILE: RequiredString = RequiredString(
     "data/prompting/places/location_generation_tool.json"
 )
 PLACE_DESCRIPTION_TOOL_FILE: str = "data/prompting/places/place_description_tool.json"
@@ -115,16 +134,16 @@ TRAVEL_NARRATION_TOOL_FILE: str = "data/prompting/places/travel_narration_tool.j
 CHARACTER_GENERATION_GUIDELINES_TOOL_FILE: str = (
     "data/prompting/characters/character_generation_guidelines_tool.json"
 )
-INTERESTING_SITUATIONS_GENERATION_TOOL_FILE: str = (
+INTERESTING_SITUATIONS_GENERATION_TOOL_FILE: RequiredString = RequiredString(
     "data/prompting/concepts/situations_generation_tool.json"
 )
-INTERESTING_DILEMMAS_GENERATION_TOOL_FILE: str = (
+INTERESTING_DILEMMAS_GENERATION_TOOL_FILE: RequiredString = RequiredString(
     "data/prompting/concepts/dilemmas_generation_tool.json"
 )
 CHARACTER_DESCRIPTION_GENERATION_TOOL_FILE: str = (
     "data/prompting/characters/character_description_generation_tool.json"
 )
-PLOT_BLUEPRINTS_GENERATION_TOOL_FILE: str = (
+PLOT_BLUEPRINTS_GENERATION_TOOL_FILE: RequiredString = RequiredString(
     "data/prompting/concepts/plot_blueprints_generation_tool.json"
 )
 AMBIENT_NARRATION_GENERATION_TOOL_FILE: str = (
@@ -136,8 +155,10 @@ SELF_REFLECTION_GENERATION_TOOL_FILE: str = (
 GOAL_RESOLUTION_GENERATION_TOOL_FILE: str = (
     "data/prompting/goal_resolution_generation_tool.json"
 )
-GOALS_GENERATION_TOOL_FILE: str = "data/prompting/concepts/goals_generation_tool.json"
-PLOT_TWISTS_GENERATION_TOOL_FILE: str = (
+GOALS_GENERATION_TOOL_FILE: RequiredString = RequiredString(
+    "data/prompting/concepts/goals_generation_tool.json"
+)
+PLOT_TWISTS_GENERATION_TOOL_FILE: RequiredString = RequiredString(
     "data/prompting/concepts/plot_twists_generation_tool.json"
 )
 RESEARCH_RESOLUTION_GENERATION_TOOL_FILE: str = (
@@ -171,12 +192,16 @@ SUMMARIZE_DIALOGUE_PROMPT_FILE: str = "data/prompting/summarize_dialogue_prompt.
 STORY_UNIVERSE_GENERATION_PROMPT_FILE: str = (
     "data/prompting/base/story_universe_generation_prompt.txt"
 )
-WORLD_GENERATION_PROMPT_FILE: str = "data/prompting/places/world_generation_prompt.txt"
-REGION_GENERATION_PROMPT_FILE: str = (
+WORLD_GENERATION_PROMPT_FILE: RequiredString = RequiredString(
+    "data/prompting/places/world_generation_prompt.txt"
+)
+REGION_GENERATION_PROMPT_FILE: RequiredString = RequiredString(
     "data/prompting/places/region_generation_prompt.txt"
 )
-AREA_GENERATION_PROMPT_FILE: str = "data/prompting/places/area_generation_prompt.txt"
-LOCATION_GENERATION_PROMPT_FILE: str = (
+AREA_GENERATION_PROMPT_FILE: RequiredString = RequiredString(
+    "data/prompting/places/area_generation_prompt.txt"
+)
+LOCATION_GENERATION_PROMPT_FILE: RequiredString = RequiredString(
     "data/prompting/places/location_generation_prompt.txt"
 )
 PLACE_DESCRIPTION_PROMPT_FILE: str = (
@@ -186,17 +211,17 @@ TRAVEL_NARRATION_PROMPT_FILE: str = "data/prompting/places/travel_narration_prom
 CHARACTER_GENERATION_GUIDELINES_PROMPT_FILE: str = (
     "data/prompting/characters/character_generation_guidelines_prompt.txt"
 )
-INTERESTING_SITUATIONS_GENERATION_PROMPT_FILE: str = (
+INTERESTING_SITUATIONS_GENERATION_PROMPT_FILE: RequiredString = RequiredString(
     "data/prompting/concepts/situations_generation_prompt.txt"
 )
-INTERESTING_DILEMMAS_GENERATION_PROMPT_FILE: str = (
+INTERESTING_DILEMMAS_GENERATION_PROMPT_FILE: RequiredString = RequiredString(
     "data/prompting/concepts/dilemmas_generation_prompt.txt"
 )
 IMAGE_GENERATION_PROMPT_FILE: str = "data/prompting/image_generation_prompt.txt"
 CHARACTER_DESCRIPTION_GENERATION_PROMPT_FILE: str = (
     "data/prompting/characters/character_description_generation_prompt.txt"
 )
-PLOT_BLUEPRINTS_GENERATION_PROMPT_FILE: str = (
+PLOT_BLUEPRINTS_GENERATION_PROMPT_FILE: RequiredString = RequiredString(
     "data/prompting/concepts/plot_blueprints_generation_prompt.txt"
 )
 AMBIENT_NARRATION_GENERATION_PROMPT_FILE: str = (
@@ -208,10 +233,10 @@ SELF_REFLECTION_GENERATION_PROMPT_FILE: str = (
 GOAL_RESOLUTION_GENERATION_PROMPT_FILE: str = (
     "data/prompting/goal_resolution_generation_prompt.txt"
 )
-GOALS_GENERATION_PROMPT_FILE: str = (
+GOALS_GENERATION_PROMPT_FILE: RequiredString = RequiredString(
     "data/prompting/concepts/goals_generation_prompt.txt"
 )
-PLOT_TWISTS_GENERATION_PROMPT_FILE: str = (
+PLOT_TWISTS_GENERATION_PROMPT_FILE: RequiredString = RequiredString(
     "data/prompting/concepts/plot_twists_generation_prompt.txt"
 )
 RESEARCH_RESOLUTION_GENERATION_PROMPT_FILE: str = (

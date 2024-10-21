@@ -1,4 +1,4 @@
-from src.base.playthrough_name import RequiredString
+from src.base.required_string import RequiredString
 from src.characters.commands.store_generated_character_command import (
     StoreGeneratedCharacterCommand,
 )

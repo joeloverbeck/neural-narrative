@@ -2,27 +2,20 @@
 
 from unittest.mock import Mock, patch
 
-import pytest
-
 from src.base.identifiers_manager import IdentifiersManager
 from src.base.playthrough_manager import PlaythroughManager
+from src.base.required_string import RequiredString
 from src.characters.characters_manager import CharactersManager
 from src.filesystem.filesystem_manager import FilesystemManager
 
 
 def test_init_with_valid_playthrough_name():
-    playthrough_name = "test_playthrough"
-    manager = CharactersManager(playthrough_name)
+    playthrough_name = RequiredString("test_playthrough")
+    manager = CharactersManager(RequiredString(playthrough_name))
     assert manager._playthrough_name == playthrough_name
     assert isinstance(manager._filesystem_manager, FilesystemManager)
     assert isinstance(manager._identifiers_manager, IdentifiersManager)
     assert isinstance(manager._playthrough_manager, PlaythroughManager)
-
-
-def test_init_with_empty_playthrough_name():
-    with pytest.raises(ValueError) as excinfo:
-        CharactersManager("")
-    assert "playthrough_name should not be empty." in str(excinfo.value)
 
 
 def test_get_latest_character_identifier():
@@ -36,7 +29,7 @@ def test_get_latest_character_identifier():
     mock_identifiers_manager.get_highest_identifier.return_value = "char2"
 
     manager = CharactersManager(
-        playthrough_name,
+        (RequiredString(playthrough_name)),
         filesystem_manager=mock_filesystem_manager,
         identifiers_manager=mock_identifiers_manager,
     )
@@ -49,14 +42,14 @@ def test_get_latest_character_identifier():
 
 
 def test_get_characters():
-    playthrough_name = "test_playthrough"
-    character_identifiers = ["char1", "char2"]
+    playthrough_name = RequiredString("test_playthrough")
+    character_identifiers = [RequiredString("char1"), RequiredString("char2")]
     with patch("src.characters.characters_manager.Character") as MockCharacter:
-        manager = CharactersManager(playthrough_name)
+        manager = CharactersManager(RequiredString(playthrough_name))
         characters = manager.get_characters(character_identifiers)
         assert len(characters) == 2
-        MockCharacter.assert_any_call(playthrough_name, "char1")
-        MockCharacter.assert_any_call(playthrough_name, "char2")
+        MockCharacter.assert_any_call(playthrough_name, RequiredString("char1"))
+        MockCharacter.assert_any_call(playthrough_name, RequiredString("char2"))
 
 
 def test_get_followers():
@@ -67,7 +60,8 @@ def test_get_followers():
         CharactersManager, "get_characters", return_value=["Character1", "Character3"]
     ) as mock_get_characters:
         manager = CharactersManager(
-            playthrough_name, playthrough_manager=mock_playthrough_manager
+            (RequiredString(playthrough_name)),
+            playthrough_manager=mock_playthrough_manager,
         )
         followers = manager.get_followers()
         assert followers == ["Character1", "Character3"]
@@ -89,7 +83,7 @@ def test_get_characters_at_current_place():
         CharactersManager, "get_characters", return_value=["Character2", "Character4"]
     ) as mock_get_characters:
         manager = CharactersManager(
-            playthrough_name,
+            (RequiredString(playthrough_name)),
             filesystem_manager=mock_filesystem_manager,
             playthrough_manager=mock_playthrough_manager,
         )
@@ -110,7 +104,7 @@ def test_get_characters_at_current_place_plus_followers():
         with patch.object(
             CharactersManager, "get_followers", return_value=["Follower1"]
         ) as mock_get_followers:
-            manager = CharactersManager(playthrough_name)
+            manager = CharactersManager(RequiredString(playthrough_name))
             characters = manager.get_characters_at_current_place_plus_followers()
             assert characters == ["CharAtPlace1", "CharAtPlace2", "Follower1"]
             mock_get_characters_at_place.assert_called_once()
@@ -129,7 +123,7 @@ def test_get_all_characters():
         mock_characters_file
     )
     manager = CharactersManager(
-        playthrough_name, filesystem_manager=mock_filesystem_manager
+        (RequiredString(playthrough_name)), filesystem_manager=mock_filesystem_manager
     )
     all_characters = manager.get_all_characters()
     expected_characters = [
@@ -153,7 +147,7 @@ def test_get_all_character_names():
         mock_characters_file
     )
     manager = CharactersManager(
-        playthrough_name, filesystem_manager=mock_filesystem_manager
+        (RequiredString(playthrough_name)), filesystem_manager=mock_filesystem_manager
     )
     all_names = manager.get_all_character_names()
     expected_names = ["Alice", "Bob", ""]

@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import List, Optional
 
-from src.base.playthrough_name import RequiredString
+from src.base.required_string import RequiredString
 
 
 @dataclass

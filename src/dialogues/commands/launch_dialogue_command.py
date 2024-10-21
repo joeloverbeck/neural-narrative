@@ -2,6 +2,7 @@ from typing import Optional
 
 from src.base.abstracts.command import Command
 from src.base.abstracts.observer import Observer
+from src.base.required_string import RequiredString
 from src.characters.factories.store_character_memory_command_factory import (
     StoreCharacterMemoryCommandFactory,
 )
@@ -41,10 +42,10 @@ from src.prompting.factories.openrouter_llm_client_factory import (
 class LaunchDialogueCommand(Command):
     def __init__(
         self,
-        playthrough_name: str,
-        player_identifier: str,
+            playthrough_name: RequiredString,
+            player_identifier: RequiredString,
         participants: Participants,
-        purpose: str,
+            purpose: Optional[RequiredString],
         messages_to_llm: Optional[MessagesToLlm],
         transcription: Optional[Transcription],
         dialogue_observer: Observer,
@@ -53,8 +54,6 @@ class LaunchDialogueCommand(Command):
         message_data_producer_for_speech_turn_strategy: MessageDataProducerForSpeechTurnStrategy,
         config_manager: ConfigManager = None,
     ):
-        if not playthrough_name:
-            raise ValueError("playthrough_name can't be empty.")
         if not participants.enough_participants():
             raise ValueError("Not enough participants.")
 
@@ -85,7 +84,7 @@ class LaunchDialogueCommand(Command):
         llm_client = OpenRouterLlmClientFactory().create_llm_client()
 
         involve_player_in_dialogue_strategy = ConcreteInvolvePlayerInDialogueStrategy(
-            self._player_identifier,
+            self._player_identifier.value,
             self._player_input_factory,
             introduce_player_input_into_dialogue_command_factory,
         )

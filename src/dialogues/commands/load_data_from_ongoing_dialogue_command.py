@@ -1,6 +1,7 @@
 from typing import Optional
 
 from src.base.abstracts.command import Command
+from src.base.required_string import RequiredString
 from src.dialogues.messages_to_llm import MessagesToLlm
 from src.dialogues.participants import Participants
 from src.dialogues.transcription import Transcription
@@ -10,7 +11,7 @@ from src.filesystem.filesystem_manager import FilesystemManager
 class LoadDataFromOngoingDialogueCommand(Command):
     def __init__(
         self,
-        playthrough_name: str,
+            playthrough_name: RequiredString,
         participants: Participants,
         messages_to_llm: MessagesToLlm,
         transcription: Transcription,
@@ -45,7 +46,9 @@ class LoadDataFromOngoingDialogueCommand(Command):
             )
 
         for message in ongoing_dialogue_file["messages_to_llm"]:
-            self._messages_to_llm.add_message(message["role"], message["content"])
+            self._messages_to_llm.add_message(
+                RequiredString(message["role"]), RequiredString(message["content"])
+            )
 
         for speech_turn in ongoing_dialogue_file["transcription"]:
             self._transcription.add_line(speech_turn)

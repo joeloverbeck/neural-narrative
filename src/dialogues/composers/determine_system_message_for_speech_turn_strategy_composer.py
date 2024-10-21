@@ -1,6 +1,7 @@
 from typing import Optional
 
 from src.base.playthrough_manager import PlaythroughManager
+from src.base.required_string import RequiredString
 from src.dialogues.abstracts.strategies import (
     DetermineSystemMessageForSpeechTurnStrategy,
 )
@@ -18,19 +19,18 @@ from src.dialogues.factories.speech_turn_dialogue_system_content_for_prompt_prov
 )
 from src.dialogues.messages_to_llm import MessagesToLlm
 from src.dialogues.participants import Participants
-from src.maps.factories.place_descriptions_for_prompt_factory import (
-    PlaceDescriptionsForPromptFactory,
+from src.maps.composers.places_descriptions_provider_composer import (
+    PlacesDescriptionsProviderComposer,
 )
-from src.maps.factories.places_descriptions_factory import PlacesDescriptionsFactory
 
 
 class DetermineSystemMessageForSpeechTurnStrategyComposer:
 
     def __init__(
         self,
-        playthrough_name: str,
+            playthrough_name: RequiredString,
         participants: Participants,
-        purpose: str,
+            purpose: Optional[RequiredString],
         messages_to_llm: MessagesToLlm,
         playthrough_manager: Optional[PlaythroughManager] = None,
     ):
@@ -47,19 +47,13 @@ class DetermineSystemMessageForSpeechTurnStrategyComposer:
         )
 
     def compose(self) -> DetermineSystemMessageForSpeechTurnStrategy:
-        place_descriptions_for_prompt_factory = PlaceDescriptionsForPromptFactory(
-            self._playthrough_name
-        )
-
-        places_descriptions_factory = PlacesDescriptionsFactory(
-            place_descriptions_for_prompt_factory
-        )
-
         prompt_formatter_for_dialogue_strategy_factory = (
             PromptFormatterForDialogueStrategyFactory(
                 self._playthrough_name,
                 self._purpose,
-                places_descriptions_factory,
+                PlacesDescriptionsProviderComposer(
+                    RequiredString(self._playthrough_name)
+                ).compose_provider(),
             )
         )
 

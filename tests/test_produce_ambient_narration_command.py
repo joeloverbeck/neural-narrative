@@ -3,6 +3,7 @@ from unittest.mock import Mock
 import pytest
 
 from src.base.abstracts.command import Command
+from src.base.required_string import RequiredString
 from src.dialogues.commands.produce_ambient_narration_command import (
     ProduceAmbientNarrationCommand,
 )
@@ -76,7 +77,9 @@ def test_normal_execution():
         {"alignment": "center", "message_text": "Sample Ambient Narration"}
     )
     messages_to_llm.add_message.assert_called_once_with(
-        "assistant", "Sample Ambient Narration", is_guiding_message=False
+        RequiredString("assistant"),
+        "Sample Ambient Narration",
+        is_guiding_message=False,
     )
     store_temporary_dialogue_command.execute.assert_called_once()
 

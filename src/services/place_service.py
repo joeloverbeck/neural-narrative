@@ -1,9 +1,9 @@
 from typing import Optional
 
 from src.base.constants import PARENT_TEMPLATE_TYPE
-from src.base.enums import PlaceType, TemplateType
+from src.base.enums import TemplateType
 from src.base.playthrough_manager import PlaythroughManager
-from src.base.playthrough_name import RequiredString
+from src.base.required_string import RequiredString
 from src.characters.character import Character
 from src.characters.factories.character_information_provider import (
     CharacterInformationProvider,
@@ -11,18 +11,24 @@ from src.characters.factories.character_information_provider import (
 from src.config.config_manager import ConfigManager
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.commands.generate_place_command import GeneratePlaceCommand
-from src.maps.factories.place_descriptions_for_prompt_factory import (
-    PlaceDescriptionsForPromptFactory,
+from src.maps.composers.visit_place_command_factory_composer import (
+    VisitPlaceCommandFactoryComposer,
 )
-from src.maps.factories.places_descriptions_factory import PlacesDescriptionsFactory
+from src.maps.configs.filtered_place_description_generation_factory_config import (
+    FilteredPlaceDescriptionGenerationFactoryConfig,
+)
+from src.maps.configs.filtered_place_description_generation_factory_factories_config import (
+    FilteredPlaceDescriptionGenerationFactoryFactoriesConfig,
+)
+from src.maps.factories.concrete_filtered_place_description_generation_factory import (
+    ConcreteFilteredPlaceDescriptionGenerationFactory,
+)
+from src.maps.factories.map_manager_factory import MapManagerFactory
+from src.maps.factories.place_manager_factory import PlaceManagerFactory
 from src.maps.factories.store_generated_place_command_factory import (
     StoreGeneratedPlaceCommandFactory,
 )
-from src.maps.factories.visit_place_command_factory import VisitPlaceCommandFactory
-from src.maps.map_manager import MapManager
-from src.prompting.factories.concrete_filtered_place_description_generation_factory import (
-    ConcreteFilteredPlaceDescriptionGenerationFactory,
-)
+from src.maps.weathers_manager import WeathersManager
 from src.prompting.factories.openrouter_llm_client_factory import (
     OpenRouterLlmClientFactory,
 )
@@ -89,23 +95,39 @@ class PlaceService:
             store_generated_place_command_factory,
         ).execute()
 
-    def describe_place(self, playthrough_name):
+    def describe_place(self, playthrough_name: RequiredString):
         playthrough_manager = PlaythroughManager(playthrough_name)
-        llm_client = OpenRouterLlmClientFactory().create_llm_client()
-        strategy_factory = ProduceToolResponseStrategyFactory(
-            llm_client, self._config_manager.get_heavy_llm()
-        )
 
         character_information_factory = CharacterInformationProvider(
             playthrough_name, playthrough_manager.get_player_identifier()
         )
 
-        description_product = ConcreteFilteredPlaceDescriptionGenerationFactory(
-            playthrough_name,
-            playthrough_manager.get_player_identifier(),
-            playthrough_manager.get_current_place_identifier(),
-            strategy_factory,
+        config = FilteredPlaceDescriptionGenerationFactoryConfig(
+            RequiredString(playthrough_name),
+            RequiredString(playthrough_manager.get_current_place_identifier()),
+        )
+
+        produce_tool_response_strategy_factory = ProduceToolResponseStrategyFactory(
+            OpenRouterLlmClientFactory().create_llm_client(),
+            ConfigManager().get_heavy_llm(),
+        )
+
+        place_manager_factory = PlaceManagerFactory(RequiredString(playthrough_name))
+
+        map_manager_factory = MapManagerFactory(RequiredString(playthrough_name))
+
+        weathers_manager = WeathersManager(map_manager_factory)
+
+        factories_config = FilteredPlaceDescriptionGenerationFactoryFactoriesConfig(
+            produce_tool_response_strategy_factory,
             character_information_factory,
+            place_manager_factory,
+            map_manager_factory,
+            weathers_manager,
+        )
+
+        description_product = ConcreteFilteredPlaceDescriptionGenerationFactory(
+            config, factories_config
         ).generate_product()
 
         if description_product.is_valid():
@@ -120,12 +142,17 @@ class PlaceService:
 
         return description, voice_line_file_name
 
-    def exit_location(self, playthrough_name: str):
+    @staticmethod
+    def exit_location(playthrough_name: RequiredString):
         playthrough_manager = PlaythroughManager(playthrough_name)
         filesystem_manager = FilesystemManager()
-        map_manager = MapManager(playthrough_name)
 
-        if not map_manager.get_current_place_type() == PlaceType.LOCATION:
+        if (
+            not PlaceManagerFactory(RequiredString(playthrough_name))
+            .create_place_manager()
+            .get_current_place_type()
+            == TemplateType.LOCATION
+        ):
             raise ValueError(
                 "Somehow tried to exit a location when the current place wasn't a location."
             )
@@ -136,31 +163,16 @@ class PlaceService:
         current_place_identifier = playthrough_manager.get_current_place_identifier()
         destination_area = map_file[current_place_identifier]["area"]
 
-        visit_command_factory = self._create_visit_place_command_factory(
+        visit_command_factory = VisitPlaceCommandFactoryComposer(
             RequiredString(playthrough_name)
-        )
+        ).compose_factory()
         visit_command_factory.create_visit_place_command(destination_area).execute()
 
-    def visit_location(self, playthrough_name, location_identifier):
-        visit_command_factory = self._create_visit_place_command_factory(
-            RequiredString(playthrough_name)
-        )
+    @staticmethod
+    def visit_location(
+        playthrough_name: RequiredString, location_identifier: RequiredString
+    ):
+        visit_command_factory = VisitPlaceCommandFactoryComposer(
+            playthrough_name
+        ).compose_factory()
         visit_command_factory.create_visit_place_command(location_identifier).execute()
-
-    def _create_visit_place_command_factory(self, playthrough_name: RequiredString):
-        strategy_factory = ProduceToolResponseStrategyFactory(
-            OpenRouterLlmClientFactory().create_llm_client(),
-            self._config_manager.get_heavy_llm(),
-        )
-
-        place_descriptions_for_prompt_factory = PlaceDescriptionsForPromptFactory(
-            playthrough_name.value
-        )
-
-        places_descriptions_factory = PlacesDescriptionsFactory(
-            place_descriptions_for_prompt_factory
-        )
-
-        return VisitPlaceCommandFactory(
-            playthrough_name.value, strategy_factory, places_descriptions_factory
-        )

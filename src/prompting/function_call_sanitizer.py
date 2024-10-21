@@ -2,6 +2,8 @@ import ast
 import json
 import re
 
+from src.base.required_string import RequiredString
+
 
 class FunctionCallSanitizer:
     INSERT_LINE_BREAK_AFTER_PERIOD_WITH_NO_SPACE_FOLLOWED_BY_LETTER_REGEX = re.compile(
@@ -19,14 +21,28 @@ class FunctionCallSanitizer:
     REPLACE_START_TAG_PLACEHOLDER_REGEX = re.compile(r"<\{start_tag\}=(.*?)>")
     REMOVE_END_TAG_PLACEHOLDER_REGEX = re.compile(r"</end_tag>")
 
-    def __init__(self, function_call: str):
-        if not function_call:
-            raise ValueError("function_call can't be empty or None.")
+    def __init__(self, function_call: RequiredString):
+        if not isinstance(function_call, RequiredString):
+            function_call = RequiredString(function_call)
 
         self._function_call = function_call
 
+    # Process the data to fix strings
     @staticmethod
-    def _fix_single_quoted_list_items(function_call: str) -> str:
+    def _insert_newline_after_period_followed_by_uppercase(s):
+        return re.sub(r"\.([A-Z])", r".\n\1", s)
+
+    def _process_data(self, data):
+        if isinstance(data, dict):
+            return {k: self._process_data(v) for k, v in data.items()}
+        elif isinstance(data, list):
+            return [self._process_data(v) for v in data]
+        elif isinstance(data, str):
+            return self._insert_newline_after_period_followed_by_uppercase(data)
+        else:
+            return data
+
+    def _fix_single_quoted_list_items(self, function_call: str) -> str:
         function_tag_regex = r"<function(?:=|\s+name=)([^\s>]+)>(.*?)</function>"
         match = re.search(function_tag_regex, function_call)
         if not match:
@@ -40,21 +56,7 @@ class FunctionCallSanitizer:
         try:
             data = ast.literal_eval(json_content)
 
-            # Process the data to fix strings
-            def insert_newline_after_period_followed_by_uppercase(s):
-                return re.sub(r"\.([A-Z])", r".\n\1", s)
-
-            def process_data(data):
-                if isinstance(data, dict):
-                    return {k: process_data(v) for k, v in data.items()}
-                elif isinstance(data, list):
-                    return [process_data(v) for v in data]
-                elif isinstance(data, str):
-                    return insert_newline_after_period_followed_by_uppercase(data)
-                else:
-                    return data
-
-            data = process_data(data)
+            data = self._process_data(data)
 
             # Serialize back to JSON string with proper formatting
             json_str = json.dumps(data)
@@ -74,7 +76,7 @@ class FunctionCallSanitizer:
         3. Fix formatting issues with function tags and JSON structure.
         """
         function_call = (
-            self._function_call.strip()
+            self._function_call.value.strip()
             .replace("\n", "")
             .replace("\r", "")
             .replace("}<>", "}")

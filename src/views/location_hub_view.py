@@ -2,25 +2,50 @@ from flask import session, redirect, url_for, render_template, request, jsonify
 from flask.views import MethodView
 
 from src.base.constants import TIME_ADVANCED_DUE_TO_SEARCHING_FOR_LOCATION
-from src.base.enums import PlaceType
+from src.base.enums import TemplateType
 from src.base.playthrough_manager import PlaythroughManager
-from src.base.playthrough_name import RequiredString
+from src.base.required_string import RequiredString
 from src.characters.characters_manager import CharactersManager
-from src.maps.enums import CardinalDirection, RandomPlaceTypeMapEntryCreationResultType
+from src.maps.composers.random_template_type_map_entry_provider_factory_composer import (
+    RandomTemplateTypeMapEntryProviderFactoryComposer,
+)
+from src.maps.configs.cardinal_connection_creation_factory_config import (
+    CardinalConnectionCreationFactoryConfig,
+)
+from src.maps.configs.cardinal_connection_creation_factory_factories_config import (
+    CardinalConnectionCreationFactoryFactoriesConfig,
+)
+from src.maps.configs.random_template_type_map_entry_provider_config import (
+    RandomTemplateTypeMapEntryProviderConfig,
+)
+from src.maps.configs.random_template_type_map_entry_provider_factories_config import (
+    RandomTemplateTypeMapEntryProviderFactoriesConfig,
+)
+from src.maps.enums import (
+    CardinalDirection,
+    RandomTemplateTypeMapEntryCreationResultType,
+)
 from src.maps.factories.concrete_cardinal_connection_creation_factory import (
     ConcreteCardinalConnectionCreationFactory,
 )
 from src.maps.factories.concrete_random_place_template_based_on_categories_factory import (
     ConcreteRandomPlaceTemplateBasedOnCategoriesFactory,
 )
-from src.maps.factories.concrete_random_place_type_map_entry_creation_factory import (
-    ConcreteRandomPlaceTypeMapEntryCreationFactory,
+from src.maps.factories.create_map_entry_for_playthrough_command_provider_factory import (
+    CreateMapEntryForPlaythroughCommandProviderFactory,
 )
-from src.maps.factories.create_map_entry_for_playthrough_command_factory import (
-    CreateMapEntryForPlaythroughCommandFactory,
-)
+from src.maps.factories.hierarchy_manager_factory import HierarchyManagerFactory
+from src.maps.factories.map_manager_factory import MapManagerFactory
+from src.maps.factories.navigation_manager_factory import NavigationManagerFactory
+from src.maps.factories.place_manager_factory import PlaceManagerFactory
 from src.maps.map_manager import MapManager
-from src.maps.weather_identifier import WeatherIdentifier
+from src.maps.map_repository import MapRepository
+from src.maps.navigation_manager import NavigationManager
+from src.maps.place_selection_manager import PlaceSelectionManager
+from src.maps.providers.concrete_random_place_type_map_entry_provider import (
+    ConcreteRandomTemplateTypeMapEntryProvider,
+)
+from src.maps.templates_repository import TemplatesRepository
 from src.maps.weathers_manager import WeathersManager
 from src.services.character_service import CharacterService
 from src.services.place_service import PlaceService
@@ -34,9 +59,23 @@ class LocationHubView(MethodView):
         if not playthrough_name:
             return redirect(url_for("index"))
 
-        map_manager = MapManager(playthrough_name)
+        place_manager = PlaceManagerFactory(
+            RequiredString(playthrough_name)
+        ).create_place_manager()
+
+        map_repository = MapRepository(RequiredString(playthrough_name))
+
+        template_repository = TemplatesRepository()
+
+        map_manager = MapManager(
+            playthrough_name,
+            place_manager,
+            map_repository,
+            template_repository,
+        )
+
         current_place = map_manager.get_current_place_template()
-        current_place_type = map_manager.get_current_place_type()
+        current_place_type = place_manager.get_current_place_type()
         characters_manager = CharactersManager(playthrough_name)
         characters_at_current_place = (
             characters_manager.get_characters_at_current_place()
@@ -55,21 +94,30 @@ class LocationHubView(MethodView):
         can_search_for_location = False  # New flag to indicate if searching is possible
         available_location_types = []
 
-        if current_place_type == PlaceType.AREA:
+        if current_place_type == TemplateType.AREA:
             playthrough_manager = PlaythroughManager(playthrough_name)
 
             # Load locations currently present in the area
             locations_present = map_manager.get_locations_in_area(
-                playthrough_manager.get_current_place_identifier()
+                RequiredString(playthrough_manager.get_current_place_identifier())
             )
 
             # Load cardinal directions.
-            cardinal_connections = map_manager.get_cardinal_connections(
-                playthrough_manager.get_current_place_identifier()
+            cardinal_connections = NavigationManager(
+                map_repository
+            ).get_cardinal_connections(
+                RequiredString(playthrough_manager.get_current_place_identifier())
             )
 
+            place_manager_factory = PlaceManagerFactory(playthrough_name)
+
+            place_selection_manager = PlaceSelectionManager(
+                place_manager_factory, template_repository
+            )
             # Determine if there are available location types for searching
-            available_location_types = map_manager.get_available_location_types()
+            available_location_types = (
+                place_selection_manager.get_available_location_types(current_place)
+            )
             if available_location_types:
                 can_search_for_location = True
 
@@ -78,7 +126,9 @@ class LocationHubView(MethodView):
         current_hour = time_manager.get_hour()
         current_time_of_day = time_manager.get_time_of_the_day()
 
-        weathers_manager = WeathersManager(RequiredString(playthrough_name))
+        map_manager_factory = MapManagerFactory(playthrough_name)
+
+        weathers_manager = WeathersManager(map_manager_factory)
         current_weather = weathers_manager.get_current_weather_identifier()
         current_weather_description = weathers_manager.get_weather_description(
             current_weather
@@ -174,7 +224,10 @@ class LocationHubView(MethodView):
     @staticmethod
     def handle_change_weather(playthrough_name):
         new_weather = request.form.get("weather_identifier")
-        MapManager(playthrough_name).set_current_weather(WeatherIdentifier(new_weather))
+        place_manager = PlaceManagerFactory(
+            RequiredString(playthrough_name)
+        ).create_place_manager()
+        place_manager.set_current_weather(RequiredString(new_weather))
         return redirect(url_for("location-hub"))
 
     @staticmethod
@@ -185,7 +238,7 @@ class LocationHubView(MethodView):
             )
 
             voice_line_url = WebService.get_file_url(
-                "voice_lines", voice_line_file_name
+                RequiredString("voice_lines"), voice_line_file_name
             )
 
             # Add the place description to the adventure.
@@ -217,7 +270,7 @@ class LocationHubView(MethodView):
             return redirect(url_for("location-hub"))
 
     @staticmethod
-    def handle_proceed_to_chat(playthrough_name):
+    def handle_proceed_to_chat(_playthrough_name):
         return redirect(url_for("participants"))
 
     @staticmethod
@@ -229,7 +282,9 @@ class LocationHubView(MethodView):
     @staticmethod
     def handle_visit_location(playthrough_name):
         location_identifier = request.form.get("location_identifier")
-        PlaceService().visit_location(playthrough_name, location_identifier)
+        PlaceService().visit_location(
+            playthrough_name, RequiredString(location_identifier)
+        )
         session.pop("place_description", None)
         return redirect(url_for("location-hub"))
 
@@ -248,8 +303,32 @@ class LocationHubView(MethodView):
         cardinal_direction = CardinalDirection(request.form.get("cardinal_direction"))
 
         # Now it's time to create a new map entry of an area, and link it to the previous location's cardinal direction.
+        random_template_type_map_entry_provider_factory = (
+            RandomTemplateTypeMapEntryProviderFactoryComposer(
+                playthrough_name,
+            ).compose_factory()
+        )
+
+        hierarchy_manager_factory = HierarchyManagerFactory(
+            RequiredString(playthrough_name)
+        )
+
+        map_manager_factory = MapManagerFactory(RequiredString(playthrough_name))
+
+        map_repository = MapRepository(RequiredString(playthrough_name))
+
+        navigation_manager_factory = NavigationManagerFactory(map_repository)
+
         result = ConcreteCardinalConnectionCreationFactory(
-            playthrough_name, cardinal_direction
+            CardinalConnectionCreationFactoryConfig(
+                RequiredString(playthrough_name), cardinal_direction
+            ),
+            CardinalConnectionCreationFactoryFactoriesConfig(
+                random_template_type_map_entry_provider_factory,
+                hierarchy_manager_factory,
+                map_manager_factory,
+                navigation_manager_factory,
+            ),
         ).create_cardinal_connection()
 
         if not result.was_successful():
@@ -260,7 +339,7 @@ class LocationHubView(MethodView):
         return redirect(url_for("location-hub"))
 
     @staticmethod
-    def handle_travel_in_cardinal_direction(playthrough_name):
+    def handle_travel_in_cardinal_direction(_playthrough_name):
         session["destination_identifier"] = request.form.get("destination_identifier")
 
         return redirect(url_for("travel"))
@@ -268,7 +347,15 @@ class LocationHubView(MethodView):
     @staticmethod
     def handle_search_for_location(playthrough_name):
         location_type = request.form.get("location_type")
-        map_manager = MapManager(playthrough_name)
+        place_manager = PlaceManagerFactory(
+            RequiredString(playthrough_name)
+        ).create_place_manager()
+        map_manager = MapManager(
+            RequiredString(playthrough_name),
+            place_manager,
+            MapRepository(RequiredString(playthrough_name)),
+            TemplatesRepository(),
+        )
         father_template = map_manager.get_current_place_template()
 
         random_place_template_based_on_categories_factory = (
@@ -279,28 +366,35 @@ class LocationHubView(MethodView):
 
         playthrough_manager = PlaythroughManager(playthrough_name)
 
-        create_map_entry_for_playthrough_command_factory = (
-            CreateMapEntryForPlaythroughCommandFactory(
-                playthrough_name,
-                playthrough_manager.get_current_place_identifier(),
-                PlaceType.LOCATION,
+        father_identifier = playthrough_manager.get_current_place_identifier()
+
+        create_map_entry_for_playthrough_command_provider_factory = (
+            CreateMapEntryForPlaythroughCommandProviderFactory(
+                RequiredString(playthrough_name)
             )
         )
 
-        result = ConcreteRandomPlaceTypeMapEntryCreationFactory(
-            playthrough_name,
-            father_template,
-            PlaceType.LOCATION,
-            PlaceType.AREA,
-            random_place_template_based_on_categories_factory,
-            create_map_entry_for_playthrough_command_factory,
+        place_manager_factory = PlaceManagerFactory(RequiredString(playthrough_name))
+
+        result = ConcreteRandomTemplateTypeMapEntryProvider(
+            RandomTemplateTypeMapEntryProviderConfig(
+                RequiredString(father_identifier),
+                father_template,
+                TemplateType.LOCATION,
+                TemplateType.AREA,
+            ),
+            RandomTemplateTypeMapEntryProviderFactoriesConfig(
+                random_place_template_based_on_categories_factory,
+                create_map_entry_for_playthrough_command_provider_factory,
+                place_manager_factory,
+            ),
         ).create_random_place_type_map_entry()
 
         if (
             result.get_result_type()
-            == RandomPlaceTypeMapEntryCreationResultType.FAILURE
+                == RandomTemplateTypeMapEntryCreationResultType.FAILURE
             or result.get_result_type()
-            == RandomPlaceTypeMapEntryCreationResultType.NO_AVAILABLE_TEMPLATES
+                == RandomTemplateTypeMapEntryCreationResultType.NO_AVAILABLE_TEMPLATES
         ):
             session["no_available_templates"] = result.get_error()
         else:
@@ -310,7 +404,7 @@ class LocationHubView(MethodView):
             new_id, _ = (
                 map_manager.get_identifier_and_place_template_of_latest_map_entry()
             )
-            map_manager.add_location(new_id)
+            place_manager.add_location(new_id)
 
             # Searching for a location should also advance time.
             TimeManager(playthrough_name).advance_time(

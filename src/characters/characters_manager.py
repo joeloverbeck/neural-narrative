@@ -2,6 +2,7 @@ from typing import List, Dict, Optional
 
 from src.base.identifiers_manager import IdentifiersManager
 from src.base.playthrough_manager import PlaythroughManager
+from src.base.required_string import RequiredString
 from src.characters.character import Character
 from src.filesystem.filesystem_manager import FilesystemManager
 
@@ -10,7 +11,7 @@ class CharactersManager:
 
     def __init__(
         self,
-        playthrough_name: str,
+            playthrough_name: RequiredString,
         filesystem_manager: Optional[FilesystemManager] = None,
         identifiers_manager: Optional[IdentifiersManager] = None,
         playthrough_manager: Optional[PlaythroughManager] = None,
@@ -39,11 +40,13 @@ class CharactersManager:
             self._filesystem_manager.get_file_path_to_map(self._playthrough_name)
         )
 
-    def get_latest_character_identifier(self) -> str:
+    def get_latest_character_identifier(self) -> RequiredString:
         characters_file = self._load_characters_file()
         return self._identifiers_manager.get_highest_identifier(characters_file)
 
-    def get_characters(self, character_identifiers: List[str]) -> List[Character]:
+    def get_characters(
+            self, character_identifiers: List[RequiredString]
+    ) -> List[Character]:
         return [
             Character(self._playthrough_name, identifier)
             for identifier in character_identifiers

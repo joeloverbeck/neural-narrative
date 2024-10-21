@@ -1,18 +1,22 @@
-from src.base.enums import PlaceType
+from typing import Optional
+
+from src.base.enums import TemplateType
 from src.base.playthrough_manager import PlaythroughManager
+from src.base.required_string import RequiredString
 from src.maps.abstracts.abstract_factories import CardinalConnectionCreationFactory
-from src.maps.abstracts.factory_products import CardinalConnectionCreationProduct
-from src.maps.enums import RandomPlaceTypeMapEntryCreationResultType, CardinalDirection
-from src.maps.factories.concrete_random_place_template_based_on_categories_factory import (
-    ConcreteRandomPlaceTemplateBasedOnCategoriesFactory,
+from src.maps.abstracts.factory_products import (
+    CardinalConnectionCreationProduct,
+    RandomTemplateTypeMapEntryCreationResult,
 )
-from src.maps.factories.concrete_random_place_type_map_entry_creation_factory import (
-    ConcreteRandomPlaceTypeMapEntryCreationFactory,
+from src.maps.configs.cardinal_connection_creation_factory_config import (
+    CardinalConnectionCreationFactoryConfig,
 )
-from src.maps.factories.create_map_entry_for_playthrough_command_factory import (
-    CreateMapEntryForPlaythroughCommandFactory,
+from src.maps.configs.cardinal_connection_creation_factory_factories_config import (
+    CardinalConnectionCreationFactoryFactoriesConfig,
 )
-from src.maps.map_manager import MapManager
+from src.maps.enums import (
+    RandomTemplateTypeMapEntryCreationResultType,
+)
 from src.maps.products.concrete_cardinal_connection_creation_product import (
     ConcreteCardinalConnectionCreationProduct,
 )
@@ -22,85 +26,73 @@ class ConcreteCardinalConnectionCreationFactory(CardinalConnectionCreationFactor
 
     def __init__(
         self,
-        playthrough_name: str,
-        cardinal_direction: CardinalDirection,
-        map_manager: MapManager = None,
-        playthrough_manager: PlaythroughManager = None,
+            config: CardinalConnectionCreationFactoryConfig,
+            factories_config: CardinalConnectionCreationFactoryFactoriesConfig,
+            playthrough_manager: Optional[PlaythroughManager] = None,
     ):
-        if not playthrough_name:
-            raise ValueError("playthrough_name can't be empty.")
+        self._config = config
+        self._factories_config = factories_config
 
-        self._playthrough_name = playthrough_name
-        self._cardinal_direction = cardinal_direction
-
-        self._map_manager = map_manager or MapManager(self._playthrough_name)
         self._playthrough_manager = playthrough_manager or PlaythroughManager(
-            self._playthrough_name
+            self._config.playthrough_name
+        )
+
+    def _get_random_area(self) -> RandomTemplateTypeMapEntryCreationResult:
+        father_template = (
+            self._factories_config.map_manager_factory.create_map_manager().get_father_template()
+        )
+
+        father_identifier = self._factories_config.hierarchy_manager_factory.create_hierarchy_manager().get_father_identifier(
+            RequiredString(self._playthrough_manager.get_current_place_identifier())
+        )
+
+        return self._factories_config.random_template_type_map_entry_provider_factory.create_provider(
+            father_identifier, father_template, TemplateType.REGION, TemplateType.AREA
+        ).create_random_place_type_map_entry()
+
+    def _create_cardinal_connection(self) -> None:
+        new_id, _ = (
+            self._factories_config.map_manager_factory.create_map_manager().get_identifier_and_place_template_of_latest_map_entry()
+        )
+
+        # All correct. Must add the newly created map entry as one of the cardinal connections to the current place.
+        self._factories_config.navigation_manager_factory.create_navigation_manager().create_cardinal_connection(
+            self._config.cardinal_direction,
+            RequiredString(self._playthrough_manager.get_current_place_identifier()),
+            new_id,
+        )
+
+        # After you create the cardinal connection in origin, you must create the opposite cardinal connection in the destination.
+        opposite_cardinal_direction = self._factories_config.navigation_manager_factory.create_navigation_manager().get_opposite_cardinal_direction(
+            self._config.cardinal_direction
+        )
+
+        self._factories_config.navigation_manager_factory.create_navigation_manager().create_cardinal_connection(
+            opposite_cardinal_direction,
+            new_id,
+            RequiredString(self._playthrough_manager.get_current_place_identifier()),
         )
 
     def create_cardinal_connection(self) -> CardinalConnectionCreationProduct:
-        father_template = self._map_manager.get_father_template()
-
-        random_place_template_based_on_categories_factory = (
-            ConcreteRandomPlaceTemplateBasedOnCategoriesFactory(self._playthrough_name)
-        )
-
-        create_map_entry_for_playthrough_command_factory = (
-            CreateMapEntryForPlaythroughCommandFactory(
-                self._playthrough_name,
-                self._map_manager.get_father_identifier(
-                    self._playthrough_manager.get_current_place_identifier()
-                ),
-                PlaceType.AREA,
-            )
-        )
-
-        result = ConcreteRandomPlaceTypeMapEntryCreationFactory(
-            self._playthrough_name,
-            father_template,
-            PlaceType.AREA,
-            PlaceType.REGION,
-            random_place_template_based_on_categories_factory,
-            create_map_entry_for_playthrough_command_factory,
-        ).create_random_place_type_map_entry()
+        result = self._get_random_area()
 
         if (
-            result.get_result_type()
-            == RandomPlaceTypeMapEntryCreationResultType.NO_AVAILABLE_TEMPLATES
+                result.get_result_type()
+                == RandomTemplateTypeMapEntryCreationResultType.NO_AVAILABLE_TEMPLATES
         ):
             return ConcreteCardinalConnectionCreationProduct(
                 was_successful=False, error="No remaining areas to add to map."
             )
 
         if (
-            result.get_result_type()
-            == RandomPlaceTypeMapEntryCreationResultType.FAILURE
+                result.get_result_type()
+                == RandomTemplateTypeMapEntryCreationResultType.FAILURE
         ):
             return ConcreteCardinalConnectionCreationProduct(
                 was_successful=False,
-                error=f"Couldn't add an area {self._cardinal_direction.value}: {result.get_error()}",
+                error=f"Couldn't add an area {self._config.cardinal_direction.value}: {result.get_error()}",
             )
 
-        new_id, _ = (
-            self._map_manager.get_identifier_and_place_template_of_latest_map_entry()
-        )
-
-        # All correct. Must add the newly created map entry as one of the cardinal connections to the current place.
-        self._map_manager.create_cardinal_connection(
-            self._cardinal_direction,
-            self._playthrough_manager.get_current_place_identifier(),
-            new_id,
-        )
-
-        # After you create the cardinal connection in origin, you must create the opposite cardinal connection in the destination.
-        opposite_cardinal_direction = self._map_manager.get_opposite_cardinal_direction(
-            self._cardinal_direction
-        )
-
-        self._map_manager.create_cardinal_connection(
-            opposite_cardinal_direction,
-            new_id,
-            self._playthrough_manager.get_current_place_identifier(),
-        )
+        self._create_cardinal_connection()
 
         return ConcreteCardinalConnectionCreationProduct(was_successful=True)

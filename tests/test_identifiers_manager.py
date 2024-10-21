@@ -3,9 +3,9 @@ from unittest.mock import Mock, patch
 import pytest
 
 from src.base.enums import IdentifierType
-
 # Import the class and dependencies
 from src.base.identifiers_manager import IdentifiersManager
+from src.base.required_string import RequiredString
 
 
 def test_determine_next_identifier():
@@ -29,7 +29,7 @@ def test_determine_next_identifier():
     with patch("logging.config.dictConfig"):
         # Act
         identifiers_manager = IdentifiersManager(
-            playthrough_name, mock_filesystem_manager
+            RequiredString(playthrough_name), mock_filesystem_manager
         )
         next_id = identifiers_manager.determine_next_identifier(identifier_type)
 
@@ -39,7 +39,7 @@ def test_determine_next_identifier():
 
 def test_produce_and_update_next_identifier():
     # Arrange
-    playthrough_name = "test_playthrough"
+    playthrough_name = RequiredString("test_playthrough")
     identifier_type = IdentifierType.CHARACTERS
 
     # Create a mock for FilesystemManager
@@ -95,6 +95,6 @@ def test_determine_next_identifier_key_error():
     # Act & Assert
     with patch("logging.config.dictConfig"), pytest.raises(KeyError):
         identifiers_manager = IdentifiersManager(
-            playthrough_name, mock_filesystem_manager
+            RequiredString(playthrough_name), mock_filesystem_manager
         )
         identifiers_manager.determine_next_identifier(identifier_type)

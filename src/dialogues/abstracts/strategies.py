@@ -1,6 +1,7 @@
 from abc import abstractmethod, ABC
 from typing import Protocol, List
 
+from src.base.required_string import RequiredString
 from src.characters.character import Character
 from src.dialogues.abstracts.factory_products import (
     PlayerInputProduct,
@@ -64,5 +65,5 @@ class MessageDataProducerForSpeechTurnStrategy(Protocol):
 
 
 class ChooseParticipantsStrategy(Protocol):
-    def choose_participants(self) -> List[str]:
+    def choose_participants(self) -> List[RequiredString]:
         pass

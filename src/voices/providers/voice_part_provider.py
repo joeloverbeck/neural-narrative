@@ -3,6 +3,7 @@ import os
 
 from src.base.constants import NARRATOR_VOICE_MODEL
 from src.base.exceptions import VoiceLineGenerationError
+from src.base.required_string import RequiredString
 from src.voices.configs.voice_part_provider_config import VoicePartProviderConfig
 from src.voices.factories.generate_voice_line_algorithm_factory import (
     GenerateVoiceLineAlgorithmFactory,
@@ -15,16 +16,11 @@ class VoicePartProvider:
 
     def __init__(
         self,
-        character_name: str,
-        voice_model: str,
+        character_name: RequiredString,
+        voice_model: RequiredString,
         voice_part_provider_config: VoicePartProviderConfig,
         generate_voice_line_algorithm_factory: GenerateVoiceLineAlgorithmFactory,
     ):
-        if not character_name:
-            raise ValueError("character_name can't be empty.")
-        if not voice_model:
-            raise ValueError("voice_model can't be empty.")
-
         self._character_name = character_name
         self._voice_model = voice_model
         self._voice_part_provider_config = voice_part_provider_config
@@ -49,7 +45,7 @@ class VoicePartProvider:
 
         temp_file_name = f"{self._voice_part_provider_config.timestamp}_{self._character_name}_{voice_to_use}_{self._voice_part_provider_config.index}.wav"
         temp_file_path = os.path.join(
-            self._voice_part_provider_config.temp_dir, temp_file_name
+            self._voice_part_provider_config.temp_dir.value, temp_file_name
         )
 
         algorithm = self._generate_voice_line_algorithm_factory.create_algorithm(

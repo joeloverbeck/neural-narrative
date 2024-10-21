@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from typing import List
 
+from src.base.required_string import RequiredString
+
 
 @dataclass
 class VoicePartProviderConfig:
@@ -8,7 +10,7 @@ class VoicePartProviderConfig:
     xtts_endpoint: str
     timestamp: str
     index: int
-    temp_dir: str
+    temp_dir: RequiredString
     temp_file_paths: List[str]
 
     def __post_init__(self):
@@ -20,5 +22,3 @@ class VoicePartProviderConfig:
             raise ValueError("timestamp can't be empty.")
         if self.index < 0:
             raise ValueError(f"Invalid index: {self.index}.")
-        if not self.temp_dir:
-            raise ValueError("temp_dir can't be empty.")

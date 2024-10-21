@@ -1,23 +1,26 @@
+from typing import Optional
+
+from src.base.required_string import RequiredString
 from src.characters.factories.character_information_provider import (
     CharacterInformationProvider,
 )
 from src.dialogues.abstracts.strategies import PromptFormatterForDialogueStrategy
 from src.dialogues.participants import Participants
 from src.filesystem.filesystem_manager import FilesystemManager
-from src.maps.factories.places_descriptions_factory import PlacesDescriptionsFactory
+from src.maps.providers.places_descriptions_provider import PlacesDescriptionsProvider
 from src.time.time_manager import TimeManager
 
 
 class ConcretePromptFormatterForDialogueStrategy(PromptFormatterForDialogueStrategy):
     def __init__(
         self,
-        playthrough_name: str,
+            playthrough_name: RequiredString,
         participants: Participants,
-        purpose: str,
-        name: str,
+            purpose: Optional[RequiredString],
+            name: RequiredString,
         character_information_factory: CharacterInformationProvider,
-        prompt_file: str,
-        places_descriptions_factory: PlacesDescriptionsFactory,
+            prompt_file: RequiredString,
+            places_descriptions_factory: PlacesDescriptionsProvider,
         filesystem_manager: FilesystemManager = None,
     ):
         if not participants.enough_participants():
@@ -55,7 +58,7 @@ class ConcretePromptFormatterForDialogueStrategy(PromptFormatterForDialogueStrat
 
         dialogue_purpose = self._format_dialogue_purpose()
 
-        return self._filesystem_manager.read_file(self._prompt_file).format(
+        return self._filesystem_manager.read_file(self._prompt_file).value.format(
             places_descriptions=self._places_descriptions_factory.get_information(),
             hour=time_manager.get_hour(),
             time_group=time_manager.get_time_of_the_day(),

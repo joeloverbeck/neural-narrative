@@ -13,9 +13,10 @@ from src.actions.algorithms.store_action_resolution_algorithm import (
 )
 from src.actions.factories.action_resolution_factory import ActionResolutionFactory
 from src.base.playthrough_manager import PlaythroughManager
-from src.base.playthrough_name import RequiredString
+from src.base.required_string import RequiredString
 from src.characters.character import Character
 from src.characters.characters_manager import CharactersManager
+from src.characters.factories.character_factory import CharacterFactory
 from src.characters.factories.party_data_for_prompt_factory import (
     PartyDataForPromptFactory,
 )
@@ -30,11 +31,10 @@ from src.characters.factories.store_character_memory_command_factory import (
 )
 from src.characters.participants_manager import ParticipantsManager
 from src.config.config_manager import ConfigManager
-from src.maps.factories.place_descriptions_for_prompt_factory import (
-    PlaceDescriptionsForPromptFactory,
+from src.maps.composers.places_descriptions_provider_composer import (
+    PlacesDescriptionsProviderComposer,
 )
-from src.maps.factories.places_descriptions_factory import PlacesDescriptionsFactory
-from src.maps.map_manager import MapManager
+from src.maps.factories.map_manager_factory import MapManagerFactory
 from src.prompting.factories.openrouter_llm_client_factory import (
     OpenRouterLlmClientFactory,
 )
@@ -54,8 +54,11 @@ def action_view(action_name, action_icon, action_endpoint, prompt_file, tool_fil
         if not playthrough_name:
             return redirect(url_for("index"))
 
-        map_manager = MapManager(playthrough_name)
-        current_place = map_manager.get_current_place_template()
+        current_place = (
+            MapManagerFactory(RequiredString(playthrough_name))
+            .create_map_manager()
+            .get_current_place_template()
+        )
 
         return render_template(
             "action.html",
@@ -98,22 +101,14 @@ def action_view(action_name, action_icon, action_endpoint, prompt_file, tool_fil
             )
 
             player_data_for_prompt_factory = PlayerDataForPromptFactory(
-                playthrough_name
+                playthrough_name, CharacterFactory(RequiredString(playthrough_name))
             )
             party_data_for_prompt_factory = PartyDataForPromptFactory(
                 playthrough_name, player_data_for_prompt_factory
             )
 
-            place_descriptions_for_prompt_factory = PlaceDescriptionsForPromptFactory(
-                playthrough_name
-            )
-
             players_and_followers_information_factory = (
                 PlayerAndFollowersInformationFactory(party_data_for_prompt_factory)
-            )
-
-            places_descriptions_factory = PlacesDescriptionsFactory(
-                place_descriptions_for_prompt_factory
             )
 
             action_resolution_factory = ActionResolutionFactory(
@@ -121,7 +116,9 @@ def action_view(action_name, action_icon, action_endpoint, prompt_file, tool_fil
                 action_name=action_name,
                 action_goal=action_goal,
                 produce_tool_response_strategy_factory=produce_tool_response_strategy_factory,
-                places_descriptions_factory=places_descriptions_factory,
+                places_descriptions_factory=PlacesDescriptionsProviderComposer(
+                    RequiredString(playthrough_name)
+                ).compose_provider(),
                 players_and_followers_information_factory=players_and_followers_information_factory,
                 prompt_file=prompt_file,
                 tool_file=tool_file,
@@ -164,8 +161,11 @@ def action_view(action_name, action_icon, action_endpoint, prompt_file, tool_fil
                     return redirect(url_for(action_endpoint))
 
             # Get current place
-            map_manager = MapManager(playthrough_name)
-            current_place = map_manager.get_current_place_template()
+            current_place = (
+                MapManagerFactory(RequiredString(playthrough_name))
+                .create_map_manager()
+                .get_current_place_template()
+            )
 
             # Collect characters for modification
             player = Character(

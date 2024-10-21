@@ -3,6 +3,7 @@ from typing import cast
 
 from src.base.abstracts.command import Command
 from src.base.exceptions import CharacterGenerationError
+from src.base.required_string import RequiredString
 from src.characters.characters_manager import CharactersManager
 from src.characters.factories.speech_patterns_provider_factory import (
     SpeechPatternsProviderFactory,
@@ -25,18 +26,15 @@ logger = logging.getLogger(__name__)
 class GenerateCharacterCommand(Command):
     def __init__(
         self,
-        playthrough_name: str,
+            playthrough_name: RequiredString,
         character_generation_tool_response_provider: CharacterGenerationToolResponseProvider,
         speech_patterns_provider_factory: SpeechPatternsProviderFactory,
         store_generate_character_command_factory: StoreGeneratedCharacterCommandFactory,
         generate_character_image_command_factory: GenerateCharacterImageCommandFactory,
         place_character_at_current_place: bool,
+            movement_manager: MovementManager,
         characters_manager: CharactersManager = None,
-        movement_manager: MovementManager = None,
     ):
-        if not playthrough_name:
-            raise ValueError("playthrough_name can't be empty.")
-
         self._playthrough_name = playthrough_name
         self._character_generation_tool_response_provider = (
             character_generation_tool_response_provider
@@ -49,11 +47,9 @@ class GenerateCharacterCommand(Command):
             generate_character_image_command_factory
         )
         self._place_character_at_current_place = place_character_at_current_place
+        self._movement_manager = movement_manager
 
         self._characters_manager = characters_manager or CharactersManager(
-            self._playthrough_name
-        )
-        self._movement_manager = movement_manager or MovementManager(
             self._playthrough_name
         )
 
@@ -98,8 +94,8 @@ class GenerateCharacterCommand(Command):
 
         # Now that the character is stored, we need to retrieve the latest character identifier,
         # then use it to generate the character image
-        self._generate_character_image_command_factory.create_generate_character_image_command(
-            self._characters_manager.get_latest_character_identifier()
+        self._generate_character_image_command_factory.create_command(
+            RequiredString(self._characters_manager.get_latest_character_identifier())
         ).execute()
 
         if self._place_character_at_current_place:

@@ -1,6 +1,7 @@
 from typing import Optional
 
 from src.base.playthrough_manager import PlaythroughManager
+from src.base.required_string import RequiredString
 from src.characters.character import Character
 from src.characters.characters_manager import CharactersManager
 from src.dialogues.participants import Participants
@@ -9,7 +10,7 @@ from src.dialogues.participants import Participants
 class ParticipantsManager:
     def __init__(
         self,
-        playthrough_name: str,
+        playthrough_name: RequiredString,
         character_manager: Optional[CharactersManager] = None,
         playthrough_manager: Optional[PlaythroughManager] = None,
     ):

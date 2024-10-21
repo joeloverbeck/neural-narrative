@@ -1,6 +1,7 @@
 from flask import session, redirect, url_for, render_template, request
 from flask.views import MethodView
 
+from src.base.required_string import RequiredString
 from src.characters.algorithms.produce_self_reflection_algorithm import (
     ProduceSelfReflectionAlgorithm,
 )
@@ -34,7 +35,9 @@ class CharacterMemoriesView(MethodView):
         characters_manager = CharactersManager(playthrough_name)
         all_characters = characters_manager.get_all_characters()
 
-        selected_character_identifier = request.args.get("character_identifier")
+        selected_character_identifier = RequiredString(
+            request.args.get("character_identifier")
+        )
         character_memories = ""
         selected_character = None
 
@@ -77,7 +80,7 @@ class CharacterMemoriesView(MethodView):
             return redirect(url_for("index"))
 
         action = request.form.get("action")
-        character_identifier = request.form.get("character_identifier")
+        character_identifier = RequiredString(request.form.get("character_identifier"))
 
         if action == "save_memories" and character_identifier:
             new_memories = request.form.get("character_memories", "")
@@ -101,15 +104,15 @@ class CharacterMemoriesView(MethodView):
             )
 
             character_information_factory = CharacterInformationProvider(
-                playthrough_name, character_identifier
+                playthrough_name, RequiredString(character_identifier)
             )
 
             algorithm = ProduceSelfReflectionAlgorithm(
                 playthrough_name,
-                character_identifier,
+                RequiredString(character_identifier),
                 SelfReflectionFactory(
                     playthrough_name,
-                    character_identifier,
+                    RequiredString(character_identifier),
                     produce_tool_response_strategy_factory,
                     character_information_factory,
                 ),
@@ -124,7 +127,7 @@ class CharacterMemoriesView(MethodView):
                 produce_self_reflection_product.get_self_reflection()
             )
             session["self_reflection_voice_line_url"] = WebService.get_file_url(
-                "voice_lines",
+                RequiredString("voice_lines"),
                 produce_self_reflection_product.get_voice_line_file_name(),
             )
 

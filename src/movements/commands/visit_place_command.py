@@ -3,78 +3,76 @@ from typing import Optional
 from src.base.abstracts.command import Command
 from src.base.constants import TIME_ADVANCED_DUE_TO_EXITING_LOCATION
 from src.base.playthrough_manager import PlaythroughManager
-from src.characters.algorithms.generate_character_generation_guidelines_algorithm import (
-    GenerateCharacterGenerationGuidelinesAlgorithm,
-)
+from src.base.required_string import RequiredString
 from src.characters.character_guidelines_manager import CharacterGuidelinesManager
-from src.characters.factories.character_generation_guidelines_factory import (
-    CharacterGenerationGuidelinesFactory,
+from src.characters.factories.generate_character_generation_guidelines_algorithm_factory import (
+    GenerateCharacterGenerationGuidelinesAlgorithmFactory,
 )
-from src.maps.map_manager import MapManager
+from src.maps.factories.hierarchy_manager_factory import HierarchyManagerFactory
+from src.maps.factories.place_manager_factory import PlaceManagerFactory
 from src.time.time_manager import TimeManager
 
 
 class VisitPlaceCommand(Command):
     def __init__(
         self,
-        playthrough_name: str,
-        place_identifier: str,
-        character_generation_guidelines_factory: CharacterGenerationGuidelinesFactory,
+        playthrough_name: RequiredString,
+        place_identifier: RequiredString,
+        generate_character_generation_guidelines_algorithm_factory: GenerateCharacterGenerationGuidelinesAlgorithmFactory,
+        hierarchy_manager_factory: HierarchyManagerFactory,
+        place_manager_factory: PlaceManagerFactory,
         playthrough_manager: Optional[PlaythroughManager] = None,
-        map_manager: Optional[MapManager] = None,
         time_manager: Optional[TimeManager] = None,
         character_guidelines_manager: Optional[CharacterGuidelinesManager] = None,
     ):
-        if not playthrough_name:
-            raise ValueError("playthrough_name can't be empty.")
-        if not place_identifier:
-            raise ValueError("place_identifier can't be empty.")
-
-        self._playthrough_name = playthrough_name
         self._place_identifier = place_identifier
-        self._character_generation_guidelines_factory = (
-            character_generation_guidelines_factory
+        self._generate_character_generation_guidelines_algorithm_factory = (
+            generate_character_generation_guidelines_algorithm_factory
         )
+        self._hierarchy_manager_factory = hierarchy_manager_factory
+        self._place_manager_factory = place_manager_factory
 
         self._playthrough_manager = playthrough_manager or PlaythroughManager(
-            self._playthrough_name
+            playthrough_name
         )
-        self._map_manager = map_manager or MapManager(self._playthrough_name)
-        self._time_manager = time_manager or TimeManager(self._playthrough_name)
+        self._time_manager = time_manager or TimeManager(playthrough_name)
         self._character_guidelines_manager = (
             character_guidelines_manager or CharacterGuidelinesManager()
         )
 
     def _handle_place_is_not_visited(self):
         # If the place hasn't been visited, then generally the character generation guidelines haven't been generated.
-        world_name = self._playthrough_manager.get_world_template()
+        story_universe_name = self._playthrough_manager.get_story_universe_template()
 
-        places_templates_parameter = self._map_manager.fill_places_templates_parameter(
+        places_templates_parameter = self._hierarchy_manager_factory.create_hierarchy_manager().fill_places_templates_parameter(
             self._place_identifier
         )
 
         if not self._character_guidelines_manager.guidelines_exist(
-            world_name,
+            story_universe_name,
+            places_templates_parameter.get_world_template(),
             places_templates_parameter.get_region_template(),
             places_templates_parameter.get_area_template(),
             places_templates_parameter.get_location_template(),
         ):
             # We need to create the character generation guidelines for this location.
-            GenerateCharacterGenerationGuidelinesAlgorithm(
-                self._playthrough_name,
-                self._place_identifier,
-                self._character_generation_guidelines_factory,
+            self._generate_character_generation_guidelines_algorithm_factory.create_algorithm(
+                self._place_identifier
             ).do_algorithm()
 
         # Now set the place as visited.
-        self._map_manager.set_as_visited(self._place_identifier)
+        self._place_manager_factory.create_place_manager().set_as_visited(
+            self._place_identifier
+        )
 
     def execute(self) -> None:
         # Careful moving the following code, about updating the current place of the playthrough,
         # because generation of characters uses whatever is the current place of the playthrough.
         self._playthrough_manager.update_current_place(self._place_identifier)
 
-        if not self._map_manager.is_visited(self._place_identifier):
+        if not self._place_manager_factory.create_place_manager().is_visited(
+            self._place_identifier
+        ):
             self._handle_place_is_not_visited()
 
         # Advance time.

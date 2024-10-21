@@ -1,3 +1,4 @@
+from src.base.required_string import RequiredString
 from src.dialogues.participants import Participants
 from src.dialogues.strategies.prevent_llm_from_choosing_player_as_next_speaker_strategy import (
     PreventLlmFromChoosingPlayerAsNextSpeakerStrategy,
@@ -14,7 +15,7 @@ class HandleParsedToolResponseForDialogueCharacterChoiceStrategyFactory:
 
     def __init__(
         self,
-        playthrough_name: str,
+            playthrough_name: RequiredString,
         participants: Participants,
         tool_response_parsing_provider_factory: ToolResponseParsingProviderFactory,
         prevent_llm_from_choosing_player_as_next_speaker_strategy: PreventLlmFromChoosingPlayerAsNextSpeakerStrategy,

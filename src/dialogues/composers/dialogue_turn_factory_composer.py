@@ -1,3 +1,6 @@
+from typing import Optional
+
+from src.base.required_string import RequiredString
 from src.config.config_manager import ConfigManager
 from src.dialogues.abstracts.abstract_factories import (
     DialogueTurnFactorySubject,
@@ -41,21 +44,16 @@ class DialogueTurnFactoryComposer:
 
     def __init__(
         self,
-        playthrough_name: str,
-        player_identifier: str,
+            playthrough_name: RequiredString,
+            player_identifier: RequiredString,
         participants: Participants,
-        purpose: str,
+            purpose: Optional[RequiredString],
         llm_client: LlmClient,
         messages_to_llm: MessagesToLlm,
         transcription: Transcription,
         involve_player_in_dialogue_strategy: InvolvePlayerInDialogueStrategy,
         message_data_producer_for_speech_turn_strategy: MessageDataProducerForSpeechTurnStrategy,
     ):
-        if not playthrough_name:
-            raise ValueError("playthrough_name can't be empty.")
-        if not player_identifier:
-            raise ValueError("player_identifier can't be empty.")
-
         self._playthrough_name = playthrough_name
         self._player_identifier = player_identifier
         self._participants = participants

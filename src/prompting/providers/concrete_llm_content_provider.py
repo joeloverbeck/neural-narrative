@@ -9,6 +9,7 @@ from src.base.constants import (
     WAIT_TIME_WHEN_MALFORMED_COMPLETION,
 )
 from src.base.enums import AiCompletionErrorType
+from src.base.required_string import RequiredString
 from src.dialogues.messages_to_llm import MessagesToLlm
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.prompting.abstracts.abstract_factories import LlmContentProvider
@@ -24,7 +25,7 @@ logger = logging.getLogger(__name__)
 class ConcreteLlmContentProvider(LlmContentProvider):
     def __init__(
         self,
-        model: str,
+            model: RequiredString,
         messages_to_llm: MessagesToLlm,
         llm_client: LlmClient,
         max_retries=MAX_RETRIES,
@@ -32,9 +33,10 @@ class ConcreteLlmContentProvider(LlmContentProvider):
         top_p=1.0,
         filesystem_manager: FilesystemManager = None,
     ):
-        if not messages_to_llm:
-            raise ValueError("messages_to_llm must not be empty.")
-        assert llm_client
+        if not isinstance(model, RequiredString):
+            raise TypeError(
+                f"At this point, the provided model should be of type RequiredString, but was '{type(model)}'."
+            )
 
         self._model = model
         self._messages_to_llm = messages_to_llm

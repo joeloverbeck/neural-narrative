@@ -1,5 +1,6 @@
 from typing import Optional
 
+from src.base.required_string import RequiredString
 from src.base.tools import generate_tool_prompt
 from src.dialogues.participants import Participants
 from src.dialogues.transcription import Transcription
@@ -17,11 +18,11 @@ class CharacterChoiceDialogueSystemContentForPromptProvider(
     def __init__(
         self,
         participants: Participants,
-        player_identifier: Optional[str],
+            player_identifier: Optional[RequiredString],
         transcription: Transcription,
-        prompt_template: str,
+            prompt_template: RequiredString,
         tool_data: dict,
-        tool_instructions_template: str,
+            tool_instructions_template: RequiredString,
     ):
         self._participants = participants
         self._player_identifier = player_identifier
@@ -54,12 +55,14 @@ class CharacterChoiceDialogueSystemContentForPromptProvider(
             assert all_participants != participants_without_player
 
         return ConcreteSystemContentForPromptProduct(
-            self._prompt_template.format(
+            self._prompt_template.value.format(
                 all_participants=all_participants,
                 dialogue=self._transcription.get(),
                 participants_without_player=participants_without_player,
             )
             + "\n\n"
-            + generate_tool_prompt(self._tool_data, self._tool_instructions_template),
+            + generate_tool_prompt(
+                self._tool_data, self._tool_instructions_template
+            ).value,
             is_valid=True,
         )

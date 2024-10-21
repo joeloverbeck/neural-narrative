@@ -1,6 +1,7 @@
 from flask import session, url_for
 
 from src.base.playthrough_manager import PlaythroughManager
+from src.base.required_string import RequiredString
 from src.config.config_manager import ConfigManager
 from src.dialogues.commands.produce_ambient_narration_command import (
     ProduceAmbientNarrationCommand,
@@ -37,6 +38,11 @@ from src.dialogues.strategies.web_message_data_producer_for_speech_turn_strategy
 )
 from src.dialogues.transcription import Transcription
 from src.filesystem.filesystem_manager import FilesystemManager
+from src.maps.factories.map_manager_factory import MapManagerFactory
+from src.maps.factories.place_manager_factory import PlaceManagerFactory
+from src.maps.place_description_manager import PlaceDescriptionManager
+from src.maps.templates_repository import TemplatesRepository
+from src.maps.weathers_manager import WeathersManager
 from src.prompting.factories.openrouter_llm_client_factory import (
     OpenRouterLlmClientFactory,
 )
@@ -68,8 +74,23 @@ class DialogueService:
 
         playthrough_name = session.get("playthrough_name")
 
+        map_manager_factory = MapManagerFactory(RequiredString(playthrough_name))
+
+        weathers_manager = WeathersManager(map_manager_factory)
+
+        place_manager_factory = PlaceManagerFactory(RequiredString(playthrough_name))
+
+        template_repository = TemplatesRepository()
+
+        place_description_manager = PlaceDescriptionManager(
+            place_manager_factory, template_repository
+        )
+
         ambient_narration_provider_factory = AmbientNarrationProviderFactory(
-            playthrough_name, produce_tool_response_strategy_factory
+            playthrough_name,
+            produce_tool_response_strategy_factory,
+            weathers_manager,
+            place_description_manager,
         )
 
         dialogue_manager = DialogueManager(playthrough_name)

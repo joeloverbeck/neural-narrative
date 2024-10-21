@@ -2,6 +2,7 @@ import logging
 from typing import Optional
 
 from src.base.playthrough_manager import PlaythroughManager
+from src.base.required_string import RequiredString
 from src.characters.character import Character
 from src.characters.characters_manager import CharactersManager
 from src.dialogues.factories.character_choice_dialogue_initial_prompting_messages_provider_factory import (
@@ -27,7 +28,7 @@ logger = logging.getLogger(__name__)
 class SpeechTurnChoiceToolResponseProvider(ToolResponseProvider):
     def __init__(
         self,
-        playthrough_name: str,
+        playthrough_name: RequiredString,
         participants: Participants,
         transcription: Transcription,
         character_choice_dialogue_initial_prompting_messages_provider_factory: CharacterChoiceDialogueInitialPromptingMessagesProviderFactory,

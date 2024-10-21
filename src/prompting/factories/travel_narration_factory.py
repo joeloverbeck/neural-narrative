@@ -1,14 +1,16 @@
+from typing import Optional
+
 from src.base.constants import (
     TRAVEL_NARRATION_PROMPT_FILE,
     TRAVEL_NARRATION_TOOL_FILE,
 )
 from src.base.playthrough_manager import PlaythroughManager
-from src.characters.characters_manager import CharactersManager
+from src.base.required_string import RequiredString
 from src.characters.factories.player_and_followers_information_factory import (
     PlayerAndFollowersInformationFactory,
 )
 from src.filesystem.filesystem_manager import FilesystemManager
-from src.maps.map_manager import MapManager
+from src.maps.factories.map_manager_factory import MapManagerFactory
 from src.prompting.factories.produce_tool_response_strategy_factory import (
     ProduceToolResponseStrategyFactory,
 )
@@ -23,35 +25,25 @@ class TravelNarrationFactory(BaseToolResponseProvider):
 
     def __init__(
         self,
-        playthrough_name: str,
-        destination_identifier: str,
+        playthrough_name: RequiredString,
+        destination_identifier: RequiredString,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         player_and_followers_information_factory: PlayerAndFollowersInformationFactory,
-        characters_manager: CharactersManager = None,
-        playthrough_manager: PlaythroughManager = None,
-        filesystem_manager: FilesystemManager = None,
-        map_manager: MapManager = None,
+        map_manager_factory: MapManagerFactory,
+        playthrough_manager: Optional[PlaythroughManager] = None,
+        filesystem_manager: Optional[FilesystemManager] = None,
     ):
         super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
 
-        if not playthrough_name:
-            raise ValueError("playthrough_name can't be empty.")
-        if not destination_identifier:
-            raise ValueError("destination_identifier can't be empty.")
-
-        self._playthrough_name = playthrough_name
         self._destination_identifier = destination_identifier
         self._player_and_followers_information_factory = (
             player_and_followers_information_factory
         )
+        self._map_manager_factory = map_manager_factory
 
-        self._characters_manager = characters_manager or CharactersManager(
-            playthrough_name
-        )
         self._playthrough_manager = playthrough_manager or PlaythroughManager(
             playthrough_name
         )
-        self._map_manager = map_manager or MapManager(playthrough_name)
 
     def get_prompt_file(self) -> str:
         return TRAVEL_NARRATION_PROMPT_FILE
@@ -60,15 +52,19 @@ class TravelNarrationFactory(BaseToolResponseProvider):
         current_place_identifier = (
             self._playthrough_manager.get_current_place_identifier()
         )
-        current_place_data = self._map_manager.get_place_full_data(
-            current_place_identifier
+        current_place_data = (
+            self._map_manager_factory.create_map_manager().get_place_full_data(
+                RequiredString(current_place_identifier)
+            )
         )
-        destination_place_data = self._map_manager.get_place_full_data(
-            self._destination_identifier
+        destination_place_data = (
+            self._map_manager_factory.create_map_manager().get_place_full_data(
+                self._destination_identifier
+            )
         )
 
         prompt_data = {
-            "origin_area_template": self._map_manager.get_current_place_template(),
+            "origin_area_template": self._map_manager_factory.create_map_manager().get_current_place_template(),
             "origin_area_description": current_place_data["area_data"]["description"],
             "destination_area_template": destination_place_data["area_data"]["name"],
             "destination_area_description": destination_place_data["area_data"][

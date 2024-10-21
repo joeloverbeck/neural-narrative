@@ -1,3 +1,4 @@
+from src.base.required_string import RequiredString
 from src.dialogues.factories.character_choice_dialogue_initial_prompting_messages_provider_factory import (
     CharacterChoiceDialogueInitialPromptingMessagesProviderFactory,
 )
@@ -26,20 +27,14 @@ from src.prompting.factories.tool_response_parsing_provider_factory import (
 class SpeechTurnChoiceToolResponseFactoryComposer:
     def __init__(
         self,
-        playthrough_name: str,
-        player_identifier: str,
+        playthrough_name: RequiredString,
+        player_identifier: RequiredString,
         participants: Participants,
         llm_client: LlmClient,
-        model: str,
+        model: RequiredString,
     ):
-        if not playthrough_name:
-            raise ValueError("playthrough_name can't be empty.")
-        if not player_identifier:
-            raise ValueError("player identifier can't be empty.")
         if not participants.enough_participants():
             raise ValueError("Not enough participants.")
-        if not model:
-            raise ValueError("model can't be empty.")
 
         self._playthrough_name = playthrough_name
         self._player_identifier = player_identifier

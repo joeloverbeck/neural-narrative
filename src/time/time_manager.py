@@ -1,14 +1,14 @@
 from src.base.playthrough_manager import PlaythroughManager
+from src.base.required_string import RequiredString
 
 
 class TimeManager:
 
     def __init__(
-        self, playthrough_name: str, playthrough_manager: PlaythroughManager = None
+        self,
+        playthrough_name: RequiredString,
+        playthrough_manager: PlaythroughManager = None,
     ):
-        if not playthrough_name:
-            raise ValueError("playthrough_name can't be empty.")
-
         self._playthrough_name = playthrough_name
 
         self._playthrough_manager = playthrough_manager or PlaythroughManager(

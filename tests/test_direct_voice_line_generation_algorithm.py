@@ -1,26 +1,15 @@
 from unittest.mock import Mock, patch
 
-import pytest
-
 from src.base.exceptions import VoiceLineGenerationError
+from src.base.required_string import RequiredString
 from src.voices.algorithms.direct_voice_line_generation_algorithm import (
     DirectVoiceLineGenerationAlgorithm,
 )
 
 
-# Test 1: Initialization with empty text should raise ValueError
-def test_init_with_empty_text_raises_value_error():
-    with pytest.raises(ValueError, match="text can't be empty."):
-        DirectVoiceLineGenerationAlgorithm(
-            text="",
-            voice_part_provider_factory=Mock(),
-            voice_line_file_name_provider_factory=Mock(),
-        )
-
-
 # Test 2: When xtts_endpoint is None, the method should return None
 def test_direct_voice_line_generation_no_xtts_endpoint():
-    text = "Sample text"
+    text = RequiredString("Sample text")
     voice_part_provider_factory = Mock()
     voice_line_file_name_provider_factory = Mock()
     requests_manager = Mock()
@@ -43,7 +32,7 @@ def test_direct_voice_line_generation_no_xtts_endpoint():
 # Test 3: The algorithm should process each part of the text
 @patch("time.strftime", return_value="20220101010101")
 def test_direct_voice_line_generation_processes_each_part(mock_strftime):
-    text = "This is *emphasized* text."
+    text = RequiredString("This is *emphasized* text.")
 
     # Mocking dependencies
     voice_part_provider_factory = Mock()
@@ -124,7 +113,7 @@ def test_direct_voice_line_generation_processes_each_part(mock_strftime):
 # Test 4: If no voice lines are generated, the method should return None
 @patch("time.strftime", return_value="20220101010101")
 def test_direct_voice_line_generation_no_voice_lines_generated(mock_strftime):
-    text = "Sample text with no voice lines generated."
+    text = RequiredString("Sample text with no voice lines generated.")
 
     # Mocking dependencies
     voice_part_provider_factory = Mock()
@@ -167,7 +156,7 @@ def test_direct_voice_line_generation_no_voice_lines_generated(mock_strftime):
 # Test 5: The algorithm should handle exceptions in create_voice_part and continue processing
 @patch("time.strftime", return_value="20220101010101")
 def test_direct_voice_line_generation_handles_exceptions(mock_strftime):
-    text = "Part one. *Part two with error*. Part three."
+    text = RequiredString("Part one. *Part two with error*. Part three.")
 
     # Mocking dependencies
     voice_part_provider_factory = Mock()
@@ -235,7 +224,7 @@ def test_direct_voice_line_generation_handles_exceptions(mock_strftime):
 # Test 6: If temp_file_paths is not empty, provide_file_name should be called
 @patch("time.strftime", return_value="20220101010101")
 def test_direct_voice_line_generation_calls_provide_file_name(mock_strftime):
-    text = "Generate voice lines for this text."
+    text = RequiredString("Generate voice lines for this text.")
 
     # Mocking dependencies
     voice_part_provider_factory = Mock()

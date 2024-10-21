@@ -6,9 +6,7 @@ function generatePlaceSuccessHandler(data, context) {
 
     if (data.success) {
         showToast(data.message || `${placeTypeCapitalized} generated successfully`, 'success');
-        setTimeout(() => {
-            window.location.href = '/places';
-        }, 4000); // Redirects after 4 seconds
+        delayedRedirect('/places');
     } else {
         showToast(data.error || 'An error occurred', 'error');
     }

@@ -1,3 +1,4 @@
+from src.base.required_string import RequiredString
 from src.characters.factories.character_description_provider_factory import (
     CharacterDescriptionProviderFactory,
 )
@@ -36,8 +37,10 @@ def main():
     )
 
     GenerateCharacterImageCommand(
-        playthrough_name,
-        interface_manager.prompt_for_input("Enter the character identifier: "),
+        RequiredString(playthrough_name),
+        RequiredString(
+            interface_manager.prompt_for_input("Enter the character identifier: ")
+        ),
         character_description_provider_factory,
         OpenAIGeneratedImageFactory(OpenAILlmClientFactory().create_llm_client()),
         ConcreteUrlContentFactory(),

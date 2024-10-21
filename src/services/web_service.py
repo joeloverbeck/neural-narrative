@@ -1,8 +1,9 @@
 import os
-from typing import List
+from typing import List, Optional
 
 from flask import url_for
 
+from src.base.required_string import RequiredString
 from src.characters.character import Character
 
 
@@ -15,9 +16,7 @@ class WebService:
             )
 
     @staticmethod
-    def get_file_url(folder: str, file_name: str):
-        if not folder:
-            raise ValueError("folder can't be empty.")
+    def get_file_url(folder: RequiredString, file_name: Optional[RequiredString]):
         if not file_name:
             file_name = "NONE"
 

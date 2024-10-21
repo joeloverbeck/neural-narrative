@@ -1,12 +1,14 @@
 from dataclasses import dataclass
 from typing import List
 
+from src.base.required_string import RequiredString
+
 
 @dataclass
 class CharacterDataForStorage:
     name: str
     description: str
-    personality: str
+    personality: RequiredString
     profile: str
     likes: str
     dislikes: str

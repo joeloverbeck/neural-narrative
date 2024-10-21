@@ -5,8 +5,9 @@ from flask.views import MethodView
 
 from src.base.constants import MAX_DIALOGUE_ENTRIES_FOR_WEB
 from src.base.playthrough_manager import PlaythroughManager
+from src.base.required_string import RequiredString
 from src.filesystem.filesystem_manager import FilesystemManager
-from src.maps.map_manager import MapManager
+from src.maps.factories.map_manager_factory import MapManagerFactory
 from src.services.dialogue_service import DialogueService
 from src.time.time_manager import TimeManager
 
@@ -48,8 +49,11 @@ class ChatView(MethodView):
         dialogue = session.get("dialogue", [])
 
         time_manager = TimeManager(playthrough_name)
-        map_manager = MapManager(playthrough_name)
-        current_place_template = map_manager.get_current_place_template()
+        current_place_template = (
+            MapManagerFactory(RequiredString(playthrough_name))
+            .create_map_manager()
+            .get_current_place_template()
+        )
 
         return render_template(
             "chat.html",

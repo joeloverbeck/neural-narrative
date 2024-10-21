@@ -57,6 +57,12 @@ function playAudio(fileUrl, element) {
     }
 }
 
+function delayedRedirect(url){
+    setTimeout(() => {
+        window.location.href = url;
+    }, 4000); // Redirects after 4 seconds
+}
+
 function initAudioPlayback() {
     // When clicking on any part of the page.
     document.addEventListener('click', function(event) {
@@ -112,7 +118,7 @@ function showToast(message, type) {
     setTimeout(() => {
         toast.classList.add('fade-out');
         toast.addEventListener('animationend', () => toast.remove());
-    }, 5000);
+    }, 10000);
 }
 
 // Main function to handle AJAX form submissions
