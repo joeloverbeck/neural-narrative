@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Protocol
 
+from src.base.required_string import RequiredString
 from src.dialogues.messages_to_llm import MessagesToLlm
 from src.dialogues.transcription import Transcription
 
@@ -18,7 +19,7 @@ class DialogueProduct(Protocol):
 
 class PlayerInputProduct(ABC):
     @abstractmethod
-    def get(self) -> str:
+    def get(self) -> RequiredString:
         pass
 
     @abstractmethod
@@ -56,7 +57,7 @@ class SpeechDataProduct(ABC):
 
 class SummaryProduct(ABC):
     @abstractmethod
-    def get(self) -> str:
+    def get(self) -> RequiredString:
         pass
 
     @abstractmethod

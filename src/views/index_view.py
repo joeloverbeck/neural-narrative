@@ -1,4 +1,6 @@
-from flask import render_template, request, session, redirect, url_for, flash, jsonify
+import logging
+
+from flask import render_template, request, session, redirect, url_for, jsonify
 from flask.views import MethodView
 
 from src.base.commands.generate_story_universe_command import (
@@ -9,7 +11,8 @@ from src.base.constants import (
 )
 from src.base.factories.story_universe_factory import StoryUniverseFactory
 from src.base.playthrough_manager import PlaythroughManager
-from src.base.playthrough_name import RequiredString
+from src.base.required_string import RequiredString
+from src.base.tools import capture_traceback
 from src.config.config_manager import ConfigManager
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.prompting.factories.openrouter_llm_client_factory import (
@@ -19,6 +22,8 @@ from src.prompting.factories.produce_tool_response_strategy_factory import (
     ProduceToolResponseStrategyFactory,
 )
 from src.services.playthrough_service import PlaythroughService
+
+logger = logging.getLogger(__name__)
 
 
 class IndexView(MethodView):
@@ -47,18 +52,29 @@ class IndexView(MethodView):
         if action == "create_playthrough":
             playthrough_name = request.form["playthrough_name"]
             story_universe_template = request.form["story_universe_name"]
-            player_notion = request.form.get("player_notion", "")
+            player_notion = request.form.get("player_notion")
 
             try:
                 PlaythroughService().create_playthrough(
-                    playthrough_name, story_universe_template, player_notion
+                    RequiredString(playthrough_name),
+                    RequiredString(story_universe_template),
+                    RequiredString(player_notion),
                 )
 
-                flash("Playthrough created successfully!", "success")
+                response = {
+                    "success": True,
+                    "message": f"Playthrough '{playthrough_name}' created successfully.",
+                }
             except Exception as e:
-                flash(f"Failed to create playthrough: {str(e)}", "error")
-
-            return redirect(url_for("index"))
+                capture_traceback()
+                response = {
+                    "success": False,
+                    "error": f"Failed to create playthrough '{playthrough_name}'. Error: {str(e)}.",
+                }
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return jsonify(response)
+            else:
+                return redirect(url_for("index"))
         elif action == "generate_story_universe":
             story_universe_notion = request.form["story_universe_notion"]
 
@@ -100,7 +116,9 @@ class IndexView(MethodView):
             if filesystem_manager.playthrough_exists(playthrough_name):
                 session["playthrough_name"] = playthrough_name
 
-                playthrough_manager = PlaythroughManager(playthrough_name)
+                playthrough_manager = PlaythroughManager(
+                    RequiredString(playthrough_name)
+                )
 
                 # If turns out that there's a convo ongoing, it should redirect to the chat.
                 if playthrough_manager.has_ongoing_dialogue(playthrough_name):

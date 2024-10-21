@@ -4,6 +4,7 @@ from src.base.constants import (
     TOOL_INSTRUCTIONS_FILE,
     MAX_RETRIES,
 )
+from src.base.required_string import RequiredString
 from src.base.tools import generate_tool_prompt
 from src.dialogues.abstracts.abstract_factories import DialogueSummaryProvider
 from src.dialogues.abstracts.factory_products import SummaryProduct
@@ -27,15 +28,10 @@ class ConcreteDialogueSummaryProvider(DialogueSummaryProvider):
     def __init__(
         self,
         llm_client: LlmClient,
-        model: str,
+            model: RequiredString,
         transcription: Transcription,
         max_retries: int = MAX_RETRIES,
     ):
-        assert llm_client
-        assert model
-        if not transcription:
-            raise ValueError("transcription must not be empty.")
-
         self._llm_client = llm_client
         self._model = model
         self._transcription = transcription
@@ -46,17 +42,27 @@ class ConcreteDialogueSummaryProvider(DialogueSummaryProvider):
 
         messages_to_llm = MessagesToLlm()
         messages_to_llm.add_message(
-            "system",
-            filesystem_manager.read_file(SUMMARIZE_DIALOGUE_PROMPT_FILE)
-            + f"\n\nHere's the dialogue to summarize:\n{self._transcription.get_prettified_transcription()}"
-            + generate_tool_prompt(
-                filesystem_manager.read_json_file(DIALOGUE_SUMMARIZATION_TOOL_FILE),
-                filesystem_manager.read_file(TOOL_INSTRUCTIONS_FILE),
+            RequiredString("system"),
+            RequiredString(
+                filesystem_manager.read_file(
+                    RequiredString(SUMMARIZE_DIALOGUE_PROMPT_FILE)
+                ).value
+                + f"\n\nHere's the dialogue to summarize:\n{self._transcription.get_prettified_transcription()}"
+                + generate_tool_prompt(
+                    filesystem_manager.read_json_file(
+                        RequiredString(DIALOGUE_SUMMARIZATION_TOOL_FILE)
+                    ),
+                    filesystem_manager.read_file(
+                        RequiredString(TOOL_INSTRUCTIONS_FILE)
+                    ),
+                ).value
             ),
         )
         messages_to_llm.add_message(
-            "user",
-            "Summarize the provided dialogue. Do not write any preamble, just do it as instructed.",
+            RequiredString("user"),
+            RequiredString(
+                "Summarize the provided dialogue. Do not write any preamble, just do it as instructed."
+            ),
         )
 
         # Now prompt the LLM for a response.

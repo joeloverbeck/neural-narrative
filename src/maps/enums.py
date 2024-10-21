@@ -2,7 +2,7 @@ from enum import Enum
 
 
 # Enum definition for identifier types
-class RandomPlaceTypeMapEntryCreationResultType(Enum):
+class RandomTemplateTypeMapEntryCreationResultType(Enum):
     FAILURE = "failure"
     SUCCESS = "success"
     NO_AVAILABLE_TEMPLATES = "no_available_templates"

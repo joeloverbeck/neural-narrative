@@ -5,6 +5,8 @@ from src.base.constants import (
     TIME_ADVANCED_DUE_TO_TRAVELING,
 )
 from src.base.playthrough_manager import PlaythroughManager
+from src.base.required_string import RequiredString
+from src.characters.factories.character_factory import CharacterFactory
 from src.characters.factories.party_data_for_prompt_factory import (
     PartyDataForPromptFactory,
 )
@@ -15,7 +17,7 @@ from src.characters.factories.player_data_for_prompt_factory import (
     PlayerDataForPromptFactory,
 )
 from src.config.config_manager import ConfigManager
-from src.maps.map_manager import MapManager
+from src.maps.factories.map_manager_factory import MapManagerFactory
 from src.prompting.factories.openrouter_llm_client_factory import (
     OpenRouterLlmClientFactory,
 )
@@ -43,7 +45,9 @@ class TravelView(MethodView):
             ConfigManager().get_heavy_llm(),
         )
 
-        player_data_for_prompt_factory = PlayerDataForPromptFactory(playthrough_name)
+        player_data_for_prompt_factory = PlayerDataForPromptFactory(
+            playthrough_name, CharacterFactory(RequiredString(playthrough_name))
+        )
 
         party_data_for_prompt_factory = PartyDataForPromptFactory(
             playthrough_name, player_data_for_prompt_factory
@@ -53,11 +57,14 @@ class TravelView(MethodView):
             party_data_for_prompt_factory
         )
 
+        map_manager_factory = MapManagerFactory(playthrough_name)
+
         product = TravelNarrationFactory(
             playthrough_name,
             destination_identifier,
             produce_tool_response_strategy_factory,
             player_and_followers_information_factory,
+            map_manager_factory,
         ).generate_product()
 
         if not product.is_valid():
@@ -68,8 +75,10 @@ class TravelView(MethodView):
         # Add the travel narration to the adventure.
         PlaythroughManager(playthrough_name).add_to_adventure(travel_narration + "\n")
 
-        destination_place_data = MapManager(playthrough_name).get_place_full_data(
-            destination_identifier
+        destination_place_data = (
+            MapManagerFactory(RequiredString(playthrough_name))
+            .create_map_manager()
+            .get_place_full_data(destination_identifier)
         )
 
         # Remove the dialogue in the session, lest the travel narration not fit.
@@ -107,6 +116,8 @@ class TravelView(MethodView):
     def handle_enter_area(playthrough_name):
         destination_identifier = request.form.get("destination_identifier")
 
-        PlaceService().visit_location(playthrough_name, destination_identifier)
+        PlaceService().visit_location(
+            playthrough_name, RequiredString(destination_identifier)
+        )
 
         return redirect(url_for("location-hub"))

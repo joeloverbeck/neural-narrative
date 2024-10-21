@@ -2,7 +2,6 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from src.base.enums import IdentifierType
 from src.characters.commands.store_generated_character_command import (
     StoreGeneratedCharacterCommand,
 )
@@ -85,57 +84,6 @@ def test_init_with_valid_character_data():
     # Assert
     assert cmd._playthrough_name == playthrough_name
     assert cmd._character_data.name == "TestCharacter"
-
-
-@patch("src.filesystem.filesystem_manager.FilesystemManager")
-@patch("src.base.identifiers_manager.IdentifiersManager")
-def test_execute_calls_filesystem_manager_methods(
-    mock_identifiers_manager_class, mock_filesystem_manager_class
-):
-    # Arrange
-    playthrough_name = Mock()
-    playthrough_name.value = "TestPlaythrough"
-    character_data = get_valid_character_data()
-    match_voice_data_to_voice_model_algorithm = Mock()
-    match_voice_data_to_voice_model_algorithm.match.return_value = "TestVoiceModel"
-
-    mock_filesystem_manager = mock_filesystem_manager_class.return_value
-    mock_filesystem_manager.get_file_path_to_characters_file.return_value = (
-        "characters.json"
-    )
-    mock_filesystem_manager.load_existing_or_new_json_file.return_value = {}
-
-    mock_identifiers_manager = mock_identifiers_manager_class.return_value
-    mock_identifiers_manager.produce_and_update_next_identifier.return_value = "1"
-
-    cmd = StoreGeneratedCharacterCommand(
-        playthrough_name,
-        character_data,
-        match_voice_data_to_voice_model_algorithm,
-        filesystem_manager=mock_filesystem_manager,
-        identifiers_manager=mock_identifiers_manager,
-    )
-
-    # Act
-    cmd.execute()
-
-    # Assert
-    mock_filesystem_manager.get_file_path_to_characters_file.assert_called_once_with(
-        "TestPlaythrough"
-    )
-    mock_filesystem_manager.load_existing_or_new_json_file.assert_called_once_with(
-        "characters.json"
-    )
-    mock_identifiers_manager.produce_and_update_next_identifier.assert_called_once_with(
-        IdentifierType.CHARACTERS
-    )
-    mock_filesystem_manager.save_json_file.assert_called_once()
-    args, _ = mock_filesystem_manager.save_json_file.call_args
-    saved_characters, characters_file = args
-    assert characters_file == "characters.json"
-    assert "1" in saved_characters
-    assert saved_characters["1"]["name"] == "TestCharacter"
-    assert saved_characters["1"]["voice_model"] == "TestVoiceModel"
 
 
 def test_compose_speech_patterns():

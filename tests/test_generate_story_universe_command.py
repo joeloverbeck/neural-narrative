@@ -9,8 +9,8 @@ from src.base.commands.generate_story_universe_command import (
 from src.base.constants import STORY_UNIVERSES_TEMPLATE_FILE
 from src.base.exceptions import StoryUniverseGenerationError
 from src.base.factories.story_universe_factory import StoryUniverseFactory
-from src.base.playthrough_name import RequiredString
 from src.base.products.story_universe_product import StoryUniverseProduct
+from src.base.required_string import RequiredString
 from src.filesystem.filesystem_manager import FilesystemManager
 
 

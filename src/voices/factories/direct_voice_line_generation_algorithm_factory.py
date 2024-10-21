@@ -1,3 +1,4 @@
+from src.base.required_string import RequiredString
 from src.voices.algorithms.direct_voice_line_generation_algorithm import (
     DirectVoiceLineGenerationAlgorithm,
 )
@@ -14,15 +15,10 @@ class DirectVoiceLineGenerationAlgorithmFactory:
 
     @staticmethod
     def create_algorithm(
-        character_name: str, text: str, voice_model: str
+            character_name: RequiredString,
+            text: RequiredString,
+            voice_model: RequiredString,
     ) -> DirectVoiceLineGenerationAlgorithm:
-        if not character_name:
-            raise ValueError("character_name can't be empty.")
-        if not text:
-            raise ValueError("text can't be empty.")
-        if not voice_model:
-            raise ValueError("voice_model can't be empty.")
-
         voice_line_file_name_provider_factory = VoiceLineFileNameProviderFactory(
             character_name, voice_model
         )

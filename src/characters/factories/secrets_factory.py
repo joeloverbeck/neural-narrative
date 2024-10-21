@@ -1,11 +1,15 @@
 from typing import Optional
 
-from src.base.constants import SECRETS_GENERATION_PROMPT_FILE, SECRETS_GENERATION_TOOL_FILE
+from src.base.constants import (
+    SECRETS_GENERATION_PROMPT_FILE,
+    SECRETS_GENERATION_TOOL_FILE,
+)
+from src.base.required_string import RequiredString
 from src.characters.character import Character
 from src.characters.character_memories import CharacterMemories
 from src.characters.products.secrets_product import SecretsProduct
 from src.filesystem.filesystem_manager import FilesystemManager
-from src.maps.factories.places_descriptions_factory import PlacesDescriptionsFactory
+from src.maps.providers.places_descriptions_provider import PlacesDescriptionsProvider
 from src.prompting.factories.produce_tool_response_strategy_factory import (
     ProduceToolResponseStrategyFactory,
 )
@@ -15,19 +19,14 @@ from src.prompting.providers.base_tool_response_provider import BaseToolResponse
 class SecretsFactory(BaseToolResponseProvider):
     def __init__(
         self,
-        playthrough_name: str,
-        character_identifier: str,
+        playthrough_name: RequiredString,
+        character_identifier: RequiredString,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
-        places_descriptions_factory: PlacesDescriptionsFactory,
+        places_descriptions_factory: PlacesDescriptionsProvider,
         filesystem_manager: Optional[FilesystemManager] = None,
         character_memories: Optional[CharacterMemories] = None,
     ):
         super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
-
-        if not playthrough_name:
-            raise ValueError("playthrough_name can't be empty.")
-        if not character_identifier:
-            raise ValueError("character_identifier can't be empty.")
 
         self._playthrough_name = playthrough_name
         self._character_identifier = character_identifier

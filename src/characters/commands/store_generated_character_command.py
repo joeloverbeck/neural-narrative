@@ -4,7 +4,7 @@ from typing import Optional
 from src.base.abstracts.command import Command
 from src.base.enums import IdentifierType
 from src.base.identifiers_manager import IdentifiersManager
-from src.base.playthrough_name import RequiredString
+from src.base.required_string import RequiredString
 from src.characters.character_data import CharacterDataForStorage
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.voices.algorithms.match_voice_data_to_voice_model_algorithm import (
@@ -37,7 +37,7 @@ class StoreGeneratedCharacterCommand(Command):
 
         self._filesystem_manager = filesystem_manager or FilesystemManager()
         self._identifiers_manager = identifiers_manager or IdentifiersManager(
-            self._playthrough_name.value
+            self._playthrough_name
         )
 
         try:
@@ -71,7 +71,7 @@ class StoreGeneratedCharacterCommand(Command):
     def execute(self) -> None:
         # Build the path to the characters.json file
         characters_file = self._filesystem_manager.get_file_path_to_characters_file(
-            self._playthrough_name.value
+            self._playthrough_name
         )
 
         characters = self._filesystem_manager.load_existing_or_new_json_file(
@@ -109,7 +109,7 @@ class StoreGeneratedCharacterCommand(Command):
                     self._character_data.voice_texture,
                     self._character_data.voice_tone,
                     self._character_data.voice_style,
-                    self._character_data.voice_personality,
+                    RequiredString(self._character_data.voice_personality),
                     self._character_data.voice_special_effects,
                 )
             ),

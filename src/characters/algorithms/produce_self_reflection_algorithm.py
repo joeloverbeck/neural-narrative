@@ -1,6 +1,7 @@
 import logging
 from typing import cast, Optional
 
+from src.base.required_string import RequiredString
 from src.characters.character import Character
 from src.characters.characters_manager import CharactersManager
 from src.characters.factories.self_reflection_factory import SelfReflectionFactory
@@ -19,8 +20,8 @@ logger = logging.getLogger(__name__)
 class ProduceSelfReflectionAlgorithm:
     def __init__(
         self,
-        playthrough_name: str,
-        character_identifier: str,
+        playthrough_name: RequiredString,
+        character_identifier: RequiredString,
         self_reflection_factory: SelfReflectionFactory,
         direct_voice_line_generation_algorithm_factory: DirectVoiceLineGenerationAlgorithmFactory,
         filesystem_manager: Optional[FilesystemManager] = None,
@@ -58,7 +59,7 @@ class ProduceSelfReflectionAlgorithm:
                 self._character_identifier,
                 character.name,
             ),
-            "\n" + product.get(),
+            RequiredString("\n" + product.get().value),
         )
 
         voice_line_file_name = (

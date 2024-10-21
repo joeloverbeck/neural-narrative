@@ -1,13 +1,13 @@
-from src.maps.abstracts.factory_products import RandomPlaceTypeMapEntryCreationResult
-from src.maps.enums import RandomPlaceTypeMapEntryCreationResultType
+from src.maps.abstracts.factory_products import RandomTemplateTypeMapEntryCreationResult
+from src.maps.enums import RandomTemplateTypeMapEntryCreationResultType
 
 
-class ConcreteRandomPlaceTypeMapEntryCreationResult(
-    RandomPlaceTypeMapEntryCreationResult
+class ConcreteRandomTemplateTypeMapEntryCreationResult(
+    RandomTemplateTypeMapEntryCreationResult
 ):
     def __init__(
         self,
-        random_place_type_map_entry_creation_result_type: RandomPlaceTypeMapEntryCreationResultType,
+            random_place_type_map_entry_creation_result_type: RandomTemplateTypeMapEntryCreationResultType,
         error: str = None,
     ):
         self._random_place_type_map_entry_creation_result_type = (
@@ -15,7 +15,7 @@ class ConcreteRandomPlaceTypeMapEntryCreationResult(
         )
         self._error = error
 
-    def get_result_type(self) -> RandomPlaceTypeMapEntryCreationResultType:
+    def get_result_type(self) -> RandomTemplateTypeMapEntryCreationResultType:
         return self._random_place_type_map_entry_creation_result_type
 
     def get_error(self) -> str:

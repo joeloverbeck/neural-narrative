@@ -1,6 +1,8 @@
 import logging
 from typing import List, Optional
 
+from src.base.required_string import RequiredString
+
 logger = logging.getLogger(__name__)
 
 
@@ -14,36 +16,18 @@ class Participants:
 
     def add_participant(
         self,
-        identifier: str,
-        name: str,
-        description: str,
-        personality: str,
-        equipment: str,
-        voice_model: str,
+        identifier: RequiredString,
+        name: RequiredString,
+        description: RequiredString,
+        personality: RequiredString,
+        equipment: RequiredString,
+        voice_model: RequiredString,
     ):
-        if not identifier:
-            raise ValueError("identifier must not be empty.")
-        if not isinstance(identifier, str):
-            raise ValueError(
-                f"Identifier must be string, but it was {type(identifier)}."
-            )
-
         # Check if the identifier can be converted to an int
         try:
-            int(identifier)
+            int(identifier.value)
         except ValueError:
             raise ValueError("identifier must be convertible to an integer.")
-
-        if not name:
-            raise ValueError("name must not be empty.")
-        if not description:
-            raise ValueError("description must not be empty.")
-        if not personality:
-            raise ValueError("personality must not be empty.")
-        if not equipment:
-            raise ValueError("equipment must not be empty.")
-        if not voice_model:
-            raise ValueError("voice_model can't be empty.")
 
         # I fund a bug in which the description received the value of name. Protect against that.
         if name == description:
@@ -69,9 +53,9 @@ class Participants:
     def number_of_participants(self) -> int:
         return len(self._participants)
 
-    def get_participant_keys(self) -> List[str]:
+    def get_participant_keys(self) -> List[RequiredString]:
         """Return a list of the string keys from the internal dictionary."""
-        return list(self._participants.keys())
+        return list(RequiredString(key) for key in self._participants.keys())
 
     def has_only_two_participants_with_player(self, player_identifier: str) -> bool:
         """

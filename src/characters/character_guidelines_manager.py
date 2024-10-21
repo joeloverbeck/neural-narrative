@@ -1,6 +1,7 @@
 from typing import Optional, Dict, List
 
 from src.base.constants import CHARACTER_GENERATION_GUIDELINES_FILE
+from src.base.required_string import RequiredString
 from src.filesystem.filesystem_manager import FilesystemManager
 
 
@@ -22,47 +23,68 @@ class CharacterGuidelinesManager:
         )
 
     @staticmethod
-    def create_key(world: str, region: str, area: str, location: str = None) -> str:
-        if not world or not region or not area:
-            raise ValueError("World, region, and area can't be empty.")
-        return (
-            f"{world}:{region}:{area}:{location}"
+    def create_key(
+            story_universe: RequiredString,
+            world: RequiredString,
+            region: RequiredString,
+            area: RequiredString,
+            location: Optional[RequiredString] = None,
+    ) -> RequiredString:
+        return RequiredString(
+            f"{story_universe.value}:{world.value}:{region.value}:{area.value}:{location.value}"
             if location
-            else f"{world}:{region}:{area}"
+            else f"{story_universe.value}:{world.value}:{region.value}:{area.value}"
         )
 
     def load_guidelines(
-        self, world: str, region: str, area: str, location: str = None
-    ) -> List[str]:
-        key = self.create_key(world, region, area, location)
+            self,
+            story_universe: RequiredString,
+            world: RequiredString,
+            region: RequiredString,
+            area: RequiredString,
+            location: Optional[RequiredString] = None,
+    ) -> List[RequiredString]:
+        key = self.create_key(story_universe, world, region, area, location)
 
-        if key not in self._guidelines_file:
-            raise ValueError(f"No guidelines found for key '{key}'.")
+        if key.value not in self._guidelines_file:
+            raise ValueError(f"No guidelines found for key '{key.value}'.")
 
-        return self._guidelines_file[key]
+        return [
+            RequiredString(guideline) for guideline in self._guidelines_file[key.value]
+        ]
 
     def save_guidelines(
         self,
-        world: str,
-        region: str,
-        area: str,
-        guidelines: List[str],
-        location: str = None,
+            story_universe: RequiredString,
+            world: RequiredString,
+            region: RequiredString,
+            area: RequiredString,
+            guidelines: List[RequiredString],
+            location: Optional[RequiredString] = None,
     ):
-        key = self.create_key(world, region, area, location)
+        key = self.create_key(story_universe, world, region, area, location)
 
         # Add to the previous guidelines instead of replacing them.
-        if key not in self._guidelines_file:
-            self._guidelines_file[key] = guidelines
+        if key.value not in self._guidelines_file:
+            self._guidelines_file[key.value] = [
+                guideline.value for guideline in guidelines
+            ]
         else:
             # There are already guidelines, so add to the existing ones.
-            self._guidelines_file[key].extend(guidelines)
+            self._guidelines_file[key.value].extend(
+                [guideline.value for guideline in guidelines]
+            )
 
         self._save_guidelines_file()
 
     def guidelines_exist(
-        self, world: str, region: str, area: str, location: str = None
+            self,
+            story_universe: RequiredString,
+            world: RequiredString,
+            region: RequiredString,
+            area: RequiredString,
+            location: Optional[RequiredString] = None,
     ) -> bool:
-        key = self.create_key(world, region, area, location)
+        key = self.create_key(story_universe, world, region, area, location)
 
-        return key in self._guidelines_file
+        return key.value in self._guidelines_file

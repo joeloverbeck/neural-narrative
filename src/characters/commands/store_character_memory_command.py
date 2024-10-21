@@ -1,6 +1,7 @@
 import logging
 
 from src.base.abstracts.command import Command
+from src.base.required_string import RequiredString
 from src.characters.character import Character
 from src.characters.characters_manager import CharactersManager
 from src.filesystem.filesystem_manager import FilesystemManager
@@ -11,17 +12,12 @@ logger = logging.getLogger(__name__)
 class StoreCharacterMemoryCommand(Command):
     def __init__(
         self,
-        playthrough_name: str,
-        character_identifier: str,
-        memory: str,
+        playthrough_name: RequiredString,
+        character_identifier: RequiredString,
+        memory: RequiredString,
         filesystem_manager: FilesystemManager = None,
         characters_manager: CharactersManager = None,
     ):
-        if not isinstance(character_identifier, str):
-            raise TypeError(
-                f"character_identifier should be a string, but it was {type(character_identifier)}."
-            )
-
         self._playthrough_name = playthrough_name
         self._character_identifier = character_identifier
         self._memory = memory
@@ -39,7 +35,7 @@ class StoreCharacterMemoryCommand(Command):
         )
 
         self._filesystem_manager.append_to_file(
-            file_path, "\n" + self._memory.replace("\n\n", " ")
+            file_path, RequiredString("\n" + self._memory.value.replace("\n\n", " "))
         )
 
         logger.info(f"Saved memory at '{file_path}'.")

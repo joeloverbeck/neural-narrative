@@ -17,7 +17,7 @@ from src.base.constants import (
     WORLD_GENERATION_TOOL_FILE,
 )
 from src.base.enums import TemplateType
-from src.base.playthrough_name import RequiredString
+from src.base.required_string import RequiredString
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.template_type_data import TemplateTypeData
 from src.prompting.abstracts.abstract_factories import ToolResponseProvider
@@ -102,7 +102,7 @@ class PlaceGenerationToolResponseProvider(
         }
         return data_mapping.get(self._template_type)
 
-    def get_prompt_file(self) -> str:
+    def get_prompt_file(self) -> RequiredString:
         template_data = self._get_template_type_data()
 
         if not template_data:
@@ -131,7 +131,7 @@ class PlaceGenerationToolResponseProvider(
             "current_place_type_names": list(current_place_type_templates.keys()),
         }
 
-    def get_tool_file(self) -> str:
+    def get_tool_file(self) -> RequiredString:
         template_data = self._get_template_type_data()
 
         return template_data.tool_file

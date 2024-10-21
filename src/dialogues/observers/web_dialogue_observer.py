@@ -3,6 +3,7 @@ from typing import List
 from flask import session
 
 from src.base.abstracts.observer import Observer
+from src.base.required_string import RequiredString
 from src.characters.characters_manager import CharactersManager
 from src.services.web_service import WebService
 from src.voices.factories.direct_voice_line_generation_algorithm_factory import (
@@ -25,7 +26,9 @@ class WebDialogueObserver(Observer):
         file_url = None
 
         if file_name:
-            file_url = WebService.get_file_url("voice_lines", file_name)
+            file_url = WebService.get_file_url(
+                RequiredString("voice_lines"), RequiredString(file_name)
+            )
 
         # Append the message with the file path
         self._messages.append(

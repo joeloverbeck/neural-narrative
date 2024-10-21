@@ -1,3 +1,6 @@
+import logging
+
+from src.base.required_string import RequiredString
 from src.characters.commands.generate_character_command import GenerateCharacterCommand
 from src.characters.enums import CharacterGenerationType
 from src.characters.factories.automatic_user_content_for_character_generation_factory import (
@@ -19,25 +22,33 @@ from src.images.factories.generate_character_image_command_factory import (
     GenerateCharacterImageCommandFactory,
 )
 from src.maps.places_templates_parameter import PlacesTemplatesParameter
+from src.movements.movement_manager import MovementManager
+from src.prompting.factories.character_generation_instructions_formatter_factory import (
+    CharacterGenerationInstructionsFormatterFactory,
+)
 from src.prompting.factories.produce_tool_response_strategy_factory import (
     ProduceToolResponseStrategyFactory,
 )
+
+logger = logging.getLogger(__name__)
 
 
 class GenerateCharacterCommandFactory:
 
     def __init__(
         self,
-        playthrough_name: str,
+            playthrough_name: RequiredString,
+            character_generation_instructions_formatter_factory: CharacterGenerationInstructionsFormatterFactory,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         speech_patterns_provider_factory: SpeechPatternsProviderFactory,
         store_generate_character_command_factory: StoreGeneratedCharacterCommandFactory,
         generate_character_image_command_factory: GenerateCharacterImageCommandFactory,
+            movement_manager: MovementManager,
     ):
-        if not playthrough_name:
-            raise ValueError("playthrough_name can't be empty.")
-
         self._playthrough_name = playthrough_name
+        self._character_generation_instructions_formatter_factory = (
+            character_generation_instructions_formatter_factory
+        )
         self._produce_tool_response_strategy_factory = (
             produce_tool_response_strategy_factory
         )
@@ -48,6 +59,7 @@ class GenerateCharacterCommandFactory:
         self._generate_character_image_command_factory = (
             generate_character_image_command_factory
         )
+        self._movement_manager = movement_manager
 
     def create_generate_character_command(
         self,
@@ -68,11 +80,13 @@ class GenerateCharacterCommandFactory:
                     self._playthrough_name,
                     self._produce_tool_response_strategy_factory,
                     AutomaticUserContentForCharacterGenerationFactory(),
+                    self._character_generation_instructions_formatter_factory,
                 ).create_response_provider(places_templates_parameter),
                 self._speech_patterns_provider_factory,
                 self._store_generate_character_command_factory,
                 self._generate_character_image_command_factory,
                 place_character_at_current_place,
+                self._movement_manager,
             )
 
         if character_generation_type == CharacterGenerationType.PLAYER_GUIDED:
@@ -82,11 +96,13 @@ class GenerateCharacterCommandFactory:
                     self._playthrough_name,
                     self._produce_tool_response_strategy_factory,
                     PlayerGuidedUserContentForCharacterGenerationFactory(user_content),
+                    self._character_generation_instructions_formatter_factory,
                 ).create_response_provider(places_templates_parameter),
                 self._speech_patterns_provider_factory,
                 self._store_generate_character_command_factory,
                 self._generate_character_image_command_factory,
                 place_character_at_current_place,
+                self._movement_manager,
             )
 
         raise ValueError(f"Not implemented for case '{character_generation_type}'.")

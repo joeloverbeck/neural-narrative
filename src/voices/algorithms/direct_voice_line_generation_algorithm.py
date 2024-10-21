@@ -4,6 +4,7 @@ import time
 from typing import Optional
 
 from src.base.exceptions import VoiceLineGenerationError
+from src.base.required_string import RequiredString
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.requests.requests_manager import RequestsManager
 from src.voices.configs.voice_part_provider_config import VoicePartProviderConfig
@@ -18,7 +19,7 @@ logger = logging.getLogger(__name__)
 class DirectVoiceLineGenerationAlgorithm:
     def __init__(
         self,
-        text: str,
+            text: RequiredString,
         voice_part_provider_factory: VoicePartProviderFactory,
         voice_line_file_name_provider_factory: VoiceLineFileNameProviderFactory,
         requests_manager: Optional[RequestsManager] = None,
@@ -46,7 +47,7 @@ class DirectVoiceLineGenerationAlgorithm:
             return None
 
         # Split text into parts
-        parts = re.split(r"(\*.*?\*)", self._text)
+        parts = re.split(r"(\*.*?\*)", self._text.value)
 
         parts = [part for part in parts if part]
 
@@ -55,7 +56,7 @@ class DirectVoiceLineGenerationAlgorithm:
 
         # Directory to store temporary files
         temp_dir = self._filesystem_manager.get_temporary_folder_to_store_voice_parts(
-            timestamp
+            RequiredString(timestamp)
         )
 
         for index, part in enumerate(parts):

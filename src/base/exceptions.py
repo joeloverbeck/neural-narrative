@@ -2,7 +2,7 @@ class PlaythroughAlreadyExistsError(Exception):
     pass
 
 
-class WorldTemplateNotFoundError(Exception):
+class StoryUniverseTemplateNotFoundError(Exception):
     pass
 
 

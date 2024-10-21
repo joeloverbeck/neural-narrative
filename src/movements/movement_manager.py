@@ -1,8 +1,9 @@
 import logging
 
 from src.base.playthrough_manager import PlaythroughManager
+from src.base.required_string import RequiredString
 from src.filesystem.filesystem_manager import FilesystemManager
-from src.maps.map_manager import MapManager
+from src.maps.factories.place_manager_factory import PlaceManagerFactory
 
 logger = logging.getLogger(__name__)
 
@@ -10,26 +11,20 @@ logger = logging.getLogger(__name__)
 class MovementManager:
     def __init__(
         self,
-        playthrough_name: str,
+            playthrough_name: RequiredString,
+            place_manager_factory: PlaceManagerFactory,
         playthrough_manager: PlaythroughManager = None,
         filesystem_manager: FilesystemManager = None,
-        map_manager: MapManager = None,
     ):
-        if not playthrough_name:
-            raise ValueError("playthrough_name can't be empty.")
-
         self._playthrough_name = playthrough_name
+        self._place_manager_factory = place_manager_factory
 
         self._playthrough_manager = playthrough_manager or PlaythroughManager(
             self._playthrough_name
         )
         self._filesystem_manager = filesystem_manager or FilesystemManager()
-        self._map_manager = map_manager or MapManager(self._playthrough_name)
 
-    def place_character_at_current_place(self, player_identifier: str):
-        if not player_identifier:
-            raise ValueError("player_identifier must not be empty.")
-
+    def place_character_at_current_place(self, player_identifier: RequiredString):
         current_place = self._playthrough_manager.get_current_place_identifier()
 
         # Must now include the character identifier at current place
@@ -94,8 +89,9 @@ class MovementManager:
         self._playthrough_manager.add_follower(character_identifier)
 
         # Now we need to remove this character identifier from its current place.
-        self._map_manager.remove_character_from_place(
-            character_identifier, current_place_identifier
+        self._place_manager_factory.create_place_manager().remove_character_from_place(
+            RequiredString(character_identifier),
+            RequiredString(current_place_identifier),
         )
 
     def remove_follower(self, character_identifier: str, current_place_identifier: str):

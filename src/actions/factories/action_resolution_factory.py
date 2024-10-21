@@ -3,12 +3,12 @@
 from typing import Optional
 
 from src.actions.products.action_resolution_product import ActionResolutionProduct
-from src.base.playthrough_name import RequiredString
+from src.base.required_string import RequiredString
 from src.characters.factories.player_and_followers_information_factory import (
     PlayerAndFollowersInformationFactory,
 )
 from src.filesystem.filesystem_manager import FilesystemManager
-from src.maps.factories.places_descriptions_factory import PlacesDescriptionsFactory
+from src.maps.providers.places_descriptions_provider import PlacesDescriptionsProvider
 from src.prompting.factories.produce_tool_response_strategy_factory import (
     ProduceToolResponseStrategyFactory,
 )
@@ -23,7 +23,7 @@ class ActionResolutionFactory(BaseToolResponseProvider):
         action_name: str,
         action_goal: str,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
-        places_descriptions_factory: PlacesDescriptionsFactory,
+            places_descriptions_factory: PlacesDescriptionsProvider,
         players_and_followers_information_factory: PlayerAndFollowersInformationFactory,
         prompt_file: str,
         tool_file: str,
@@ -49,7 +49,7 @@ class ActionResolutionFactory(BaseToolResponseProvider):
         self._prompt_file = prompt_file
         self._tool_file = tool_file
 
-        self._time_manager = time_manager or TimeManager(self._playthrough_name.value)
+        self._time_manager = time_manager or TimeManager(self._playthrough_name)
 
     def get_prompt_file(self) -> str:
         return self._prompt_file

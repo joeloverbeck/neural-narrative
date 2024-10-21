@@ -1,4 +1,7 @@
+from typing import Optional
+
 from src.base.constants import DIALOGUE_PROMPT_FILE
+from src.base.required_string import RequiredString
 from src.characters.character import Character
 from src.characters.factories.character_information_provider import (
     CharacterInformationProvider,
@@ -8,15 +11,15 @@ from src.dialogues.participants import Participants
 from src.dialogues.strategies.concrete_prompt_formatter_for_dialogue_strategy import (
     ConcretePromptFormatterForDialogueStrategy,
 )
-from src.maps.factories.places_descriptions_factory import PlacesDescriptionsFactory
+from src.maps.providers.places_descriptions_provider import PlacesDescriptionsProvider
 
 
 class PromptFormatterForDialogueStrategyFactory:
     def __init__(
         self,
-        playthrough_name: str,
-        purpose: str,
-        places_descriptions_factory: PlacesDescriptionsFactory,
+        playthrough_name: RequiredString,
+        purpose: Optional[RequiredString],
+        places_descriptions_factory: PlacesDescriptionsProvider,
     ):
         if not playthrough_name:
             raise ValueError("playthrough_name can't be empty.")
@@ -26,14 +29,14 @@ class PromptFormatterForDialogueStrategyFactory:
         self._places_descriptions_factory = places_descriptions_factory
 
     def create_prompt_formatter_for_dialogue_strategy_factory(
-        self, participants: Participants, character: Character, memories: str
+        self, participants: Participants, character: Character
     ) -> PromptFormatterForDialogueStrategy:
         return ConcretePromptFormatterForDialogueStrategy(
             self._playthrough_name,
             participants,
             self._purpose,
-            character.name,
+            RequiredString(character.name),
             CharacterInformationProvider(self._playthrough_name, character.identifier),
-            DIALOGUE_PROMPT_FILE,
+            RequiredString(DIALOGUE_PROMPT_FILE),
             self._places_descriptions_factory,
         )

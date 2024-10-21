@@ -2,6 +2,7 @@ import logging
 import random
 
 from src.base.playthrough_manager import PlaythroughManager
+from src.base.required_string import RequiredString
 from src.dialogues.participants import Participants
 
 logger = logging.getLogger(__name__)
@@ -10,7 +11,7 @@ logger = logging.getLogger(__name__)
 class PreventLlmFromChoosingPlayerAsNextSpeakerStrategy:
     def __init__(
         self,
-        playthrough_name: str,
+        playthrough_name: RequiredString,
         participants: Participants,
         playthrough_manager: PlaythroughManager = None,
     ):

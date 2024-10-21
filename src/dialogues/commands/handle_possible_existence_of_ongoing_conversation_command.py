@@ -1,6 +1,7 @@
 import os
 
 from src.base.abstracts.command import Command
+from src.base.required_string import RequiredString
 from src.dialogues.abstracts.strategies import ChooseParticipantsStrategy
 from src.dialogues.dialogue_manager import DialogueManager
 from src.dialogues.factories.load_data_from_ongoing_dialogue_command_factory import (
@@ -15,8 +16,8 @@ from src.filesystem.filesystem_manager import FilesystemManager
 class HandlePossibleExistenceOfOngoingConversationCommand(Command):
     def __init__(
         self,
-        playthrough_name: str,
-        player_identifier: str,
+            playthrough_name: RequiredString,
+            player_identifier: RequiredString,
         participants: Participants,
         messages_to_llm: MessagesToLlm,
         transcription: Transcription,
@@ -52,7 +53,7 @@ class HandlePossibleExistenceOfOngoingConversationCommand(Command):
         )
 
         if os.path.exists(
-            ongoing_dialogue_path
+                ongoing_dialogue_path.value
         ) and "participants" in self._filesystem_manager.load_existing_or_new_json_file(
             ongoing_dialogue_path
         ):

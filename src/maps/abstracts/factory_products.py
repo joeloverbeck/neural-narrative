@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import Protocol
 
-from src.maps.enums import RandomPlaceTypeMapEntryCreationResultType
+from src.base.required_string import RequiredString
+from src.maps.enums import RandomTemplateTypeMapEntryCreationResultType
 
 
 class PlaceDataProduct(ABC):
@@ -33,7 +34,7 @@ class CurrentPlaceProduct(ABC):
 
 
 class PlaceTemplateProduct(Protocol):
-    def get(self) -> str:
+    def get(self) -> RequiredString:
         pass
 
     def is_valid(self) -> bool:
@@ -54,9 +55,9 @@ class FullPlaceDataProduct(Protocol):
         pass
 
 
-class RandomPlaceTypeMapEntryCreationResult(Protocol):
+class RandomTemplateTypeMapEntryCreationResult(Protocol):
 
-    def get_result_type(self) -> RandomPlaceTypeMapEntryCreationResultType:
+    def get_result_type(self) -> RandomTemplateTypeMapEntryCreationResultType:
         pass
 
     def get_error(self) -> str:

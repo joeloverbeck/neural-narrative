@@ -3,6 +3,7 @@ from typing import List, Optional
 from src.base.abstracts.command import Command
 from src.base.abstracts.observer import Observer
 from src.base.abstracts.subject import Subject
+from src.base.required_string import RequiredString
 from src.characters.character import Character
 from src.characters.characters_manager import CharactersManager
 from src.dialogues.abstracts.factory_products import PlayerInputProduct
@@ -16,18 +17,13 @@ class IntroducePlayerInputIntoDialogueCommand(Command, Subject):
 
     def __init__(
         self,
-        playthrough_name: str,
-        player_identifier: Optional[str],
+            playthrough_name: RequiredString,
+            player_identifier: Optional[RequiredString],
         player_input_product: PlayerInputProduct,
         transcription: Transcription,
         message_data_producer_for_introduce_player_input_into_dialogue_strategy: MessageDataProducerForIntroducePlayerInputIntoDialogueStrategy,
         characters_manager: CharactersManager = None,
     ):
-        if player_identifier and not isinstance(player_identifier, str):
-            raise TypeError(
-                f"passed a player identifier that was a {type(player_identifier)}"
-            )
-
         self._playthrough_name = playthrough_name
         self._player_identifier = player_identifier
         self._player_input_product = player_input_product

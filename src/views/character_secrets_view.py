@@ -1,6 +1,7 @@
 from flask import session, redirect, url_for, render_template, request
 from flask.views import MethodView
 
+from src.base.required_string import RequiredString
 from src.characters.character import Character
 from src.characters.characters_manager import CharactersManager
 from src.characters.commands.generate_character_secrets_command import (
@@ -8,10 +9,9 @@ from src.characters.commands.generate_character_secrets_command import (
 )
 from src.characters.factories.secrets_factory import SecretsFactory
 from src.config.config_manager import ConfigManager
-from src.maps.factories.place_descriptions_for_prompt_factory import (
-    PlaceDescriptionsForPromptFactory,
+from src.maps.composers.places_descriptions_provider_composer import (
+    PlacesDescriptionsProviderComposer,
 )
-from src.maps.factories.places_descriptions_factory import PlacesDescriptionsFactory
 from src.prompting.factories.openrouter_llm_client_factory import (
     OpenRouterLlmClientFactory,
 )
@@ -29,7 +29,9 @@ class CharacterSecretsView(MethodView):
         characters_manager = CharactersManager(playthrough_name)
         all_characters = characters_manager.get_all_characters()
 
-        selected_character_identifier = request.args.get("character_identifier")
+        selected_character_identifier = RequiredString(
+            request.args.get("character_identifier")
+        )
         selected_character = None
 
         # Retrieve any success or error messages from the session
@@ -72,22 +74,19 @@ class CharacterSecretsView(MethodView):
                         ConfigManager().get_heavy_llm(),
                     )
                 )
-                place_descriptions_factory = PlaceDescriptionsForPromptFactory(
-                    playthrough_name
-                )
-
-                places_descriptions_factory = PlacesDescriptionsFactory(
-                    place_descriptions_factory
-                )
 
                 secrets_factory = SecretsFactory(
                     playthrough_name,
-                    character_identifier,
+                    RequiredString(character_identifier),
                     produce_tool_response_strategy_factory,
-                    places_descriptions_factory,
+                    PlacesDescriptionsProviderComposer(
+                        RequiredString(playthrough_name)
+                    ).compose_provider(),
                 )
                 command = GenerateCharacterSecretsCommand(
-                    playthrough_name, character_identifier, secrets_factory
+                    playthrough_name,
+                    RequiredString(character_identifier),
+                    secrets_factory,
                 )
                 # Execute the command to generate secrets
                 try:

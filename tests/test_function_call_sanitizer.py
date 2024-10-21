@@ -1,5 +1,6 @@
 import pytest
 
+from src.base.required_string import RequiredString
 from src.prompting.function_call_sanitizer import FunctionCallSanitizer
 
 
@@ -21,7 +22,7 @@ from src.prompting.function_call_sanitizer import FunctionCallSanitizer
     ],
 )
 def test_fix_tool_call(response, expected_response):
-    provider = FunctionCallSanitizer(response)
+    provider = FunctionCallSanitizer(RequiredString(response))
 
     assert provider.sanitize() == expected_response
 
@@ -65,7 +66,7 @@ def test_sanitize_response():
         "with representatives from each of the region's major clans.\"}</function>"
     )
 
-    parser = FunctionCallSanitizer(response)
+    parser = FunctionCallSanitizer(RequiredString(response))
 
     assert parser.sanitize() == expected_output
 
@@ -74,7 +75,7 @@ def test_no_fix_needed():
     response = '<function=generate_region>{"name": "Nexoria", "description": "This is correct."}</function>'
     expected_output = response
 
-    parser = parser = FunctionCallSanitizer(response)
+    parser = parser = FunctionCallSanitizer(RequiredString(response))
 
     assert parser.sanitize() == expected_output
 
@@ -88,7 +89,7 @@ def test_function_call_sanitizer_handles_incorrect_closing_tag():
     function_call_input = """<function=generate_interesting_situations>{"interesting_situations": ["Audrey discovers that Alain's family emergency was a ruse and he is actually on a secret mission, putting her in a position to help him despite their complicated past.", "Alain returns home early and overhears the conversation between Audrey and Luc, leading to an emotional confrontation and difficult choices for all three characters.", "Luc, feeling threatened by Audrey's presence and her history with Alain, starts scheming to drive a wedge between them permanently.", "Audrey uncovers a hidden secret about Luc that could change everything, forcing her to decide whether to use this information to win back Alain or to do the right thing.", "An unexpected event forces Audrey, Alain, and Luc to work together, testing their loyalty and feelings for each other in a high-stakes situation."]}[/function]"""
 
     # Create an instance of FunctionCallSanitizer
-    sanitizer = FunctionCallSanitizer(function_call_input)
+    sanitizer = FunctionCallSanitizer(RequiredString(function_call_input))
 
     # Sanitize the function call
     sanitized_output = sanitizer.sanitize()
@@ -123,7 +124,7 @@ def test_sanitize_replaces_self_closing_function_tag_at_end():
     input_function_call = '<function=generate_story_concepts>{"concepts": ["Story1", "Story2"]}<function/>'
     expected_output = '<function=generate_story_concepts>{"concepts": ["Story1", "Story2"]}</function>'
 
-    sanitizer = FunctionCallSanitizer(input_function_call)
+    sanitizer = FunctionCallSanitizer(RequiredString(input_function_call))
     sanitized_output = sanitizer.sanitize()
 
     assert sanitized_output == expected_output
@@ -133,7 +134,7 @@ def test_sanitize_does_not_replace_self_closing_function_tag_in_middle():
     input_function_call = '<function=generate_story_concepts><function/>{"concepts": ["Story1", "Story2"]}</function>'
     expected_output = input_function_call  # Should remain unchanged
 
-    sanitizer = FunctionCallSanitizer(input_function_call)
+    sanitizer = FunctionCallSanitizer(RequiredString(input_function_call))
     sanitized_output = sanitizer.sanitize()
 
     assert sanitized_output == expected_output
@@ -143,7 +144,7 @@ def test_sanitize_does_not_modify_correct_closing_tag():
     input_function_call = '<function=generate_story_concepts>{"concepts": ["Story1", "Story2"]}</function>'
     expected_output = input_function_call  # Should remain unchanged
 
-    sanitizer = FunctionCallSanitizer(input_function_call)
+    sanitizer = FunctionCallSanitizer(RequiredString(input_function_call))
     sanitized_output = sanitizer.sanitize()
 
     assert sanitized_output == expected_output
@@ -155,7 +156,7 @@ def test_sanitize_fixes_closing_tag_without_lt():
     )
     expected_output = '<function=generate_story_concepts>{"concepts": ["Story1", "Story2"]}</function>'
 
-    sanitizer = FunctionCallSanitizer(input_function_call)
+    sanitizer = FunctionCallSanitizer(RequiredString(input_function_call))
     sanitized_output = sanitizer.sanitize()
 
     assert sanitized_output == expected_output
@@ -166,7 +167,7 @@ def test_sanitize_large_input_with_self_closing_tag_at_end():
 
     expected_output = input_function_call.replace("<function/>", "</function>")
 
-    sanitizer = FunctionCallSanitizer(input_function_call)
+    sanitizer = FunctionCallSanitizer(RequiredString(input_function_call))
     sanitized_output = sanitizer.sanitize()
 
     assert sanitized_output.endswith("</function>")
@@ -176,14 +177,14 @@ def test_sanitize_large_input_with_self_closing_tag_at_end():
 def test_incorrect_closing_tag_replaced():
     function_call = '<function=some_function>{"key": "value"}<function>'
     expected_output = '<function=some_function>{"key": "value"}</function>'
-    sanitizer = FunctionCallSanitizer(function_call)
+    sanitizer = FunctionCallSanitizer(RequiredString(function_call))
     sanitized_output = sanitizer.sanitize()
     assert sanitized_output == expected_output
 
 
 def test_correct_function_call_unchanged():
     function_call = '<function=some_function>{"key": "value"}</function>'
-    sanitizer = FunctionCallSanitizer(function_call)
+    sanitizer = FunctionCallSanitizer(RequiredString(function_call))
     sanitized_output = sanitizer.sanitize()
     assert sanitized_output == function_call
 
@@ -191,7 +192,7 @@ def test_correct_function_call_unchanged():
 def test_incorrect_closing_tag_square_brackets():
     function_call = '<function=some_function>{"key": "value"}[/function]'
     expected_output = '<function=some_function>{"key": "value"}</function>'
-    sanitizer = FunctionCallSanitizer(function_call)
+    sanitizer = FunctionCallSanitizer(RequiredString(function_call))
     sanitized_output = sanitizer.sanitize()
     assert sanitized_output == expected_output
 
@@ -199,7 +200,7 @@ def test_incorrect_closing_tag_square_brackets():
 def test_extra_closing_braces_before_closing_tag():
     function_call = '<function=some_function>{"key": "value"}}}</function>'
     expected_output = '<function=some_function>{"key": "value"}</function>'
-    sanitizer = FunctionCallSanitizer(function_call)
+    sanitizer = FunctionCallSanitizer(RequiredString(function_call))
     sanitized_output = sanitizer.sanitize()
     assert sanitized_output == expected_output
 
@@ -207,7 +208,7 @@ def test_extra_closing_braces_before_closing_tag():
 def test_single_quotes_replaced_with_double_quotes():
     function_call = "<function=some_function>{'key': 'value'}</function>"
     expected_output = '<function=some_function>{"key": "value"}</function>'
-    sanitizer = FunctionCallSanitizer(function_call)
+    sanitizer = FunctionCallSanitizer(RequiredString(function_call))
     sanitized_output = sanitizer.sanitize()
     assert sanitized_output == expected_output
 
@@ -215,7 +216,7 @@ def test_single_quotes_replaced_with_double_quotes():
 def test_self_closing_function_tag_at_end_replaced():
     function_call = '<function=some_function>{"key": "value"}<function />'
     expected_output = '<function=some_function>{"key": "value"}</function>'
-    sanitizer = FunctionCallSanitizer(function_call)
+    sanitizer = FunctionCallSanitizer(RequiredString(function_call))
     sanitized_output = sanitizer.sanitize()
     assert sanitized_output == expected_output
 
@@ -223,7 +224,7 @@ def test_self_closing_function_tag_at_end_replaced():
 def test_remove_extra_spaces_between_tags():
     function_call = '   <function=some_function>   {"key": "value"}   </function>   '
     expected_output = '<function=some_function>{"key": "value"}</function>'
-    sanitizer = FunctionCallSanitizer(function_call)
+    sanitizer = FunctionCallSanitizer(RequiredString(function_call))
     sanitized_output = sanitizer.sanitize()
     assert sanitized_output == expected_output
 
@@ -231,7 +232,7 @@ def test_remove_extra_spaces_between_tags():
 def test_remove_line_breaks():
     function_call = '<function=some_function>\n{"key": "value"}\n</function>'
     expected_output = '<function=some_function>{"key": "value"}</function>'
-    sanitizer = FunctionCallSanitizer(function_call)
+    sanitizer = FunctionCallSanitizer(RequiredString(function_call))
     sanitized_output = sanitizer.sanitize()
     assert sanitized_output == expected_output
 
@@ -239,7 +240,7 @@ def test_remove_line_breaks():
 def test_incorrect_closing_tag_with_extra_characters():
     function_call = '<function=some_function>{"key": "value"}some_extra_text</function>'
     expected_output = '<function=some_function>{"key": "value"}</function>'
-    sanitizer = FunctionCallSanitizer(function_call)
+    sanitizer = FunctionCallSanitizer(RequiredString(function_call))
     sanitized_output = sanitizer.sanitize()
     assert sanitized_output == expected_output
 
@@ -247,7 +248,7 @@ def test_incorrect_closing_tag_with_extra_characters():
 def test_missing_opening_function_tag():
     function_call = '{"key": "value"}</function>'
     expected_output = '{"key": "value"}</function>'
-    sanitizer = FunctionCallSanitizer(function_call)
+    sanitizer = FunctionCallSanitizer(RequiredString(function_call))
     sanitized_output = sanitizer.sanitize()
     assert sanitized_output == function_call  # Should remain unchanged
 
@@ -255,7 +256,7 @@ def test_missing_opening_function_tag():
 def test_missing_closing_function_tag():
     function_call = '<function=some_function>{"key": "value"}'
     expected_output = '<function=some_function>{"key": "value"}</function>'
-    sanitizer = FunctionCallSanitizer(function_call)
+    sanitizer = FunctionCallSanitizer(RequiredString(function_call))
     sanitized_output = sanitizer.sanitize()
     assert sanitized_output == expected_output  # Should add closing tag
 
@@ -263,7 +264,7 @@ def test_missing_closing_function_tag():
 def test_fix_closing_function_tag_without_lt_or_slash():
     function_call = '<function=some_function>{"key": "value"}function>'
     expected_output = '<function=some_function>{"key": "value"}</function>'
-    sanitizer = FunctionCallSanitizer(function_call)
+    sanitizer = FunctionCallSanitizer(RequiredString(function_call))
     sanitized_output = sanitizer.sanitize()
     assert sanitized_output == expected_output
 
@@ -271,7 +272,7 @@ def test_fix_closing_function_tag_without_lt_or_slash():
 def test_no_match_inside_function_name():
     function_call = '<function=some_function_name>{"key": "value"}<function>'
     expected_output = '<function=some_function_name>{"key": "value"}</function>'
-    sanitizer = FunctionCallSanitizer(function_call)
+    sanitizer = FunctionCallSanitizer(RequiredString(function_call))
     sanitized_output = sanitizer.sanitize()
     assert sanitized_output == expected_output
 
@@ -279,14 +280,14 @@ def test_no_match_inside_function_name():
 def test_closing_tag_without_lt_or_slash():
     function_call = '<function=some_function>{"key": "value"}function>'
     expected_output = '<function=some_function>{"key": "value"}</function>'
-    sanitizer = FunctionCallSanitizer(function_call)
+    sanitizer = FunctionCallSanitizer(RequiredString(function_call))
     sanitized_output = sanitizer.sanitize()
     assert sanitized_output == expected_output
 
 
 def test_single_quoted_list_items():
     input_function_call = "<function=generate_story_concepts>{\"concepts\": [\"In a world where magic is a distant memory, Roran Wainwright stumbles upon an ancient artifact that grants him extraordinary powers. As he navigates the treacherous political landscape of Mythalia, Roran must confront the dark secrets of his past and decide whether to use his newfound abilities for personal gain or to protect the innocent. Along the way, he forges unlikely alliances and uncovers a sinister plot that threatens to plunge the world into chaos.\", 'When a series of mysterious disappearances rocks the coastal town of Siren\\'s Respite, Roran Wainwright finds himself at the center of a chilling mystery. As he delves deeper into the town\\'s dark underbelly, he discovers a hidden world of supernatural creatures and ancient evils lurking just beneath the surface. With the help of a motley crew of allies, including a battle-scarred dwarf and a disillusioned paladin, Roran must race against time to uncover the truth and save the town from an unspeakable fate.', \"In the aftermath of a devastating war, Roran Wainwright stumbles upon a secret society dedicated to the preservation of Mythalia's magical heritage. As he immerses himself in this hidden world, Roran discovers a talent for the arcane arts and sets out on a quest to restore magic to the land. But as he delves deeper into the mysteries of the past, Roran realizes that the price of power may be higher than he ever imagined, and that the key to saving the future may lie in the shadows of his own shattered heart.\", 'When a chance encounter with a mysterious stranger leaves Roran Wainwright in possession of a powerful artifact, he finds himself drawn into a centuries-old conflict between rival factions vying for control of Mythalia\\'s most precious resources. As he navigates the treacherous waters of this high-stakes game, Roran must decide where his loyalties lie and whether he is willing to sacrifice everything he holds dear in the pursuit of power and revenge.',\"In a world where the lines between magic and technology are blurring, Roran Wainwright stumbles upon a hidden workshop filled with wondrous inventions and arcane devices. As he delves deeper into the secrets of this forgotten place, Roran discovers a talent for tinkering and sets out to create something truly extraordinary. But as his creations begin to attract the attention of powerful forces, Roran must navigate a dangerous web of alliances and betrayals to protect his work and the people he loves. Along the way, he discovers that the true power of invention lies not in the devices themselves, but in the hearts and minds of those who create them.\"]}</function>"
-    sanitizer = FunctionCallSanitizer(input_function_call)
+    sanitizer = FunctionCallSanitizer(RequiredString(input_function_call))
     sanitized_output = sanitizer.sanitize()
 
     # Extract the JSON content from the sanitized output
@@ -314,7 +315,7 @@ def test_single_quoted_list_items():
 
 def test_mixed_quotes_and_escape_characters():
     input_function_call = "<function=echo_input>{'text': 'He said, \\'Hello, World!\\'', 'count': 1}</function>"
-    sanitizer = FunctionCallSanitizer(input_function_call)
+    sanitizer = FunctionCallSanitizer(RequiredString(input_function_call))
     sanitized_output = sanitizer.sanitize()
 
     # Extract and parse the JSON content
@@ -333,7 +334,7 @@ def test_double_quoted_strings():
     input_function_call = (
         '<function=process>{"message": "All systems operational."}</function>'
     )
-    sanitizer = FunctionCallSanitizer(input_function_call)
+    sanitizer = FunctionCallSanitizer(RequiredString(input_function_call))
     sanitized_output = sanitizer.sanitize()
 
     # Extract and parse the JSON content
@@ -350,13 +351,7 @@ def test_double_quoted_strings():
 def test_empty_function_call():
     input_function_call = ""
     with pytest.raises(ValueError):
-        FunctionCallSanitizer(input_function_call)
-
-
-def test_none_function_call():
-    input_function_call = None
-    with pytest.raises(ValueError):
-        FunctionCallSanitizer(input_function_call)
+        FunctionCallSanitizer(RequiredString(input_function_call))
 
 
 def test_sanitizer_removes_incorrect_function_closing_tag():
@@ -400,7 +395,7 @@ def test_sanitizer_removes_incorrect_function_closing_tag():
     expected_output = function_call.replace("/function</function>", "</function>")
 
     # Initialize the sanitizer with the test input
-    sanitizer = FunctionCallSanitizer(function_call)
+    sanitizer = FunctionCallSanitizer(RequiredString(function_call))
 
     # Sanitize the function call
     sanitized_output = sanitizer.sanitize()
@@ -412,7 +407,7 @@ def test_sanitizer_removes_incorrect_function_closing_tag():
 def test_sanitizer_handles_multiple_incorrect_closing_tags():
     function_call = '<function=my_func>{"key": "value"}/function</function>'
     expected_output = '<function=my_func>{"key": "value"}</function>'
-    sanitizer = FunctionCallSanitizer(function_call)
+    sanitizer = FunctionCallSanitizer(RequiredString(function_call))
     sanitized_output = sanitizer.sanitize()
     assert sanitized_output == expected_output
 
@@ -420,7 +415,7 @@ def test_sanitizer_handles_multiple_incorrect_closing_tags():
 def test_sanitizer_adds_missing_closing_tag():
     function_call = '<function=my_func>{"key": "value"}'
     expected_output = '<function=my_func>{"key": "value"}</function>'
-    sanitizer = FunctionCallSanitizer(function_call)
+    sanitizer = FunctionCallSanitizer(RequiredString(function_call))
     sanitized_output = sanitizer.sanitize()
     assert sanitized_output == expected_output
 
@@ -428,7 +423,7 @@ def test_sanitizer_adds_missing_closing_tag():
 def test_sanitizer_does_not_alter_correct_function_call():
     function_call = '<function=my_func>{"key": "value"}</function>'
     expected_output = function_call
-    sanitizer = FunctionCallSanitizer(function_call)
+    sanitizer = FunctionCallSanitizer(RequiredString(function_call))
     sanitized_output = sanitizer.sanitize()
     assert sanitized_output == expected_output
 
@@ -436,14 +431,14 @@ def test_sanitizer_does_not_alter_correct_function_call():
 def test_sanitize_replaces_start_tag_placeholder():
     input_str = '<{start_tag}=create_character_bio>{"key": "value"}</function>'
     expected_output = '<function=create_character_bio>{"key": "value"}</function>'
-    sanitizer = FunctionCallSanitizer(input_str)
+    sanitizer = FunctionCallSanitizer(RequiredString(input_str))
     assert sanitizer.sanitize() == expected_output
 
 
 def test_sanitize_removes_end_tag_placeholder():
     input_str = '<function=create_character_bio>{"key": "value"}</end_tag></function>'
     expected_output = '<function=create_character_bio>{"key": "value"}</function>'
-    sanitizer = FunctionCallSanitizer(input_str)
+    sanitizer = FunctionCallSanitizer(RequiredString(input_str))
     assert sanitizer.sanitize() == expected_output
 
 
@@ -454,20 +449,20 @@ def test_sanitize_full_error_case():
         "</end_tag></function>"
     )
     expected_output = '<function=create_character_bio>{"name": "Ezekiel Zephyr", "description": "An enigmatic...", "key": "value"}</function>'
-    sanitizer = FunctionCallSanitizer(input_str)
+    sanitizer = FunctionCallSanitizer(RequiredString(input_str))
     assert sanitizer.sanitize() == expected_output
 
 
 def test_sanitize_handles_no_errors():
     input_str = '<function=create_character_bio>{"key": "value"}</function>'
-    sanitizer = FunctionCallSanitizer(input_str)
+    sanitizer = FunctionCallSanitizer(RequiredString(input_str))
     assert sanitizer.sanitize() == input_str  # Should remain unchanged
 
 
 def test_sanitize_appends_missing_closing_tag():
     input_str = '<function=create_character_bio>{"key": "value"}'
     expected_output = '<function=create_character_bio>{"key": "value"}</function>'
-    sanitizer = FunctionCallSanitizer(input_str)
+    sanitizer = FunctionCallSanitizer(RequiredString(input_str))
     assert sanitizer.sanitize() == expected_output
 
 
@@ -476,7 +471,7 @@ def test_sanitize_handles_multiple_errors():
         '<{start_tag}=create_character_bio>{"key": "value"}</end_tag></function>'
     )
     expected_output = '<function=create_character_bio>{"key": "value"}</function>'
-    sanitizer = FunctionCallSanitizer(input_str)
+    sanitizer = FunctionCallSanitizer(RequiredString(input_str))
     assert sanitizer.sanitize() == expected_output
 
 
@@ -485,26 +480,26 @@ def test_sanitize_with_extra_characters_after_json():
         '<function=create_character_bio>{"key": "value"} some extra text</function>'
     )
     expected_output = '<function=create_character_bio>{"key": "value"}</function>'
-    sanitizer = FunctionCallSanitizer(input_str)
+    sanitizer = FunctionCallSanitizer(RequiredString(input_str))
     assert sanitizer.sanitize() == expected_output
 
 
 def test_sanitize_with_incorrect_closing_tag():
     input_str = '<function=create_character_bio>{"key": "value"}[/function]'
     expected_output = '<function=create_character_bio>{"key": "value"}</function>'
-    sanitizer = FunctionCallSanitizer(input_str)
+    sanitizer = FunctionCallSanitizer(RequiredString(input_str))
     assert sanitizer.sanitize() == expected_output
 
 
 def test_sanitize_with_missing_function_keyword_in_closing_tag():
     input_str = '<function=create_character_bio>{"key": "value"}<>'
     expected_output = '<function=create_character_bio>{"key": "value"}</function>'
-    sanitizer = FunctionCallSanitizer(input_str)
+    sanitizer = FunctionCallSanitizer(RequiredString(input_str))
     assert sanitizer.sanitize() == expected_output
 
 
 def test_sanitize_with_self_closing_function_tag():
     input_str = '<function=create_character_bio>{"key": "value"}<function />'
     expected_output = '<function=create_character_bio>{"key": "value"}</function>'
-    sanitizer = FunctionCallSanitizer(input_str)
+    sanitizer = FunctionCallSanitizer(RequiredString(input_str))
     assert sanitizer.sanitize() == expected_output

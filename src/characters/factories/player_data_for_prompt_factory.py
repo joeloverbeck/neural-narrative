@@ -1,42 +1,44 @@
 from typing import Optional
 
 from src.base.playthrough_manager import PlaythroughManager
-from src.characters.character import Character
+from src.base.required_string import RequiredString
 from src.characters.character_memories import CharacterMemories
+from src.characters.factories.character_factory import CharacterFactory
 from src.characters.products.player_data_for_prompt import PlayerDataForPrompt
 
 
 class PlayerDataForPromptFactory:
     def __init__(
         self,
-        playthrough_name: str,
+        playthrough_name: RequiredString,
+        character_factory: CharacterFactory,
         playthrough_manager: Optional[PlaythroughManager] = None,
         character_memories: Optional[CharacterMemories] = None,
     ):
-        if not playthrough_name:
-            raise ValueError("playthrough_name can't be empty.")
-
-        self._playthrough_name = playthrough_name
+        self._character_factory = character_factory
 
         self._playthrough_manager = playthrough_manager or PlaythroughManager(
-            self._playthrough_name
+            playthrough_name
         )
         self._character_memories = character_memories or CharacterMemories(
-            self._playthrough_name
+            playthrough_name
         )
 
     def create_player_data_for_prompt(self) -> PlayerDataForPrompt:
         player_identifier = self._playthrough_manager.get_player_identifier()
-        player = Character(self._playthrough_name, player_identifier)
+        player = self._character_factory.create_character(player_identifier)
 
         # Load and process the player's memories
-        memories_str = self._character_memories.load_memories(player)
+        memories = self._character_memories.load_memories(player)
 
-        player_memories = [
-            memory.strip()
-            for memory in memories_str.strip().split("\n")
-            if memory.strip()
-        ]
+        if memories:
+            player_memories = [
+                memory.strip()
+                for memory in memories.value.strip().split("\n")
+                if memory.strip()
+            ]
+        else:
+            player_memories = []
 
         return PlayerDataForPrompt(
             {

@@ -1,108 +1,87 @@
+import logging
+
 from src.base.abstracts.command import Command
-from src.base.enums import PlaceType
-from src.maps.abstracts.abstract_factories import (
-    RandomPlaceTemplateBasedOnCategoriesFactory,
+from src.base.enums import TemplateType
+from src.base.required_string import RequiredString
+from src.maps.enums import RandomTemplateTypeMapEntryCreationResultType
+from src.maps.factories.map_manager_factory import MapManagerFactory
+from src.maps.factories.random_template_type_map_entry_provider_factory import (
+    RandomTemplateTypeMapEntryProviderFactory,
 )
-from src.maps.enums import RandomPlaceTypeMapEntryCreationResultType
-from src.maps.factories.concrete_random_place_type_map_entry_creation_factory import (
-    ConcreteRandomPlaceTypeMapEntryCreationFactory,
-)
-from src.maps.factories.create_map_entry_for_playthrough_command_factory import (
-    CreateMapEntryForPlaythroughCommandFactory,
-)
-from src.maps.map_manager import MapManager
+
+logger = logging.getLogger(__name__)
 
 
 class CreateInitialMapCommand(Command):
     def __init__(
         self,
-        playthrough_name: str,
-        world_template: str,
-        random_place_template_based_on_categories_factory: RandomPlaceTemplateBasedOnCategoriesFactory,
-        map_manager: MapManager = None,
+            story_universe_template: RequiredString,
+            random_template_type_map_entry_provider_factory: RandomTemplateTypeMapEntryProviderFactory,
+            map_manager_factory: MapManagerFactory,
     ):
-        if not playthrough_name:
-            raise ValueError("'playthrough_name' can't be empty.")
-        if not world_template:
-            raise ValueError("'world_template' can't be empty.")
-        if not random_place_template_based_on_categories_factory:
+        self._story_universe_template = story_universe_template
+        self._random_template_type_map_entry_provider_factory = (
+            random_template_type_map_entry_provider_factory
+        )
+        self._map_manager_factory = map_manager_factory
+
+    def _create_world(self) -> None:
+        result = self._random_template_type_map_entry_provider_factory.create_provider(
+            None,
+            self._story_universe_template,
+            TemplateType.STORY_UNIVERSE,
+            TemplateType.WORLD,
+        ).create_random_place_type_map_entry()
+
+        if (
+                result.get_result_type()
+                == RandomTemplateTypeMapEntryCreationResultType.FAILURE
+        ):
             raise ValueError(
-                "'random_place_template_based_on_categories_factory' can't be empty."
+                f"Was unable to create a map entry for a world: {result.get_error()}"
             )
 
-        self._playthrough_name = playthrough_name
-        self._world_template = world_template
-        self._random_place_template_based_on_categories_factory = (
-            random_place_template_based_on_categories_factory
+    def _create_region(self) -> None:
+        # Retrieve the newly created world entry.
+        latest_identifier, world_template = (
+            self._map_manager_factory.create_map_manager().get_identifier_and_place_template_of_latest_map_entry()
         )
-        self._map_manager = map_manager or MapManager(playthrough_name)
 
-    def execute(self) -> None:
-        # Let's start with a region.
-        result = ConcreteRandomPlaceTypeMapEntryCreationFactory(
-            self._playthrough_name,
-            self._world_template,
-            PlaceType.REGION,
-            PlaceType.WORLD,
-            self._random_place_template_based_on_categories_factory,
-            CreateMapEntryForPlaythroughCommandFactory(
-                self._playthrough_name, None, PlaceType.REGION
-            ),
+        result = self._random_template_type_map_entry_provider_factory.create_provider(
+            latest_identifier,
+            world_template,
+            TemplateType.WORLD,
+            TemplateType.REGION,
         ).create_random_place_type_map_entry()
 
         if (
             result.get_result_type()
-            == RandomPlaceTypeMapEntryCreationResultType.FAILURE
+                == RandomTemplateTypeMapEntryCreationResultType.FAILURE
         ):
             raise ValueError(
                 f"Was unable to create a map entry for a region: {result.get_error()}"
             )
 
+    def _create_area(self) -> None:
         # Retrieve the newly created region entry.
         latest_identifier, region_template = (
-            self._map_manager.get_identifier_and_place_template_of_latest_map_entry()
+            self._map_manager_factory.create_map_manager().get_identifier_and_place_template_of_latest_map_entry()
         )
 
         # Let's follow with an area
-        result = ConcreteRandomPlaceTypeMapEntryCreationFactory(
-            self._playthrough_name,
-            region_template,
-            PlaceType.AREA,
-            PlaceType.REGION,
-            self._random_place_template_based_on_categories_factory,
-            CreateMapEntryForPlaythroughCommandFactory(
-                self._playthrough_name, latest_identifier, PlaceType.AREA
-            ),
+        result = self._random_template_type_map_entry_provider_factory.create_provider(
+            latest_identifier, region_template, TemplateType.REGION, TemplateType.AREA
         ).create_random_place_type_map_entry()
 
         if (
             result.get_result_type()
-            == RandomPlaceTypeMapEntryCreationResultType.FAILURE
+                == RandomTemplateTypeMapEntryCreationResultType.FAILURE
         ):
             raise ValueError(
                 f"Was unable to create a map entry for an area: {result.get_error()}"
             )
 
-        # Retrieve the newly created area entry.
-        latest_identifier, area_template = (
-            self._map_manager.get_identifier_and_place_template_of_latest_map_entry()
-        )
-
-        result = ConcreteRandomPlaceTypeMapEntryCreationFactory(
-            self._playthrough_name,
-            area_template,
-            PlaceType.LOCATION,
-            PlaceType.AREA,
-            self._random_place_template_based_on_categories_factory,
-            CreateMapEntryForPlaythroughCommandFactory(
-                self._playthrough_name, latest_identifier, PlaceType.LOCATION
-            ),
-        ).create_random_place_type_map_entry()
-
-        if (
-            result.get_result_type()
-            == RandomPlaceTypeMapEntryCreationResultType.FAILURE
-        ):
-            raise ValueError(
-                f"Was unable to create a map entry for a location: {result.get_error()}"
-            )
+    def execute(self) -> None:
+        self._create_world()
+        self._create_region()
+        self._create_area()

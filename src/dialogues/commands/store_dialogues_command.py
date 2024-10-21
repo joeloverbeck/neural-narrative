@@ -3,6 +3,7 @@ from typing import Optional
 
 from src.base.abstracts.command import Command
 from src.base.playthrough_manager import PlaythroughManager
+from src.base.required_string import RequiredString
 from src.characters.character import Character
 from src.characters.characters_manager import CharactersManager
 from src.dialogues.participants import Participants
@@ -15,7 +16,7 @@ logger = logging.getLogger(__name__)
 class StoreDialoguesCommand(Command):
     def __init__(
         self,
-        playthrough_name: str,
+        playthrough_name: RequiredString,
         participants: Participants,
         transcription: Transcription,
         filesystem_manager: Optional[FilesystemManager] = None,
@@ -38,7 +39,7 @@ class StoreDialoguesCommand(Command):
         )
 
     def _store_dialogue_for_participant(
-        self, participant: str, prettified_dialogue: str
+        self, participant: RequiredString, prettified_dialogue: RequiredString
     ):
         character_dialogues_path = (
             self._filesystem_manager.get_file_path_to_character_dialogues(

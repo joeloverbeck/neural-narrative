@@ -1,3 +1,4 @@
+from src.base.required_string import RequiredString
 from src.dialogues.abstracts.factory_products import SpeechDataProduct
 from src.dialogues.abstracts.strategies import ProcessLlmContentIntoSpeechDataStrategy
 from src.dialogues.messages_to_llm import MessagesToLlm
@@ -52,7 +53,9 @@ class ConcreteProcessLlmContentIntoSpeechDataStrategy(
 
         # At this point, the tool response has been parsed correctly, so it needs to be added
         # as the assistant's response.
-        self._messages_to_llm.add_message("assistant", llm_content_product.get())
+        self._messages_to_llm.add_message(
+            RequiredString("assistant"), llm_content_product.get()
+        )
 
         speech_turn_response = self._speech_tool_response_data_extraction_provider_factory.create_speech_tool_response_data_extraction_provider(
             tool_response_parsing_product

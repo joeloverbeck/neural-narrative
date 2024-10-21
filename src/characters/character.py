@@ -1,6 +1,7 @@
 import logging
 from typing import Dict, Optional
 
+from src.base.required_string import RequiredString
 from src.filesystem.filesystem_manager import FilesystemManager
 
 logger = logging.getLogger(__name__)
@@ -37,15 +38,10 @@ class Character:
 
     def __init__(
         self,
-        playthrough_name: str,
-        identifier: str,
+            playthrough_name: RequiredString,
+            identifier: RequiredString,
         filesystem_manager: Optional[FilesystemManager] = None,
     ):
-        if not playthrough_name:
-            raise ValueError("playthrough_name should not be empty.")
-        if not identifier:
-            raise ValueError("identifier should not be empty.")
-
         self.playthrough_name = playthrough_name
         self._identifier = identifier
         self._filesystem_manager = filesystem_manager or FilesystemManager()
@@ -59,10 +55,10 @@ class Character:
             )
         )
 
-        if self._identifier not in characters_file:
+        if self._identifier.value not in characters_file:
             raise KeyError(f"Character with identifier '{self._identifier}' not found.")
 
-        return characters_file[self._identifier]
+        return characters_file[self._identifier.value]
 
     def _validate_required_attributes(self):
         missing_attributes = [
@@ -80,7 +76,7 @@ class Character:
             )
         )
 
-        characters_file[self._identifier] = self._data
+        characters_file[self._identifier.value] = self._data
 
         self._filesystem_manager.save_json_file(
             characters_file,
@@ -108,30 +104,30 @@ class Character:
         return self._data.get(attr)
 
     @property
-    def image_url(self) -> str:
+    def image_url(self) -> RequiredString:
         return self._filesystem_manager.get_file_path_to_character_image_for_web(
             self.playthrough_name, self._identifier
         )
 
     @property
-    def identifier(self) -> str:
+    def identifier(self) -> RequiredString:
         return self._identifier
 
     @property
-    def name(self) -> str:
-        return self._data["name"]
+    def name(self) -> RequiredString:
+        return RequiredString(self._data["name"])
 
     @property
-    def description(self) -> str:
-        return self._data["description"]
+    def description(self) -> RequiredString:
+        return RequiredString(self._data["description"])
 
     @property
-    def personality(self) -> str:
-        return self._data["personality"]
+    def personality(self) -> RequiredString:
+        return RequiredString(self._data["personality"])
 
     @property
-    def profile(self) -> str:
-        return self._data["profile"]
+    def profile(self) -> RequiredString:
+        return RequiredString(self._data["profile"])
 
     @property
     def likes(self) -> str:
@@ -154,8 +150,8 @@ class Character:
         return self._data["health"]
 
     @property
-    def equipment(self) -> str:
-        return self._data["equipment"]
+    def equipment(self) -> RequiredString:
+        return RequiredString(self._data["equipment"])
 
     @property
     def voice_gender(self) -> str:
@@ -198,8 +194,8 @@ class Character:
         return self._data["voice_special_effects"]
 
     @property
-    def voice_model(self) -> str:
-        return self._data["voice_model"]
+    def voice_model(self) -> RequiredString:
+        return RequiredString(self._data["voice_model"])
 
     def has_description_for_portrait(self) -> bool:
         return bool(self._data.get("description_for_portrait"))

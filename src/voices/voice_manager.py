@@ -3,6 +3,7 @@ import wave
 from typing import Optional, List
 
 from src.base.constants import VOICE_MODELS_FILE
+from src.base.required_string import RequiredString
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.requests.requests_manager import RequestsManager
 
@@ -49,7 +50,9 @@ class VoiceManager:
 
     @staticmethod
     def concatenate_wav_files_from_list(
-        file_paths: List[str], output_file: str, silence_duration=1.0
+        file_paths: List[RequiredString],
+        output_file: RequiredString,
+        silence_duration=1.0,
     ):
         """
         Concatenate the list of .wav files into a single .wav file.
@@ -71,7 +74,7 @@ class VoiceManager:
         silence_frames = None
 
         for wav_path in file_paths:
-            with wave.open(wav_path, "rb") as w:
+            with wave.open(wav_path.value, "rb") as w:
                 current_params = w.getparams()
 
                 # Initialize parameters with the first file's settings
@@ -102,7 +105,7 @@ class VoiceManager:
                 data.append(silence_frames)  # Add silence after each file
 
         # Write the concatenated frames to the output file
-        with wave.open(output_file, "wb") as out_wav:
+        with wave.open(output_file.value, "wb") as out_wav:
             out_wav.setparams(params)  # Use the first file's parameters
             for frames in data:
                 out_wav.writeframes(frames)

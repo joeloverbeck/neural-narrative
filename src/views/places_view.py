@@ -10,7 +10,7 @@ from src.base.constants import (
     STORY_UNIVERSES_TEMPLATE_FILE,
 )
 from src.base.enums import TemplateType
-from src.base.playthrough_name import RequiredString
+from src.base.required_string import RequiredString
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.services.place_service import PlaceService
 

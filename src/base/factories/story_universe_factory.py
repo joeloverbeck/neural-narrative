@@ -5,8 +5,8 @@ from src.base.constants import (
     STORY_UNIVERSE_GENERATION_TOOL_FILE,
     STORY_UNIVERSES_TEMPLATE_FILE,
 )
-from src.base.playthrough_name import RequiredString
 from src.base.products.story_universe_product import StoryUniverseProduct
+from src.base.required_string import RequiredString
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.prompting.factories.produce_tool_response_strategy_factory import (
     ProduceToolResponseStrategyFactory,

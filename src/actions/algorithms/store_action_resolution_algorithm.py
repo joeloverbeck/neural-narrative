@@ -2,6 +2,7 @@ from typing import Optional
 
 from src.actions.products.action_resolution_product import ActionResolutionProduct
 from src.base.playthrough_manager import PlaythroughManager
+from src.base.required_string import RequiredString
 from src.characters.factories.store_character_memory_command_factory import (
     StoreCharacterMemoryCommandFactory,
 )
@@ -11,7 +12,7 @@ from src.dialogues.participants import Participants
 class StoreActionResolutionAlgorithm:
     def __init__(
         self,
-        playthrough_name: str,
+        playthrough_name: RequiredString,
         participants: Participants,
         store_character_memory_command_factory: StoreCharacterMemoryCommandFactory,
         playthrough_manager: Optional[PlaythroughManager] = None,
@@ -35,4 +36,6 @@ class StoreActionResolutionAlgorithm:
                 participant_identifier, product.get_outcome()
             ).execute()
 
-        self._playthrough_manager.add_to_adventure(product.get_outcome() + "\n")
+        self._playthrough_manager.add_to_adventure(
+            RequiredString(product.get_outcome().value + "\n")
+        )

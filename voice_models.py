@@ -1,4 +1,5 @@
 from collections import Counter
+from typing import Dict
 
 from src.base.constants import (
     VOICE_MODELS_FILE,
@@ -14,6 +15,11 @@ from src.base.constants import (
     VOICE_SPECIAL_EFFECTS,
 )
 from src.filesystem.filesystem_manager import FilesystemManager
+
+
+# Optimized function to determine the category of an attribute using reverse lookup
+def get_attribute_category(attribute, attribute_to_category: Dict[str, str]):
+    return attribute_to_category.get(attribute)
 
 
 def main():
@@ -70,16 +76,12 @@ def main():
         for tag in tags:
             attribute_to_category[tag] = category
 
-    # Optimized function to determine the category of an attribute using reverse lookup
-    def get_attribute_category(attribute):
-        return attribute_to_category.get(attribute)
-
     # === End of Optimization ===
 
     # Iterate over voice models and collect used tags and count them
     for model, attributes in voice_models.items():
         for attribute in attributes:
-            category = get_attribute_category(attribute)
+            category = get_attribute_category(attribute, attribute_to_category)
             if category:
                 used_tags[category].add(attribute)
                 tag_counts[category][attribute] += 1
@@ -110,7 +112,7 @@ def main():
         tags_in_categories = {category: [] for category in attribute_categories.keys()}
 
         for attribute in attributes:
-            category = get_attribute_category(attribute)
+            category = get_attribute_category(attribute, attribute_to_category)
             if category:
                 category_counts[category] += 1
                 tags_in_categories[category].append(attribute)

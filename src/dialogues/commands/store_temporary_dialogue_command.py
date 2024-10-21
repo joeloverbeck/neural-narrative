@@ -1,6 +1,7 @@
 from typing import Optional
 
 from src.base.abstracts.command import Command
+from src.base.required_string import RequiredString
 from src.dialogues.messages_to_llm import MessagesToLlm
 from src.dialogues.participants import Participants
 from src.dialogues.transcription import Transcription
@@ -10,15 +11,13 @@ from src.filesystem.filesystem_manager import FilesystemManager
 class StoreTemporaryDialogueCommand(Command):
     def __init__(
         self,
-        playthrough_name: str,
+        playthrough_name: RequiredString,
         participants: Participants,
-        purpose: str,
+        purpose: Optional[RequiredString],
         messages_to_llm: MessagesToLlm,
         transcription: Transcription,
         filesystem_manager: Optional[FilesystemManager] = None,
     ):
-        if not playthrough_name:
-            raise ValueError("playthrough_name can't be empty.")
         if not participants.enough_participants():
             raise ValueError("Not enough participants.")
 
@@ -36,7 +35,7 @@ class StoreTemporaryDialogueCommand(Command):
         # to load that information from the files once launching 'chat.py' again.
         json_data = {
             "participants": self._participants.get(),
-            "purpose": self._purpose,
+            "purpose": self._purpose.value,
             "messages_to_llm": self._messages_to_llm.get(),
             "transcription": self._transcription.get(),
         }

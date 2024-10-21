@@ -1,5 +1,6 @@
 from typing import Optional, List
 
+from src.base.required_string import RequiredString
 from src.characters.character import Character
 from src.characters.characters_manager import CharactersManager
 from src.dialogues.participants import Participants
@@ -7,7 +8,9 @@ from src.dialogues.participants import Participants
 
 class DialogueManager:
     def __init__(
-        self, playthrough_name: str, characters_manager: CharactersManager = None
+            self,
+            playthrough_name: RequiredString,
+            characters_manager: CharactersManager = None,
     ):
         self._playthrough_name = playthrough_name
 
@@ -17,8 +20,8 @@ class DialogueManager:
 
     def gather_participants_data(
         self,
-        player_identifier: Optional[str],
-        participant_identifiers: List[str],
+            player_identifier: Optional[RequiredString],
+            participant_identifiers: List[RequiredString],
         participants: Participants,
     ):
         """Gathers the data of the participants into the Participants instance."""

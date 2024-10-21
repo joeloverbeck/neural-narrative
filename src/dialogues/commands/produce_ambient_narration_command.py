@@ -1,6 +1,7 @@
 from typing import cast
 
 from src.base.abstracts.command import Command
+from src.base.required_string import RequiredString
 from src.dialogues.commands.store_temporary_dialogue_command import (
     StoreTemporaryDialogueCommand,
 )
@@ -63,7 +64,7 @@ class ProduceAmbientNarrationCommand(Command):
 
         # We should also add a proper message to the list of messages provided to the large language model.
         self._messages_to_llm.add_message(
-            "assistant", product.get(), is_guiding_message=False
+            RequiredString("assistant"), product.get(), is_guiding_message=False
         )
 
         # The ambient text should also be added to the ongoing transcription

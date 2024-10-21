@@ -1,11 +1,11 @@
 from typing import Dict, Optional
 
-from src.base.playthrough_name import RequiredString
+from src.base.required_string import RequiredString
 from src.characters.factories.player_and_followers_information_factory import (
     PlayerAndFollowersInformationFactory,
 )
 from src.filesystem.filesystem_manager import FilesystemManager
-from src.maps.factories.places_descriptions_factory import PlacesDescriptionsFactory
+from src.maps.providers.places_descriptions_provider import PlacesDescriptionsProvider
 
 
 class ConceptsManager:
@@ -20,7 +20,7 @@ class ConceptsManager:
 
     def get_prompt_data(
         self,
-        places_descriptions_factory: PlacesDescriptionsFactory,
+            places_descriptions_factory: PlacesDescriptionsProvider,
         player_and_followers_information_factory: PlayerAndFollowersInformationFactory,
     ) -> Dict[str, str]:
         prompt_data = {
@@ -37,7 +37,7 @@ class ConceptsManager:
             {
                 "known_facts": self._filesystem_manager.read_file(
                     self._filesystem_manager.get_file_path_to_facts(
-                        self._playthrough_name.value
+                        self._playthrough_name
                     )
                 )
             }

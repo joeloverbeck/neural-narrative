@@ -3,6 +3,7 @@ import random
 from typing import Optional
 
 from src.base.constants import VOICE_MODELS_FILE
+from src.base.required_string import RequiredString
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.voices.products.matching_voice_model_product import MatchingVoiceModelProduct
 from src.voices.voice_attributes import VoiceAttributes
@@ -61,7 +62,7 @@ class MatchingVoiceModelProvider:
 
         # Initialize the list of possible speakers
         possible_voice_models = self._filesystem_manager.load_existing_or_new_json_file(
-            VOICE_MODELS_FILE
+            RequiredString(VOICE_MODELS_FILE)
         )
 
         attributes_in_order = [
@@ -100,6 +101,7 @@ class MatchingVoiceModelProvider:
                 if is_required:
                     # Stop further filtering and break the loop
                     logger.info(f"Matching voice model failed at {attribute_name}.")
+                    logger.info(f"Possible voice models:\n%s", possible_voice_models)
                     break
                 else:
                     # For optional attribute, continue with previous_possible_voice_models

@@ -1,6 +1,6 @@
 from typing import List
 
-from src.base.playthrough_name import RequiredString
+from src.base.required_string import RequiredString
 
 
 class StoryUniverseProduct:

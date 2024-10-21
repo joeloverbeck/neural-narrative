@@ -145,13 +145,13 @@ class ConcreteDialogueTurnFactory(DialogueTurnFactorySubject):
 
     def _determine_next_speaker(self) -> LlmToolResponseProduct:
         if not self._participants.has_only_two_participants_with_player(
-            self._playthrough_manager.get_player_identifier()
+                self._playthrough_manager.get_player_identifier().value
         ):
             return self._choose_next_speaker()
         else:
             return ConcreteLlmToolResponseProduct(
                 self._participants.get_other_participant_data(
-                    self._playthrough_manager.get_player_identifier()
+                    self._playthrough_manager.get_player_identifier().value
                 ),
                 is_valid=True,
             )

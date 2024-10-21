@@ -5,7 +5,9 @@ import os
 from flask import session, redirect, url_for, render_template, request, jsonify, flash
 from flask.views import MethodView
 
-from src.base.playthrough_name import RequiredString
+from src.base.required_string import RequiredString
+from src.base.tools import capture_traceback
+from src.characters.factories.character_factory import CharacterFactory
 from src.characters.factories.party_data_for_prompt_factory import (
     PartyDataForPromptFactory,
 )
@@ -40,10 +42,9 @@ from src.concepts.factories.plot_twists_factory import PlotTwistsFactory
 from src.config.config_manager import ConfigManager
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.interfaces.web_interface_manager import WebInterfaceManager
-from src.maps.factories.place_descriptions_for_prompt_factory import (
-    PlaceDescriptionsForPromptFactory,
+from src.maps.composers.places_descriptions_provider_composer import (
+    PlacesDescriptionsProviderComposer,
 )
-from src.maps.factories.places_descriptions_factory import PlacesDescriptionsFactory
 from src.prompting.factories.openrouter_llm_client_factory import (
     OpenRouterLlmClientFactory,
 )
@@ -81,15 +82,18 @@ class StoryHubView(MethodView):
         data = {}
         for var_name, file_path_method in items_to_load:
             file_path = file_path_method(playthrough_name_obj)
-            data[var_name] = filesystem_manager.read_file_lines(file_path)
+            data[var_name] = [
+                line.value for line in filesystem_manager.read_file_lines(file_path)
+            ]
 
         # Ensure facts file exists
         facts_file_path = filesystem_manager.get_file_path_to_facts(playthrough_name)
-        if not os.path.exists(facts_file_path):
-            filesystem_manager.write_file(facts_file_path, "")
+        if not os.path.exists(facts_file_path.value):
+            filesystem_manager.write_file(facts_file_path, None)
 
         # Load Facts
-        data["facts"] = filesystem_manager.read_file(facts_file_path)
+        facts = filesystem_manager.read_file(facts_file_path)
+        data["facts"] = facts if facts else ""
 
         return render_template("story-hub.html", **data)
 
@@ -107,19 +111,19 @@ class StoryHubView(MethodView):
             OpenRouterLlmClientFactory().create_llm_client(),
             ConfigManager().get_heavy_llm(),
         )
-        player_data_for_prompt_factory = PlayerDataForPromptFactory(playthrough_name)
+        player_data_for_prompt_factory = PlayerDataForPromptFactory(
+            playthrough_name, CharacterFactory(playthrough_name_obj)
+        )
         party_data_for_prompt_factory = PartyDataForPromptFactory(
             playthrough_name, player_data_for_prompt_factory
-        )
-        place_descriptions_for_prompt_factory = PlaceDescriptionsForPromptFactory(
-            playthrough_name
         )
         player_and_followers_information_factory = PlayerAndFollowersInformationFactory(
             party_data_for_prompt_factory
         )
-        places_descriptions_factory = PlacesDescriptionsFactory(
-            place_descriptions_for_prompt_factory
-        )
+
+        places_descriptions_provider = PlacesDescriptionsProviderComposer(
+            RequiredString(playthrough_name)
+        ).compose_provider()
 
         # Handle generate actions
         if action.startswith("generate_"):
@@ -132,7 +136,7 @@ class StoryHubView(MethodView):
                     "factory_args": [
                         playthrough_name_obj,
                         produce_tool_response_strategy_factory,
-                        places_descriptions_factory,
+                        places_descriptions_provider,
                         player_and_followers_information_factory,
                     ],
                 },
@@ -143,7 +147,7 @@ class StoryHubView(MethodView):
                     "factory_args": [
                         playthrough_name_obj,
                         produce_tool_response_strategy_factory,
-                        places_descriptions_factory,
+                        places_descriptions_provider,
                         player_and_followers_information_factory,
                     ],
                 },
@@ -154,7 +158,7 @@ class StoryHubView(MethodView):
                     "factory_args": [
                         playthrough_name_obj,
                         produce_tool_response_strategy_factory,
-                        places_descriptions_factory,
+                        places_descriptions_provider,
                         player_and_followers_information_factory,
                     ],
                 },
@@ -165,7 +169,7 @@ class StoryHubView(MethodView):
                     "factory_args": [
                         playthrough_name_obj,
                         produce_tool_response_strategy_factory,
-                        places_descriptions_factory,
+                        places_descriptions_provider,
                         player_and_followers_information_factory,
                     ],
                 },
@@ -176,7 +180,7 @@ class StoryHubView(MethodView):
                     "factory_args": [
                         playthrough_name_obj,
                         produce_tool_response_strategy_factory,
-                        places_descriptions_factory,
+                        places_descriptions_provider,
                         player_and_followers_information_factory,
                     ],
                 },
@@ -194,9 +198,10 @@ class StoryHubView(MethodView):
                     response = {
                         "success": True,
                         "message": f"{mapping['response_key'].replace('_', ' ').capitalize()} generated successfully.",
-                        mapping["response_key"]: items,
+                        mapping["response_key"]: [item.value for item in items],
                     }
                 except Exception as e:
+                    capture_traceback()
                     logger.error(e)
                     response = {
                         "success": False,

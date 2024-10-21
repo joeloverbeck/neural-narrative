@@ -1,13 +1,14 @@
 from typing import Optional
 
+from src.base.required_string import RequiredString
 from src.services.web_service import WebService
 
 
 class ActionResolutionProduct:
     def __init__(
         self,
-        narrative: str,
-        outcome: str,
+            narrative: RequiredString,
+            outcome: RequiredString,
         is_valid: bool,
         error: Optional[str] = None,
     ):
@@ -26,10 +27,10 @@ class ActionResolutionProduct:
         self._outcome_voice_line_file_name = None
         self._consequences_voice_line_file_name = None
 
-    def get_narrative(self) -> str:
+    def get_narrative(self) -> RequiredString:
         return self._narrative
 
-    def get_outcome(self) -> str:
+    def get_outcome(self) -> RequiredString:
         return self._outcome
 
     def is_valid(self) -> bool:
@@ -46,10 +47,10 @@ class ActionResolutionProduct:
 
     def get_narrative_voice_line_url(self):
         return WebService.get_file_url(
-            "voice_lines", self._narrative_voice_line_file_name
+            RequiredString("voice_lines"), self._narrative_voice_line_file_name
         )
 
     def get_outcome_voice_line_url(self):
         return WebService.get_file_url(
-            "voice_lines", self._outcome_voice_line_file_name
+            RequiredString("voice_lines"), self._outcome_voice_line_file_name
         )

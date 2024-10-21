@@ -6,7 +6,7 @@ import pytest
 
 from src.base.constants import TEMPLATE_FILES
 from src.base.enums import TemplateType
-from src.base.playthrough_name import RequiredString
+from src.base.required_string import RequiredString
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.commands.store_generated_place_command import StoreGeneratedPlaceCommand
 from src.maps.place_data import PlaceData
@@ -16,15 +16,15 @@ class MockFilesystemManager:
     def __init__(self):
         self.files = {}
 
-    def load_existing_or_new_json_file(self, filename):
+    def load_existing_or_new_json_file(self, filename: RequiredString):
         if filename is None:
             raise ValueError("Filename cannot be None")
-        return self.files.get(filename, {})
+        return self.files.get(filename.value, {})
 
-    def save_json_file(self, data, filename):
+    def save_json_file(self, data, filename: RequiredString):
         if filename is None:
             raise ValueError("Filename cannot be None")
-        self.files[filename] = data
+        self.files[filename.value] = data
 
 
 # Pytest tests
@@ -54,7 +54,9 @@ def test_store_generated_place_command_normal_case():
         }
     }
 
-    assert filesystem_manager.files[TEMPLATE_FILES[template_type]] == expected_data
+    assert (
+        filesystem_manager.files[TEMPLATE_FILES[template_type].value] == expected_data
+    )
 
 
 def test_store_generated_place_command_categories_lowercase():
@@ -76,7 +78,7 @@ def test_store_generated_place_command_categories_lowercase():
     command.execute()
 
     # Verify
-    saved_data = filesystem_manager.files[TEMPLATE_FILES[template_type]]
+    saved_data = filesystem_manager.files[TEMPLATE_FILES[template_type].value]
     categories = saved_data["TestPlace"]["categories"]
     assert categories == ["category1", "category2"]
 
@@ -108,7 +110,9 @@ def test_store_generated_place_command_location_with_type():
         }
     }
 
-    assert filesystem_manager.files[TEMPLATE_FILES[template_type]] == expected_data
+    assert (
+        filesystem_manager.files[TEMPLATE_FILES[template_type].value] == expected_data
+    )
 
 
 def test_store_generated_place_command_location_without_type_raises_key_error():
@@ -151,7 +155,7 @@ def test_store_generated_place_command_updates_existing_file():
     )
     template_type = TemplateType.AREA
     filesystem_manager = MockFilesystemManager()
-    filesystem_manager.files[TEMPLATE_FILES[template_type]] = initial_data
+    filesystem_manager.files[TEMPLATE_FILES[template_type].value] = initial_data
 
     command = StoreGeneratedPlaceCommand(
         place_data, template_type, cast(FilesystemManager, filesystem_manager)
@@ -172,7 +176,9 @@ def test_store_generated_place_command_updates_existing_file():
         },
     }
 
-    assert filesystem_manager.files[TEMPLATE_FILES[template_type]] == expected_data
+    assert (
+        filesystem_manager.files[TEMPLATE_FILES[template_type].value] == expected_data
+    )
 
 
 def test_store_generated_place_command_logging(caplog):
@@ -224,7 +230,9 @@ def test_store_generated_place_command_empty_categories():
         }
     }
 
-    assert filesystem_manager.files[TEMPLATE_FILES[template_type]] == expected_data
+    assert (
+        filesystem_manager.files[TEMPLATE_FILES[template_type].value] == expected_data
+    )
 
 
 def test_store_generated_place_command_save_raises_exception():

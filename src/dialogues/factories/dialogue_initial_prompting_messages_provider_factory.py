@@ -1,7 +1,5 @@
-from typing import Optional
-
+from src.base.required_string import RequiredString
 from src.characters.character import Character
-from src.characters.character_memories import CharacterMemories
 from src.dialogues.factories.speech_turn_dialogue_system_content_for_prompt_provider_factory import (
     SpeechTurnDialogueSystemContentForPromptProviderFactory,
 )
@@ -15,10 +13,9 @@ from src.prompting.abstracts.factory_products import LlmToolResponseProduct
 class DialogueInitialPromptingMessagesProviderFactory:
     def __init__(
         self,
-        playthrough_name: str,
+            playthrough_name: RequiredString,
         participants: Participants,
         speech_turn_dialogue_system_content_for_prompt_provider_factory: SpeechTurnDialogueSystemContentForPromptProviderFactory,
-        character_memories: Optional[CharacterMemories] = None,
     ):
         if not playthrough_name:
             raise ValueError("playthrough_name should not be empty.")
@@ -29,10 +26,6 @@ class DialogueInitialPromptingMessagesProviderFactory:
         self._participants = participants
         self._speech_turn_dialogue_system_content_for_prompt_provider_factory = (
             speech_turn_dialogue_system_content_for_prompt_provider_factory
-        )
-
-        self._character_memories = character_memories or CharacterMemories(
-            self._playthrough_name
         )
 
     def create_dialogue_initial_prompting_messages_provider(
@@ -51,6 +44,5 @@ class DialogueInitialPromptingMessagesProviderFactory:
         return DialogueInitialPromptingMessagesProvider(
             self._participants,
             character,
-            self._character_memories.load_memories(character),
             self._speech_turn_dialogue_system_content_for_prompt_provider_factory,
         )

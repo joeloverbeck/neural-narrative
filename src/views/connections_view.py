@@ -1,6 +1,7 @@
 from flask import session, redirect, url_for, render_template, request, jsonify
 from flask.views import MethodView
 
+from src.base.required_string import RequiredString
 from src.characters.characters_manager import CharactersManager
 from src.characters.commands.generate_connection_command import (
     GenerateConnectionCommand,
@@ -41,8 +42,12 @@ class ConnectionsView(MethodView):
         if action != "generate_connection":
             return jsonify({"success": False, "error": "Invalid action."})
 
-        character_a_identifier = request.form.get("character_a_identifier", "").strip()
-        character_b_identifier = request.form.get("character_b_identifier", "").strip()
+        character_a_identifier = RequiredString(
+            request.form.get("character_a_identifier", "").strip()
+        )
+        character_b_identifier = RequiredString(
+            request.form.get("character_b_identifier", "").strip()
+        )
 
         if not character_a_identifier or not character_b_identifier:
             return jsonify(

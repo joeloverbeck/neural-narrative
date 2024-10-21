@@ -1,3 +1,4 @@
+from src.base.required_string import RequiredString
 from src.dialogues.abstracts.factory_products import SpeechDataProduct
 from src.dialogues.abstracts.strategies import MessageDataProducerForSpeechTurnStrategy
 from src.filesystem.filesystem_manager import FilesystemManager
@@ -9,8 +10,8 @@ class WebMessageDataProducerForSpeechTurnStrategy(
 ):
     def __init__(
         self,
-        playthrough_name: str,
-        player_identifier: str,
+        playthrough_name: RequiredString,
+        player_identifier: RequiredString,
         filesystem_manager: FilesystemManager = None,
     ):
         self._playthrough_name = playthrough_name

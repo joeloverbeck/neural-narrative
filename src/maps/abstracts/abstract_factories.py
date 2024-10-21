@@ -1,12 +1,13 @@
 from abc import ABC, abstractmethod
 from typing import Protocol, List
 
+from src.base.required_string import RequiredString
 from src.maps.abstracts.factory_products import (
     PlaceDataProduct,
     CurrentPlaceProduct,
     PlaceTemplateProduct,
     FullPlaceDataProduct,
-    RandomPlaceTypeMapEntryCreationResult,
+    RandomTemplateTypeMapEntryCreationResult,
     CardinalConnectionCreationProduct,
 )
 
@@ -25,7 +26,7 @@ class CurrentPlaceFactory(ABC):
 
 class RandomPlaceTemplateBasedOnCategoriesFactory(Protocol):
     def create_random_place_template_based_on_categories(
-        self, place_templates: dict, categories: List[str]
+            self, place_templates: dict, categories: List[RequiredString]
     ) -> PlaceTemplateProduct:
         pass
 
@@ -35,10 +36,10 @@ class FullPlaceDataFactory(Protocol):
         pass
 
 
-class RandomPlaceTypeMapEntryCreationFactory(Protocol):
+class RandomTemplateTypeMapEntryProvider(Protocol):
     def create_random_place_type_map_entry(
         self,
-    ) -> RandomPlaceTypeMapEntryCreationResult:
+    ) -> RandomTemplateTypeMapEntryCreationResult:
         pass
 
 
