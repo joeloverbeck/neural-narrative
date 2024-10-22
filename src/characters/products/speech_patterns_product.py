@@ -2,12 +2,9 @@ from typing import Optional, List
 
 
 class SpeechPatternsProduct:
-    def __init__(
-        self,
-        speech_patterns: Optional[List[str]],
-        is_valid: bool,
-        error: Optional[str] = None,
-    ):
+
+    def __init__(self, speech_patterns: Optional[List[str]], is_valid: bool,
+                 error: Optional[str] = None):
         self._speech_patterns = speech_patterns
         self._is_valid = is_valid
         self._error = error

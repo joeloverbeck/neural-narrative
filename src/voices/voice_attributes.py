@@ -1,8 +1,6 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from src.base.required_string import RequiredString
-
 
 @dataclass
 class VoiceAttributes:
@@ -14,5 +12,5 @@ class VoiceAttributes:
     voice_texture: Optional[str]
     voice_tone: Optional[str]
     voice_style: Optional[str]
-    voice_personality: Optional[RequiredString]
+    voice_personality: Optional[str]
     voice_special_effects: Optional[str]

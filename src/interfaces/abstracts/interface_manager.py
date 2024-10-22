@@ -2,6 +2,7 @@ from typing import Protocol, Optional, List
 
 
 class InterfaceManager(Protocol):
+
     def prompt_for_character_identifier(self, prompt_text: str) -> Optional[str]:
         pass
 

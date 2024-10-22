@@ -1,10 +1,11 @@
 from typing import Optional
-
 from src.requests.abstracts.factory_products import UrlContentProduct
 
 
 class ConcreteUrlContentProduct(UrlContentProduct):
-    def __init__(self, content: Optional[bytes], is_valid: bool, error: str = None):
+
+    def __init__(self, content: Optional[bytes], is_valid: bool, error: str
+    = None):
         self._content = content
         self._is_valid = is_valid
         self._error = error

@@ -8,6 +8,7 @@ from src.dialogues.abstracts.strategies import (
 class WebMessageDataProducerForIntroducePlayerInputIntoDialogueStrategy(
     MessageDataProducerForIntroducePlayerInputIntoDialogueStrategy
 ):
+
     def produce_message_data(
         self, player_character: Character, player_input_product: PlayerInputProduct
     ) -> dict:

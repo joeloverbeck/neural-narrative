@@ -17,7 +17,6 @@ from src.base.constants import (
     WORLD_GENERATION_TOOL_FILE,
 )
 from src.base.enums import TemplateType
-from src.base.required_string import RequiredString
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.template_type_data import TemplateTypeData
 from src.prompting.abstracts.abstract_factories import ToolResponseProvider
@@ -33,30 +32,27 @@ from src.prompting.providers.base_tool_response_provider import BaseToolResponse
 class PlaceGenerationToolResponseProvider(
     BaseToolResponseProvider, ToolResponseProvider
 ):
+
     def __init__(
         self,
-        father_place_identifier: RequiredString,
+            father_place_identifier: str,
         template_type: TemplateType,
-        notion: RequiredString,
+            notion: str,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         filesystem_manager: Optional[FilesystemManager] = None,
     ):
         super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
-
         if not father_place_identifier:
             raise ValueError("father_place_identifier can't be empty.")
-
         self._father_place_identifier = father_place_identifier
         self._template_type = template_type
         self._notion = notion
 
     def _read_and_format_tool_file(self, tool_file: str) -> dict:
-        # Have in mind that here we need to handle all possible tool files.
         if tool_file == LOCATION_GENERATION_TOOL_FILE:
             template_copy = self._filesystem_manager.load_existing_or_new_json_file(
                 LOCATION_GENERATION_TOOL_FILE
             )
-
             try:
                 template_copy["function"]["parameters"]["properties"]["type"][
                     "enum"
@@ -65,9 +61,7 @@ class PlaceGenerationToolResponseProvider(
                 raise ValueError(
                     f"Was unable to format the location generation tool file: {e}"
                 )
-
             return template_copy
-
         return self._filesystem_manager.read_json_file(tool_file)
 
     def _read_tool_file(self, tool_file: str) -> dict:
@@ -102,14 +96,12 @@ class PlaceGenerationToolResponseProvider(
         }
         return data_mapping.get(self._template_type)
 
-    def get_prompt_file(self) -> RequiredString:
+    def get_prompt_file(self) -> str:
         template_data = self._get_template_type_data()
-
         if not template_data:
             raise ValueError(
-                f"Failed to produce template data for father place identifier '{self._father_place_identifier.value}' and template type {self._template_type.value}."
+                f"Failed to produce template data for father place identifier '{self._father_place_identifier}' and template type {self._template_type}."
             )
-
         return template_data.prompt_file
 
     def get_prompt_kwargs(self) -> dict:
@@ -117,23 +109,21 @@ class PlaceGenerationToolResponseProvider(
         father_templates_file = self._filesystem_manager.load_existing_or_new_json_file(
             template_data.father_templates_file_path
         )
-        place_template = father_templates_file[self._father_place_identifier.value]
+        place_template = father_templates_file[self._father_place_identifier]
         current_place_type_templates = (
             self._filesystem_manager.load_existing_or_new_json_file(
                 template_data.current_place_templates_file_path
             )
         )
-
         return {
-            "father_place_name": self._father_place_identifier.value,
+            "father_place_name": self._father_place_identifier,
             "father_place_description": place_template["description"],
             "father_place_categories": place_template["categories"],
             "current_place_type_names": list(current_place_type_templates.keys()),
         }
 
-    def get_tool_file(self) -> RequiredString:
+    def get_tool_file(self) -> str:
         template_data = self._get_template_type_data()
-
         return template_data.tool_file
 
     def get_user_content(self) -> str:

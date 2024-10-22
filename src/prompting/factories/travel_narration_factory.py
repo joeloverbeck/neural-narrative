@@ -1,11 +1,6 @@
 from typing import Optional
-
-from src.base.constants import (
-    TRAVEL_NARRATION_PROMPT_FILE,
-    TRAVEL_NARRATION_TOOL_FILE,
-)
+from src.base.constants import TRAVEL_NARRATION_PROMPT_FILE, TRAVEL_NARRATION_TOOL_FILE
 from src.base.playthrough_manager import PlaythroughManager
-from src.base.required_string import RequiredString
 from src.characters.factories.player_and_followers_information_factory import (
     PlayerAndFollowersInformationFactory,
 )
@@ -25,8 +20,8 @@ class TravelNarrationFactory(BaseToolResponseProvider):
 
     def __init__(
         self,
-        playthrough_name: RequiredString,
-        destination_identifier: RequiredString,
+        playthrough_name: str,
+        destination_identifier: str,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         player_and_followers_information_factory: PlayerAndFollowersInformationFactory,
         map_manager_factory: MapManagerFactory,
@@ -34,13 +29,11 @@ class TravelNarrationFactory(BaseToolResponseProvider):
         filesystem_manager: Optional[FilesystemManager] = None,
     ):
         super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
-
         self._destination_identifier = destination_identifier
         self._player_and_followers_information_factory = (
             player_and_followers_information_factory
         )
         self._map_manager_factory = map_manager_factory
-
         self._playthrough_manager = playthrough_manager or PlaythroughManager(
             playthrough_name
         )
@@ -54,7 +47,7 @@ class TravelNarrationFactory(BaseToolResponseProvider):
         )
         current_place_data = (
             self._map_manager_factory.create_map_manager().get_place_full_data(
-                RequiredString(current_place_identifier)
+                current_place_identifier
             )
         )
         destination_place_data = (
@@ -62,7 +55,6 @@ class TravelNarrationFactory(BaseToolResponseProvider):
                 self._destination_identifier
             )
         )
-
         prompt_data = {
             "origin_area_template": self._map_manager_factory.create_map_manager().get_current_place_template(),
             "origin_area_description": current_place_data["area_data"]["description"],
@@ -71,23 +63,18 @@ class TravelNarrationFactory(BaseToolResponseProvider):
                 "description"
             ],
         }
-
         prompt_data.update(
             {
                 "player_and_followers_information": self._player_and_followers_information_factory.get_information()
             }
         )
-
         return prompt_data
 
     def get_tool_file(self) -> str:
         return TRAVEL_NARRATION_TOOL_FILE
 
     def get_user_content(self) -> str:
-        return (
-            "Write the narration of the travel from the origin area to the destination area, "
-            "filtered through the first-person perspective of the player, as per the above instructions."
-        )
+        return "Write the narration of the travel from the origin area to the destination area, filtered through the first-person perspective of the player, as per the above instructions."
 
     def create_product(self, arguments: dict):
         return TravelNarrationProduct(

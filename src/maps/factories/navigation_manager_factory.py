@@ -3,6 +3,7 @@ from src.maps.navigation_manager import NavigationManager
 
 
 class NavigationManagerFactory:
+
     def __init__(self, map_repository: MapRepository):
         self._map_repository = map_repository
 

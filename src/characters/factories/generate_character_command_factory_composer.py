@@ -1,9 +1,9 @@
 import logging
 
-from src.base.required_string import RequiredString
 from src.characters.factories.character_description_provider_factory import (
     CharacterDescriptionProviderFactory,
 )
+from src.characters.factories.character_factory import CharacterFactory
 from src.characters.factories.generate_character_command_factory import (
     GenerateCharacterCommandFactory,
 )
@@ -45,7 +45,7 @@ logger = logging.getLogger(__name__)
 
 class GenerateCharacterCommandFactoryComposer:
 
-    def __init__(self, playthrough_name: RequiredString):
+    def __init__(self, playthrough_name: str):
         self._playthrough_name = playthrough_name
 
     def compose_factory(self) -> GenerateCharacterCommandFactory:
@@ -53,54 +53,44 @@ class GenerateCharacterCommandFactoryComposer:
             OpenRouterLlmClientFactory().create_llm_client(),
             ConfigManager().get_heavy_llm(),
         )
-
         speech_patterns_provider_factory = SpeechPatternsProviderFactory(
             produce_tool_response_strategy_factory
         )
-
         match_voice_data_to_voice_model_algorithm = (
             MatchVoiceDataToVoiceModelAlgorithm()
         )
-
         store_generate_character_command_factory = (
             StoreGeneratedCharacterCommandFactory(
-                self._playthrough_name.value, match_voice_data_to_voice_model_algorithm
+                self._playthrough_name, match_voice_data_to_voice_model_algorithm
             )
         )
-
         character_description_provider_factory = CharacterDescriptionProviderFactory(
             produce_tool_response_strategy_factory
         )
-
         generated_image_factory = OpenAIGeneratedImageFactory(
             OpenAILlmClientFactory().create_llm_client()
         )
-
         url_content_factory = ConcreteUrlContentFactory()
-
+        character_factory = CharacterFactory(self._playthrough_name)
         generate_character_image_command_factory = GenerateCharacterImageCommandFactory(
             self._playthrough_name,
+            character_factory,
             character_description_provider_factory,
             generated_image_factory,
             url_content_factory,
         )
-
         place_manager_factory = PlaceManagerFactory(self._playthrough_name)
-
         movement_manager = MovementManager(
             self._playthrough_name, place_manager_factory
         )
-
         places_description_provider = PlacesDescriptionsProviderComposer(
             self._playthrough_name
         ).compose_provider()
-
         character_generation_instructions_formatter_factory = (
             CharacterGenerationInstructionsFormatterFactory(
                 self._playthrough_name, places_description_provider
             )
         )
-
         return GenerateCharacterCommandFactory(
             self._playthrough_name,
             character_generation_instructions_formatter_factory,

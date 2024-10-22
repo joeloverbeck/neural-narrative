@@ -27,12 +27,10 @@ class CreateSpeechTurnDataCommandFactory:
         )
 
     def create_command(
-        self,
-        speech_turn_choice_response: LlmToolResponseProduct,
+        self, speech_turn_choice_response: LlmToolResponseProduct
     ) -> CreateSpeechTurnDataCommand:
         if "voice_model" not in speech_turn_choice_response.get():
             raise ValueError("voice_model can't be empty.")
-
         return CreateSpeechTurnDataCommand(
             self._messages_to_llm,
             self._transcription,

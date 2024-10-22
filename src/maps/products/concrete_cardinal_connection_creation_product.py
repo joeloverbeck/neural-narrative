@@ -1,7 +1,8 @@
 from src.maps.abstracts.factory_products import CardinalConnectionCreationProduct
 
 
-class ConcreteCardinalConnectionCreationProduct(CardinalConnectionCreationProduct):
+class ConcreteCardinalConnectionCreationProduct(
+    CardinalConnectionCreationProduct):
 
     def __init__(self, was_successful: bool, error: str = None):
         self._was_successful = was_successful

@@ -28,21 +28,12 @@ class CreatePlaythroughCommand(Command):
         self._map_manager_factory = map_manager_factory
 
     def execute(self) -> None:
-        # First create the playthrough metadata.
         self._create_playthrough_metadata_command.execute()
-
-        # Next, we have to create the initial map.
         self._create_initial_map_command.execute()
-
-        # Now let's update in the playthrough metadata the current place as the latest location created.
         latest_identifier, _ = (
             self._map_manager_factory.create_map_manager().get_identifier_and_place_template_of_latest_map_entry()
         )
-
-        # Visit the latest place created. The visitation is responsible for generating new characters.
         self._visit_place_command_factory.create_visit_place_command(
             latest_identifier
         ).execute()
-
-        # Generate player character.
         self._generate_player_character_command.execute()

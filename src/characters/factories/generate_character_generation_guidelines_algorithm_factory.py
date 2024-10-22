@@ -1,4 +1,3 @@
-from src.base.required_string import RequiredString
 from src.characters.algorithms.generate_character_generation_guidelines_algorithm import (
     GenerateCharacterGenerationGuidelinesAlgorithm,
 )
@@ -9,11 +8,12 @@ from src.maps.factories.hierarchy_manager_factory import HierarchyManagerFactory
 
 
 class GenerateCharacterGenerationGuidelinesAlgorithmFactory:
+
     def __init__(
-            self,
-            playthrough_name: RequiredString,
-            character_generation_guidelines_provider_factory: CharacterGenerationGuidelinesProviderFactory,
-            hierarchy_manager_factory: HierarchyManagerFactory,
+        self,
+        playthrough_name: str,
+        character_generation_guidelines_provider_factory: CharacterGenerationGuidelinesProviderFactory,
+        hierarchy_manager_factory: HierarchyManagerFactory,
     ):
         self._playthrough_name = playthrough_name
         self._character_generation_guidelines_provider_factory = (
@@ -22,7 +22,7 @@ class GenerateCharacterGenerationGuidelinesAlgorithmFactory:
         self._hierarchy_manager_factory = hierarchy_manager_factory
 
     def create_algorithm(
-            self, place_identifier: RequiredString
+        self, place_identifier: str
     ) -> GenerateCharacterGenerationGuidelinesAlgorithm:
         return GenerateCharacterGenerationGuidelinesAlgorithm(
             self._playthrough_name,

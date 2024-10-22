@@ -1,15 +1,13 @@
 from typing import Optional
-
 from src.prompting.abstracts.factory_products import LlmToolResponseProduct
 
 
 class ConcreteLlmToolResponseProduct(LlmToolResponseProduct):
-    def __init__(self, llm_response: dict, is_valid: bool, error: Optional[str] = None):
-        # You have the opportunity to fix the content.
 
-        if llm_response and "identifier" in llm_response:
-            llm_response["identifier"] = str(llm_response["identifier"])
-
+    def __init__(self, llm_response: dict, is_valid: bool, error: Optional[
+        str] = None):
+        if llm_response and 'identifier' in llm_response:
+            llm_response['identifier'] = str(llm_response['identifier'])
         self._llm_response = llm_response
         self._is_valid = is_valid
         self._error = error

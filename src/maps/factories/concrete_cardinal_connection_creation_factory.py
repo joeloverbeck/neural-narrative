@@ -2,7 +2,6 @@ from typing import Optional
 
 from src.base.enums import TemplateType
 from src.base.playthrough_manager import PlaythroughManager
-from src.base.required_string import RequiredString
 from src.maps.abstracts.abstract_factories import CardinalConnectionCreationFactory
 from src.maps.abstracts.factory_products import (
     CardinalConnectionCreationProduct,
@@ -14,9 +13,7 @@ from src.maps.configs.cardinal_connection_creation_factory_config import (
 from src.maps.configs.cardinal_connection_creation_factory_factories_config import (
     CardinalConnectionCreationFactoryFactoriesConfig,
 )
-from src.maps.enums import (
-    RandomTemplateTypeMapEntryCreationResultType,
-)
+from src.maps.enums import RandomTemplateTypeMapEntryCreationResultType
 from src.maps.products.concrete_cardinal_connection_creation_product import (
     ConcreteCardinalConnectionCreationProduct,
 )
@@ -32,7 +29,6 @@ class ConcreteCardinalConnectionCreationFactory(CardinalConnectionCreationFactor
     ):
         self._config = config
         self._factories_config = factories_config
-
         self._playthrough_manager = playthrough_manager or PlaythroughManager(
             self._config.playthrough_name
         )
@@ -41,11 +37,9 @@ class ConcreteCardinalConnectionCreationFactory(CardinalConnectionCreationFactor
         father_template = (
             self._factories_config.map_manager_factory.create_map_manager().get_father_template()
         )
-
         father_identifier = self._factories_config.hierarchy_manager_factory.create_hierarchy_manager().get_father_identifier(
-            RequiredString(self._playthrough_manager.get_current_place_identifier())
+            self._playthrough_manager.get_current_place_identifier()
         )
-
         return self._factories_config.random_template_type_map_entry_provider_factory.create_provider(
             father_identifier, father_template, TemplateType.REGION, TemplateType.AREA
         ).create_random_place_type_map_entry()
@@ -54,28 +48,22 @@ class ConcreteCardinalConnectionCreationFactory(CardinalConnectionCreationFactor
         new_id, _ = (
             self._factories_config.map_manager_factory.create_map_manager().get_identifier_and_place_template_of_latest_map_entry()
         )
-
-        # All correct. Must add the newly created map entry as one of the cardinal connections to the current place.
         self._factories_config.navigation_manager_factory.create_navigation_manager().create_cardinal_connection(
             self._config.cardinal_direction,
-            RequiredString(self._playthrough_manager.get_current_place_identifier()),
+            self._playthrough_manager.get_current_place_identifier(),
             new_id,
         )
-
-        # After you create the cardinal connection in origin, you must create the opposite cardinal connection in the destination.
         opposite_cardinal_direction = self._factories_config.navigation_manager_factory.create_navigation_manager().get_opposite_cardinal_direction(
             self._config.cardinal_direction
         )
-
         self._factories_config.navigation_manager_factory.create_navigation_manager().create_cardinal_connection(
             opposite_cardinal_direction,
             new_id,
-            RequiredString(self._playthrough_manager.get_current_place_identifier()),
+            self._playthrough_manager.get_current_place_identifier(),
         )
 
     def create_cardinal_connection(self) -> CardinalConnectionCreationProduct:
         result = self._get_random_area()
-
         if (
                 result.get_result_type()
                 == RandomTemplateTypeMapEntryCreationResultType.NO_AVAILABLE_TEMPLATES
@@ -83,7 +71,6 @@ class ConcreteCardinalConnectionCreationFactory(CardinalConnectionCreationFactor
             return ConcreteCardinalConnectionCreationProduct(
                 was_successful=False, error="No remaining areas to add to map."
             )
-
         if (
                 result.get_result_type()
                 == RandomTemplateTypeMapEntryCreationResultType.FAILURE
@@ -92,7 +79,5 @@ class ConcreteCardinalConnectionCreationFactory(CardinalConnectionCreationFactor
                 was_successful=False,
                 error=f"Couldn't add an area {self._config.cardinal_direction.value}: {result.get_error()}",
             )
-
         self._create_cardinal_connection()
-
         return ConcreteCardinalConnectionCreationProduct(was_successful=True)

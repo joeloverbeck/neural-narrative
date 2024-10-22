@@ -1,27 +1,24 @@
 from typing import List
 
-from src.base.required_string import RequiredString
-
 
 class Transcription:
+
     def __init__(self):
-        self._transcription: List[RequiredString] = []
+        self._transcription: List[str] = []
 
-    def add_speech_turn(self, name: RequiredString, speech: RequiredString):
-        self._transcription.append(RequiredString(f"{name}: {speech}"))
+    def add_speech_turn(self, name: str, speech: str):
+        self._transcription.append(f"{name}: {speech}")
 
-    def add_line(self, line: RequiredString):
+    def add_line(self, line: str):
         self._transcription.append(line)
 
-    def get(self) -> List[RequiredString]:
+    def get(self) -> List[str]:
         return self._transcription
 
-    def get_prettified_transcription(self) -> RequiredString:
+    def get_prettified_transcription(self) -> str:
         prettified_dialogue = ""
-
         for speech_turn in self._transcription:
             prettified_dialogue += f"{speech_turn}\n"
-
         return prettified_dialogue + "\n"
 
     def is_transcription_sufficient(self) -> bool:

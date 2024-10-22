@@ -1,29 +1,23 @@
 from typing import Optional
 
-from src.base.required_string import RequiredString
-
 
 class PlacesTemplatesParameter:
-    def __init__(
-        self,
-        world_template: RequiredString,
-        region_template: RequiredString,
-        area_template: RequiredString,
-        location_template: Optional[RequiredString] = None,
-    ):
+
+    def __init__(self, world_template: str, region_template: str,
+                 area_template: str, location_template: Optional[str] = None):
         self._world_template = world_template
         self._region_template = region_template
         self._area_template = area_template
         self._location_template = location_template
 
-    def get_world_template(self) -> RequiredString:
+    def get_world_template(self) -> str:
         return self._world_template
 
-    def get_region_template(self) -> RequiredString:
+    def get_region_template(self) -> str:
         return self._region_template
 
-    def get_area_template(self) -> RequiredString:
+    def get_area_template(self) -> str:
         return self._area_template
 
-    def get_location_template(self) -> Optional[RequiredString]:
+    def get_location_template(self) -> Optional[str]:
         return self._location_template

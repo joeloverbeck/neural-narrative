@@ -3,7 +3,6 @@ from unittest.mock import Mock
 import pytest
 
 from src.base.abstracts.command import Command
-from src.base.required_string import RequiredString
 from src.dialogues.commands.produce_ambient_narration_command import (
     ProduceAmbientNarrationCommand,
 )
@@ -25,35 +24,26 @@ from src.dialogues.transcription import Transcription
 
 
 def test_normal_execution():
-    # Arrange
     messages_to_llm = Mock(spec=MessagesToLlm)
     transcription = Mock(spec=Transcription)
     web_ambient_narration_observer = Mock(spec=WebAmbientNarrationObserver)
-
-    # Mock AmbientNarrationProvider and its factory
     ambient_narration_product = Mock(spec=AmbientNarrationProduct)
     ambient_narration_product.is_valid.return_value = True
     ambient_narration_product.get.return_value = "Sample Ambient Narration"
-
     ambient_narration_provider = Mock()
     ambient_narration_provider.generate_product.return_value = ambient_narration_product
-
     ambient_narration_provider_factory = Mock(spec=AmbientNarrationProviderFactory)
     ambient_narration_provider_factory.create_provider.return_value = (
         ambient_narration_provider
     )
-
-    # Mock HandlePossibleExistenceOfOngoingConversationCommand and its factory
     handle_possible_existence_command = Mock(spec=Command)
     handle_possible_existence_of_ongoing_conversation_command_factory = Mock(
         spec=HandlePossibleExistenceOfOngoingConversationCommandFactory
     )
-    handle_possible_existence_of_ongoing_conversation_command_factory.create_handle_possible_existence_of_ongoing_conversation_command.return_value = (
-        handle_possible_existence_command
-    )
-
+    (
+        handle_possible_existence_of_ongoing_conversation_command_factory.create_handle_possible_existence_of_ongoing_conversation_command.return_value
+    ) = handle_possible_existence_command
     store_temporary_dialogue_command = Mock(spec=StoreTemporaryDialogueCommand)
-
     command = ProduceAmbientNarrationCommand(
         messages_to_llm,
         transcription,
@@ -62,11 +52,7 @@ def test_normal_execution():
         handle_possible_existence_of_ongoing_conversation_command_factory,
         store_temporary_dialogue_command,
     )
-
-    # Act
     command.execute()
-
-    # Assert
     handle_possible_existence_command.execute.assert_called_once()
     ambient_narration_provider_factory.create_provider.assert_called_once_with(
         transcription
@@ -77,43 +63,32 @@ def test_normal_execution():
         {"alignment": "center", "message_text": "Sample Ambient Narration"}
     )
     messages_to_llm.add_message.assert_called_once_with(
-        RequiredString("assistant"),
-        "Sample Ambient Narration",
-        is_guiding_message=False,
+        "assistant", "Sample Ambient Narration", is_guiding_message=False
     )
     store_temporary_dialogue_command.execute.assert_called_once()
 
 
 def test_invalid_product_raises_value_error():
-    # Arrange
     messages_to_llm = Mock(spec=MessagesToLlm)
     transcription = Mock(spec=Transcription)
     web_ambient_narration_observer = Mock(spec=WebAmbientNarrationObserver)
-
-    # Mock AmbientNarrationProvider and its factory
     ambient_narration_product = Mock(spec=AmbientNarrationProduct)
     ambient_narration_product.is_valid.return_value = False
     ambient_narration_product.get_error.return_value = "Error message"
-
     ambient_narration_provider = Mock()
     ambient_narration_provider.generate_product.return_value = ambient_narration_product
-
     ambient_narration_provider_factory = Mock(spec=AmbientNarrationProviderFactory)
     ambient_narration_provider_factory.create_provider.return_value = (
         ambient_narration_provider
     )
-
-    # Mock HandlePossibleExistenceOfOngoingConversationCommand and its factory
     handle_possible_existence_command = Mock(spec=Command)
     handle_possible_existence_of_ongoing_conversation_command_factory = Mock(
         spec=HandlePossibleExistenceOfOngoingConversationCommandFactory
     )
-    handle_possible_existence_of_ongoing_conversation_command_factory.create_handle_possible_existence_of_ongoing_conversation_command.return_value = (
-        handle_possible_existence_command
-    )
-
+    (
+        handle_possible_existence_of_ongoing_conversation_command_factory.create_handle_possible_existence_of_ongoing_conversation_command.return_value
+    ) = handle_possible_existence_command
     store_temporary_dialogue_command = Mock(spec=StoreTemporaryDialogueCommand)
-
     command = ProduceAmbientNarrationCommand(
         messages_to_llm,
         transcription,
@@ -122,15 +97,11 @@ def test_invalid_product_raises_value_error():
         handle_possible_existence_of_ongoing_conversation_command_factory,
         store_temporary_dialogue_command,
     )
-
-    # Act & Assert
     with pytest.raises(ValueError) as excinfo:
         command.execute()
-    assert (
-        str(excinfo.value)
-        == "Was unable to generate ambient narration. Error: Error message"
+    assert "Was unable to generate ambient narration. Error: Error message" in str(
+        excinfo
     )
-
     handle_possible_existence_command.execute.assert_called_once()
     ambient_narration_provider_factory.create_provider.assert_called_once_with(
         transcription
@@ -144,24 +115,19 @@ def test_invalid_product_raises_value_error():
 
 
 def test_handle_possible_existence_command_raises_exception():
-    # Arrange
     messages_to_llm = Mock(spec=MessagesToLlm)
     transcription = Mock(spec=Transcription)
     web_ambient_narration_observer = Mock(spec=WebAmbientNarrationObserver)
     ambient_narration_provider_factory = Mock(spec=AmbientNarrationProviderFactory)
-
-    # Mock HandlePossibleExistenceOfOngoingConversationCommand and its factory
     handle_possible_existence_command = Mock(spec=Command)
     handle_possible_existence_command.execute.side_effect = Exception("Test exception")
     handle_possible_existence_of_ongoing_conversation_command_factory = Mock(
         spec=HandlePossibleExistenceOfOngoingConversationCommandFactory
     )
-    handle_possible_existence_of_ongoing_conversation_command_factory.create_handle_possible_existence_of_ongoing_conversation_command.return_value = (
-        handle_possible_existence_command
-    )
-
+    (
+        handle_possible_existence_of_ongoing_conversation_command_factory.create_handle_possible_existence_of_ongoing_conversation_command.return_value
+    ) = handle_possible_existence_command
     store_temporary_dialogue_command = Mock(spec=StoreTemporaryDialogueCommand)
-
     command = ProduceAmbientNarrationCommand(
         messages_to_llm,
         transcription,
@@ -170,12 +136,9 @@ def test_handle_possible_existence_command_raises_exception():
         handle_possible_existence_of_ongoing_conversation_command_factory,
         store_temporary_dialogue_command,
     )
-
-    # Act & Assert
     with pytest.raises(Exception) as excinfo:
         command.execute()
-    assert str(excinfo.value) == "Test exception"
-
+    assert "Test exception" in str(excinfo)
     handle_possible_existence_command.execute.assert_called_once()
     ambient_narration_provider_factory.create_provider.assert_not_called()
     web_ambient_narration_observer.update.assert_not_called()
@@ -184,33 +147,25 @@ def test_handle_possible_existence_command_raises_exception():
 
 
 def test_generate_product_raises_exception():
-    # Arrange
     messages_to_llm = Mock(spec=MessagesToLlm)
     transcription = Mock(spec=Transcription)
     web_ambient_narration_observer = Mock(spec=WebAmbientNarrationObserver)
-
-    # Mock AmbientNarrationProvider and its factory
     ambient_narration_provider = Mock()
     ambient_narration_provider.generate_product.side_effect = Exception(
         "Generation error"
     )
-
     ambient_narration_provider_factory = Mock(spec=AmbientNarrationProviderFactory)
     ambient_narration_provider_factory.create_provider.return_value = (
         ambient_narration_provider
     )
-
-    # Mock HandlePossibleExistenceOfOngoingConversationCommand and its factory
     handle_possible_existence_command = Mock(spec=Command)
     handle_possible_existence_of_ongoing_conversation_command_factory = Mock(
         spec=HandlePossibleExistenceOfOngoingConversationCommandFactory
     )
-    handle_possible_existence_of_ongoing_conversation_command_factory.create_handle_possible_existence_of_ongoing_conversation_command.return_value = (
-        handle_possible_existence_command
-    )
-
+    (
+        handle_possible_existence_of_ongoing_conversation_command_factory.create_handle_possible_existence_of_ongoing_conversation_command.return_value
+    ) = handle_possible_existence_command
     store_temporary_dialogue_command = Mock(spec=StoreTemporaryDialogueCommand)
-
     command = ProduceAmbientNarrationCommand(
         messages_to_llm,
         transcription,
@@ -219,12 +174,9 @@ def test_generate_product_raises_exception():
         handle_possible_existence_of_ongoing_conversation_command_factory,
         store_temporary_dialogue_command,
     )
-
-    # Act & Assert
     with pytest.raises(Exception) as excinfo:
         command.execute()
-    assert str(excinfo.value) == "Generation error"
-
+    assert "Generation error" in str(excinfo)
     handle_possible_existence_command.execute.assert_called_once()
     ambient_narration_provider_factory.create_provider.assert_called_once_with(
         transcription

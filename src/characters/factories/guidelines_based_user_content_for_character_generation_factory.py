@@ -12,10 +12,10 @@ from src.prompting.products.concrete_user_content_for_character_generation_produ
 class GuidelinesBasedUserContentForCharacterGenerationFactory(
     UserContentForCharacterGenerationFactory
 ):
+
     def __init__(self, guideline: str):
         if not guideline:
             raise ValueError("guideline can't be empty.")
-
         self._guideline = guideline
 
     def create_user_content_for_character_generation(
