@@ -60,6 +60,7 @@ class ConcreteRandomTemplateTypeMapEntryProvider(RandomTemplateTypeMapEntryProvi
                     RandomTemplateTypeMapEntryCreationResultType.NO_AVAILABLE_TEMPLATES
                 )
             template_product = self._create_template_product(available_templates)
+
             if not template_product.is_valid():
                 return ConcreteRandomTemplateTypeMapEntryCreationResult(
                     RandomTemplateTypeMapEntryCreationResultType.FAILURE,

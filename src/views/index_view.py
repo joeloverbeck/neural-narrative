@@ -7,6 +7,7 @@ from src.base.commands.generate_story_universe_command import (
     GenerateStoryUniverseCommand,
 )
 from src.base.constants import STORY_UNIVERSES_TEMPLATE_FILE
+from src.base.exceptions import NoEligibleWorldsError
 from src.base.factories.story_universe_factory import StoryUniverseFactory
 from src.base.playthrough_manager import PlaythroughManager
 from src.base.tools import capture_traceback
@@ -51,6 +52,19 @@ class IndexView(MethodView):
                 response = {
                     "success": True,
                     "message": f"Playthrough '{playthrough_name}' created successfully.",
+                }
+            except NoEligibleWorldsError:
+                capture_traceback()
+                # Delete the partially created playthrough folder
+                try:
+                    FilesystemManager().delete_playthrough_folder(playthrough_name)
+                except Exception as delete_error:
+                    # Log the error but continue to return the original error message
+                    logger.error(f"Error deleting playthrough folder: {delete_error}")
+
+                response = {
+                    "success": False,
+                    "error": f"Failed to create playthrough: there weren't eligible worlds to fit {story_universe_template}. You should create at least one.",
                 }
             except Exception as e:
                 capture_traceback()

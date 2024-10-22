@@ -15,15 +15,15 @@ class ConcreteRandomPlaceTemplateBasedOnCategoriesFactory(
 ):
 
     def __init__(
-            self,
-            place_selection_manager: PlaceSelectionManager,
-            location_type: Optional[str] = None,
+        self,
+        place_selection_manager: PlaceSelectionManager,
+        location_type: Optional[str] = None,
     ):
         self._location_type = location_type
         self._place_selection_manager = place_selection_manager
 
     def create_random_place_template_based_on_categories(
-            self, place_templates: dict, categories: List[str]
+        self, place_templates: dict, categories: List[str]
     ) -> PlaceTemplateProduct:
         if not categories:
             raise ValueError(

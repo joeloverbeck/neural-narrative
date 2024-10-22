@@ -243,8 +243,8 @@ def test_select_random_place_empty():
         PlaceSelectionManager.select_random_place(matching_places)
 
     assert (
-            str(exc_info.value)
-            == "No matching places found. Consider generating places of the desired type."
+        str(exc_info.value)
+        == "No matching places found. Consider generating places of the desired type."
     )
 
 

@@ -1,5 +1,6 @@
 from collections import Counter
 from typing import Dict
+
 from src.base.constants import (
     VOICE_MODELS_FILE,
     VOICE_GENDERS,
@@ -80,7 +81,7 @@ def main():
     print()
     problematic_models = {}
     for model, attributes in voice_models.items():
-        category_counts = {category: (0) for category in attribute_categories.keys()}
+        category_counts = {category: 0 for category in attribute_categories.keys()}
         tags_in_categories = {category: [] for category in attribute_categories.keys()}
         for attribute in attributes:
             category = get_attribute_category(attribute, attribute_to_category)

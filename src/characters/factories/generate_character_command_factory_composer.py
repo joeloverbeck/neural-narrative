@@ -1,5 +1,12 @@
 import logging
 
+from src.base.algorithms.produce_and_update_next_identifier_algorithm import (
+    ProduceAndUpdateNextIdentifierAlgorithm,
+)
+from src.base.enums import IdentifierType
+from src.base.factories.store_last_identifier_command_factory import (
+    StoreLastIdentifierCommandFactory,
+)
 from src.characters.factories.character_description_provider_factory import (
     CharacterDescriptionProviderFactory,
 )
@@ -59,9 +66,24 @@ class GenerateCharacterCommandFactoryComposer:
         match_voice_data_to_voice_model_algorithm = (
             MatchVoiceDataToVoiceModelAlgorithm()
         )
+
+        store_last_identifier_command_factory = StoreLastIdentifierCommandFactory(
+            self._playthrough_name
+        )
+
+        produce_and_update_next_identifier_algorithm = (
+            ProduceAndUpdateNextIdentifierAlgorithm(
+                self._playthrough_name,
+                IdentifierType.CHARACTERS,
+                store_last_identifier_command_factory,
+            )
+        )
+
         store_generate_character_command_factory = (
             StoreGeneratedCharacterCommandFactory(
-                self._playthrough_name, match_voice_data_to_voice_model_algorithm
+                self._playthrough_name,
+                match_voice_data_to_voice_model_algorithm,
+                produce_and_update_next_identifier_algorithm,
             )
         )
         character_description_provider_factory = CharacterDescriptionProviderFactory(

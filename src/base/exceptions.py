@@ -28,3 +28,7 @@ class StoryUniverseGenerationError(Exception):
 
 class WorldGenerationError(Exception):
     pass
+
+
+class NoEligibleWorldsError(Exception):
+    pass
