@@ -1,6 +1,8 @@
 from typing import cast
 from unittest.mock import patch
+
 import pytest
+
 from src.characters.factories.player_and_followers_information_factory import (
     PlayerAndFollowersInformationFactory,
 )
@@ -58,10 +60,7 @@ def factory():
 
 def test_create_product_with_valid_plot_blueprint(factory):
     arguments = {
-        "plot_blueprint": """This is a test plot blueprint.
-             It has multiple lines.
-             
-             And paragraphs."""
+        "plot_blueprint": """This is a test plot blueprint.\nIt has multiple lines.\n\nAnd paragraphs."""
     }
     product = factory.create_product(arguments)
     expected_plot_blueprint = (

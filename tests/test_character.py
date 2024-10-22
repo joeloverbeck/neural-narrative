@@ -90,8 +90,8 @@ def test_character_init_with_missing_required_attributes(mock_filesystem_manager
     with pytest.raises(KeyError) as excinfo:
         Character(playthrough_name, identifier, filesystem_manager=mock_fs_manager)
     assert (
-            f"Character '{identifier}' is missing the following required attributes: name."
-            in str(excinfo)
+        f"Character '{identifier}' is missing the following required attributes: name."
+        in str(excinfo)
     )
 
 
