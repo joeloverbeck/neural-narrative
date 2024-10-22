@@ -205,6 +205,26 @@ class FilesystemManager:
             self.get_file_path_to_playthroughs_folder(), playthrough_name
         )
 
+    def delete_playthrough_folder(self, playthrough_name: str) -> None:
+        """
+        Delete the playthrough folder for the given playthrough name.
+
+        Args:
+            playthrough_name (str): The name of the playthrough whose folder is to be deleted.
+        """
+        folder_path = self.get_file_path_to_playthrough_folder(playthrough_name)
+        if os.path.exists(folder_path):
+            try:
+                shutil.rmtree(folder_path)
+                logger.info(f"Deleted playthrough folder at: {folder_path}")
+            except Exception as e:
+                logger.error(
+                    f"Failed to delete playthrough folder at {folder_path}: {e}"
+                )
+                raise
+        else:
+            logger.warning(f"Playthrough folder does not exist at: {folder_path}")
+
     def get_file_path_to_ongoing_dialogue(self, playthrough_name: str) -> str:
         return os.path.join(
             self.get_file_path_to_playthrough_folder(playthrough_name),

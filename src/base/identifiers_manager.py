@@ -1,6 +1,5 @@
 import logging.config
 
-from src.base.commands.store_last_identifier_command import StoreLastIdentifierCommand
 from src.base.enums import IdentifierType
 from src.filesystem.filesystem_manager import FilesystemManager
 
@@ -29,18 +28,9 @@ class IdentifiersManager:
         )
         try:
             current_value = int(
-                playthrough_metadata["last_identifiers"][identifier_type]
+                playthrough_metadata["last_identifiers"][identifier_type.value]
             )
         except KeyError as error:
-            logger.error(f"Key error: {error}")
+            logger.error(f"Key error when determining next identifier: {error}")
             raise
         return current_value + 1
-
-    def produce_and_update_next_identifier(
-        self, identifier_type: IdentifierType
-    ) -> int:
-        next_identifier = self.determine_next_identifier(identifier_type)
-        StoreLastIdentifierCommand(
-            self._playthrough_name, identifier_type, next_identifier
-        ).execute()
-        return next_identifier

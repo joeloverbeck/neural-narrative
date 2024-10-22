@@ -2,6 +2,7 @@ from unittest.mock import Mock
 
 import pytest
 
+from src.base.exceptions import NoEligibleWorldsError
 from src.maps.commands.create_initial_map_command import CreateInitialMapCommand
 from src.maps.enums import RandomTemplateTypeMapEntryCreationResultType
 
@@ -57,7 +58,7 @@ def test_execute_world_creation_failure():
         random_template_type_map_entry_provider_factory=random_provider_factory,
         map_manager_factory=map_manager_factory,
     )
-    with pytest.raises(ValueError) as exc_info:
+    with pytest.raises(NoEligibleWorldsError) as exc_info:
         command.execute()
     assert "Was unable to create a map entry for a world" in str(exc_info)
     assert random_provider.create_random_place_type_map_entry.call_count == 1
