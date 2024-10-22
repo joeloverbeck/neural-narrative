@@ -115,8 +115,8 @@ def test_story_universe_template_not_found():
     with pytest.raises(StoryUniverseTemplateNotFoundError) as exc_info:
         command.execute()
     assert (
-            f"There is no such story universe template '{story_universe_template}'."
-            in str(exc_info)
+        f"There is no such story universe template '{story_universe_template}'."
+        in str(exc_info)
     )
     filesystem_manager.playthrough_exists.assert_called_once_with("new_playthrough")
     filesystem_manager.load_existing_or_new_json_file.assert_called_once_with(

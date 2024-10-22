@@ -9,23 +9,26 @@ from src.characters.products.secrets_product import SecretsProduct
 
 class GenerateCharacterSecretsCommand(Command):
 
-    def __init__(self, playthrough_name: str, character_identifier: str,
-                 secrets_factory: SecretsFactory, characters_manager: Optional[
-                CharactersManager] = None):
+    def __init__(
+        self,
+        playthrough_name: str,
+        character_identifier: str,
+        secrets_factory: SecretsFactory,
+        characters_manager: Optional[CharactersManager] = None,
+    ):
         self._playthrough_name = playthrough_name
         self._character_identifier = character_identifier
         self._secrets_factory = secrets_factory
-        self._characters_manager = characters_manager or CharactersManager(self
-                                                                           ._playthrough_name)
+        self._characters_manager = characters_manager or CharactersManager(
+            self._playthrough_name
+        )
 
     def execute(self) -> None:
-        product = cast(SecretsProduct, self._secrets_factory.generate_product()
-                       )
+        product = cast(SecretsProduct, self._secrets_factory.generate_product())
         if not product.is_valid():
             raise ValueError(
-                f'Was unable to generate secrets. Error: {product.get_error()}'
+                f"Was unable to generate secrets. Error: {product.get_error()}"
             )
-        character = Character(self._playthrough_name, self.
-                              _character_identifier)
-        character.update_data({'secrets': product.get()})
+        character = Character(self._playthrough_name, self._character_identifier)
+        character.update_data({"secrets": product.get()})
         character.save()
