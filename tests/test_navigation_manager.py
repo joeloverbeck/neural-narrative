@@ -118,7 +118,7 @@ def test_get_cardinal_connections_missing_place_template():
     nav_manager = NavigationManager(map_repository)
     area_identifier = "area1"
     with pytest.raises(
-            ValueError, match="Place template not found for connected area 'area2'."
+        ValueError, match="Place template not found for connected area 'area2'."
     ):
         nav_manager.get_cardinal_connections(area_identifier)
 

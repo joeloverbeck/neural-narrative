@@ -25,11 +25,12 @@ class GenerateVoiceLineAlgorithm:
             data_16bit = data.astype(np.int16)
         else:
             data_16bit = data
-        sf.write(output_file, data_16bit, samplerate, subtype='PCM_16')
+        sf.write(output_file, data_16bit, samplerate, subtype="PCM_16")
 
     def generate_voice_line(self) -> None:
         product = self._voice_line_factory.create_voice_line()
         if not product.is_valid():
             raise ValueError(
-                f'Failed to generate voice line. Error: {product.get_error()}')
+                f"Failed to generate voice line. Error: {product.get_error()}"
+            )
         self._convert_to_16bit(product.get(), self._file_path)
