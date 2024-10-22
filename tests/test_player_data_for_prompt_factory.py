@@ -1,7 +1,5 @@
 from unittest.mock import Mock
-
 from src.base.playthrough_manager import PlaythroughManager
-from src.base.required_string import RequiredString
 from src.characters.character_memories import CharacterMemories
 from src.characters.factories.character_factory import CharacterFactory
 from src.characters.factories.player_data_for_prompt_factory import (
@@ -10,36 +8,27 @@ from src.characters.factories.player_data_for_prompt_factory import (
 
 
 def test_player_data_for_prompt_factory_initialization_with_provided_arguments():
-    # Given
-    playthrough_name = RequiredString("TestPlaythrough")
+    playthrough_name = "TestPlaythrough"
     character_factory = Mock(spec=CharacterFactory)
     playthrough_manager = Mock(spec=PlaythroughManager)
     character_memories = Mock(spec=CharacterMemories)
-
-    # When
     factory = PlayerDataForPromptFactory(
         playthrough_name,
         character_factory,
         playthrough_manager=playthrough_manager,
         character_memories=character_memories,
     )
-
-    # Then
     assert factory._playthrough_manager is playthrough_manager
     assert factory._character_memories is character_memories
 
 
 def test_player_data_for_prompt_factory_create_player_data_for_prompt():
-    # Given
-    playthrough_name = RequiredString("TestPlaythrough")
+    playthrough_name = "TestPlaythrough"
     character_factory = Mock(spec=CharacterFactory)
     playthrough_manager = Mock(spec=PlaythroughManager)
     character_memories = Mock(spec=CharacterMemories)
-
-    # Set up the mocks
     player_identifier = "Player1"
     playthrough_manager.get_player_identifier.return_value = player_identifier
-
     player = Mock()
     player.name = "TestPlayer"
     player.description = "A brave warrior"
@@ -51,30 +40,20 @@ def test_player_data_for_prompt_factory_create_player_data_for_prompt():
     player.speech_patterns = "Speaks with confidence"
     player.health = 100
     player.equipment = "Sword and shield"
-
     character_factory.create_character.return_value = player
-
-    # Suppose the memories are:
     memories = Mock()
-    memories.value = "Memory1\nMemory2\n"
-
+    memories = "Memory1\nMemory2\n"
     character_memories.load_memories.return_value = memories
-
     factory = PlayerDataForPromptFactory(
         playthrough_name,
         character_factory,
         playthrough_manager=playthrough_manager,
         character_memories=character_memories,
     )
-
-    # When
     player_data_for_prompt = factory.create_player_data_for_prompt()
-
-    # Then
     playthrough_manager.get_player_identifier.assert_called_once()
     character_factory.create_character.assert_called_once_with(player_identifier)
     character_memories.load_memories.assert_called_once_with(player)
-
     expected_player_data = {
         "player_name": player.name,
         "player_description": player.description,
@@ -87,22 +66,17 @@ def test_player_data_for_prompt_factory_create_player_data_for_prompt():
         "player_health": player.health,
         "player_equipment": player.equipment,
     }
-
     assert player_data_for_prompt.get_player_data_for_prompt() == expected_player_data
     assert player_data_for_prompt.get_player_memories() == ["Memory1", "Memory2"]
 
 
 def test_player_data_for_prompt_factory_create_player_data_for_prompt_no_memories():
-    # Given
-    playthrough_name = RequiredString("TestPlaythrough")
+    playthrough_name = "TestPlaythrough"
     character_factory = Mock(spec=CharacterFactory)
     playthrough_manager = Mock(spec=PlaythroughManager)
     character_memories = Mock(spec=CharacterMemories)
-
-    # Set up the mocks
     player_identifier = "Player1"
     playthrough_manager.get_player_identifier.return_value = player_identifier
-
     player = Mock()
     player.name = "TestPlayer"
     player.description = "A brave warrior"
@@ -114,22 +88,15 @@ def test_player_data_for_prompt_factory_create_player_data_for_prompt_no_memorie
     player.speech_patterns = "Speaks with confidence"
     player.health = 100
     player.equipment = "Sword and shield"
-
     character_factory.create_character.return_value = player
-
     character_memories.load_memories.return_value = None
-
     factory = PlayerDataForPromptFactory(
         playthrough_name,
         character_factory,
         playthrough_manager=playthrough_manager,
         character_memories=character_memories,
     )
-
-    # When
     player_data_for_prompt = factory.create_player_data_for_prompt()
-
-    # Then
     expected_player_data = {
         "player_name": player.name,
         "player_description": player.description,
@@ -142,22 +109,17 @@ def test_player_data_for_prompt_factory_create_player_data_for_prompt_no_memorie
         "player_health": player.health,
         "player_equipment": player.equipment,
     }
-
     assert player_data_for_prompt.get_player_data_for_prompt() == expected_player_data
     assert player_data_for_prompt.get_player_memories() == []
 
 
 def test_player_data_for_prompt_factory_create_player_data_for_prompt_with_whitespace_memories():
-    # Given
-    playthrough_name = RequiredString("TestPlaythrough")
+    playthrough_name = "TestPlaythrough"
     character_factory = Mock(spec=CharacterFactory)
     playthrough_manager = Mock(spec=PlaythroughManager)
     character_memories = Mock(spec=CharacterMemories)
-
-    # Set up the mocks
     player_identifier = "Player1"
     playthrough_manager.get_player_identifier.return_value = player_identifier
-
     player = Mock()
     player.name = "TestPlayer"
     player.description = "A brave warrior"
@@ -169,40 +131,27 @@ def test_player_data_for_prompt_factory_create_player_data_for_prompt_with_white
     player.speech_patterns = "Speaks with confidence"
     player.health = 100
     player.equipment = "Sword and shield"
-
     character_factory.create_character.return_value = player
-
-    # Suppose the memories are:
     memories = Mock()
-    memories.value = "Memory1\n\n  \nMemory2  \n\n"
-
+    memories = "Memory1\n\n  \nMemory2  \n\n"
     character_memories.load_memories.return_value = memories
-
     factory = PlayerDataForPromptFactory(
         playthrough_name,
         character_factory,
         playthrough_manager=playthrough_manager,
         character_memories=character_memories,
     )
-
-    # When
     player_data_for_prompt = factory.create_player_data_for_prompt()
-
-    # Then
     assert player_data_for_prompt.get_player_memories() == ["Memory1", "Memory2"]
 
 
 def test_player_data_for_prompt_factory_create_player_data_for_prompt_empty_memory_value():
-    # Given
-    playthrough_name = RequiredString("TestPlaythrough")
+    playthrough_name = "TestPlaythrough"
     character_factory = Mock(spec=CharacterFactory)
     playthrough_manager = Mock(spec=PlaythroughManager)
     character_memories = Mock(spec=CharacterMemories)
-
-    # Set up the mocks
     player_identifier = "Player1"
     playthrough_manager.get_player_identifier.return_value = player_identifier
-
     player = Mock()
     player.name = "TestPlayer"
     player.description = "A brave warrior"
@@ -214,40 +163,27 @@ def test_player_data_for_prompt_factory_create_player_data_for_prompt_empty_memo
     player.speech_patterns = "Speaks with confidence"
     player.health = 100
     player.equipment = "Sword and shield"
-
     character_factory.create_character.return_value = player
-
-    # Suppose the memories are empty
     memories = Mock()
-    memories.value = ""
-
+    memories = ""
     character_memories.load_memories.return_value = memories
-
     factory = PlayerDataForPromptFactory(
         playthrough_name,
         character_factory,
         playthrough_manager=playthrough_manager,
         character_memories=character_memories,
     )
-
-    # When
     player_data_for_prompt = factory.create_player_data_for_prompt()
-
-    # Then
     assert player_data_for_prompt.get_player_memories() == []
 
 
 def test_player_data_for_prompt_factory_create_player_data_for_prompt_with_missing_player_attributes():
-    # Given
-    playthrough_name = RequiredString("TestPlaythrough")
+    playthrough_name = "TestPlaythrough"
     character_factory = Mock(spec=CharacterFactory)
     playthrough_manager = Mock(spec=PlaythroughManager)
     character_memories = Mock(spec=CharacterMemories)
-
-    # Set up the mocks
     player_identifier = "Player1"
     playthrough_manager.get_player_identifier.return_value = player_identifier
-
     player = Mock()
     player.name = None
     player.description = ""
@@ -259,22 +195,15 @@ def test_player_data_for_prompt_factory_create_player_data_for_prompt_with_missi
     player.speech_patterns = ""
     player.health = None
     player.equipment = ""
-
     character_factory.create_character.return_value = player
-
     character_memories.load_memories.return_value = None
-
     factory = PlayerDataForPromptFactory(
         playthrough_name,
         character_factory,
         playthrough_manager=playthrough_manager,
         character_memories=character_memories,
     )
-
-    # When
     player_data_for_prompt = factory.create_player_data_for_prompt()
-
-    # Then
     expected_player_data = {
         "player_name": player.name,
         "player_description": player.description,
@@ -287,6 +216,5 @@ def test_player_data_for_prompt_factory_create_player_data_for_prompt_with_missi
         "player_health": player.health,
         "player_equipment": player.equipment,
     }
-
     assert player_data_for_prompt.get_player_data_for_prompt() == expected_player_data
     assert player_data_for_prompt.get_player_memories() == []

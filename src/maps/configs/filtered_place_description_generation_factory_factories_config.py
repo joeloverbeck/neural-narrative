@@ -1,14 +1,9 @@
 from dataclasses import dataclass
-
-from src.characters.factories.character_information_provider import (
-    CharacterInformationProvider,
-)
+from src.characters.factories.character_information_provider import CharacterInformationProvider
 from src.maps.factories.map_manager_factory import MapManagerFactory
 from src.maps.factories.place_manager_factory import PlaceManagerFactory
 from src.maps.weathers_manager import WeathersManager
-from src.prompting.factories.produce_tool_response_strategy_factory import (
-    ProduceToolResponseStrategyFactory,
-)
+from src.prompting.factories.produce_tool_response_strategy_factory import ProduceToolResponseStrategyFactory
 
 
 @dataclass

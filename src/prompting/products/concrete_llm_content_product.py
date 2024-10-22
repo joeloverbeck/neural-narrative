@@ -2,6 +2,7 @@ from src.prompting.abstracts.factory_products import LlmContentProduct
 
 
 class ConcreteLlmContentProduct(LlmContentProduct):
+
     def __init__(self, content: str, is_valid: bool, error: str = None):
         self._content = content
         self._is_valid = is_valid

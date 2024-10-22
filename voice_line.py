@@ -1,5 +1,4 @@
 import random
-
 from src.voices.factories.direct_voice_line_generation_algorithm_factory import (
     DirectVoiceLineGenerationAlgorithmFactory,
 )
@@ -22,11 +21,9 @@ def generate_voice_line(
     determined_timestamp = generate_timestamp_between(
         previous_voice_line_name, following_voice_line_name
     )
-
     generated_voice_file = DirectVoiceLineGenerationAlgorithmFactory.create_algorithm(
         character_name, text, voice_model
     ).direct_voice_line_generation()
-
     print(
         f"Generated voice file '{generated_voice_file}' should have timestamp {determined_timestamp}."
     )
@@ -39,7 +36,6 @@ def main():
     print(
         "It will generate a voice line with a timestamp between the indicated voice line names."
     )
-
     generate_voice_line(
         "20241015170233-Gideon Harrow-dbspectrallachance",
         "20241015170315-Gideon Harrow-dbspectrallachance.wav",

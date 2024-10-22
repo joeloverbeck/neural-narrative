@@ -1,7 +1,6 @@
 from flask import session, url_for
 
 from src.base.playthrough_manager import PlaythroughManager
-from src.base.required_string import RequiredString
 from src.config.config_manager import ConfigManager
 from src.dialogues.commands.produce_ambient_narration_command import (
     ProduceAmbientNarrationCommand,
@@ -52,9 +51,9 @@ from src.prompting.factories.produce_tool_response_strategy_factory import (
 
 
 class DialogueService:
+
     def __init__(self):
         self._playthrough_name = session.get("playthrough_name")
-
         self._filesystem_manager = FilesystemManager()
         self._playthrough_manager = PlaythroughManager(self._playthrough_name)
         self._participants_instance = Participants()
@@ -62,56 +61,40 @@ class DialogueService:
 
     @staticmethod
     def process_ambient_message():
-        # Initialize necessary objects
         messages_to_llm = MessagesToLlm()
         transcription = Transcription()
         web_ambient_narration_observer = WebAmbientNarrationObserver()
-
         produce_tool_response_strategy_factory = ProduceToolResponseStrategyFactory(
             OpenRouterLlmClientFactory().create_llm_client(),
             ConfigManager().get_heavy_llm(),
         )
-
         playthrough_name = session.get("playthrough_name")
-
-        map_manager_factory = MapManagerFactory(RequiredString(playthrough_name))
-
+        map_manager_factory = MapManagerFactory(playthrough_name)
         weathers_manager = WeathersManager(map_manager_factory)
-
-        place_manager_factory = PlaceManagerFactory(RequiredString(playthrough_name))
-
+        place_manager_factory = PlaceManagerFactory(playthrough_name)
         template_repository = TemplatesRepository()
-
         place_description_manager = PlaceDescriptionManager(
             place_manager_factory, template_repository
         )
-
         ambient_narration_provider_factory = AmbientNarrationProviderFactory(
             playthrough_name,
             produce_tool_response_strategy_factory,
             weathers_manager,
             place_description_manager,
         )
-
         dialogue_manager = DialogueManager(playthrough_name)
-
         participants = Participants()
-
         player_identifier = PlaythroughManager(playthrough_name).get_player_identifier()
-
         dialogue_manager.gather_participants_data(
             player_identifier, session.get("participants"), participants
         )
-
         load_data_from_ongoing_dialogue_command_factory = (
             LoadDataFromOngoingDialogueCommandFactory(playthrough_name, participants)
         )
-
         choose_participants_strategy = WebChooseParticipantsStrategy(
             session.get("participants")
         )
-
-        handle_possible_existence_of_ongoing_conversation_command_factory = (
+        (handle_possible_existence_of_ongoing_conversation_command_factory) = (
             HandlePossibleExistenceOfOngoingConversationCommandFactory(
                 playthrough_name,
                 player_identifier,
@@ -120,7 +103,6 @@ class DialogueService:
                 choose_participants_strategy,
             )
         )
-
         store_temporary_dialogue_command = StoreTemporaryDialogueCommand(
             playthrough_name,
             participants,
@@ -128,8 +110,6 @@ class DialogueService:
             messages_to_llm,
             transcription,
         )
-
-        # Create and execute the command
         produce_ambient_narration_command = ProduceAmbientNarrationCommand(
             messages_to_llm,
             transcription,
@@ -139,19 +119,14 @@ class DialogueService:
             store_temporary_dialogue_command,
         )
         produce_ambient_narration_command.execute()
-
-        # Retrieve the message from the observer
         return web_ambient_narration_observer.get_messages()[0]
 
     def process_user_input(self, user_input):
-        # Create player input factory
         web_player_input_factory = WebPlayerInputFactory(user_input)
         player_input_product = web_player_input_factory.create_player_input()
-
         load_data_command_factory = LoadDataFromOngoingDialogueCommandFactory(
             self._playthrough_name, self._participants_instance
         )
-
         handle_possible_existence_of_ongoing_conversation_command = (
             HandlePossibleExistenceOfOngoingConversationCommandFactory(
                 self._playthrough_name,
@@ -161,8 +136,6 @@ class DialogueService:
                 WebChooseParticipantsStrategy(session.get("participants")),
             )
         )
-
-        # Setup dialogue command
         setup_command = SetupDialogueCommand(
             self._playthrough_name,
             self._playthrough_manager.get_player_identifier(),
@@ -177,15 +150,9 @@ class DialogueService:
                 self._playthrough_manager.get_player_identifier(),
             ),
         )
-
         setup_command.execute()
-
-        # Check if the input was "goodbye"
         is_goodbye = player_input_product.is_goodbye()
-
-        # Prepare messages
         messages = self.prepare_messages()
-
         return messages, is_goodbye
 
     def prepare_messages(self):

@@ -7,13 +7,22 @@ from src.dialogues.transcription import Transcription
 
 
 class CharacterChoiceDialogueInitialPromptingMessagesProviderFactory:
+
     def __init__(self,
-                 character_choice_dialogue_system_content_for_prompt_provider_factory: CharacterChoiceDialogueSystemContentForPromptProviderFactory):
-        self._character_choice_dialogue_system_content_for_prompt_provider_factory = character_choice_dialogue_system_content_for_prompt_provider_factory
+                 character_choice_dialogue_system_content_for_prompt_provider_factory:
+                 CharacterChoiceDialogueSystemContentForPromptProviderFactory):
+        (self.
+         _character_choice_dialogue_system_content_for_prompt_provider_factory
+         ) = (
+            character_choice_dialogue_system_content_for_prompt_provider_factory
+        )
 
     def create_character_choice_dialogue_initial_prompting_messages_provider(
-            self, participants: Participants,
-            transcription: Transcription) -> CharacterChoiceDialogueInitialPromptingMessagesProvider:
-        return CharacterChoiceDialogueInitialPromptingMessagesProvider(
-            self._character_choice_dialogue_system_content_for_prompt_provider_factory.create_character_choice_dialogue_system_content_for_prompt_provider(
-                participants, transcription))
+            self, participants: Participants, transcription: Transcription
+    ) -> CharacterChoiceDialogueInitialPromptingMessagesProvider:
+        return CharacterChoiceDialogueInitialPromptingMessagesProvider(self
+                                                                       .
+                                                                       _character_choice_dialogue_system_content_for_prompt_provider_factory
+                                                                       .
+                                                                       create_character_choice_dialogue_system_content_for_prompt_provider
+                                                                       (participants, transcription))

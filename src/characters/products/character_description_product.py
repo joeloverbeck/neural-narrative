@@ -2,10 +2,11 @@ from typing import Optional
 
 
 class CharacterDescriptionProduct:
-    def __init__(self, description: str, is_valid: bool, error: Optional[str] = None):
+
+    def __init__(self, description: str, is_valid: bool, error: Optional[
+        str] = None):
         if not description:
             raise ValueError("description can't be empty.")
-
         self._description = description
         self._is_valid = is_valid
         self._error = error

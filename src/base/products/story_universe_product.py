@@ -1,25 +1,18 @@
 from typing import List
 
-from src.base.required_string import RequiredString
-
 
 class StoryUniverseProduct:
 
-    def __init__(
-        self,
-        name: RequiredString,
-        description: RequiredString,
-        categories: List[RequiredString],
-    ):
+    def __init__(self, name: str, description: str, categories: List[str]):
         self._name = name
         self._description = description
         self._categories = categories
 
-    def get_name(self) -> RequiredString:
+    def get_name(self) -> str:
         return self._name
 
-    def get_description(self) -> RequiredString:
+    def get_description(self) -> str:
         return self._description
 
-    def get_categories(self) -> List[RequiredString]:
+    def get_categories(self) -> List[str]:
         return self._categories

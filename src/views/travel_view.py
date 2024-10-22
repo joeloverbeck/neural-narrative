@@ -1,11 +1,7 @@
 from flask import redirect, url_for, session, render_template, request
 from flask.views import MethodView
-
-from src.base.constants import (
-    TIME_ADVANCED_DUE_TO_TRAVELING,
-)
+from src.base.constants import TIME_ADVANCED_DUE_TO_TRAVELING
 from src.base.playthrough_manager import PlaythroughManager
-from src.base.required_string import RequiredString
 from src.characters.factories.character_factory import CharacterFactory
 from src.characters.factories.party_data_for_prompt_factory import (
     PartyDataForPromptFactory,
@@ -31,34 +27,28 @@ from src.time.time_manager import TimeManager
 
 
 class TravelView(MethodView):
+
     def get(self):
         playthrough_name = session.get("playthrough_name")
         if not playthrough_name:
             return redirect(url_for("index"))
-
         destination_identifier = session.get("destination_identifier")
         if not destination_identifier:
             return redirect(url_for("location-hub"))
-
         produce_tool_response_strategy_factory = ProduceToolResponseStrategyFactory(
             OpenRouterLlmClientFactory().create_llm_client(),
             ConfigManager().get_heavy_llm(),
         )
-
         player_data_for_prompt_factory = PlayerDataForPromptFactory(
-            playthrough_name, CharacterFactory(RequiredString(playthrough_name))
+            playthrough_name, CharacterFactory(playthrough_name)
         )
-
         party_data_for_prompt_factory = PartyDataForPromptFactory(
             playthrough_name, player_data_for_prompt_factory
         )
-
         player_and_followers_information_factory = PlayerAndFollowersInformationFactory(
             party_data_for_prompt_factory
         )
-
         map_manager_factory = MapManagerFactory(playthrough_name)
-
         product = TravelNarrationFactory(
             playthrough_name,
             destination_identifier,
@@ -66,24 +56,16 @@ class TravelView(MethodView):
             player_and_followers_information_factory,
             map_manager_factory,
         ).generate_product()
-
         if not product.is_valid():
             return redirect(url_for("location-hub"))
-
         travel_narration = product.get()
-
-        # Add the travel narration to the adventure.
         PlaythroughManager(playthrough_name).add_to_adventure(travel_narration + "\n")
-
         destination_place_data = (
-            MapManagerFactory(RequiredString(playthrough_name))
+            MapManagerFactory(playthrough_name)
             .create_map_manager()
             .get_place_full_data(destination_identifier)
         )
-
-        # Remove the dialogue in the session, lest the travel narration not fit.
         session.pop("dialogue", None)
-
         return render_template(
             "travel.html",
             travel_narration=travel_narration,
@@ -95,18 +77,12 @@ class TravelView(MethodView):
         playthrough_name = session.get("playthrough_name")
         if not playthrough_name:
             return redirect(url_for("index"))
-
         action = request.form.get("action")
         if not action:
             return redirect(url_for("location-hub"))
-
-        # Advance time significantly
         TimeManager(playthrough_name).advance_time(TIME_ADVANCED_DUE_TO_TRAVELING)
-
-        # Dispatch to the appropriate handler method
         method_name = WebService.create_method_name(action)
         method = getattr(self, method_name, None)
-
         if method:
             return method(playthrough_name)
         else:
@@ -115,9 +91,5 @@ class TravelView(MethodView):
     @staticmethod
     def handle_enter_area(playthrough_name):
         destination_identifier = request.form.get("destination_identifier")
-
-        PlaceService().visit_location(
-            playthrough_name, RequiredString(destination_identifier)
-        )
-
+        PlaceService().visit_location(playthrough_name, destination_identifier)
         return redirect(url_for("location-hub"))

@@ -6,12 +6,9 @@ from flask.views import MethodView
 from src.base.commands.generate_story_universe_command import (
     GenerateStoryUniverseCommand,
 )
-from src.base.constants import (
-    STORY_UNIVERSES_TEMPLATE_FILE,
-)
+from src.base.constants import STORY_UNIVERSES_TEMPLATE_FILE
 from src.base.factories.story_universe_factory import StoryUniverseFactory
 from src.base.playthrough_manager import PlaythroughManager
-from src.base.required_string import RequiredString
 from src.base.tools import capture_traceback
 from src.config.config_manager import ConfigManager
 from src.filesystem.filesystem_manager import FilesystemManager
@@ -30,16 +27,11 @@ class IndexView(MethodView):
 
     def get(self):
         filesystem_manager = FilesystemManager()
-
-        # Existing code
         playthrough_names = filesystem_manager.get_playthrough_names()
         session.pop("no_available_templates", None)
-
-        # New code to fetch worlds, regions, and areas
         story_universes = filesystem_manager.load_existing_or_new_json_file(
             STORY_UNIVERSES_TEMPLATE_FILE
         )
-
         return render_template(
             "index.html",
             playthrough_names=playthrough_names,
@@ -48,19 +40,14 @@ class IndexView(MethodView):
 
     def post(self):
         action = request.form.get("submit_action")
-
         if action == "create_playthrough":
             playthrough_name = request.form["playthrough_name"]
             story_universe_template = request.form["story_universe_name"]
             player_notion = request.form.get("player_notion")
-
             try:
                 PlaythroughService().create_playthrough(
-                    RequiredString(playthrough_name),
-                    RequiredString(story_universe_template),
-                    RequiredString(player_notion),
+                    playthrough_name, story_universe_template, player_notion
                 )
-
                 response = {
                     "success": True,
                     "message": f"Playthrough '{playthrough_name}' created successfully.",
@@ -77,7 +64,6 @@ class IndexView(MethodView):
                 return redirect(url_for("index"))
         elif action == "generate_story_universe":
             story_universe_notion = request.form["story_universe_notion"]
-
             try:
                 produce_tool_response_strategy_factory = (
                     ProduceToolResponseStrategyFactory(
@@ -85,16 +71,11 @@ class IndexView(MethodView):
                         ConfigManager().get_heavy_llm(),
                     )
                 )
-
                 story_universe_factory = StoryUniverseFactory(
-                    RequiredString(story_universe_notion),
-                    produce_tool_response_strategy_factory,
+                    story_universe_notion, produce_tool_response_strategy_factory
                 )
-
                 command = GenerateStoryUniverseCommand(story_universe_factory)
-
                 command.execute()
-
                 response = {
                     "success": True,
                     "message": "Story universe generated successfully.",
@@ -110,17 +91,10 @@ class IndexView(MethodView):
                 return redirect(url_for("index"))
         else:
             filesystem_manager = FilesystemManager()
-
             playthrough_name = request.form["playthrough_name"]
-
             if filesystem_manager.playthrough_exists(playthrough_name):
                 session["playthrough_name"] = playthrough_name
-
-                playthrough_manager = PlaythroughManager(
-                    RequiredString(playthrough_name)
-                )
-
-                # If turns out that there's a convo ongoing, it should redirect to the chat.
+                playthrough_manager = PlaythroughManager(playthrough_name)
                 if playthrough_manager.has_ongoing_dialogue(playthrough_name):
                     return redirect(url_for("chat"))
                 else:

@@ -1,7 +1,5 @@
 import logging.config
-
 from flask import Flask
-
 from src.base.constants import (
     RESEARCH_RESOLUTION_GENERATION_PROMPT_FILE,
     RESEARCH_RESOLUTION_GENERATION_TOOL_FILE,
@@ -28,14 +26,9 @@ from src.views.story_hub_view import StoryHubView
 from src.views.travel_view import TravelView
 
 logging.config.dictConfig(FilesystemManager().get_logging_config_file())
-
 app = Flask(__name__)
-
 app.secret_key = b"neural-narrative"
-
 logger = logging.getLogger(__name__)
-
-# Register the view
 app.add_url_rule("/", view_func=IndexView.as_view("index"))
 app.add_url_rule("/places", view_func=PlacesView.as_view("places"))
 app.add_url_rule("/story-hub", view_func=StoryHubView.as_view("story-hub"))

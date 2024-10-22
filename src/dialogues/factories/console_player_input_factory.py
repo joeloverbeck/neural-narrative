@@ -4,5 +4,7 @@ from src.dialogues.products.concrete_player_input_product import ConcretePlayerI
 
 
 class ConsolePlayerInputFactory(PlayerInputFactory):
+
     def create_player_input(self) -> PlayerInputProduct:
-        return ConcretePlayerInputProduct(input("\nYour input [options: goodbye, silent]: "))
+        return ConcretePlayerInputProduct(input(
+            '\nYour input [options: goodbye, silent]: '))

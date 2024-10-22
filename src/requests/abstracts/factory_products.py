@@ -2,6 +2,7 @@ from typing import Protocol
 
 
 class UrlContentProduct(Protocol):
+
     def get(self) -> bytes:
         pass
 

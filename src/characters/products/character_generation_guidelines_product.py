@@ -1,17 +1,14 @@
 from typing import List
 
-from src.base.required_string import RequiredString
-
 
 class CharacterGenerationGuidelinesProduct:
-    def __init__(
-            self, guidelines: List[RequiredString], is_valid: bool, error: str = None
-    ):
+
+    def __init__(self, guidelines: List[str], is_valid: bool, error: str = None):
         self._guidelines = guidelines
         self._is_valid = is_valid
         self._error = error
 
-    def get(self) -> List[RequiredString]:
+    def get(self) -> List[str]:
         return self._guidelines
 
     def is_valid(self) -> bool:

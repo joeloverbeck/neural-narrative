@@ -1,4 +1,3 @@
-from src.base.required_string import RequiredString
 from src.dialogues.participants import Participants
 from src.dialogues.strategies.prevent_llm_from_choosing_player_as_next_speaker_strategy import (
     PreventLlmFromChoosingPlayerAsNextSpeakerStrategy,
@@ -15,14 +14,13 @@ class HandleParsedToolResponseForDialogueCharacterChoiceStrategyFactory:
 
     def __init__(
         self,
-            playthrough_name: RequiredString,
+        playthrough_name: str,
         participants: Participants,
         tool_response_parsing_provider_factory: ToolResponseParsingProviderFactory,
         prevent_llm_from_choosing_player_as_next_speaker_strategy: PreventLlmFromChoosingPlayerAsNextSpeakerStrategy,
     ):
         if not playthrough_name:
             raise ValueError("playthrough_name must not be empty.")
-
         self._playthrough_name = playthrough_name
         self._participants = participants
         self._tool_response_parsing_provider_factory = (

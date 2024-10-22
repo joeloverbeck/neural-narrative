@@ -1,6 +1,5 @@
 import logging
 
-from src.base.required_string import RequiredString
 from src.characters.commands.generate_character_command import GenerateCharacterCommand
 from src.characters.enums import CharacterGenerationType
 from src.characters.factories.automatic_user_content_for_character_generation_factory import (
@@ -37,13 +36,13 @@ class GenerateCharacterCommandFactory:
 
     def __init__(
         self,
-            playthrough_name: RequiredString,
-            character_generation_instructions_formatter_factory: CharacterGenerationInstructionsFormatterFactory,
+        playthrough_name: str,
+        character_generation_instructions_formatter_factory: CharacterGenerationInstructionsFormatterFactory,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         speech_patterns_provider_factory: SpeechPatternsProviderFactory,
         store_generate_character_command_factory: StoreGeneratedCharacterCommandFactory,
         generate_character_image_command_factory: GenerateCharacterImageCommandFactory,
-            movement_manager: MovementManager,
+        movement_manager: MovementManager,
     ):
         self._playthrough_name = playthrough_name
         self._character_generation_instructions_formatter_factory = (
@@ -72,7 +71,6 @@ class GenerateCharacterCommandFactory:
             if user_content
             else CharacterGenerationType.AUTOMATIC
         )
-
         if character_generation_type == CharacterGenerationType.AUTOMATIC:
             return GenerateCharacterCommand(
                 self._playthrough_name,
@@ -88,7 +86,6 @@ class GenerateCharacterCommandFactory:
                 place_character_at_current_place,
                 self._movement_manager,
             )
-
         if character_generation_type == CharacterGenerationType.PLAYER_GUIDED:
             return GenerateCharacterCommand(
                 self._playthrough_name,
@@ -104,5 +101,4 @@ class GenerateCharacterCommandFactory:
                 place_character_at_current_place,
                 self._movement_manager,
             )
-
         raise ValueError(f"Not implemented for case '{character_generation_type}'.")

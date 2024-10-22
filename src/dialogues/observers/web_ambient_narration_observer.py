@@ -1,11 +1,8 @@
 import os
 from typing import List
-
 from flask import session, url_for
-
 from src.base.abstracts.observer import Observer
 from src.base.constants import NARRATOR_VOICE_MODEL
-from src.base.required_string import RequiredString
 from src.characters.characters_manager import CharactersManager
 from src.voices.factories.direct_voice_line_generation_algorithm_factory import (
     DirectVoiceLineGenerationAlgorithmFactory,
@@ -13,6 +10,7 @@ from src.voices.factories.direct_voice_line_generation_algorithm_factory import 
 
 
 class WebAmbientNarrationObserver(Observer):
+
     def __init__(self):
         self._messages = []
         self._characters_manager = CharactersManager(session.get("playthrough_name"))
@@ -26,13 +24,9 @@ class WebAmbientNarrationObserver(Observer):
             raise ValueError(
                 f"Expected 'message_text' to be in message, but was: {message}"
             )
-
-        # Generate the voice line and get the file path
         file_name = DirectVoiceLineGenerationAlgorithmFactory.create_algorithm(
-            RequiredString("narrator"), message["message_text"], NARRATOR_VOICE_MODEL
+            "narrator", message["message_text"], NARRATOR_VOICE_MODEL
         ).direct_voice_line_generation()
-
-        # Append the message with the file path
         self._messages.append(
             {
                 "alignment": message["alignment"],

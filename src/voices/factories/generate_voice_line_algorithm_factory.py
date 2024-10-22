@@ -18,7 +18,5 @@ class GenerateVoiceLineAlgorithmFactory:
             raise ValueError("xtts_endpoint can't be empty.")
         if not file_path:
             raise ValueError("file_path can't be empty.")
-
         voice_line_factory = VoiceLineFactory(text, voice_model, xtts_endpoint)
-
         return GenerateVoiceLineAlgorithm(file_path, voice_line_factory)

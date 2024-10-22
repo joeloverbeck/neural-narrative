@@ -1,9 +1,9 @@
 from typing import Protocol
-
 from src.base.enums import AiCompletionErrorType
 
 
 class AiCompletionProduct(Protocol):
+
     def get(self) -> str:
         pass
 

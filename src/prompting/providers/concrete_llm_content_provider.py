@@ -9,7 +9,6 @@ from src.base.constants import (
     WAIT_TIME_WHEN_MALFORMED_COMPLETION,
 )
 from src.base.enums import AiCompletionErrorType
-from src.base.required_string import RequiredString
 from src.dialogues.messages_to_llm import MessagesToLlm
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.prompting.abstracts.abstract_factories import LlmContentProvider
@@ -23,9 +22,10 @@ logger = logging.getLogger(__name__)
 
 
 class ConcreteLlmContentProvider(LlmContentProvider):
+
     def __init__(
         self,
-            model: RequiredString,
+            model: str,
         messages_to_llm: MessagesToLlm,
         llm_client: LlmClient,
         max_retries=MAX_RETRIES,
@@ -33,11 +33,6 @@ class ConcreteLlmContentProvider(LlmContentProvider):
         top_p=1.0,
         filesystem_manager: FilesystemManager = None,
     ):
-        if not isinstance(model, RequiredString):
-            raise TypeError(
-                f"At this point, the provided model should be of type RequiredString, but was '{type(model)}'."
-            )
-
         self._model = model
         self._messages_to_llm = messages_to_llm
         self._llm_client = llm_client
@@ -45,7 +40,6 @@ class ConcreteLlmContentProvider(LlmContentProvider):
         self._temperature = temperature
         self._top_p = top_p
         self._retry_count = 0
-
         self._filesystem_manager = filesystem_manager or FilesystemManager()
 
     def generate_content(self) -> LlmContentProduct:
@@ -56,15 +50,12 @@ class ConcreteLlmContentProvider(LlmContentProvider):
                 temperature=self._temperature,
                 top_p=self._top_p,
             )
-
             if ai_completion_product.is_valid():
-                self._retry_count = 0  # Reset retry count if we get a valid response
+                self._retry_count = 0
                 return ConcreteLlmContentProduct(
                     ai_completion_product.get(), is_valid=True
                 )
-
             self._retry_count += 1
-
             if self._retry_count < self._max_retries:
                 if (
                     ai_completion_product.get_error()
@@ -95,19 +86,14 @@ class ConcreteLlmContentProvider(LlmContentProvider):
                     logger.warning(
                         f"Attempt {self._retry_count}/{self._max_retries} failed due to empty content returned by LLM. Retrying in {WAIT_TIME_WHEN_EMPTY_CONTENT}..."
                     )
-
                     empty_content_context_file_path = (
                         self._filesystem_manager.get_file_path_to_empty_content_context_file()
                     )
-
                     self._filesystem_manager.create_empty_file_if_not_exists(
                         empty_content_context_file_path
                     )
-
-                    # Store the messages for testing purposes.
                     self._filesystem_manager.save_json_file(
-                        self._messages_to_llm.get(),
-                        empty_content_context_file_path,
+                        self._messages_to_llm.get(), empty_content_context_file_path
                     )
                     logger.warning(
                         "The LLM returned empty content. That may mean that the context is too long."
@@ -123,7 +109,6 @@ class ConcreteLlmContentProvider(LlmContentProvider):
                     logger.warning(
                         f"Attempt {self._retry_count}/{self._max_retries} failed due to an unhandled reason. Retrying..."
                     )
-
         return ConcreteLlmContentProduct(
             content="", is_valid=False, error="Max retries reached. No valid response."
         )

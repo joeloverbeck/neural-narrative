@@ -1,4 +1,3 @@
-from src.base.required_string import RequiredString
 from src.dialogues.abstracts.factory_products import SpeechDataProduct
 from src.dialogues.abstracts.strategies import MessageDataProducerForSpeechTurnStrategy
 from src.filesystem.filesystem_manager import FilesystemManager
@@ -8,10 +7,11 @@ from src.prompting.abstracts.factory_products import LlmToolResponseProduct
 class WebMessageDataProducerForSpeechTurnStrategy(
     MessageDataProducerForSpeechTurnStrategy
 ):
+
     def __init__(
         self,
-        playthrough_name: RequiredString,
-        player_identifier: RequiredString,
+        playthrough_name: str,
+        player_identifier: str,
         filesystem_manager: FilesystemManager = None,
     ):
         self._playthrough_name = playthrough_name
@@ -27,24 +27,16 @@ class WebMessageDataProducerForSpeechTurnStrategy(
             raise ValueError(
                 "voice_model should be in the speech turn choice response."
             )
-
         image_url = self._filesystem_manager.get_file_path_to_character_image_for_web(
-            self._playthrough_name,
-            speech_turn_choice_response.get()["identifier"],
+            self._playthrough_name, speech_turn_choice_response.get()["identifier"]
         )
-        # Could be that the AI has produced by "mistake" text spoken by the player. It's very notorious in the web version.
-        alignment = "left"  # for other characters
-
+        alignment = "left"
         speaker_identifier = speech_turn_choice_response.get()["identifier"]
-
         if self._player_identifier == speaker_identifier:
             alignment = "right"
-
         name = speech_data_product.get()["name"]
         narration_text = speech_data_product.get()["narration_text"]
-
         voice_model = speech_turn_choice_response.get()["voice_model"]
-
         return {
             "alignment": alignment,
             "sender_name": name,

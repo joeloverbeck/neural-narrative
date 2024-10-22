@@ -1,12 +1,10 @@
-# src/concepts/factories/interesting_situations_factory.py
-
 from typing import Optional
 
 from src.base.constants import (
     INTERESTING_SITUATIONS_GENERATION_PROMPT_FILE,
     INTERESTING_SITUATIONS_GENERATION_TOOL_FILE,
 )
-from src.base.required_string import RequiredString
+from src.base.validators import validate_non_empty_string
 from src.characters.factories.player_and_followers_information_factory import (
     PlayerAndFollowersInformationFactory,
 )
@@ -22,11 +20,12 @@ from src.prompting.factories.produce_tool_response_strategy_factory import (
 
 
 class InterestingSituationsFactory(BaseConceptFactory):
+
     def __init__(
         self,
-        playthrough_name: RequiredString,
+        playthrough_name: str,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
-            places_descriptions_factory: PlacesDescriptionsProvider,
+        places_descriptions_factory: PlacesDescriptionsProvider,
         player_and_followers_information_factory: PlayerAndFollowersInformationFactory,
         filesystem_manager: Optional[FilesystemManager] = None,
     ):
@@ -37,10 +36,7 @@ class InterestingSituationsFactory(BaseConceptFactory):
             player_and_followers_information_factory,
             tool_file=INTERESTING_SITUATIONS_GENERATION_TOOL_FILE,
             prompt_file=INTERESTING_SITUATIONS_GENERATION_PROMPT_FILE,
-            user_content=RequiredString(
-                "Write three very interesting and intriguing situations "
-                "that could stem from the information about the player, his possible followers, and the combined memories, as per the above instructions."
-            ),
+            user_content="Write three very interesting and intriguing situations that could stem from the information about the player, his possible followers, and the combined memories, as per the above instructions.",
             filesystem_manager=filesystem_manager,
         )
 
@@ -48,5 +44,7 @@ class InterestingSituationsFactory(BaseConceptFactory):
         situations = []
         for i in range(1, 4):
             key = f"interesting_situation_{i}"
-            situations.append(RequiredString(arguments.get(key)))
+            situation = arguments.get(key)
+            validate_non_empty_string(situation, "situation")
+            situations.append(situation)
         return InterestingSituationsProduct(situations, is_valid=True)

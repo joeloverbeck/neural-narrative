@@ -4,7 +4,11 @@ from src.prompting.products.concrete_user_content_for_character_generation_produ
     ConcreteUserContentForCharacterGenerationProduct
 
 
-class AutomaticUserContentForCharacterGenerationFactory(UserContentForCharacterGenerationFactory):
-    def create_user_content_for_character_generation(self) -> UserContentForCharacterGenerationProduct:
+class AutomaticUserContentForCharacterGenerationFactory(
+    UserContentForCharacterGenerationFactory):
+
+    def create_user_content_for_character_generation(self
+                                                     ) -> UserContentForCharacterGenerationProduct:
         return ConcreteUserContentForCharacterGenerationProduct(
-            f"Create the bio for a character influenced by the places described above.", is_valid=True)
+            f'Create the bio for a character influenced by the places described above.'
+            , is_valid=True)
