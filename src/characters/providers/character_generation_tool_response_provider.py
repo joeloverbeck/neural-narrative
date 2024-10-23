@@ -48,7 +48,7 @@ class CharacterGenerationToolResponseProvider(
         self,
         playthrough_name: str,
         places_parameter: PlacesTemplatesParameter,
-            produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
+        produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         user_content_for_character_generation_factory: UserContentForCharacterGenerationFactory,
         character_generation_instructions_formatter_factory: CharacterGenerationInstructionsFormatterFactory,
         filesystem_manager: Optional[FilesystemManager] = None,

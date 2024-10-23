@@ -24,7 +24,7 @@ class GoalsFactory(BaseConceptFactory):
     def __init__(
         self,
         playthrough_name: str,
-            produce_tool_response_strategy_factory: BaseModelProduceToolResponseStrategyFactory,
+        produce_tool_response_strategy_factory: BaseModelProduceToolResponseStrategyFactory,
         places_descriptions_factory: PlacesDescriptionsProvider,
         player_and_followers_information_factory: PlayerAndFollowersInformationFactory,
         filesystem_manager: Optional[FilesystemManager] = None,

@@ -2,9 +2,9 @@ from typing import Optional
 
 from src.base.constants import (
     STORY_UNIVERSE_GENERATION_PROMPT_FILE,
-    STORY_UNIVERSE_GENERATION_TOOL_FILE,
     STORY_UNIVERSES_TEMPLATE_FILE,
 )
+from src.base.models.story_universe import StoryUniverse
 from src.base.products.story_universe_product import StoryUniverseProduct
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.prompting.abstracts.abstract_factories import (
@@ -25,18 +25,14 @@ class StoryUniverseFactory(BaseToolResponseProvider):
         self._story_universe_notion = story_universe_notion
 
     def _get_tool_data(self) -> dict:
-        return self._filesystem_manager.load_existing_or_new_json_file(
-            STORY_UNIVERSE_GENERATION_TOOL_FILE
-        )
+        return StoryUniverse.model_json_schema()
 
     def get_user_content(self) -> str:
         return f"Come up with a universe for a narrative based on the user's notion: {self._story_universe_notion}"
 
-    def create_product_from_dict(self, arguments: dict):
+    def create_product_from_base_model(self, base_model: StoryUniverse):
         return StoryUniverseProduct(
-            arguments.get("name"),
-            arguments.get("description"),
-            [arguments.get("category_1"), arguments.get("category_2")],
+            base_model.name, base_model.description, base_model.categories
         )
 
     def get_prompt_file(self) -> Optional[str]:

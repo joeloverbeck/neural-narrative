@@ -24,7 +24,7 @@ class AmbientNarrationProvider(BaseToolResponseProvider):
         self,
         playthrough_name: str,
         transcription: Transcription,
-            produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
+        produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         weathers_manager: WeathersManager,
         place_description_manager: PlaceDescriptionManager,
         filesystem_manager: Optional[FilesystemManager] = None,
