@@ -13,12 +13,10 @@ from src.base.playthrough_manager import PlaythroughManager
 from src.base.tools import capture_traceback
 from src.config.config_manager import ConfigManager
 from src.filesystem.filesystem_manager import FilesystemManager
-from src.prompting.factories.openrouter_llm_client_factory import (
-    OpenRouterLlmClientFactory,
+from src.prompting.composers.produce_tool_response_strategy_factory_composer import (
+    ProduceToolResponseStrategyFactoryComposer,
 )
-from src.prompting.factories.produce_tool_response_strategy_factory import (
-    ProduceToolResponseStrategyFactory,
-)
+from src.prompting.enums import LlmClientType
 from src.services.playthrough_service import PlaythroughService
 
 logger = logging.getLogger(__name__)
@@ -80,10 +78,9 @@ class IndexView(MethodView):
             story_universe_notion = request.form["story_universe_notion"]
             try:
                 produce_tool_response_strategy_factory = (
-                    ProduceToolResponseStrategyFactory(
-                        OpenRouterLlmClientFactory().create_llm_client(),
-                        ConfigManager().get_heavy_llm(),
-                    )
+                    ProduceToolResponseStrategyFactoryComposer(
+                        LlmClientType.OPEN_ROUTER, ConfigManager().get_heavy_llm()
+                    ).compose_factory()
                 )
                 story_universe_factory = StoryUniverseFactory(
                     story_universe_notion, produce_tool_response_strategy_factory

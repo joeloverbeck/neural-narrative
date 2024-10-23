@@ -32,16 +32,14 @@ from src.maps.composers.places_descriptions_provider_composer import (
 )
 from src.maps.factories.place_manager_factory import PlaceManagerFactory
 from src.movements.movement_manager import MovementManager
+from src.prompting.composers.produce_tool_response_strategy_factory_composer import (
+    ProduceToolResponseStrategyFactoryComposer,
+)
+from src.prompting.enums import LlmClientType
 from src.prompting.factories.character_generation_instructions_formatter_factory import (
     CharacterGenerationInstructionsFormatterFactory,
 )
 from src.prompting.factories.openai_llm_client_factory import OpenAILlmClientFactory
-from src.prompting.factories.openrouter_llm_client_factory import (
-    OpenRouterLlmClientFactory,
-)
-from src.prompting.factories.produce_tool_response_strategy_factory import (
-    ProduceToolResponseStrategyFactory,
-)
 from src.requests.factories.ConcreteUrlContentFactory import ConcreteUrlContentFactory
 from src.voices.algorithms.match_voice_data_to_voice_model_algorithm import (
     MatchVoiceDataToVoiceModelAlgorithm,
@@ -56,9 +54,10 @@ class GenerateCharacterCommandFactoryComposer:
         self._playthrough_name = playthrough_name
 
     def compose_factory(self) -> GenerateCharacterCommandFactory:
-        produce_tool_response_strategy_factory = ProduceToolResponseStrategyFactory(
-            OpenRouterLlmClientFactory().create_llm_client(),
-            ConfigManager().get_heavy_llm(),
+        produce_tool_response_strategy_factory = (
+            ProduceToolResponseStrategyFactoryComposer(
+                LlmClientType.OPEN_ROUTER, ConfigManager().get_heavy_llm()
+            ).compose_factory()
         )
         speech_patterns_provider_factory = SpeechPatternsProviderFactory(
             produce_tool_response_strategy_factory

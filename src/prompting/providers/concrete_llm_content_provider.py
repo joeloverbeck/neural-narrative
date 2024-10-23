@@ -1,5 +1,6 @@
 import logging
 from time import sleep
+from typing import Optional
 
 from src.base.constants import (
     WAIT_TIME_WHEN_TOO_MANY_REQUESTS_ERROR,
@@ -31,7 +32,7 @@ class ConcreteLlmContentProvider(LlmContentProvider):
         max_retries=MAX_RETRIES,
         temperature=1.0,
         top_p=1.0,
-        filesystem_manager: FilesystemManager = None,
+            filesystem_manager: Optional[FilesystemManager] = None,
     ):
         self._model = model
         self._messages_to_llm = messages_to_llm
@@ -40,6 +41,7 @@ class ConcreteLlmContentProvider(LlmContentProvider):
         self._temperature = temperature
         self._top_p = top_p
         self._retry_count = 0
+
         self._filesystem_manager = filesystem_manager or FilesystemManager()
 
     def generate_content(self) -> LlmContentProduct:

@@ -42,12 +42,10 @@ from src.maps.factories.place_manager_factory import PlaceManagerFactory
 from src.maps.place_description_manager import PlaceDescriptionManager
 from src.maps.templates_repository import TemplatesRepository
 from src.maps.weathers_manager import WeathersManager
-from src.prompting.factories.openrouter_llm_client_factory import (
-    OpenRouterLlmClientFactory,
+from src.prompting.composers.produce_tool_response_strategy_factory_composer import (
+    ProduceToolResponseStrategyFactoryComposer,
 )
-from src.prompting.factories.produce_tool_response_strategy_factory import (
-    ProduceToolResponseStrategyFactory,
-)
+from src.prompting.enums import LlmClientType
 
 
 class DialogueService:
@@ -64,9 +62,11 @@ class DialogueService:
         messages_to_llm = MessagesToLlm()
         transcription = Transcription()
         web_ambient_narration_observer = WebAmbientNarrationObserver()
-        produce_tool_response_strategy_factory = ProduceToolResponseStrategyFactory(
-            OpenRouterLlmClientFactory().create_llm_client(),
-            ConfigManager().get_heavy_llm(),
+
+        produce_tool_response_strategy_factory = (
+            ProduceToolResponseStrategyFactoryComposer(
+                LlmClientType.OPEN_ROUTER, ConfigManager().get_heavy_llm()
+            ).compose_factory()
         )
         playthrough_name = session.get("playthrough_name")
         map_manager_factory = MapManagerFactory(playthrough_name)

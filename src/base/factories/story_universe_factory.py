@@ -1,4 +1,5 @@
 from typing import Optional
+
 from src.base.constants import (
     STORY_UNIVERSE_GENERATION_PROMPT_FILE,
     STORY_UNIVERSE_GENERATION_TOOL_FILE,
