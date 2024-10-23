@@ -6,8 +6,8 @@ from pydantic import BaseModel
 from src.base.constants import TOOL_INSTRUCTIONS_FILE
 from src.base.tools import generate_tool_prompt
 from src.filesystem.filesystem_manager import FilesystemManager
-from src.prompting.factories.unparsed_string_produce_tool_response_strategy_factory import (
-    UnparsedStringProduceToolResponseStrategyFactory,
+from src.prompting.abstracts.abstract_factories import (
+    ProduceToolResponseStrategyFactory,
 )
 
 
@@ -18,11 +18,9 @@ class BaseToolResponseProvider:
 
     def __init__(
         self,
-        produce_tool_response_strategy_factory: UnparsedStringProduceToolResponseStrategyFactory,
+            produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         filesystem_manager: FilesystemManager = None,
     ):
-        if not produce_tool_response_strategy_factory:
-            raise ValueError("produce_tool_response_strategy_factory must not be None.")
         self._produce_tool_response_strategy_factory = (
             produce_tool_response_strategy_factory
         )
@@ -69,7 +67,10 @@ class BaseToolResponseProvider:
 
     @staticmethod
     def _generate_tool_prompt(tool_data: dict, tool_instructions: str) -> str:
-        return generate_tool_prompt(tool_data, tool_instructions)
+        if "function" in tool_data:
+            return generate_tool_prompt(tool_data, tool_instructions)
+
+        return f"{tool_instructions} {tool_data}"
 
     def generate_product(self):
         formatted_prompt = self.get_formatted_prompt()

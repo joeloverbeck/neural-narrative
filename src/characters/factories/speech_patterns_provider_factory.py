@@ -1,8 +1,8 @@
 from typing import Dict
 
 from src.characters.providers.speech_patterns_provider import SpeechPatternsProvider
-from src.prompting.factories.unparsed_string_produce_tool_response_strategy_factory import (
-    UnparsedStringProduceToolResponseStrategyFactory,
+from src.prompting.abstracts.abstract_factories import (
+    ProduceToolResponseStrategyFactory,
 )
 
 
@@ -10,7 +10,7 @@ class SpeechPatternsProviderFactory:
 
     def __init__(
         self,
-        produce_tool_response_strategy_factory: UnparsedStringProduceToolResponseStrategyFactory,
+        produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
     ):
         self._produce_tool_response_strategy_factory = (
             produce_tool_response_strategy_factory

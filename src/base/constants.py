@@ -98,17 +98,8 @@ LOCATION_GENERATION_TOOL_FILE: str = (
 )
 PLACE_DESCRIPTION_TOOL_FILE: str = "data/prompting/places/place_description_tool.json"
 TRAVEL_NARRATION_TOOL_FILE: str = "data/prompting/places/travel_narration_tool.json"
-INTERESTING_SITUATIONS_GENERATION_TOOL_FILE: str = (
-    "data/prompting/concepts/situations_generation_tool.json"
-)
-INTERESTING_DILEMMAS_GENERATION_TOOL_FILE: str = (
-    "data/prompting/concepts/dilemmas_generation_tool.json"
-)
 CHARACTER_DESCRIPTION_GENERATION_TOOL_FILE: str = (
     "data/prompting/characters/character_description_generation_tool.json"
-)
-PLOT_BLUEPRINTS_GENERATION_TOOL_FILE: str = (
-    "data/prompting/concepts/plot_blueprints_generation_tool.json"
 )
 AMBIENT_NARRATION_GENERATION_TOOL_FILE: str = (
     "data/prompting/ambient_narration_generation_tool.json"
@@ -118,10 +109,6 @@ SELF_REFLECTION_GENERATION_TOOL_FILE: str = (
 )
 GOAL_RESOLUTION_GENERATION_TOOL_FILE: str = (
     "data/prompting/goal_resolution_generation_tool.json"
-)
-GOALS_GENERATION_TOOL_FILE: str = "data/prompting/concepts/goals_generation_tool.json"
-PLOT_TWISTS_GENERATION_TOOL_FILE: str = (
-    "data/prompting/concepts/plot_twists_generation_tool.json"
 )
 RESEARCH_RESOLUTION_GENERATION_TOOL_FILE: str = (
     "data/prompting/actions/research_resolution_generation_tool.json"
@@ -169,8 +156,8 @@ TRAVEL_NARRATION_PROMPT_FILE: str = "data/prompting/places/travel_narration_prom
 CHARACTER_GENERATION_GUIDELINES_PROMPT_FILE: str = (
     "data/prompting/characters/character_generation_guidelines_prompt.txt"
 )
-INTERESTING_SITUATIONS_GENERATION_PROMPT_FILE: str = (
-    "data/prompting/concepts/situations_generation_prompt.txt"
+SCENARIOS_GENERATION_PROMPT_FILE: str = (
+    "data/prompting/concepts/scenarios_generation_prompt.txt"
 )
 INTERESTING_DILEMMAS_GENERATION_PROMPT_FILE: str = (
     "data/prompting/concepts/dilemmas_generation_prompt.txt"

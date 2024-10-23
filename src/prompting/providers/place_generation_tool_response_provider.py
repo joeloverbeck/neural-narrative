@@ -20,9 +20,9 @@ from src.base.enums import TemplateType
 from src.base.validators import validate_non_empty_string
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.template_type_data import TemplateTypeData
-from src.prompting.abstracts.abstract_factories import ToolResponseProvider
-from src.prompting.factories.unparsed_string_produce_tool_response_strategy_factory import (
-    UnparsedStringProduceToolResponseStrategyFactory,
+from src.prompting.abstracts.abstract_factories import (
+    ToolResponseProvider,
+    ProduceToolResponseStrategyFactory,
 )
 from src.prompting.products.concrete_llm_tool_response_product import (
     ConcreteLlmToolResponseProduct,
@@ -39,7 +39,7 @@ class PlaceGenerationToolResponseProvider(
         father_place_identifier: str,
         template_type: TemplateType,
         notion: str,
-        produce_tool_response_strategy_factory: UnparsedStringProduceToolResponseStrategyFactory,
+            produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         filesystem_manager: Optional[FilesystemManager] = None,
     ):
         super().__init__(produce_tool_response_strategy_factory, filesystem_manager)

@@ -7,8 +7,8 @@ from src.characters.factories.player_and_followers_information_factory import (
 )
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.providers.places_descriptions_provider import PlacesDescriptionsProvider
-from src.prompting.factories.unparsed_string_produce_tool_response_strategy_factory import (
-    UnparsedStringProduceToolResponseStrategyFactory,
+from src.prompting.abstracts.abstract_factories import (
+    ProduceToolResponseStrategyFactory,
 )
 from src.prompting.providers.base_tool_response_provider import BaseToolResponseProvider
 from src.time.time_manager import TimeManager
@@ -21,7 +21,7 @@ class ActionResolutionFactory(BaseToolResponseProvider):
         playthrough_name: str,
         action_name: str,
         action_goal: str,
-        produce_tool_response_strategy_factory: UnparsedStringProduceToolResponseStrategyFactory,
+        produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         places_descriptions_factory: PlacesDescriptionsProvider,
         players_and_followers_information_factory: PlayerAndFollowersInformationFactory,
         prompt_file: str,

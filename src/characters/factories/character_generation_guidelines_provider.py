@@ -15,8 +15,8 @@ from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.factories.map_manager_factory import MapManagerFactory
 from src.maps.factories.place_manager_factory import PlaceManagerFactory
 from src.maps.providers.places_descriptions_provider import PlacesDescriptionsProvider
-from src.prompting.factories.unparsed_string_produce_tool_response_strategy_factory import (
-    UnparsedStringProduceToolResponseStrategyFactory,
+from src.prompting.abstracts.abstract_factories import (
+    ProduceToolResponseStrategyFactory,
 )
 from src.prompting.providers.base_tool_response_provider import BaseToolResponseProvider
 
@@ -27,7 +27,7 @@ class CharacterGenerationGuidelinesProvider(BaseToolResponseProvider):
 
     def __init__(
         self,
-        produce_tool_response_strategy_factory: UnparsedStringProduceToolResponseStrategyFactory,
+        produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         places_descriptions_factory: PlacesDescriptionsProvider,
         place_manager_factory: PlaceManagerFactory,
         map_manager_factory: MapManagerFactory,
@@ -56,10 +56,6 @@ class CharacterGenerationGuidelinesProvider(BaseToolResponseProvider):
 
     def _get_tool_data(self) -> dict:
         return CharacterGuidelines.model_json_schema()
-
-    @staticmethod
-    def _generate_tool_prompt(tool_data: dict, tool_instructions: str) -> str:
-        return f"{tool_instructions} {tool_data}"
 
     def _read_tool_instructions(self) -> str:
         """Reads the tool instructions from the filesystem."""

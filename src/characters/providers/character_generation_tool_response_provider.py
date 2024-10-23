@@ -26,13 +26,11 @@ from src.maps.places_templates_parameter import PlacesTemplatesParameter
 from src.prompting.abstracts.abstract_factories import (
     ToolResponseProvider,
     UserContentForCharacterGenerationFactory,
+    ProduceToolResponseStrategyFactory,
 )
 from src.prompting.abstracts.factory_products import LlmToolResponseProduct
 from src.prompting.factories.character_generation_instructions_formatter_factory import (
     CharacterGenerationInstructionsFormatterFactory,
-)
-from src.prompting.factories.unparsed_string_produce_tool_response_strategy_factory import (
-    UnparsedStringProduceToolResponseStrategyFactory,
 )
 from src.prompting.products.concrete_llm_tool_response_product import (
     ConcreteLlmToolResponseProduct,
@@ -50,7 +48,7 @@ class CharacterGenerationToolResponseProvider(
         self,
         playthrough_name: str,
         places_parameter: PlacesTemplatesParameter,
-        produce_tool_response_strategy_factory: UnparsedStringProduceToolResponseStrategyFactory,
+            produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         user_content_for_character_generation_factory: UserContentForCharacterGenerationFactory,
         character_generation_instructions_formatter_factory: CharacterGenerationInstructionsFormatterFactory,
         filesystem_manager: Optional[FilesystemManager] = None,
