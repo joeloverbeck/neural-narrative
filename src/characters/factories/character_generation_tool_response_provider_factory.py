@@ -4,12 +4,10 @@ from src.characters.providers.character_generation_tool_response_provider import
 from src.maps.places_templates_parameter import PlacesTemplatesParameter
 from src.prompting.abstracts.abstract_factories import (
     UserContentForCharacterGenerationFactory,
+    ProduceToolResponseStrategyFactory,
 )
 from src.prompting.factories.character_generation_instructions_formatter_factory import (
     CharacterGenerationInstructionsFormatterFactory,
-)
-from src.prompting.factories.unparsed_string_produce_tool_response_strategy_factory import (
-    UnparsedStringProduceToolResponseStrategyFactory,
 )
 
 
@@ -18,7 +16,7 @@ class CharacterGenerationToolResponseProviderFactory:
     def __init__(
         self,
         playthrough_name: str,
-        produce_tool_response_strategy_factory: UnparsedStringProduceToolResponseStrategyFactory,
+        produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         user_content_for_character_generation_factory: UserContentForCharacterGenerationFactory,
         character_generation_instructions_formatter_factory: CharacterGenerationInstructionsFormatterFactory,
     ):

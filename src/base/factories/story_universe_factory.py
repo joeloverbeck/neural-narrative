@@ -7,8 +7,8 @@ from src.base.constants import (
 )
 from src.base.products.story_universe_product import StoryUniverseProduct
 from src.filesystem.filesystem_manager import FilesystemManager
-from src.prompting.factories.unparsed_string_produce_tool_response_strategy_factory import (
-    UnparsedStringProduceToolResponseStrategyFactory,
+from src.prompting.abstracts.abstract_factories import (
+    ProduceToolResponseStrategyFactory,
 )
 from src.prompting.providers.base_tool_response_provider import BaseToolResponseProvider
 
@@ -18,7 +18,7 @@ class StoryUniverseFactory(BaseToolResponseProvider):
     def __init__(
         self,
         story_universe_notion: str,
-        produce_tool_response_strategy_factory: UnparsedStringProduceToolResponseStrategyFactory,
+        produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         filesystem_manager: Optional[FilesystemManager] = None,
     ):
         super().__init__(produce_tool_response_strategy_factory, filesystem_manager)

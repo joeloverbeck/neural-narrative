@@ -1,9 +1,13 @@
+from typing import cast
 from unittest.mock import Mock
 
 import pytest
 
 from src.base.enums import TemplateType
 from src.maps.template_type_data import TemplateTypeData
+from src.prompting.abstracts.abstract_factories import (
+    ProduceToolResponseStrategyFactory,
+)
 from src.prompting.products.concrete_llm_tool_response_product import (
     ConcreteLlmToolResponseProduct,
 )
@@ -22,7 +26,9 @@ def test_get_prompt_file_world():
         father_place_identifier,
         template_type,
         notion,
-        produce_tool_response_strategy_factory,
+        cast(
+            ProduceToolResponseStrategyFactory, produce_tool_response_strategy_factory
+        ),
         filesystem_manager,
     )
     provider._get_template_type_data = Mock(
@@ -47,7 +53,9 @@ def test_get_prompt_file_template_data_none():
         father_place_identifier,
         template_type,
         notion,
-        produce_tool_response_strategy_factory,
+        cast(
+            ProduceToolResponseStrategyFactory, produce_tool_response_strategy_factory
+        ),
         filesystem_manager,
     )
     provider._get_template_type_data = Mock(return_value=None)
@@ -69,7 +77,9 @@ def test_get_prompt_kwargs():
         father_place_identifier,
         template_type,
         notion,
-        produce_tool_response_strategy_factory,
+        cast(
+            ProduceToolResponseStrategyFactory, produce_tool_response_strategy_factory
+        ),
         filesystem_manager,
     )
     template_data = TemplateTypeData(
@@ -110,7 +120,9 @@ def test_get_tool_file():
         father_place_identifier,
         template_type,
         notion,
-        produce_tool_response_strategy_factory,
+        cast(
+            ProduceToolResponseStrategyFactory, produce_tool_response_strategy_factory
+        ),
         filesystem_manager,
     )
     template_data = TemplateTypeData(
@@ -134,7 +146,9 @@ def test_get_user_content_with_notion():
         father_place_identifier,
         template_type,
         notion,
-        produce_tool_response_strategy_factory,
+        cast(
+            ProduceToolResponseStrategyFactory, produce_tool_response_strategy_factory
+        ),
         filesystem_manager,
     )
     user_content = provider.get_user_content()
@@ -152,7 +166,9 @@ def test_create_product():
         father_place_identifier,
         template_type,
         notion,
-        produce_tool_response_strategy_factory,
+        cast(
+            ProduceToolResponseStrategyFactory, produce_tool_response_strategy_factory
+        ),
         filesystem_manager,
     )
     arguments = {"key": "value"}

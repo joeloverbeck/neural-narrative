@@ -7,8 +7,8 @@ from src.characters.factories.player_and_followers_information_factory import (
 )
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.factories.map_manager_factory import MapManagerFactory
-from src.prompting.factories.unparsed_string_produce_tool_response_strategy_factory import (
-    UnparsedStringProduceToolResponseStrategyFactory,
+from src.prompting.abstracts.abstract_factories import (
+    ProduceToolResponseStrategyFactory,
 )
 from src.prompting.products.travel_narration_product import TravelNarrationProduct
 from src.prompting.providers.base_tool_response_provider import BaseToolResponseProvider
@@ -23,7 +23,7 @@ class TravelNarrationFactory(BaseToolResponseProvider):
         self,
         playthrough_name: str,
         destination_identifier: str,
-        produce_tool_response_strategy_factory: UnparsedStringProduceToolResponseStrategyFactory,
+        produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         player_and_followers_information_factory: PlayerAndFollowersInformationFactory,
         map_manager_factory: MapManagerFactory,
         playthrough_manager: Optional[PlaythroughManager] = None,

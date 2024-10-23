@@ -2,8 +2,8 @@ from src.dialogues.providers.ambient_narration_provider import AmbientNarrationP
 from src.dialogues.transcription import Transcription
 from src.maps.place_description_manager import PlaceDescriptionManager
 from src.maps.weathers_manager import WeathersManager
-from src.prompting.factories.unparsed_string_produce_tool_response_strategy_factory import (
-    UnparsedStringProduceToolResponseStrategyFactory,
+from src.prompting.abstracts.abstract_factories import (
+    ProduceToolResponseStrategyFactory,
 )
 
 
@@ -12,7 +12,7 @@ class AmbientNarrationProviderFactory:
     def __init__(
         self,
         playthrough_name: str,
-        produce_tool_response_strategy_factory: UnparsedStringProduceToolResponseStrategyFactory,
+        produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         weathers_manager: WeathersManager,
         place_description_manager: PlaceDescriptionManager,
     ):

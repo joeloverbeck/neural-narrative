@@ -221,7 +221,7 @@ function generatePlotBlueprintsSuccess(data, context) {
 
 function generateInterestingSituationsSuccess(data, context) {
     generateItemsSuccess(data, context, {
-        defaultSuccessMessage: 'Interesting situations generated successfully.',
+        defaultSuccessMessage: 'Scenarios generated successfully.',
         itemsKey: 'interesting_situations',
         listSelector: '.interesting-situations-list',
         listClass: 'interesting-situations-list',

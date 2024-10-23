@@ -1,14 +1,14 @@
 from src.concepts.algorithms.base_concept_algorithm import BaseConceptAlgorithm
-from src.concepts.factories.interesting_situations_factory import (
-    InterestingSituationsFactory,
+from src.concepts.factories.scenarios_factory import (
+    ScenariosFactory,
 )
-from src.concepts.products.interesting_situations_product import (
-    InterestingSituationsProduct,
+from src.concepts.products.scenarios_product import (
+    ScenariosProduct,
 )
 
 
 class GenerateInterestingSituationsAlgorithm(
-    BaseConceptAlgorithm[InterestingSituationsProduct, InterestingSituationsFactory]
+    BaseConceptAlgorithm[ScenariosProduct, ScenariosFactory]
 ):
 
     def get_save_file_path(self) -> str:

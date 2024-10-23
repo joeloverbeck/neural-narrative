@@ -1,4 +1,6 @@
-from typing import Optional
+from typing import Optional, Type
+
+from pydantic import BaseModel
 
 from src.characters.factories.player_and_followers_information_factory import (
     PlayerAndFollowersInformationFactory,
@@ -6,8 +8,8 @@ from src.characters.factories.player_and_followers_information_factory import (
 from src.concepts.concepts_manager import ConceptsManager
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.providers.places_descriptions_provider import PlacesDescriptionsProvider
-from src.prompting.factories.unparsed_string_produce_tool_response_strategy_factory import (
-    UnparsedStringProduceToolResponseStrategyFactory,
+from src.prompting.abstracts.abstract_factories import (
+    ProduceToolResponseStrategyFactory,
 )
 from src.prompting.providers.base_tool_response_provider import BaseToolResponseProvider
 
@@ -17,10 +19,10 @@ class BaseConceptFactory(BaseToolResponseProvider):
     def __init__(
         self,
         playthrough_name: str,
-        produce_tool_response_strategy_factory: UnparsedStringProduceToolResponseStrategyFactory,
+        produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         places_descriptions_factory: PlacesDescriptionsProvider,
         player_and_followers_information_factory: PlayerAndFollowersInformationFactory,
-        tool_file: str,
+        base_model: Type[BaseModel],
         prompt_file: str,
         user_content: str,
         filesystem_manager: Optional[FilesystemManager] = None,
@@ -31,12 +33,12 @@ class BaseConceptFactory(BaseToolResponseProvider):
         self._player_and_followers_information_factory = (
             player_and_followers_information_factory
         )
-        self._tool_file = tool_file
+        self._base_model = base_model
         self._prompt_file = prompt_file
         self._user_content = user_content
 
     def _get_tool_data(self) -> dict:
-        return self._filesystem_manager.load_existing_or_new_json_file(self._tool_file)
+        return self._base_model.model_json_schema()
 
     def get_user_content(self) -> str:
         return self._user_content

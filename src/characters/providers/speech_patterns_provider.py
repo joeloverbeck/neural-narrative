@@ -6,8 +6,8 @@ from src.base.constants import (
 )
 from src.characters.products.speech_patterns_product import SpeechPatternsProduct
 from src.filesystem.filesystem_manager import FilesystemManager
-from src.prompting.factories.unparsed_string_produce_tool_response_strategy_factory import (
-    UnparsedStringProduceToolResponseStrategyFactory,
+from src.prompting.abstracts.abstract_factories import (
+    ProduceToolResponseStrategyFactory,
 )
 from src.prompting.providers.base_tool_response_provider import BaseToolResponseProvider
 
@@ -17,7 +17,7 @@ class SpeechPatternsProvider(BaseToolResponseProvider):
     def __init__(
         self,
         base_character_data: Dict[str, str],
-        produce_tool_response_strategy_factory: UnparsedStringProduceToolResponseStrategyFactory,
+            produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         filesystem_manager: Optional[FilesystemManager] = None,
     ):
         super().__init__(produce_tool_response_strategy_factory, filesystem_manager)

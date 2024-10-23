@@ -28,15 +28,20 @@ from src.concepts.algorithms.generate_plot_blueprints_algorithm import (
 from src.concepts.algorithms.generate_plot_twists_algorithm import (
     GeneratePlotTwistsAlgorithm,
 )
+from src.concepts.factories.dilemmas_factory import (
+    DilemmasFactory,
+)
 from src.concepts.factories.goals_factory import GoalsFactory
-from src.concepts.factories.interesting_dilemmas_factory import (
-    InterestingDilemmasFactory,
-)
-from src.concepts.factories.interesting_situations_factory import (
-    InterestingSituationsFactory,
-)
 from src.concepts.factories.plot_blueprints_factory import PlotBlueprintsFactory
 from src.concepts.factories.plot_twists_factory import PlotTwistsFactory
+from src.concepts.factories.scenarios_factory import (
+    ScenariosFactory,
+)
+from src.concepts.models.dilemmas import Dilemmas
+from src.concepts.models.goals import Goals
+from src.concepts.models.plot_blueprint import PlotBlueprint
+from src.concepts.models.plot_twists import PlotTwists
+from src.concepts.models.scenarios import Scenarios
 from src.config.config_manager import ConfigManager
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.interfaces.web_interface_manager import WebInterfaceManager
@@ -92,9 +97,30 @@ class StoryHubView(MethodView):
         action = request.form.get("submit_action")
         filesystem_manager = FilesystemManager()
         playthrough_name_obj = playthrough_name
-        produce_tool_response_strategy_factory = (
+
+        plot_blueprint_produce_tool_response_strategy_factory = (
             ProduceToolResponseStrategyFactoryComposer(
-                LlmClientType.OPEN_ROUTER, ConfigManager().get_heavy_llm()
+                LlmClientType.INSTRUCTOR, ConfigManager().get_heavy_llm(), PlotBlueprint
+            ).compose_factory()
+        )
+        scenarios_produce_tool_response_strategy_factory = (
+            ProduceToolResponseStrategyFactoryComposer(
+                LlmClientType.INSTRUCTOR, ConfigManager().get_heavy_llm(), Scenarios
+            ).compose_factory()
+        )
+        dilemmas_produce_tool_response_strategy_factory = (
+            ProduceToolResponseStrategyFactoryComposer(
+                LlmClientType.INSTRUCTOR, ConfigManager().get_heavy_llm(), Dilemmas
+            ).compose_factory()
+        )
+        goals_produce_tool_response_strategy_factory = (
+            ProduceToolResponseStrategyFactoryComposer(
+                LlmClientType.INSTRUCTOR, ConfigManager().get_heavy_llm(), Goals
+            ).compose_factory()
+        )
+        plot_twists_produce_tool_response_strategy_factory = (
+            ProduceToolResponseStrategyFactoryComposer(
+                LlmClientType.INSTRUCTOR, ConfigManager().get_heavy_llm(), PlotTwists
             ).compose_factory()
         )
         player_data_for_prompt_factory = PlayerDataForPromptFactory(
@@ -118,29 +144,29 @@ class StoryHubView(MethodView):
                     "response_key": "plot_blueprints",
                     "factory_args": [
                         playthrough_name_obj,
-                        produce_tool_response_strategy_factory,
+                        plot_blueprint_produce_tool_response_strategy_factory,
                         places_descriptions_provider,
                         player_and_followers_information_factory,
                     ],
                 },
                 "situations": {
-                    "factory_class": InterestingSituationsFactory,
+                    "factory_class": ScenariosFactory,
                     "algorithm_class": GenerateInterestingSituationsAlgorithm,
                     "response_key": "interesting_situations",
                     "factory_args": [
                         playthrough_name_obj,
-                        produce_tool_response_strategy_factory,
+                        scenarios_produce_tool_response_strategy_factory,
                         places_descriptions_provider,
                         player_and_followers_information_factory,
                     ],
                 },
                 "dilemmas": {
-                    "factory_class": InterestingDilemmasFactory,
+                    "factory_class": DilemmasFactory,
                     "algorithm_class": GenerateInterestingDilemmasAlgorithm,
                     "response_key": "interesting_dilemmas",
                     "factory_args": [
                         playthrough_name_obj,
-                        produce_tool_response_strategy_factory,
+                        dilemmas_produce_tool_response_strategy_factory,
                         places_descriptions_provider,
                         player_and_followers_information_factory,
                     ],
@@ -151,7 +177,7 @@ class StoryHubView(MethodView):
                     "response_key": "goals",
                     "factory_args": [
                         playthrough_name_obj,
-                        produce_tool_response_strategy_factory,
+                        goals_produce_tool_response_strategy_factory,
                         places_descriptions_provider,
                         player_and_followers_information_factory,
                     ],
@@ -162,7 +188,7 @@ class StoryHubView(MethodView):
                     "response_key": "plot_twists",
                     "factory_args": [
                         playthrough_name_obj,
-                        produce_tool_response_strategy_factory,
+                        plot_twists_produce_tool_response_strategy_factory,
                         places_descriptions_provider,
                         player_and_followers_information_factory,
                     ],

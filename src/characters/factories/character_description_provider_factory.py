@@ -2,8 +2,8 @@ from src.characters.character import Character
 from src.characters.providers.character_description_provider import (
     CharacterDescriptionProvider,
 )
-from src.prompting.factories.unparsed_string_produce_tool_response_strategy_factory import (
-    UnparsedStringProduceToolResponseStrategyFactory,
+from src.prompting.abstracts.abstract_factories import (
+    ProduceToolResponseStrategyFactory,
 )
 
 
@@ -11,7 +11,7 @@ class CharacterDescriptionProviderFactory:
 
     def __init__(
         self,
-        produce_tool_response_strategy_factory: UnparsedStringProduceToolResponseStrategyFactory,
+        produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
     ):
         self._produce_tool_response_strategy_factory = (
             produce_tool_response_strategy_factory

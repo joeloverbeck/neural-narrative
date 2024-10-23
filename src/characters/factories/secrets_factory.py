@@ -9,8 +9,8 @@ from src.characters.character_memories import CharacterMemories
 from src.characters.products.secrets_product import SecretsProduct
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.providers.places_descriptions_provider import PlacesDescriptionsProvider
-from src.prompting.factories.unparsed_string_produce_tool_response_strategy_factory import (
-    UnparsedStringProduceToolResponseStrategyFactory,
+from src.prompting.abstracts.abstract_factories import (
+    ProduceToolResponseStrategyFactory,
 )
 from src.prompting.providers.base_tool_response_provider import BaseToolResponseProvider
 
@@ -21,7 +21,7 @@ class SecretsFactory(BaseToolResponseProvider):
         self,
         playthrough_name: str,
         character_identifier: str,
-        produce_tool_response_strategy_factory: UnparsedStringProduceToolResponseStrategyFactory,
+            produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         places_descriptions_factory: PlacesDescriptionsProvider,
         filesystem_manager: Optional[FilesystemManager] = None,
         character_memories: Optional[CharacterMemories] = None,

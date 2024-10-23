@@ -1,6 +1,6 @@
 from src.concepts.algorithms.base_concept_algorithm import BaseConceptAlgorithm
-from src.concepts.factories.interesting_dilemmas_factory import (
-    InterestingDilemmasFactory,
+from src.concepts.factories.dilemmas_factory import (
+    DilemmasFactory,
 )
 from src.concepts.products.interesting_dilemmas_product import (
     InterestingDilemmasProduct,
@@ -8,7 +8,7 @@ from src.concepts.products.interesting_dilemmas_product import (
 
 
 class GenerateInterestingDilemmasAlgorithm(
-    BaseConceptAlgorithm[InterestingDilemmasProduct, InterestingDilemmasFactory]
+    BaseConceptAlgorithm[InterestingDilemmasProduct, DilemmasFactory]
 ):
 
     def get_save_file_path(self) -> str:

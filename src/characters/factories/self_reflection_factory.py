@@ -11,8 +11,8 @@ from src.characters.factories.character_information_provider import (
 )
 from src.characters.products.self_reflection_product import SelfReflectionProduct
 from src.filesystem.filesystem_manager import FilesystemManager
-from src.prompting.factories.unparsed_string_produce_tool_response_strategy_factory import (
-    UnparsedStringProduceToolResponseStrategyFactory,
+from src.prompting.abstracts.abstract_factories import (
+    ProduceToolResponseStrategyFactory,
 )
 from src.prompting.providers.base_tool_response_provider import BaseToolResponseProvider
 
@@ -23,7 +23,7 @@ class SelfReflectionFactory(BaseToolResponseProvider):
         self,
         playthrough_name: str,
         character_identifier: str,
-        produce_tool_response_strategy_factory: UnparsedStringProduceToolResponseStrategyFactory,
+        produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         character_information_factory: CharacterInformationProvider,
         filesystem_manager: Optional[FilesystemManager] = None,
         characters_manager: Optional[CharactersManager] = None,

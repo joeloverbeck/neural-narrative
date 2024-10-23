@@ -11,8 +11,8 @@ from src.dialogues.transcription import Transcription
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.place_description_manager import PlaceDescriptionManager
 from src.maps.weathers_manager import WeathersManager
-from src.prompting.factories.unparsed_string_produce_tool_response_strategy_factory import (
-    UnparsedStringProduceToolResponseStrategyFactory,
+from src.prompting.abstracts.abstract_factories import (
+    ProduceToolResponseStrategyFactory,
 )
 from src.prompting.providers.base_tool_response_provider import BaseToolResponseProvider
 from src.time.time_manager import TimeManager
@@ -24,7 +24,7 @@ class AmbientNarrationProvider(BaseToolResponseProvider):
         self,
         playthrough_name: str,
         transcription: Transcription,
-        produce_tool_response_strategy_factory: UnparsedStringProduceToolResponseStrategyFactory,
+            produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         weathers_manager: WeathersManager,
         place_description_manager: PlaceDescriptionManager,
         filesystem_manager: Optional[FilesystemManager] = None,
