@@ -63,26 +63,38 @@ Here's the dialogue to summarize:
             max_retries=self._max_retries,
             temperature=0.2,
         ).generate_content()
+
         if not llm_content_product.is_valid():
             return ConcreteSummaryProduct(
                 "",
                 is_valid=False,
                 error=f"The LLM failed to produce valid content: {llm_content_product.get_error()}",
             )
-        tool_response_parsing_product = ConcreteToolResponseParsingProvider(
-            llm_content_product.get()
-        ).parse_tool_response()
-        if not tool_response_parsing_product.is_valid():
+
+        product = llm_content_product.get()
+
+        # The product may be str. In that case, it needs to be parsed. But it may be an already parsed BaseModel.
+        if isinstance(product, str):
+            tool_response_parsing_product = ConcreteToolResponseParsingProvider(
+                product
+            ).parse_tool_response()
+
+            if not tool_response_parsing_product.is_valid():
+                return ConcreteSummaryProduct(
+                    "",
+                    is_valid=False,
+                    error=f"Failed to parse the tool response from the LLM: {tool_response_parsing_product.get_error()}",
+                )
+
             return ConcreteSummaryProduct(
-                "",
-                is_valid=False,
-                error=f"Failed to parse the tool response from the LLM: {tool_response_parsing_product.get_error()}",
+                DialogueSummaryToolResponseDataExtractionFactory(
+                    tool_response_parsing_product.get()
+                )
+                .extract_data()
+                .get(),
+                is_valid=True,
             )
-        return ConcreteSummaryProduct(
-            DialogueSummaryToolResponseDataExtractionFactory(
-                tool_response_parsing_product.get()
+        else:
+            raise NotImplemented(
+                "Should handle the case when the product is a BaseModel."
             )
-            .extract_data()
-            .get(),
-            is_valid=True,
-        )

@@ -25,8 +25,8 @@ from src.movements.movement_manager import MovementManager
 from src.prompting.factories.character_generation_instructions_formatter_factory import (
     CharacterGenerationInstructionsFormatterFactory,
 )
-from src.prompting.factories.produce_tool_response_strategy_factory import (
-    ProduceToolResponseStrategyFactory,
+from src.prompting.factories.unparsed_string_produce_tool_response_strategy_factory import (
+    UnparsedStringProduceToolResponseStrategyFactory,
 )
 
 logger = logging.getLogger(__name__)
@@ -38,7 +38,7 @@ class GenerateCharacterCommandFactory:
         self,
         playthrough_name: str,
         character_generation_instructions_formatter_factory: CharacterGenerationInstructionsFormatterFactory,
-        produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
+        produce_tool_response_strategy_factory: UnparsedStringProduceToolResponseStrategyFactory,
         speech_patterns_provider_factory: SpeechPatternsProviderFactory,
         store_generate_character_command_factory: StoreGeneratedCharacterCommandFactory,
         generate_character_image_command_factory: GenerateCharacterImageCommandFactory,

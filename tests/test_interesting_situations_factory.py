@@ -13,15 +13,15 @@ from src.concepts.products.interesting_situations_product import (
 )
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.providers.places_descriptions_provider import PlacesDescriptionsProvider
-from src.prompting.factories.produce_tool_response_strategy_factory import (
-    ProduceToolResponseStrategyFactory,
+from src.prompting.factories.unparsed_string_produce_tool_response_strategy_factory import (
+    UnparsedStringProduceToolResponseStrategyFactory,
 )
 
 
 @pytest.fixture
 def mock_dependencies():
     produce_tool_response_strategy_factory = Mock(
-        spec=ProduceToolResponseStrategyFactory
+        spec=UnparsedStringProduceToolResponseStrategyFactory
     )
     places_descriptions_factory = Mock(spec=PlacesDescriptionsProvider)
     player_and_followers_information_factory = Mock(
@@ -53,7 +53,7 @@ def test_create_product_success(mock_dependencies):
         "interesting_situation_2": "A hidden treasure map is discovered.",
         "interesting_situation_3": "An ancient curse is unleashed.",
     }
-    product = factory.create_product(arguments)
+    product = factory.create_product_from_dict(arguments)
     assert isinstance(product, InterestingSituationsProduct)
     assert product.is_valid() == True
     assert len(product.get()) == 3
@@ -86,5 +86,5 @@ def test_create_product_empty_values(mock_dependencies, empty_key):
         empty_key: "",
     }
     with pytest.raises(ValueError) as exc_info:
-        factory.create_product(arguments)
+        factory.create_product_from_dict(arguments)
     assert "must be a non-empty" in str(exc_info)

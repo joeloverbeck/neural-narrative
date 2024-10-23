@@ -57,7 +57,7 @@ class PlaceService:
 
     @staticmethod
     def run_generate_place_command(
-            father_place_name: str, template_type: TemplateType, notion: str
+        father_place_name: str, template_type: TemplateType, notion: str
     ):
         father_template_type = PARENT_TEMPLATE_TYPE.get(template_type)
         produce_tool_response_strategy_factory = (
@@ -123,10 +123,10 @@ class PlaceService:
         playthrough_manager = PlaythroughManager(playthrough_name)
         filesystem_manager = FilesystemManager()
         if (
-                not PlaceManagerFactory(playthrough_name)
-                            .create_place_manager()
-                            .get_current_place_type()
-                    == TemplateType.LOCATION
+            not PlaceManagerFactory(playthrough_name)
+            .create_place_manager()
+            .get_current_place_type()
+            == TemplateType.LOCATION
         ):
             raise ValueError(
                 "Somehow tried to exit a location when the current place wasn't a location."

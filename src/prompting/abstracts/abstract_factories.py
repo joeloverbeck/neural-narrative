@@ -1,10 +1,19 @@
 from __future__ import annotations
+
 from abc import ABC, abstractmethod
 from typing import Protocol
-from src.prompting.abstracts.factory_products import LlmToolResponseProduct, ExtractedDataProduct, LlmContentProduct, \
-    ToolResponseParsingProduct, SystemContentForPromptProduct, UserContentForCharacterGenerationProduct, \
-    FilteredPlaceDescriptionGenerationProduct
+
+from src.prompting.abstracts.factory_products import (
+    LlmToolResponseProduct,
+    ExtractedDataProduct,
+    LlmContentProduct,
+    ToolResponseParsingProduct,
+    SystemContentForPromptProduct,
+    UserContentForCharacterGenerationProduct,
+    FilteredPlaceDescriptionGenerationProduct,
+)
 from src.prompting.abstracts.llm_client import LlmClient
+from src.prompting.abstracts.strategies import ProduceToolResponseStrategy
 
 
 class ToolResponseParsingProvider(ABC):
@@ -50,13 +59,20 @@ class LlmClientFactory(ABC):
 
 class UserContentForCharacterGenerationFactory(Protocol):
 
-    def create_user_content_for_character_generation(self
-                                                     ) -> UserContentForCharacterGenerationProduct:
+    def create_user_content_for_character_generation(
+        self,
+    ) -> UserContentForCharacterGenerationProduct:
         pass
 
 
 class FilteredPlaceDescriptionGenerationFactory(Protocol):
 
-    def generate_filtered_place_description(self
-                                            ) -> FilteredPlaceDescriptionGenerationProduct:
+    def generate_filtered_place_description(
+        self,
+    ) -> FilteredPlaceDescriptionGenerationProduct:
+        pass
+
+
+class ProduceToolResponseStrategyFactory(Protocol):
+    def create_produce_tool_response_strategy(self) -> ProduceToolResponseStrategy:
         pass

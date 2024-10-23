@@ -11,7 +11,7 @@ from src.prompting.open_ai_llm_client import OpenAiLlmClient
 
 class OpenRouterLlmClientFactory(LlmClientFactory):
     def __init__(self, filesystem_manager: Optional[FilesystemManager] = None):
-        self._filesystem_manager = filesystem_manager
+        self._filesystem_manager = filesystem_manager or FilesystemManager()
 
     def create_llm_client(self) -> LlmClient:
         return OpenAiLlmClient(

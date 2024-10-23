@@ -10,8 +10,8 @@ from src.characters.factories.character_information_provider_factory import (
 )
 from src.characters.products.connection_product import ConnectionProduct
 from src.filesystem.filesystem_manager import FilesystemManager
-from src.prompting.factories.produce_tool_response_strategy_factory import (
-    ProduceToolResponseStrategyFactory,
+from src.prompting.factories.unparsed_string_produce_tool_response_strategy_factory import (
+    UnparsedStringProduceToolResponseStrategyFactory,
 )
 from src.prompting.providers.base_tool_response_provider import BaseToolResponseProvider
 
@@ -24,7 +24,7 @@ class ConnectionFactory(BaseToolResponseProvider):
         character_a_identifier: str,
         character_b_identifier: str,
         character_information_provider_factory: CharacterInformationProviderFactory,
-        produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
+        produce_tool_response_strategy_factory: UnparsedStringProduceToolResponseStrategyFactory,
         filesystem_manager: Optional[FilesystemManager] = None,
     ):
         super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
@@ -35,13 +35,15 @@ class ConnectionFactory(BaseToolResponseProvider):
         self._character_a_identifier = character_a_identifier
         self._character_b_identifier = character_b_identifier
 
-    def get_tool_file(self) -> str:
-        return CONNECTION_GENERATION_TOOL_FILE
+    def _get_tool_data(self) -> dict:
+        return self._filesystem_manager.load_existing_or_new_json_file(
+            CONNECTION_GENERATION_TOOL_FILE
+        )
 
     def get_user_content(self) -> str:
         return "Generate a meaningful and compelling connection between the two provided characters. Follow the instructions."
 
-    def create_product(self, arguments: dict):
+    def create_product_from_dict(self, arguments: dict):
         if not arguments.get("connection"):
             return ConnectionProduct(
                 None, is_valid=False, error="The LLM failed to produce a connection."

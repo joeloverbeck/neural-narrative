@@ -9,8 +9,8 @@ from src.characters.factories.player_and_followers_information_factory import (
 from src.concepts.factories.plot_blueprints_factory import PlotBlueprintsFactory
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.providers.places_descriptions_provider import PlacesDescriptionsProvider
-from src.prompting.factories.produce_tool_response_strategy_factory import (
-    ProduceToolResponseStrategyFactory,
+from src.prompting.factories.unparsed_string_produce_tool_response_strategy_factory import (
+    UnparsedStringProduceToolResponseStrategyFactory,
 )
 
 
@@ -46,7 +46,7 @@ def factory():
         return PlotBlueprintsFactory(
             playthrough_name,
             cast(
-                ProduceToolResponseStrategyFactory,
+                UnparsedStringProduceToolResponseStrategyFactory,
                 produce_tool_response_strategy_factory,
             ),
             cast(PlacesDescriptionsProvider, places_descriptions_factory),
@@ -62,7 +62,7 @@ def test_create_product_with_valid_plot_blueprint(factory):
     arguments = {
         "plot_blueprint": """This is a test plot blueprint.\nIt has multiple lines.\n\nAnd paragraphs."""
     }
-    product = factory.create_product(arguments)
+    product = factory.create_product_from_dict(arguments)
     expected_plot_blueprint = (
         "This is a test plot blueprint. It has multiple lines. And paragraphs."
     )
@@ -73,7 +73,7 @@ def test_create_product_with_valid_plot_blueprint(factory):
 
 def test_create_product_with_missing_plot_blueprint(factory):
     arguments = {}
-    product = factory.create_product(arguments)
+    product = factory.create_product_from_dict(arguments)
     assert product.is_valid() == False
     assert product.get_error() == "The LLM failed to produce a plot blueprint."
     assert product.get() is None
@@ -81,7 +81,7 @@ def test_create_product_with_missing_plot_blueprint(factory):
 
 def test_create_product_with_empty_plot_blueprint(factory):
     arguments = {"plot_blueprint": ""}
-    product = factory.create_product(arguments)
+    product = factory.create_product_from_dict(arguments)
     assert product.is_valid() == False
     assert product.get_error() == "The LLM failed to produce a plot blueprint."
     assert product.get() is None
@@ -89,7 +89,7 @@ def test_create_product_with_empty_plot_blueprint(factory):
 
 def test_create_product_with_newlines_in_plot_blueprint(factory):
     arguments = {"plot_blueprint": "First line.\nSecond line.\n\nThird paragraph."}
-    product = factory.create_product(arguments)
+    product = factory.create_product_from_dict(arguments)
     expected_plot_blueprint = "First line. Second line. Third paragraph."
     assert product.is_valid() == True
     assert product.get_error() is None
@@ -98,7 +98,7 @@ def test_create_product_with_newlines_in_plot_blueprint(factory):
 
 def test_create_product_with_non_string_plot_blueprint(factory):
     arguments = {"plot_blueprint": 123}
-    product = factory.create_product(arguments)
+    product = factory.create_product_from_dict(arguments)
     expected_plot_blueprint = "123"
     assert product.is_valid() == True
     assert product.get_error() is None
@@ -107,7 +107,7 @@ def test_create_product_with_non_string_plot_blueprint(factory):
 
 def test_create_product_with_none_plot_blueprint(factory):
     arguments = {"plot_blueprint": None}
-    product = factory.create_product(arguments)
+    product = factory.create_product_from_dict(arguments)
     assert product.is_valid() == False
     assert product.get_error() == "The LLM failed to produce a plot blueprint."
     assert product.get() is None
@@ -115,7 +115,7 @@ def test_create_product_with_none_plot_blueprint(factory):
 
 def test_create_product_with_whitespace_plot_blueprint(factory):
     arguments = {"plot_blueprint": "   \n   \n"}
-    product = factory.create_product(arguments)
+    product = factory.create_product_from_dict(arguments)
     assert product.is_valid() == False
     assert product.get_error() == "The LLM failed to produce a plot blueprint."
     assert product.get() is None

@@ -1,10 +1,13 @@
-from typing import Protocol
+from typing import Protocol, Union
+
+from pydantic import BaseModel
+
 from src.base.enums import AiCompletionErrorType
 
 
 class AiCompletionProduct(Protocol):
 
-    def get(self) -> str:
+    def get(self) -> Union[str, BaseModel]:
         pass
 
     def is_valid(self) -> bool:

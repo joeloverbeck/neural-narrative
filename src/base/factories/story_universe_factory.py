@@ -7,8 +7,8 @@ from src.base.constants import (
 )
 from src.base.products.story_universe_product import StoryUniverseProduct
 from src.filesystem.filesystem_manager import FilesystemManager
-from src.prompting.factories.produce_tool_response_strategy_factory import (
-    ProduceToolResponseStrategyFactory,
+from src.prompting.factories.unparsed_string_produce_tool_response_strategy_factory import (
+    UnparsedStringProduceToolResponseStrategyFactory,
 )
 from src.prompting.providers.base_tool_response_provider import BaseToolResponseProvider
 
@@ -18,19 +18,21 @@ class StoryUniverseFactory(BaseToolResponseProvider):
     def __init__(
         self,
         story_universe_notion: str,
-        produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
+        produce_tool_response_strategy_factory: UnparsedStringProduceToolResponseStrategyFactory,
         filesystem_manager: Optional[FilesystemManager] = None,
     ):
         super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
         self._story_universe_notion = story_universe_notion
 
-    def get_tool_file(self) -> str:
-        return STORY_UNIVERSE_GENERATION_TOOL_FILE
+    def _get_tool_data(self) -> dict:
+        return self._filesystem_manager.load_existing_or_new_json_file(
+            STORY_UNIVERSE_GENERATION_TOOL_FILE
+        )
 
     def get_user_content(self) -> str:
         return f"Come up with a universe for a narrative based on the user's notion: {self._story_universe_notion}"
 
-    def create_product(self, arguments: dict):
+    def create_product_from_dict(self, arguments: dict):
         return StoryUniverseProduct(
             arguments.get("name"),
             arguments.get("description"),

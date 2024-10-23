@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import BaseModel
 
 from src.base.enums import AiCompletionErrorType
@@ -7,15 +9,16 @@ from src.prompting.abstracts.ai_completion_product import AiCompletionProduct
 class InstructorAiCompletionProduct(AiCompletionProduct):
     def __init__(self, completion_result: BaseModel):
         self._completion_result = completion_result
+        self._error: Optional[AiCompletionErrorType] = None
 
-    def get(self) -> str:
-        raise NotImplemented("Not implemented")
+    def get(self) -> BaseModel:
+        return self._completion_result
 
     def is_valid(self) -> bool:
-        raise NotImplemented("Not implemented")
+        return self._completion_result is not None
 
-    def get_error(self) -> AiCompletionErrorType:
-        raise NotImplemented("Not implemented")
+    def get_error(self) -> Optional[AiCompletionErrorType]:
+        return self._error
 
     def get_error_details(self) -> str:
-        raise NotImplemented("Not implemented")
+        return str(self._completion_result) if self._error else ""

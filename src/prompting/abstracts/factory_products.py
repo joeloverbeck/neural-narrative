@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Protocol
+from typing import Protocol, Union
+
+from pydantic import BaseModel
 
 from src.prompting.abstracts.llm_client import LlmClient
 
@@ -50,7 +52,7 @@ class ExtractedDataProduct(ABC):
 class LlmContentProduct(ABC):
 
     @abstractmethod
-    def get(self) -> str:
+    def get(self) -> Union[str, BaseModel]:
         pass
 
     @abstractmethod
