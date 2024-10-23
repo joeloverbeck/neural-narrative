@@ -1,70 +1,89 @@
 from flask import session, redirect, url_for, render_template, request
 from flask.views import MethodView
+
 from src.characters.character import Character
 from src.characters.characters_manager import CharactersManager
-from src.characters.commands.generate_character_secrets_command import GenerateCharacterSecretsCommand
+from src.characters.commands.generate_character_secrets_command import (
+    GenerateCharacterSecretsCommand,
+)
 from src.characters.factories.secrets_factory import SecretsFactory
 from src.config.config_manager import ConfigManager
-from src.maps.composers.places_descriptions_provider_composer import PlacesDescriptionsProviderComposer
-from src.prompting.factories.openrouter_llm_client_factory import OpenRouterLlmClientFactory
-from src.prompting.factories.produce_tool_response_strategy_factory import ProduceToolResponseStrategyFactory
+from src.maps.composers.places_descriptions_provider_composer import (
+    PlacesDescriptionsProviderComposer,
+)
+from src.prompting.composers.produce_tool_response_strategy_factory_composer import (
+    ProduceToolResponseStrategyFactoryComposer,
+)
+from src.prompting.enums import LlmClientType
 
 
 class CharacterSecretsView(MethodView):
 
     def get(self):
-        playthrough_name = session.get('playthrough_name')
+        playthrough_name = session.get("playthrough_name")
         if not playthrough_name:
-            return redirect(url_for('index'))
+            return redirect(url_for("index"))
         characters_manager = CharactersManager(playthrough_name)
         all_characters = characters_manager.get_all_characters()
-        selected_character_identifier = request.args.get('character_identifier'
-                                                         )
+        selected_character_identifier = request.args.get("character_identifier")
         selected_character = None
-        secrets_generated_message = session.pop('secrets_generated_message',
-                                                None)
+        secrets_generated_message = session.pop("secrets_generated_message", None)
         if selected_character_identifier:
-            selected_character = Character(playthrough_name,
-                                           selected_character_identifier)
+            selected_character = Character(
+                playthrough_name, selected_character_identifier
+            )
         for character in all_characters:
-            character['selected'] = False
-            if selected_character and character['identifier'
-            ] == selected_character.identifier:
-                character['selected'] = True
-        return render_template('character-secrets.html', all_characters=
-        all_characters, selected_character=selected_character,
-                               secrets_generated_message=secrets_generated_message)
+            character["selected"] = False
+            if (
+                selected_character
+                and character["identifier"] == selected_character.identifier
+            ):
+                character["selected"] = True
+        return render_template(
+            "character-secrets.html",
+            all_characters=all_characters,
+            selected_character=selected_character,
+            secrets_generated_message=secrets_generated_message,
+        )
 
     def post(self):
-        playthrough_name = session.get('playthrough_name')
+        playthrough_name = session.get("playthrough_name")
         if not playthrough_name:
-            return redirect(url_for('index'))
-        action = request.form.get('action')
-        character_identifier = request.form.get('character_identifier')
-        if action == 'generate_secrets' and character_identifier:
+            return redirect(url_for("index"))
+        action = request.form.get("action")
+        character_identifier = request.form.get("character_identifier")
+        if action == "generate_secrets" and character_identifier:
             try:
+
                 produce_tool_response_strategy_factory = (
-                    ProduceToolResponseStrategyFactory(
-                        OpenRouterLlmClientFactory().create_llm_client(),
-                        ConfigManager().get_heavy_llm()))
-                secrets_factory = SecretsFactory(playthrough_name,
-                                                 character_identifier,
+                    ProduceToolResponseStrategyFactoryComposer(
+                        LlmClientType.OPEN_ROUTER, ConfigManager().get_heavy_llm()
+                    ).compose_factory()
+                )
+                secrets_factory = SecretsFactory(
+                    playthrough_name,
+                    character_identifier,
                     produce_tool_response_strategy_factory,
-                                                 PlacesDescriptionsProviderComposer(playthrough_name).
-                                                 compose_provider())
-                command = GenerateCharacterSecretsCommand(playthrough_name,
-                                                          character_identifier, secrets_factory)
+                    PlacesDescriptionsProviderComposer(
+                        playthrough_name
+                    ).compose_provider(),
+                )
+                command = GenerateCharacterSecretsCommand(
+                    playthrough_name, character_identifier, secrets_factory
+                )
                 try:
                     command.execute()
-                    session['secrets_generated_message'
-                    ] = 'Secrets generated successfully.'
+                    session["secrets_generated_message"] = (
+                        "Secrets generated successfully."
+                    )
                 except Exception as exception:
-                    session['secrets_generated_message'
-                    ] = f'Failed to generate secrets. Error: {exception}'
+                    session["secrets_generated_message"] = (
+                        f"Failed to generate secrets. Error: {exception}"
+                    )
             except Exception as e:
-                session['secrets_generated_message'
-                ] = f'An error occurred: {str(e)}'
-            return redirect(url_for('character-secrets',
-                                    character_identifier=character_identifier))
+                session["secrets_generated_message"] = f"An error occurred: {str(e)}"
+            return redirect(
+                url_for("character-secrets", character_identifier=character_identifier)
+            )
         else:
-            return redirect(url_for('character-secrets'))
+            return redirect(url_for("character-secrets"))

@@ -1,5 +1,6 @@
 from flask import redirect, url_for, session, render_template, request
 from flask.views import MethodView
+
 from src.base.constants import TIME_ADVANCED_DUE_TO_TRAVELING
 from src.base.playthrough_manager import PlaythroughManager
 from src.characters.factories.character_factory import CharacterFactory
@@ -14,12 +15,10 @@ from src.characters.factories.player_data_for_prompt_factory import (
 )
 from src.config.config_manager import ConfigManager
 from src.maps.factories.map_manager_factory import MapManagerFactory
-from src.prompting.factories.openrouter_llm_client_factory import (
-    OpenRouterLlmClientFactory,
+from src.prompting.composers.produce_tool_response_strategy_factory_composer import (
+    ProduceToolResponseStrategyFactoryComposer,
 )
-from src.prompting.factories.produce_tool_response_strategy_factory import (
-    ProduceToolResponseStrategyFactory,
-)
+from src.prompting.enums import LlmClientType
 from src.prompting.factories.travel_narration_factory import TravelNarrationFactory
 from src.services.place_service import PlaceService
 from src.services.web_service import WebService
@@ -35,9 +34,11 @@ class TravelView(MethodView):
         destination_identifier = session.get("destination_identifier")
         if not destination_identifier:
             return redirect(url_for("location-hub"))
-        produce_tool_response_strategy_factory = ProduceToolResponseStrategyFactory(
-            OpenRouterLlmClientFactory().create_llm_client(),
-            ConfigManager().get_heavy_llm(),
+
+        produce_tool_response_strategy_factory = (
+            ProduceToolResponseStrategyFactoryComposer(
+                LlmClientType.OPEN_ROUTER, ConfigManager().get_heavy_llm()
+            ).compose_factory()
         )
         player_data_for_prompt_factory = PlayerDataForPromptFactory(
             playthrough_name, CharacterFactory(playthrough_name)

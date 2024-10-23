@@ -23,7 +23,7 @@ class OpenAiLlmClient(LlmClient):
         self._client = client
 
     def generate_completion(
-            self, model: str, messages_to_llm: MessagesToLlm, temperature=1.0, top_p=1.0
+        self, model: str, messages_to_llm: MessagesToLlm, temperature=1.0, top_p=1.0
     ) -> AiCompletionProduct:
         try:
             completion = self._client.chat.completions.create(
