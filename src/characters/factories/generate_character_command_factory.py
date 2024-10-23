@@ -5,8 +5,8 @@ from src.characters.enums import CharacterGenerationType
 from src.characters.factories.automatic_user_content_for_character_generation_factory import (
     AutomaticUserContentForCharacterGenerationFactory,
 )
-from src.characters.factories.character_generation_tool_response_provider_factory import (
-    CharacterGenerationToolResponseProviderFactory,
+from src.characters.factories.base_character_data_generation_tool_response_provider_factory import (
+    BaseCharacterDataGenerationToolResponseProviderFactory,
 )
 from src.characters.factories.player_guided_user_content_for_character_generation_factory import (
     PlayerGuidedUserContentForCharacterGenerationFactory,
@@ -74,7 +74,7 @@ class GenerateCharacterCommandFactory:
         if character_generation_type == CharacterGenerationType.AUTOMATIC:
             return GenerateCharacterCommand(
                 self._playthrough_name,
-                CharacterGenerationToolResponseProviderFactory(
+                BaseCharacterDataGenerationToolResponseProviderFactory(
                     self._playthrough_name,
                     self._produce_tool_response_strategy_factory,
                     AutomaticUserContentForCharacterGenerationFactory(),
@@ -89,7 +89,7 @@ class GenerateCharacterCommandFactory:
         if character_generation_type == CharacterGenerationType.PLAYER_GUIDED:
             return GenerateCharacterCommand(
                 self._playthrough_name,
-                CharacterGenerationToolResponseProviderFactory(
+                BaseCharacterDataGenerationToolResponseProviderFactory(
                     self._playthrough_name,
                     self._produce_tool_response_strategy_factory,
                     PlayerGuidedUserContentForCharacterGenerationFactory(user_content),

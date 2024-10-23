@@ -20,6 +20,11 @@ from src.characters.factories.speech_patterns_provider_factory import (
 from src.characters.factories.store_generated_character_command_factory import (
     StoreGeneratedCharacterCommandFactory,
 )
+from src.characters.models.base_character_data import BaseCharacterData
+from src.characters.models.character_description_for_portrait import (
+    CharacterDescriptionForPortrait,
+)
+from src.characters.models.speech_patterns import SpeechPatterns
 from src.config.config_manager import ConfigManager
 from src.images.factories.generate_character_image_command_factory import (
     GenerateCharacterImageCommandFactory,
@@ -54,13 +59,15 @@ class GenerateCharacterCommandFactoryComposer:
         self._playthrough_name = playthrough_name
 
     def compose_factory(self) -> GenerateCharacterCommandFactory:
-        produce_tool_response_strategy_factory = (
+        speech_patterns_produce_tool_response_strategy_factory = (
             ProduceToolResponseStrategyFactoryComposer(
-                LlmClientType.OPEN_ROUTER, ConfigManager().get_heavy_llm()
+                LlmClientType.INSTRUCTOR,
+                ConfigManager().get_heavy_llm(),
+                SpeechPatterns,
             ).compose_factory()
         )
         speech_patterns_provider_factory = SpeechPatternsProviderFactory(
-            produce_tool_response_strategy_factory
+            speech_patterns_produce_tool_response_strategy_factory
         )
         match_voice_data_to_voice_model_algorithm = (
             MatchVoiceDataToVoiceModelAlgorithm()
@@ -85,8 +92,17 @@ class GenerateCharacterCommandFactoryComposer:
                 produce_and_update_next_identifier_algorithm,
             )
         )
+
+        character_description_produce_tool_response_strategy_factory = (
+            ProduceToolResponseStrategyFactoryComposer(
+                LlmClientType.INSTRUCTOR,
+                ConfigManager().get_heavy_llm(),
+                CharacterDescriptionForPortrait,
+            ).compose_factory()
+        )
+
         character_description_provider_factory = CharacterDescriptionProviderFactory(
-            produce_tool_response_strategy_factory
+            character_description_produce_tool_response_strategy_factory
         )
         generated_image_factory = OpenAIGeneratedImageFactory(
             OpenAILlmClientFactory().create_llm_client()
@@ -112,10 +128,20 @@ class GenerateCharacterCommandFactoryComposer:
                 self._playthrough_name, places_description_provider
             )
         )
+
+        # We need a specific produce_tool_response_strategy_factory given that we pass the BaseModel.
+        base_character_data_produce_tool_response_strategy_factory = (
+            ProduceToolResponseStrategyFactoryComposer(
+                LlmClientType.INSTRUCTOR,
+                ConfigManager().get_heavy_llm(),
+                BaseCharacterData,
+            ).compose_factory()
+        )
+
         return GenerateCharacterCommandFactory(
             self._playthrough_name,
             character_generation_instructions_formatter_factory,
-            produce_tool_response_strategy_factory,
+            base_character_data_produce_tool_response_strategy_factory,
             speech_patterns_provider_factory,
             store_generate_character_command_factory,
             generate_character_image_command_factory,

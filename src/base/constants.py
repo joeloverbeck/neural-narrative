@@ -76,9 +76,6 @@ PLACES_DESCRIPTIONS_BLOCK: str = "data/prompting/blocks/places_descriptions.txt"
 PLAYER_AND_FOLLOWERS_INFORMATION_BLOCK: str = (
     "data/prompting/blocks/player_and_followers_information.txt"
 )
-CHARACTER_GENERATOR_TOOL_FILE: str = (
-    "data/prompting/characters/base_character_data_generation_tool.json"
-)
 SPEECH_PATTERNS_GENERATION_TOOL_FILE: str = (
     "data/prompting/characters/speech_patterns_generation_tool.json"
 )
@@ -203,81 +200,7 @@ OPENROUTER_API_URL: str = "https://openrouter.ai/api/v1"
 HERMES_405B = "nousresearch/hermes-3-llama-3.1-405b"
 HERMES_405B_FREE = "nousresearch/hermes-3-llama-3.1-405b:free"
 HERMES_70B = "nousresearch/hermes-3-llama-3.1-70b"
-VOICE_GENDERS = ["MALE", "FEMALE"]
-VOICE_AGES = ["CHILDLIKE", "TEENAGE", "YOUNG ADULT/ADULT", "MIDDLE-AGED", "ELDERLY"]
-VOICE_EMOTIONS = [
-    "CALM",
-    "HAPPY/JOYFUL",
-    "SAD/MELANCHOLIC",
-    "ANGRY/AGGRESSIVE",
-    "ANXIOUS/FRIGHTENED",
-    "CONFIDENT/DETERMINED",
-    "SERIOUS/FIRM",
-    "HOPEFUL",
-    "SURPRISED",
-    "PLAYFUL",
-    "EXCITED",
-]
-VOICE_TEMPOS = ["FAST", "SLOW", "MODERATE"]
-VOICE_VOLUMES = ["WHISPERING", "SOFT-SPOKEN/QUIET", "NORMAL VOLUME", "LOUD"]
-VOICE_TEXTURES = [
-    "GRAVELLY/RASPY",
-    "SMOOTH",
-    "NASAL",
-    "CRISP",
-    "MUFFLED",
-    "WHISPERY/AIRY",
-    "METALLIC/MECHANICAL",
-    "GUTTURAL",
-]
-VOICE_TONES = ["WARM", "NEUTRAL", "COLD", "AUTHORITATIVE"]
-VOICE_STYLES = [
-    "FORMAL",
-    "CASUAL",
-    "INTENSE/DRAMATIC",
-    "MONOTONE",
-    "DRAWLING",
-    "FLIRTATIOUS",
-    "HUMOROUS/SARCASTIC",
-    "MELODIC",
-    "NARRATIVE",
-    "INSTRUCTIONAL",
-]
-VOICE_PERSONALITIES = [
-    "INNOCENT/NAIVE",
-    "YOUTHFUL",
-    "ENERGETIC",
-    "HEROIC/BRAVE",
-    "PASSIONATE",
-    "ADVENTUROUS/DRIVEN",
-    "OPTIMISTIC",
-    "NOBLE",
-    "SULTRY",
-    "WITTY",
-    "KIND",
-    "CHARMING",
-    "WISE/PHILOSOPHICAL",
-    "STOIC",
-    "ECCENTRIC",
-    "MYSTERIOUS",
-    "SKEPTICAL",
-    "WORLD-WEARY",
-    "CYNICAL/PESSIMISTIC",
-    "PARANOID",
-    "MANIPULATIVE/SCHEMING",
-    "SLY",
-    "VILLAINOUS",
-]
-VOICE_SPECIAL_EFFECTS = [
-    "NO SPECIAL EFFECTS",
-    "ROBOTIC/SYNTHESIZED",
-    "ALIEN",
-    "DEMON-LIKE",
-    "MAGICAL",
-    "DISTORTED",
-    "GHOSTLY/ECHOED",
-    "RETRO",
-]
+
 LOCATION_TYPES = [
     "APARTMENT_BUILDING",
     "BAR",

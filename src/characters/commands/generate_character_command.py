@@ -11,8 +11,8 @@ from src.characters.factories.store_generated_character_command_factory import (
     StoreGeneratedCharacterCommandFactory,
 )
 from src.characters.products.speech_patterns_product import SpeechPatternsProduct
-from src.characters.providers.character_generation_tool_response_provider import (
-    CharacterGenerationToolResponseProvider,
+from src.characters.providers.base_character_data_generation_tool_response_provider import (
+    BaseCharacterDataGenerationToolResponseProvider,
 )
 from src.images.factories.generate_character_image_command_factory import (
     GenerateCharacterImageCommandFactory,
@@ -27,7 +27,7 @@ class GenerateCharacterCommand(Command):
     def __init__(
         self,
         playthrough_name: str,
-        character_generation_tool_response_provider: CharacterGenerationToolResponseProvider,
+        character_generation_tool_response_provider: BaseCharacterDataGenerationToolResponseProvider,
         speech_patterns_provider_factory: SpeechPatternsProviderFactory,
         store_generate_character_command_factory: StoreGeneratedCharacterCommandFactory,
         generate_character_image_command_factory: GenerateCharacterImageCommandFactory,

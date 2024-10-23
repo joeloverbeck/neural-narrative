@@ -3,7 +3,7 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-from src.base.constants import TOOL_INSTRUCTIONS_FILE
+from src.base.constants import TOOL_INSTRUCTIONS_FOR_INSTRUCTOR_FILE
 from src.base.tools import generate_tool_prompt
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.prompting.abstracts.abstract_factories import (
@@ -32,7 +32,7 @@ class BaseToolResponseProvider:
 
     def _read_tool_instructions(self) -> str:
         """Reads the tool instructions from the filesystem."""
-        return self._filesystem_manager.read_file(TOOL_INSTRUCTIONS_FILE)
+        return self._filesystem_manager.read_file(TOOL_INSTRUCTIONS_FOR_INSTRUCTOR_FILE)
 
     @staticmethod
     def _format_prompt(prompt_template: str, **kwargs) -> str:
@@ -80,9 +80,11 @@ class BaseToolResponseProvider:
             prompt_template = self._read_prompt_file(prompt_file)
             formatted_prompt = self._format_prompt(prompt_template, **prompt_kwargs)
         tool_data = self._get_tool_data()
+        print(f"Tool data: {tool_data}")
         tool_instructions = self._read_tool_instructions()
         tool_prompt = self._generate_tool_prompt(tool_data, tool_instructions)
         system_content = self._generate_system_content(formatted_prompt, tool_prompt)
+        print(f"system content: {system_content}")
         self.peep_into_system_content(system_content)
         user_content = self.get_user_content()
         return self._produce_tool_response(system_content, user_content)
