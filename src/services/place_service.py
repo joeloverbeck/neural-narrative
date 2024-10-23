@@ -27,6 +27,10 @@ from src.maps.factories.place_manager_factory import PlaceManagerFactory
 from src.maps.factories.store_generated_place_command_factory import (
     StoreGeneratedPlaceCommandFactory,
 )
+from src.maps.models.area import Area
+from src.maps.models.location import Location
+from src.maps.models.region import Region
+from src.maps.models.world import World
 from src.maps.weathers_manager import WeathersManager
 from src.prompting.composers.produce_tool_response_strategy_factory_composer import (
     ProduceToolResponseStrategyFactoryComposer,
@@ -60,11 +64,36 @@ class PlaceService:
         father_place_name: str, template_type: TemplateType, notion: str
     ):
         father_template_type = PARENT_TEMPLATE_TYPE.get(template_type)
-        produce_tool_response_strategy_factory = (
-            ProduceToolResponseStrategyFactoryComposer(
-                LlmClientType.OPEN_ROUTER, ConfigManager().get_heavy_llm()
-            ).compose_factory()
-        )
+
+        if template_type == TemplateType.LOCATION:
+            produce_tool_response_strategy_factory = (
+                ProduceToolResponseStrategyFactoryComposer(
+                    LlmClientType.INSTRUCTOR, ConfigManager().get_heavy_llm(), Location
+                ).compose_factory()
+            )
+        elif template_type == TemplateType.AREA:
+            produce_tool_response_strategy_factory = (
+                ProduceToolResponseStrategyFactoryComposer(
+                    LlmClientType.INSTRUCTOR, ConfigManager().get_heavy_llm(), Area
+                ).compose_factory()
+            )
+        elif template_type == TemplateType.REGION:
+            produce_tool_response_strategy_factory = (
+                ProduceToolResponseStrategyFactoryComposer(
+                    LlmClientType.INSTRUCTOR, ConfigManager().get_heavy_llm(), Region
+                ).compose_factory()
+            )
+        elif template_type == TemplateType.WORLD:
+            produce_tool_response_strategy_factory = (
+                ProduceToolResponseStrategyFactoryComposer(
+                    LlmClientType.INSTRUCTOR, ConfigManager().get_heavy_llm(), World
+                ).compose_factory()
+            )
+        else:
+            raise NotImplemented(
+                f"Case not handled for template type '{template_type}'."
+            )
+
         place_generation_tool_response_provider = PlaceGenerationToolResponseProvider(
             father_place_name,
             template_type,

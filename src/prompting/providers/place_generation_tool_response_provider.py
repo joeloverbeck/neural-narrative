@@ -1,24 +1,26 @@
+import logging
 from typing import Optional, Dict
+
+from pydantic import BaseModel
 
 from src.base.constants import (
     AREA_GENERATION_PROMPT_FILE,
     REGION_GENERATION_PROMPT_FILE,
     LOCATION_GENERATION_PROMPT_FILE,
-    REGION_GENERATION_TOOL_FILE,
-    AREA_GENERATION_TOOL_FILE,
-    LOCATION_GENERATION_TOOL_FILE,
     WORLDS_TEMPLATES_FILE,
     LOCATIONS_TEMPLATES_FILE,
     AREAS_TEMPLATES_FILE,
     REGIONS_TEMPLATES_FILE,
-    LOCATION_TYPES,
     WORLD_GENERATION_PROMPT_FILE,
     STORY_UNIVERSES_TEMPLATE_FILE,
-    WORLD_GENERATION_TOOL_FILE,
 )
 from src.base.enums import TemplateType
 from src.base.validators import validate_non_empty_string
 from src.filesystem.filesystem_manager import FilesystemManager
+from src.maps.models.area import Area
+from src.maps.models.location import Location
+from src.maps.models.region import Region
+from src.maps.models.world import World
 from src.maps.template_type_data import TemplateTypeData
 from src.prompting.abstracts.abstract_factories import (
     ToolResponseProvider,
@@ -28,6 +30,8 @@ from src.prompting.products.concrete_llm_tool_response_product import (
     ConcreteLlmToolResponseProduct,
 )
 from src.prompting.providers.base_tool_response_provider import BaseToolResponseProvider
+
+logger = logging.getLogger(__name__)
 
 
 class PlaceGenerationToolResponseProvider(
@@ -51,22 +55,9 @@ class PlaceGenerationToolResponseProvider(
         self._notion = notion
 
     def _get_tool_data(self) -> dict:
-        tool_file = self.get_tool_file()
+        template_type_data = self._get_template_type_data()
 
-        if tool_file == LOCATION_GENERATION_TOOL_FILE:
-            template_copy = self._filesystem_manager.load_existing_or_new_json_file(
-                LOCATION_GENERATION_TOOL_FILE
-            )
-            try:
-                template_copy["function"]["parameters"]["properties"]["type"][
-                    "enum"
-                ] = LOCATION_TYPES
-            except Exception as e:
-                raise ValueError(
-                    f"Was unable to format the location generation tool file: {e}"
-                )
-            return template_copy
-        return self._filesystem_manager.read_json_file(tool_file)
+        return template_type_data.base_model.model_json_schema()
 
     def _get_template_type_data(self) -> Optional[TemplateTypeData]:
         data_mapping: Dict[TemplateType, TemplateTypeData] = {
@@ -74,27 +65,28 @@ class PlaceGenerationToolResponseProvider(
                 prompt_file=WORLD_GENERATION_PROMPT_FILE,
                 father_templates_file_path=STORY_UNIVERSES_TEMPLATE_FILE,
                 current_place_templates_file_path=WORLDS_TEMPLATES_FILE,
-                tool_file=WORLD_GENERATION_TOOL_FILE,
+                base_model=World,
             ),
             TemplateType.REGION: TemplateTypeData(
                 prompt_file=REGION_GENERATION_PROMPT_FILE,
                 father_templates_file_path=WORLDS_TEMPLATES_FILE,
                 current_place_templates_file_path=REGIONS_TEMPLATES_FILE,
-                tool_file=REGION_GENERATION_TOOL_FILE,
+                base_model=Region,
             ),
             TemplateType.AREA: TemplateTypeData(
                 prompt_file=AREA_GENERATION_PROMPT_FILE,
                 father_templates_file_path=REGIONS_TEMPLATES_FILE,
                 current_place_templates_file_path=AREAS_TEMPLATES_FILE,
-                tool_file=AREA_GENERATION_TOOL_FILE,
+                base_model=Area,
             ),
             TemplateType.LOCATION: TemplateTypeData(
                 prompt_file=LOCATION_GENERATION_PROMPT_FILE,
                 father_templates_file_path=AREAS_TEMPLATES_FILE,
                 current_place_templates_file_path=LOCATIONS_TEMPLATES_FILE,
-                tool_file=LOCATION_GENERATION_TOOL_FILE,
+                base_model=Location,
             ),
         }
+
         return data_mapping.get(self._template_type)
 
     def get_prompt_file(self) -> str:
@@ -123,10 +115,6 @@ class PlaceGenerationToolResponseProvider(
             "current_place_type_names": list(current_place_type_templates.keys()),
         }
 
-    def get_tool_file(self) -> str:
-        template_data = self._get_template_type_data()
-        return template_data.tool_file
-
     def get_user_content(self) -> str:
         user_content = f"Create the name and description of a {self._template_type.value}, following the above instructions."
         if self._notion:
@@ -135,5 +123,11 @@ class PlaceGenerationToolResponseProvider(
             )
         return user_content
 
-    def create_product_from_dict(self, arguments: dict):
+    def create_product_from_base_model(self, base_model: BaseModel):
+        logger.warning(base_model)
+        arguments = {"name": base_model.name, "description": base_model.description}
+
+        if self._template_type == TemplateType.LOCATION:
+            arguments.update({"type": base_model.type})
+
         return ConcreteLlmToolResponseProduct(arguments, is_valid=True)

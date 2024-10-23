@@ -9,6 +9,7 @@ from src.base.commands.generate_story_universe_command import (
 from src.base.constants import STORY_UNIVERSES_TEMPLATE_FILE
 from src.base.exceptions import NoEligibleWorldsError
 from src.base.factories.story_universe_factory import StoryUniverseFactory
+from src.base.models.story_universe import StoryUniverse
 from src.base.playthrough_manager import PlaythroughManager
 from src.base.tools import capture_traceback
 from src.config.config_manager import ConfigManager
@@ -79,7 +80,9 @@ class IndexView(MethodView):
             try:
                 produce_tool_response_strategy_factory = (
                     ProduceToolResponseStrategyFactoryComposer(
-                        LlmClientType.OPEN_ROUTER, ConfigManager().get_heavy_llm()
+                        LlmClientType.INSTRUCTOR,
+                        ConfigManager().get_heavy_llm(),
+                        StoryUniverse,
                     ).compose_factory()
                 )
                 story_universe_factory = StoryUniverseFactory(

@@ -24,7 +24,7 @@ class ConnectionFactory(BaseToolResponseProvider):
         character_a_identifier: str,
         character_b_identifier: str,
         character_information_provider_factory: CharacterInformationProviderFactory,
-            produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
+        produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         filesystem_manager: Optional[FilesystemManager] = None,
     ):
         super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
