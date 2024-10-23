@@ -17,7 +17,7 @@ class SpeechPatternsProvider(BaseToolResponseProvider):
     def __init__(
         self,
         base_character_data: Dict[str, str],
-            produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
+        produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         filesystem_manager: Optional[FilesystemManager] = None,
     ):
         super().__init__(produce_tool_response_strategy_factory, filesystem_manager)

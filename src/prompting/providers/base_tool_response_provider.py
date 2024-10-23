@@ -18,7 +18,7 @@ class BaseToolResponseProvider:
 
     def __init__(
         self,
-            produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
+        produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         filesystem_manager: FilesystemManager = None,
     ):
         self._produce_tool_response_strategy_factory = (
