@@ -8,7 +8,7 @@ from src.prompting.factories.tool_response_parsing_provider_factory import (
 )
 
 
-class ConcreteProduceToolResponseStrategy(ProduceToolResponseStrategy):
+class UnparsedStringProduceToolResponseStrategy(ProduceToolResponseStrategy):
 
     def __init__(
         self,
@@ -24,20 +24,30 @@ class ConcreteProduceToolResponseStrategy(ProduceToolResponseStrategy):
         messages_to_llm = MessagesToLlm()
         messages_to_llm.add_message("system", system_content)
         messages_to_llm.add_message("user", user_content)
+
         llm_content_product = (
             self._llm_content_provider_factory.create_llm_content_provider(
                 messages_to_llm
             ).generate_content()
         )
+
         if not llm_content_product.is_valid():
             raise ValueError(
                 f"Failed to receive content from LLM: {llm_content_product.get_error()}"
             )
+
+        if not isinstance(llm_content_product.get(), str):
+            raise TypeError(
+                f"This strategy only handles unparsed strings, not the type '{type(llm_content_product.get())}'."
+            )
+
         tool_response_parsing_product = self._tool_response_parsing_provider_factory.create_tool_response_parsing_provider(
             llm_content_product
         ).parse_tool_response()
+
         if not tool_response_parsing_product.is_valid():
             raise ValueError(
                 f"Failed to parse the response from the LLM, intending to get a tool call: {tool_response_parsing_product.get_error()}"
             )
+
         return tool_response_parsing_product.get()

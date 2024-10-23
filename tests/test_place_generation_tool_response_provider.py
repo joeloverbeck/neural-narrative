@@ -1,5 +1,7 @@
 from unittest.mock import Mock
+
 import pytest
+
 from src.base.enums import TemplateType
 from src.maps.template_type_data import TemplateTypeData
 from src.prompting.products.concrete_llm_tool_response_product import (
@@ -154,24 +156,7 @@ def test_create_product():
         filesystem_manager,
     )
     arguments = {"key": "value"}
-    product = provider.create_product(arguments)
+    product = provider.create_product_from_dict(arguments)
     assert isinstance(product, ConcreteLlmToolResponseProduct)
     assert product.get() == arguments
     assert product.is_valid() == True
-
-
-def test_read_and_format_tool_file_other():
-    produce_tool_response_strategy_factory = Mock()
-    filesystem_manager = Mock()
-    filesystem_manager.read_json_file.return_value = {"some_key": "some_value"}
-    provider = PlaceGenerationToolResponseProvider(
-        father_place_identifier="some_father_place",
-        template_type=TemplateType.AREA,
-        notion="some notion",
-        produce_tool_response_strategy_factory=produce_tool_response_strategy_factory,
-        filesystem_manager=filesystem_manager,
-    )
-    tool_file = "some_other_tool_file.json"
-    result = provider._read_and_format_tool_file(tool_file)
-    filesystem_manager.read_json_file.assert_called_once_with(tool_file)
-    assert result == {"some_key": "some_value"}

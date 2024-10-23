@@ -1,4 +1,5 @@
 from typing import Optional
+
 from src.base.constants import TRAVEL_NARRATION_PROMPT_FILE, TRAVEL_NARRATION_TOOL_FILE
 from src.base.playthrough_manager import PlaythroughManager
 from src.characters.factories.player_and_followers_information_factory import (
@@ -6,8 +7,8 @@ from src.characters.factories.player_and_followers_information_factory import (
 )
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.factories.map_manager_factory import MapManagerFactory
-from src.prompting.factories.produce_tool_response_strategy_factory import (
-    ProduceToolResponseStrategyFactory,
+from src.prompting.factories.unparsed_string_produce_tool_response_strategy_factory import (
+    UnparsedStringProduceToolResponseStrategyFactory,
 )
 from src.prompting.products.travel_narration_product import TravelNarrationProduct
 from src.prompting.providers.base_tool_response_provider import BaseToolResponseProvider
@@ -22,7 +23,7 @@ class TravelNarrationFactory(BaseToolResponseProvider):
         self,
         playthrough_name: str,
         destination_identifier: str,
-        produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
+        produce_tool_response_strategy_factory: UnparsedStringProduceToolResponseStrategyFactory,
         player_and_followers_information_factory: PlayerAndFollowersInformationFactory,
         map_manager_factory: MapManagerFactory,
         playthrough_manager: Optional[PlaythroughManager] = None,
@@ -70,13 +71,15 @@ class TravelNarrationFactory(BaseToolResponseProvider):
         )
         return prompt_data
 
-    def get_tool_file(self) -> str:
-        return TRAVEL_NARRATION_TOOL_FILE
+    def _get_tool_data(self) -> dict:
+        return self._filesystem_manager.load_existing_or_new_json_file(
+            TRAVEL_NARRATION_TOOL_FILE
+        )
 
     def get_user_content(self) -> str:
         return "Write the narration of the travel from the origin area to the destination area, filtered through the first-person perspective of the player, as per the above instructions."
 
-    def create_product(self, arguments: dict):
+    def create_product_from_dict(self, arguments: dict):
         return TravelNarrationProduct(
             travel_narration=arguments.get("narration", "The travel was uneventful."),
             is_valid=True,

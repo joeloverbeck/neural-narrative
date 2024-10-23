@@ -13,8 +13,8 @@ from src.concepts.products.interesting_dilemmas_product import (
 )
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.providers.places_descriptions_provider import PlacesDescriptionsProvider
-from src.prompting.factories.produce_tool_response_strategy_factory import (
-    ProduceToolResponseStrategyFactory,
+from src.prompting.factories.unparsed_string_produce_tool_response_strategy_factory import (
+    UnparsedStringProduceToolResponseStrategyFactory,
 )
 
 
@@ -23,7 +23,7 @@ class InterestingDilemmasFactory(BaseConceptFactory):
     def __init__(
         self,
         playthrough_name: str,
-        produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
+        produce_tool_response_strategy_factory: UnparsedStringProduceToolResponseStrategyFactory,
         places_descriptions_factory: PlacesDescriptionsProvider,
         player_and_followers_information_factory: PlayerAndFollowersInformationFactory,
         filesystem_manager: Optional[FilesystemManager] = None,
@@ -39,7 +39,7 @@ class InterestingDilemmasFactory(BaseConceptFactory):
             filesystem_manager=filesystem_manager,
         )
 
-    def create_product(self, arguments: dict):
+    def create_product_from_dict(self, arguments: dict):
         dilemmas = []
         for i in range(1, 4):
             key = f"interesting_dilemma_{i}"

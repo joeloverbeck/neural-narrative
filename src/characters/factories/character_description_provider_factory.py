@@ -2,15 +2,16 @@ from src.characters.character import Character
 from src.characters.providers.character_description_provider import (
     CharacterDescriptionProvider,
 )
-from src.prompting.factories.produce_tool_response_strategy_factory import (
-    ProduceToolResponseStrategyFactory,
+from src.prompting.factories.unparsed_string_produce_tool_response_strategy_factory import (
+    UnparsedStringProduceToolResponseStrategyFactory,
 )
 
 
 class CharacterDescriptionProviderFactory:
 
     def __init__(
-        self, produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory
+        self,
+        produce_tool_response_strategy_factory: UnparsedStringProduceToolResponseStrategyFactory,
     ):
         self._produce_tool_response_strategy_factory = (
             produce_tool_response_strategy_factory

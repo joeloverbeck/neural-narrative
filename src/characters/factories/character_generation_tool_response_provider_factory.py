@@ -8,8 +8,8 @@ from src.prompting.abstracts.abstract_factories import (
 from src.prompting.factories.character_generation_instructions_formatter_factory import (
     CharacterGenerationInstructionsFormatterFactory,
 )
-from src.prompting.factories.produce_tool_response_strategy_factory import (
-    ProduceToolResponseStrategyFactory,
+from src.prompting.factories.unparsed_string_produce_tool_response_strategy_factory import (
+    UnparsedStringProduceToolResponseStrategyFactory,
 )
 
 
@@ -18,7 +18,7 @@ class CharacterGenerationToolResponseProviderFactory:
     def __init__(
         self,
         playthrough_name: str,
-        produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
+        produce_tool_response_strategy_factory: UnparsedStringProduceToolResponseStrategyFactory,
         user_content_for_character_generation_factory: UserContentForCharacterGenerationFactory,
         character_generation_instructions_formatter_factory: CharacterGenerationInstructionsFormatterFactory,
     ):

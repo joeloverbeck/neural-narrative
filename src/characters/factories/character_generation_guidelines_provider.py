@@ -1,10 +1,13 @@
 import logging
 from typing import Optional
 
+from pydantic import BaseModel
+
 from src.base.constants import (
     CHARACTER_GENERATION_GUIDELINES_PROMPT_FILE,
-    CHARACTER_GENERATION_GUIDELINES_TOOL_FILE,
+    TOOL_INSTRUCTIONS_FOR_INSTRUCTOR_FILE,
 )
+from src.characters.models.character_guidelines import CharacterGuidelines
 from src.characters.products.character_generation_guidelines_product import (
     CharacterGenerationGuidelinesProduct,
 )
@@ -12,8 +15,8 @@ from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.factories.map_manager_factory import MapManagerFactory
 from src.maps.factories.place_manager_factory import PlaceManagerFactory
 from src.maps.providers.places_descriptions_provider import PlacesDescriptionsProvider
-from src.prompting.factories.produce_tool_response_strategy_factory import (
-    ProduceToolResponseStrategyFactory,
+from src.prompting.factories.unparsed_string_produce_tool_response_strategy_factory import (
+    UnparsedStringProduceToolResponseStrategyFactory,
 )
 from src.prompting.providers.base_tool_response_provider import BaseToolResponseProvider
 
@@ -23,12 +26,12 @@ logger = logging.getLogger(__name__)
 class CharacterGenerationGuidelinesProvider(BaseToolResponseProvider):
 
     def __init__(
-            self,
-            produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
-            places_descriptions_factory: PlacesDescriptionsProvider,
-            place_manager_factory: PlaceManagerFactory,
-            map_manager_factory: MapManagerFactory,
-            filesystem_manager: Optional[FilesystemManager] = None,
+        self,
+        produce_tool_response_strategy_factory: UnparsedStringProduceToolResponseStrategyFactory,
+        places_descriptions_factory: PlacesDescriptionsProvider,
+        place_manager_factory: PlaceManagerFactory,
+        map_manager_factory: MapManagerFactory,
+        filesystem_manager: Optional[FilesystemManager] = None,
     ):
         super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
         self._places_descriptions_factory = places_descriptions_factory
@@ -51,18 +54,22 @@ class CharacterGenerationGuidelinesProvider(BaseToolResponseProvider):
         )
         return prompt_data
 
-    def get_tool_file(self) -> str:
-        return CHARACTER_GENERATION_GUIDELINES_TOOL_FILE
+    def _get_tool_data(self) -> dict:
+        return CharacterGuidelines.model_json_schema()
+
+    @staticmethod
+    def _generate_tool_prompt(tool_data: dict, tool_instructions: str) -> str:
+        return f"{tool_instructions} {tool_data}"
+
+    def _read_tool_instructions(self) -> str:
+        """Reads the tool instructions from the filesystem."""
+        return self._filesystem_manager.read_file(TOOL_INSTRUCTIONS_FOR_INSTRUCTOR_FILE)
 
     def get_user_content(self) -> str:
         return "Write three entries that are guidelines for creating interesting characters based on the above combination of places. Follow the provided instructions."
 
-    def create_product(self, arguments: dict):
+    def create_product_from_base_model(self, base_model: BaseModel):
         return CharacterGenerationGuidelinesProduct(
-            [
-                arguments.get("guideline_1"),
-                arguments.get("guideline_2"),
-                arguments.get("guideline_3"),
-            ],
+            base_model.guidelines,
             is_valid=True,
         )

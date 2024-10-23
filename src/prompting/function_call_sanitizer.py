@@ -18,7 +18,7 @@ class FunctionCallSanitizer:
     REPLACE_INCORRECT_CLOSING_FUNCTION_TAG_AT_END_REGEX = re.compile(
         "}\\s*<function>\\s*$"
     )
-    REPLACE_START_TAG_PLACEHOLDER_REGEX = re.compile("<\\{start_tag\\}=(.*?)>")
+    REPLACE_START_TAG_PLACEHOLDER_REGEX = re.compile("<\\{start_tag}=(.*?)>")
     REMOVE_END_TAG_PLACEHOLDER_REGEX = re.compile("</end_tag>")
 
     def __init__(self, function_call: str):

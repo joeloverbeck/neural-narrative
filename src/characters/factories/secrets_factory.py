@@ -9,8 +9,8 @@ from src.characters.character_memories import CharacterMemories
 from src.characters.products.secrets_product import SecretsProduct
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.providers.places_descriptions_provider import PlacesDescriptionsProvider
-from src.prompting.factories.produce_tool_response_strategy_factory import (
-    ProduceToolResponseStrategyFactory,
+from src.prompting.factories.unparsed_string_produce_tool_response_strategy_factory import (
+    UnparsedStringProduceToolResponseStrategyFactory,
 )
 from src.prompting.providers.base_tool_response_provider import BaseToolResponseProvider
 
@@ -21,7 +21,7 @@ class SecretsFactory(BaseToolResponseProvider):
         self,
         playthrough_name: str,
         character_identifier: str,
-        produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
+        produce_tool_response_strategy_factory: UnparsedStringProduceToolResponseStrategyFactory,
         places_descriptions_factory: PlacesDescriptionsProvider,
         filesystem_manager: Optional[FilesystemManager] = None,
         character_memories: Optional[CharacterMemories] = None,
@@ -34,13 +34,15 @@ class SecretsFactory(BaseToolResponseProvider):
             self._playthrough_name
         )
 
-    def get_tool_file(self) -> str:
-        return SECRETS_GENERATION_TOOL_FILE
+    def _get_tool_data(self) -> dict:
+        return self._filesystem_manager.load_existing_or_new_json_file(
+            SECRETS_GENERATION_TOOL_FILE
+        )
 
     def get_user_content(self) -> str:
         return "Create secrets for a character that are compelling and truly worth being hidden. Follow the provided instructions."
 
-    def create_product(self, arguments: dict):
+    def create_product_from_dict(self, arguments: dict):
         secrets = arguments.get("secrets")
         if not secrets:
             raise ValueError("The LLM didn't produce valid secrets.")

@@ -17,11 +17,12 @@ from src.base.constants import (
     WORLD_GENERATION_TOOL_FILE,
 )
 from src.base.enums import TemplateType
+from src.base.validators import validate_non_empty_string
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.template_type_data import TemplateTypeData
 from src.prompting.abstracts.abstract_factories import ToolResponseProvider
-from src.prompting.factories.produce_tool_response_strategy_factory import (
-    ProduceToolResponseStrategyFactory,
+from src.prompting.factories.unparsed_string_produce_tool_response_strategy_factory import (
+    UnparsedStringProduceToolResponseStrategyFactory,
 )
 from src.prompting.products.concrete_llm_tool_response_product import (
     ConcreteLlmToolResponseProduct,
@@ -35,20 +36,23 @@ class PlaceGenerationToolResponseProvider(
 
     def __init__(
         self,
-            father_place_identifier: str,
+        father_place_identifier: str,
         template_type: TemplateType,
-            notion: str,
-        produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
+        notion: str,
+        produce_tool_response_strategy_factory: UnparsedStringProduceToolResponseStrategyFactory,
         filesystem_manager: Optional[FilesystemManager] = None,
     ):
         super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
-        if not father_place_identifier:
-            raise ValueError("father_place_identifier can't be empty.")
+
+        validate_non_empty_string(father_place_identifier, "father_place_identifier")
+
         self._father_place_identifier = father_place_identifier
         self._template_type = template_type
         self._notion = notion
 
-    def _read_and_format_tool_file(self, tool_file: str) -> dict:
+    def _get_tool_data(self) -> dict:
+        tool_file = self.get_tool_file()
+
         if tool_file == LOCATION_GENERATION_TOOL_FILE:
             template_copy = self._filesystem_manager.load_existing_or_new_json_file(
                 LOCATION_GENERATION_TOOL_FILE
@@ -63,9 +67,6 @@ class PlaceGenerationToolResponseProvider(
                 )
             return template_copy
         return self._filesystem_manager.read_json_file(tool_file)
-
-    def _read_tool_file(self, tool_file: str) -> dict:
-        return self._read_and_format_tool_file(tool_file)
 
     def _get_template_type_data(self) -> Optional[TemplateTypeData]:
         data_mapping: Dict[TemplateType, TemplateTypeData] = {
@@ -134,5 +135,5 @@ class PlaceGenerationToolResponseProvider(
             )
         return user_content
 
-    def create_product(self, arguments: dict):
+    def create_product_from_dict(self, arguments: dict):
         return ConcreteLlmToolResponseProduct(arguments, is_valid=True)

@@ -42,8 +42,10 @@ class ConcreteFilteredPlaceDescriptionGenerationFactory(
     def get_prompt_file(self) -> Optional[str]:
         return PLACE_DESCRIPTION_PROMPT_FILE
 
-    def get_tool_file(self) -> str:
-        return PLACE_DESCRIPTION_TOOL_FILE
+    def _get_tool_data(self) -> dict:
+        return self._filesystem_manager.load_existing_or_new_json_file(
+            PLACE_DESCRIPTION_TOOL_FILE
+        )
 
     def get_user_content(self) -> str:
         return "Write the description of the indicated place, filtered through the perspective of the character whose data has been provided, as per the above instructions."
@@ -73,7 +75,7 @@ class ConcreteFilteredPlaceDescriptionGenerationFactory(
         )
         return data_for_prompt
 
-    def create_product(self, arguments: dict):
+    def create_product_from_dict(self, arguments: dict):
         description = arguments.get(
             "description", "I'm not sure what to say now about this place."
         )

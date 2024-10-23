@@ -7,8 +7,8 @@ from src.characters.factories.player_and_followers_information_factory import (
 )
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.providers.places_descriptions_provider import PlacesDescriptionsProvider
-from src.prompting.factories.produce_tool_response_strategy_factory import (
-    ProduceToolResponseStrategyFactory,
+from src.prompting.factories.unparsed_string_produce_tool_response_strategy_factory import (
+    UnparsedStringProduceToolResponseStrategyFactory,
 )
 from src.prompting.providers.base_tool_response_provider import BaseToolResponseProvider
 from src.time.time_manager import TimeManager
@@ -21,7 +21,7 @@ class ActionResolutionFactory(BaseToolResponseProvider):
         playthrough_name: str,
         action_name: str,
         action_goal: str,
-        produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
+        produce_tool_response_strategy_factory: UnparsedStringProduceToolResponseStrategyFactory,
         places_descriptions_factory: PlacesDescriptionsProvider,
         players_and_followers_information_factory: PlayerAndFollowersInformationFactory,
         prompt_file: str,
@@ -66,13 +66,13 @@ class ActionResolutionFactory(BaseToolResponseProvider):
         )
         return prompt_data
 
-    def get_tool_file(self) -> str:
-        return self._tool_file
+    def _get_tool_data(self) -> dict:
+        return self._filesystem_manager.load_existing_or_new_json_file(self._tool_file)
 
     def get_user_content(self) -> str:
         return f"Generate a detailed narrative describing the player's attempt at a {self._action_name} action within a rich, immersive world. Use the provided information about the player, their followers, the world's conditions, and the specific locations involved. {self._action_name} goal: {self._action_goal}"
 
-    def create_product(self, arguments: dict):
+    def create_product_from_dict(self, arguments: dict):
         return ActionResolutionProduct(
             arguments.get("narrative"), arguments.get("outcome"), is_valid=True
         )

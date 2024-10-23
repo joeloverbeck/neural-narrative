@@ -1,4 +1,5 @@
 import pytest
+
 from src.prompting.function_call_sanitizer import FunctionCallSanitizer
 
 
@@ -370,3 +371,21 @@ def test_sanitize_with_self_closing_function_tag():
     expected_output = '<function=create_character_bio>{"key": "value"}</function>'
     sanitizer = FunctionCallSanitizer(input_str)
     assert sanitizer.sanitize() == expected_output
+
+
+def test_sanitize_missing_closing_function_tag():
+    function_call = (
+        "<function=generate_goals>{"
+        '"goals": {"goal_1": "Test goal 1", "goal_2": "Test goal 2"}}'
+    )
+
+    sanitizer = FunctionCallSanitizer(function_call)
+    sanitized_call = sanitizer.sanitize()
+
+    expected_call = (
+        "<function=generate_goals>{"
+        '"goals": {"goal_1": "Test goal 1", "goal_2": "Test goal 2"}}'
+        "</function>"
+    )
+
+    assert sanitized_call == expected_call
