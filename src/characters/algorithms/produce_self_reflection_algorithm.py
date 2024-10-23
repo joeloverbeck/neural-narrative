@@ -19,13 +19,13 @@ logger = logging.getLogger(__name__)
 class ProduceSelfReflectionAlgorithm:
 
     def __init__(
-            self,
-            playthrough_name: str,
-            character_identifier: str,
+        self,
+        playthrough_name: str,
+        character_identifier: str,
         self_reflection_factory: SelfReflectionFactory,
-            direct_voice_line_generation_algorithm_factory: DirectVoiceLineGenerationAlgorithmFactory,
-            filesystem_manager: Optional[FilesystemManager] = None,
-            characters_manager: Optional[CharactersManager] = None,
+        direct_voice_line_generation_algorithm_factory: DirectVoiceLineGenerationAlgorithmFactory,
+        filesystem_manager: Optional[FilesystemManager] = None,
+        characters_manager: Optional[CharactersManager] = None,
     ):
         self._playthrough_name = playthrough_name
         self._character_identifier = character_identifier

@@ -21,7 +21,7 @@ class SecretsFactory(BaseToolResponseProvider):
         self,
         playthrough_name: str,
         character_identifier: str,
-            produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
+        produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         places_descriptions_factory: PlacesDescriptionsProvider,
         filesystem_manager: Optional[FilesystemManager] = None,
         character_memories: Optional[CharacterMemories] = None,

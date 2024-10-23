@@ -13,7 +13,7 @@ class BaseConceptAlgorithm(Generic[TProduct, TFactory]):
 
     def __init__(
         self,
-            playthrough_name: str,
+        playthrough_name: str,
         concept_factory: TFactory,
         filesystem_manager: Optional[FilesystemManager] = None,
     ):
