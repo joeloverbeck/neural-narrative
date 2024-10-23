@@ -1,5 +1,5 @@
-from src.characters.providers.character_generation_tool_response_provider import (
-    CharacterGenerationToolResponseProvider,
+from src.characters.providers.base_character_data_generation_tool_response_provider import (
+    BaseCharacterDataGenerationToolResponseProvider,
 )
 from src.maps.places_templates_parameter import PlacesTemplatesParameter
 from src.prompting.abstracts.abstract_factories import (
@@ -11,7 +11,7 @@ from src.prompting.factories.character_generation_instructions_formatter_factory
 )
 
 
-class CharacterGenerationToolResponseProviderFactory:
+class BaseCharacterDataGenerationToolResponseProviderFactory:
 
     def __init__(
         self,
@@ -34,7 +34,7 @@ class CharacterGenerationToolResponseProviderFactory:
     def create_response_provider(
         self, places_templates_parameter: PlacesTemplatesParameter
     ):
-        return CharacterGenerationToolResponseProvider(
+        return BaseCharacterDataGenerationToolResponseProvider(
             self._playthrough_name,
             places_templates_parameter,
             self._produce_tool_response_strategy_factory,

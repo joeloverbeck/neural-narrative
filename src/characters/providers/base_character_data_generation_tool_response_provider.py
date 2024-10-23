@@ -1,26 +1,18 @@
 import logging
 from typing import Optional
 
+from pydantic import BaseModel
+
 from src.base.constants import (
-    CHARACTER_GENERATOR_TOOL_FILE,
     CHARACTER_GENERATION_INSTRUCTIONS_FILE,
     WORLDS_TEMPLATES_FILE,
     LOCATIONS_TEMPLATES_FILE,
     AREAS_TEMPLATES_FILE,
     REGIONS_TEMPLATES_FILE,
-    VOICE_GENDERS,
-    VOICE_AGES,
-    VOICE_EMOTIONS,
-    VOICE_TEMPOS,
-    VOICE_VOLUMES,
-    VOICE_TEXTURES,
-    VOICE_TONES,
-    VOICE_STYLES,
-    VOICE_PERSONALITIES,
-    VOICE_SPECIAL_EFFECTS,
 )
 from src.base.tools import capture_traceback
 from src.characters.characters_manager import CharactersManager
+from src.characters.models.base_character_data import BaseCharacterData
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.places_templates_parameter import PlacesTemplatesParameter
 from src.prompting.abstracts.abstract_factories import (
@@ -40,7 +32,7 @@ from src.prompting.providers.base_tool_response_provider import BaseToolResponse
 logger = logging.getLogger(__name__)
 
 
-class CharacterGenerationToolResponseProvider(
+class BaseCharacterDataGenerationToolResponseProvider(
     BaseToolResponseProvider, ToolResponseProvider
 ):
 
@@ -55,6 +47,7 @@ class CharacterGenerationToolResponseProvider(
         characters_manager: Optional[CharactersManager] = None,
     ):
         super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
+
         self._playthrough_name = playthrough_name
         self._places_parameter = places_parameter
         self._user_content_for_character_generation_factory = (
@@ -68,45 +61,7 @@ class CharacterGenerationToolResponseProvider(
         )
 
     def _get_tool_data(self) -> dict:
-        template_copy = self._filesystem_manager.load_existing_or_new_json_file(
-            CHARACTER_GENERATOR_TOOL_FILE
-        )
-        try:
-            template_copy["function"]["parameters"]["properties"]["voice_gender"][
-                "enum"
-            ] = VOICE_GENDERS
-            template_copy["function"]["parameters"]["properties"]["voice_age"][
-                "enum"
-            ] = VOICE_AGES
-            template_copy["function"]["parameters"]["properties"]["voice_emotion"][
-                "enum"
-            ] = VOICE_EMOTIONS
-            template_copy["function"]["parameters"]["properties"]["voice_tempo"][
-                "enum"
-            ] = VOICE_TEMPOS
-            template_copy["function"]["parameters"]["properties"]["voice_volume"][
-                "enum"
-            ] = VOICE_VOLUMES
-            template_copy["function"]["parameters"]["properties"]["voice_texture"][
-                "enum"
-            ] = VOICE_TEXTURES
-            template_copy["function"]["parameters"]["properties"]["voice_tone"][
-                "enum"
-            ] = VOICE_TONES
-            template_copy["function"]["parameters"]["properties"]["voice_style"][
-                "enum"
-            ] = VOICE_STYLES
-            template_copy["function"]["parameters"]["properties"]["voice_personality"][
-                "enum"
-            ] = VOICE_PERSONALITIES
-            template_copy["function"]["parameters"]["properties"][
-                "voice_special_effects"
-            ]["enum"] = VOICE_SPECIAL_EFFECTS
-        except Exception as e:
-            raise ValueError(
-                f"Was unable to format the character generator tool file: {e}"
-            )
-        return template_copy
+        return BaseCharacterData.model_json_schema()
 
     def get_formatted_prompt(self) -> str:
         templates = self._load_templates()
@@ -127,7 +82,28 @@ class CharacterGenerationToolResponseProvider(
             )
         return user_content_product.get()
 
-    def create_product_from_dict(self, arguments: dict):
+    def create_product_from_base_model(self, base_model: BaseModel):
+        arguments = {
+            "name": base_model.name,
+            "description": base_model.description,
+            "personality": base_model.personality,
+            "profile": base_model.profile,
+            "likes": base_model.likes,
+            "dislikes": base_model.dislikes,
+            "secrets": base_model.secrets,
+            "health": base_model.health,
+            "equipment": base_model.equipment,
+            "voice_gender": base_model.voice_gender,
+            "voice_age": base_model.voice_age,
+            "voice_emotion": base_model.voice_emotion,
+            "voice_tempo": base_model.voice_tempo,
+            "voice_volume": base_model.voice_volume,
+            "voice_texture": base_model.voice_texture,
+            "voice_tone": base_model.voice_tone,
+            "voice_style": base_model.voice_style,
+            "voice_personality": base_model.voice_personality,
+            "voice_special_effects": base_model.voice_special_effects,
+        }
         return ConcreteLlmToolResponseProduct(arguments, is_valid=True)
 
     def create_llm_response(self) -> LlmToolResponseProduct:

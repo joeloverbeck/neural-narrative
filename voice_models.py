@@ -3,18 +3,9 @@ from typing import Dict
 
 from src.base.constants import (
     VOICE_MODELS_FILE,
-    VOICE_GENDERS,
-    VOICE_AGES,
-    VOICE_EMOTIONS,
-    VOICE_TEMPOS,
-    VOICE_VOLUMES,
-    VOICE_TEXTURES,
-    VOICE_TONES,
-    VOICE_STYLES,
-    VOICE_PERSONALITIES,
-    VOICE_SPECIAL_EFFECTS,
 )
 from src.filesystem.filesystem_manager import FilesystemManager
+from src.voices.enums import voice_categories_tags
 
 
 def get_attribute_category(attribute, attribute_to_category: Dict[str, str]):
@@ -48,16 +39,16 @@ def main():
         "special_effects": Counter(),
     }
     attribute_categories = {
-        "genders": VOICE_GENDERS,
-        "ages": VOICE_AGES,
-        "emotions": VOICE_EMOTIONS,
-        "tempos": VOICE_TEMPOS,
-        "volumes": VOICE_VOLUMES,
-        "textures": VOICE_TEXTURES,
-        "tones": VOICE_TONES,
-        "styles": VOICE_STYLES,
-        "personalities": VOICE_PERSONALITIES,
-        "special_effects": VOICE_SPECIAL_EFFECTS,
+        "genders": voice_categories_tags["voice_gender"],
+        "ages": voice_categories_tags["voice_age"],
+        "emotions": voice_categories_tags["voice_emotion"],
+        "tempos": voice_categories_tags["voice_tempo"],
+        "volumes": voice_categories_tags["voice_volume"],
+        "textures": voice_categories_tags["voice_texture"],
+        "tones": voice_categories_tags["voice_tone"],
+        "styles": voice_categories_tags["voice_style"],
+        "personalities": voice_categories_tags["voice_personality"],
+        "special_effects": voice_categories_tags["voice_special_effects"],
     }
     attribute_to_category = {}
     for category, tags in attribute_categories.items():
