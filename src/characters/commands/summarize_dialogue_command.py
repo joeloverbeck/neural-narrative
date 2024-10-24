@@ -1,4 +1,5 @@
 import logging
+
 from src.base.abstracts.command import Command
 from src.characters.factories.store_character_memory_command_factory import (
     StoreCharacterMemoryCommandFactory,
@@ -23,6 +24,7 @@ class SummarizeDialogueCommand(Command):
     ):
         if not participants.enough_participants():
             raise ValueError("There weren't enough participants.")
+
         self._participants = participants
         self._transcription = transcription
         self._dialogue_summary_provider_factory = dialogue_summary_provider_factory
@@ -36,15 +38,18 @@ class SummarizeDialogueCommand(Command):
                 "Won't create memories out of an empty dialogue or insufficient dialogue."
             )
             return
+
         summary_product = (
             self._dialogue_summary_provider_factory.create_dialogue_summary_provider(
                 self._transcription
-            ).create_summary()
+            ).generate_product()
         )
+
         if not summary_product.is_valid():
             raise ValueError(
                 f"Failed to create a summary for the dialogue: {summary_product.get_error()}"
             )
+
         for participant_identifier in self._participants.get_participant_keys():
             self._store_character_memory_command_factory.create_store_character_memory_command(
                 participant_identifier, summary_product.get()

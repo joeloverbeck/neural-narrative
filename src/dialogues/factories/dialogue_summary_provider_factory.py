@@ -1,22 +1,24 @@
-from src.dialogues.abstracts.abstract_factories import DialogueSummaryProvider
 from src.dialogues.providers.concrete_dialogue_summary_provider import (
     ConcreteDialogueSummaryProvider,
 )
 from src.dialogues.transcription import Transcription
-from src.prompting.abstracts.llm_client import LlmClient
+from src.prompting.abstracts.abstract_factories import (
+    ProduceToolResponseStrategyFactory,
+)
 
 
 class DialogueSummaryProviderFactory:
 
-    def __init__(self, llm_client: LlmClient, model: str):
-        if not model:
-            raise ValueError("model can't be empty.")
-        self._llm_client = llm_client
-        self._model = model
+    def __init__(
+        self, produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory
+    ):
+        self._produce_tool_response_strategy_factory = (
+            produce_tool_response_strategy_factory
+        )
 
     def create_dialogue_summary_provider(
         self, transcription: Transcription
-    ) -> DialogueSummaryProvider:
+    ) -> ConcreteDialogueSummaryProvider:
         return ConcreteDialogueSummaryProvider(
-            self._llm_client, self._model, transcription
+            transcription, self._produce_tool_response_strategy_factory
         )
