@@ -26,13 +26,6 @@ class ProcessLlmContentIntoSpeechDataStrategy(ABC):
         pass
 
 
-class PromptFormatterForDialogueStrategy(ABC):
-
-    @abstractmethod
-    def do_algorithm(self) -> str:
-        pass
-
-
 class MessageDataProducerForIntroducePlayerInputIntoDialogueStrategy(Protocol):
 
     def produce_message_data(

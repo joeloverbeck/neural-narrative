@@ -27,16 +27,20 @@ class WebMessageDataProducerForSpeechTurnStrategy(
             raise ValueError(
                 "voice_model should be in the speech turn choice response."
             )
+
         image_url = self._filesystem_manager.get_file_path_to_character_image_for_web(
             self._playthrough_name, speech_turn_choice_response.get()["identifier"]
         )
         alignment = "left"
         speaker_identifier = speech_turn_choice_response.get()["identifier"]
+
         if self._player_identifier == speaker_identifier:
             alignment = "right"
+
         name = speech_data_product.get()["name"]
         narration_text = speech_data_product.get()["narration_text"]
         voice_model = speech_turn_choice_response.get()["voice_model"]
+
         return {
             "alignment": alignment,
             "sender_name": name,

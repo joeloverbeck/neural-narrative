@@ -7,6 +7,9 @@ from src.dialogues.abstracts.strategies import (
     InvolvePlayerInDialogueStrategy,
     MessageDataProducerForSpeechTurnStrategy,
 )
+from src.dialogues.algorithms.determine_next_speaker_algorithm import (
+    DetermineNextSpeakerAlgorithm,
+)
 from src.dialogues.composers.llm_speech_data_provider_factory_composer import (
     LlmSpeechDataProviderFactoryComposer,
 )
@@ -72,6 +75,12 @@ class DialogueTurnFactoryComposer:
 
         character_factory = CharacterFactory(self._playthrough_name)
 
+        determine_next_speaker_algorithm = DetermineNextSpeakerAlgorithm(
+            self._participants,
+            self._transcription,
+            speech_turn_choice_tool_response_provider_factory,
+        )
+
         return ConcreteDialogueTurnFactory(
             DialogueTurnFactoryConfig(
                 self._playthrough_name,
@@ -85,6 +94,7 @@ class DialogueTurnFactoryComposer:
                 create_speech_turn_data_command_factory,
             ),
             DialogueTurnFactoryStrategiesConfig(
-                self._involve_player_in_dialogue_strategy
+                self._involve_player_in_dialogue_strategy,
+                determine_next_speaker_algorithm,
             ),
         )

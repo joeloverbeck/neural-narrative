@@ -23,6 +23,9 @@ from src.dialogues.factories.introduce_player_input_into_dialogue_command_factor
 from src.dialogues.factories.store_dialogues_command_factory import (
     StoreDialoguesCommandFactory,
 )
+from src.dialogues.factories.store_temporary_dialogue_command_factory import (
+    StoreTemporaryDialogueCommandFactory,
+)
 from src.dialogues.factories.summarize_dialogue_command_factory import (
     SummarizeDialogueCommandFactory,
 )
@@ -55,10 +58,10 @@ class LaunchDialogueCommand(Command):
         player_input_factory: PlayerInputFactory,
         message_data_producer_for_introduce_player_input_into_dialogue_strategy: MessageDataProducerForIntroducePlayerInputIntoDialogueStrategy,
         message_data_producer_for_speech_turn_strategy: MessageDataProducerForSpeechTurnStrategy,
-        llms: Optional[Llms] = None,
     ):
         if not participants.enough_participants():
             raise ValueError("Not enough participants.")
+
         self._playthrough_name = playthrough_name
         self._player_identifier = player_identifier
         self._participants = participants
@@ -72,7 +75,6 @@ class LaunchDialogueCommand(Command):
         self._message_data_producer_for_speech_turn_strategy = (
             message_data_producer_for_speech_turn_strategy
         )
-        self._llms = llms or Llms()
 
     def execute(self) -> None:
         introduce_player_input_into_dialogue_command_factory = IntroducePlayerInputIntoDialogueCommandFactory(
@@ -80,7 +82,6 @@ class LaunchDialogueCommand(Command):
             self._player_identifier,
             self._message_data_producer_for_introduce_player_input_into_dialogue_strategy,
         )
-        llm_client = OpenRouterLlmClientFactory().create_llm_client()
         involve_player_in_dialogue_strategy = ConcreteInvolvePlayerInDialogueStrategy(
             self._player_identifier,
             self._player_input_factory,
@@ -91,7 +92,7 @@ class LaunchDialogueCommand(Command):
             self._player_identifier,
             self._participants,
             self._purpose,
-            llm_client,
+            OpenRouterLlmClientFactory().create_llm_client(),
             self._transcription,
             involve_player_in_dialogue_strategy,
             self._message_data_producer_for_speech_turn_strategy,
@@ -119,13 +120,18 @@ class LaunchDialogueCommand(Command):
         store_dialogues_command_factory = StoreDialoguesCommandFactory(
             self._playthrough_name, self._participants
         )
+
+        store_temporary_dialogue_command_factory = StoreTemporaryDialogueCommandFactory(
+            self._playthrough_name, self._participants, self._purpose
+        )
+
         produce_dialogue_command = ProduceDialogueCommand(
             self._playthrough_name,
-            self._participants,
-            self._purpose,
             dialogue_turn_factory,
             summarize_dialogue_command_factory,
             store_dialogues_command_factory,
+            store_temporary_dialogue_command_factory,
         )
+
         involve_player_in_dialogue_strategy.attach(self._dialogue_observer)
         produce_dialogue_command.execute()

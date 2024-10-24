@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Protocol
 
-from src.dialogues.messages_to_llm import MessagesToLlm
 from src.dialogues.transcription import Transcription
 
 
@@ -24,18 +23,7 @@ class PlayerInputProduct(ABC):
         pass
 
     @abstractmethod
-    def is_quit(self) -> bool:
-        pass
-
-    @abstractmethod
     def is_silent(self) -> bool:
-        pass
-
-
-class InitialPromptingMessagesProduct(ABC):
-
-    @abstractmethod
-    def get(self) -> MessagesToLlm:
         pass
 
 

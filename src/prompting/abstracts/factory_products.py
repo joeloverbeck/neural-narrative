@@ -5,8 +5,6 @@ from typing import Protocol, Union
 
 from pydantic import BaseModel
 
-from src.prompting.abstracts.llm_client import LlmClient
-
 
 class ToolResponseParsingProduct(ABC):
 
@@ -53,36 +51,6 @@ class LlmContentProduct(ABC):
 
     @abstractmethod
     def get(self) -> Union[str, BaseModel]:
-        pass
-
-    @abstractmethod
-    def is_valid(self) -> bool:
-        pass
-
-    @abstractmethod
-    def get_error(self) -> str:
-        pass
-
-
-class SystemContentForPromptProduct(ABC):
-
-    @abstractmethod
-    def get(self) -> str:
-        pass
-
-    @abstractmethod
-    def is_valid(self) -> bool:
-        pass
-
-    @abstractmethod
-    def get_error(self) -> str:
-        pass
-
-
-class LlmClientProduct(ABC):
-
-    @abstractmethod
-    def get(self) -> LlmClient:
         pass
 
     @abstractmethod

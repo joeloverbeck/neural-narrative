@@ -8,7 +8,6 @@ from src.prompting.abstracts.factory_products import (
     ExtractedDataProduct,
     LlmContentProduct,
     ToolResponseParsingProduct,
-    SystemContentForPromptProduct,
     UserContentForCharacterGenerationProduct,
 )
 from src.prompting.abstracts.llm_client import LlmClient
@@ -39,13 +38,6 @@ class LlmContentProvider(ABC):
 
     @abstractmethod
     def generate_content(self) -> LlmContentProduct:
-        pass
-
-
-class SystemContentForPromptProvider(ABC):
-
-    @abstractmethod
-    def create_system_content_for_prompt(self) -> SystemContentForPromptProduct:
         pass
 
 

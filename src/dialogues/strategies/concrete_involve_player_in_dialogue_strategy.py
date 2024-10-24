@@ -42,7 +42,7 @@ class ConcreteInvolvePlayerInDialogueStrategy(InvolvePlayerInDialogueStrategySub
             return player_input_product
 
         if self._player_identifier and not player_input_product.is_silent():
-            introduce_player_input_into_dialogue_command = self._introduce_player_input_into_dialogue_command_factory.create_introduce_player_input_into_dialogue_command(
+            introduce_player_input_into_dialogue_command = self._introduce_player_input_into_dialogue_command_factory.create_command(
                 player_input_product, transcription
             )
             for observer in self._observers:
