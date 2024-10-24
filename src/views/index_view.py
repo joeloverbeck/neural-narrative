@@ -12,12 +12,12 @@ from src.base.factories.story_universe_factory import StoryUniverseFactory
 from src.base.models.story_universe import StoryUniverse
 from src.base.playthrough_manager import PlaythroughManager
 from src.base.tools import capture_traceback
-from src.config.config_manager import ConfigManager
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.prompting.composers.produce_tool_response_strategy_factory_composer import (
     ProduceToolResponseStrategyFactoryComposer,
 )
 from src.prompting.enums import LlmClientType
+from src.prompting.llms import Llms
 from src.services.playthrough_service import PlaythroughService
 
 logger = logging.getLogger(__name__)
@@ -81,7 +81,7 @@ class IndexView(MethodView):
                 produce_tool_response_strategy_factory = (
                     ProduceToolResponseStrategyFactoryComposer(
                         LlmClientType.INSTRUCTOR,
-                        ConfigManager().get_heavy_llm(),
+                        Llms().for_story_universe_generation(),
                         StoryUniverse,
                     ).compose_factory()
                 )

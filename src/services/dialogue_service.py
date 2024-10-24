@@ -1,7 +1,6 @@
 from flask import session, url_for
 
 from src.base.playthrough_manager import PlaythroughManager
-from src.config.config_manager import ConfigManager
 from src.dialogues.commands.produce_ambient_narration_command import (
     ProduceAmbientNarrationCommand,
 )
@@ -46,6 +45,7 @@ from src.prompting.composers.produce_tool_response_strategy_factory_composer imp
     ProduceToolResponseStrategyFactoryComposer,
 )
 from src.prompting.enums import LlmClientType
+from src.prompting.llms import Llms
 
 
 class DialogueService:
@@ -65,7 +65,7 @@ class DialogueService:
 
         produce_tool_response_strategy_factory = (
             ProduceToolResponseStrategyFactoryComposer(
-                LlmClientType.OPEN_ROUTER, ConfigManager().get_heavy_llm()
+                LlmClientType.OPEN_ROUTER, Llms().for_ambient_narration()
             ).compose_factory()
         )
         playthrough_name = session.get("playthrough_name")

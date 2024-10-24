@@ -197,9 +197,8 @@ CONNECTION_GENERATION_PROMPT_FILE: str = (
     "data/prompting/characters/connection_generation_prompt.txt"
 )
 OPENROUTER_API_URL: str = "https://openrouter.ai/api/v1"
-HERMES_405B = "nousresearch/hermes-3-llama-3.1-405b"
-HERMES_405B_FREE = "nousresearch/hermes-3-llama-3.1-405b:free"
-HERMES_70B = "nousresearch/hermes-3-llama-3.1-70b"
+
+LLMS_FILE: str = "data/llm/llms.json"
 
 LOCATION_TYPES = [
     "APARTMENT_BUILDING",

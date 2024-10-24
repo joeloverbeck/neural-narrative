@@ -1,6 +1,7 @@
 from typing import cast
 
 from src.base.abstracts.command import Command
+from src.base.validators import validate_non_empty_string
 from src.characters.factories.connection_factory import ConnectionFactory
 from src.characters.factories.store_character_memory_command_factory import (
     StoreCharacterMemoryCommandFactory,
@@ -17,10 +18,9 @@ class GenerateConnectionCommand(Command):
         connection_factory: ConnectionFactory,
         store_character_memory_command_factory: StoreCharacterMemoryCommandFactory,
     ):
-        if not character_a_identifier:
-            raise ValueError("character_a_identifier can't be empty.")
-        if not character_b_identifier:
-            raise ValueError("character_b_identifier can't be empty.")
+        validate_non_empty_string(character_a_identifier, "character_a_identifier")
+        validate_non_empty_string(character_b_identifier, "character_b_identifier")
+
         self._character_a_identifier = character_a_identifier
         self._character_b_identifier = character_b_identifier
         self._connection_factory = connection_factory

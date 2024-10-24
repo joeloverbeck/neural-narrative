@@ -1,6 +1,5 @@
 from typing import Optional
 
-from src.config.config_manager import ConfigManager
 from src.dialogues.abstracts.abstract_factories import DialogueTurnFactorySubject
 from src.dialogues.abstracts.strategies import (
     InvolvePlayerInDialogueStrategy,
@@ -35,6 +34,7 @@ from src.dialogues.messages_to_llm import MessagesToLlm
 from src.dialogues.participants import Participants
 from src.dialogues.transcription import Transcription
 from src.prompting.abstracts.llm_client import LlmClient
+from src.prompting.llms import Llms
 
 
 class DialogueTurnFactoryComposer:
@@ -64,17 +64,18 @@ class DialogueTurnFactoryComposer:
         )
 
     def compose(self) -> DialogueTurnFactorySubject:
+        llms = Llms()
         speech_turn_choice_tool_response_provider_factory = (
             SpeechTurnChoiceToolResponseFactoryComposer(
                 self._playthrough_name,
                 self._player_identifier,
                 self._participants,
                 self._llm_client,
-                ConfigManager().get_light_llm(),
+                llms.for_speech_turn_choice(),
             ).compose()
         )
         llm_speech_data_provider_factory = LlmSpeechDataProviderFactoryComposer(
-            self._llm_client, ConfigManager().get_heavy_llm()
+            self._llm_client, llms.for_speech_turn()
         ).compose()
         determine_system_message_for_speech_turn_strategy = (
             DetermineSystemMessageForSpeechTurnStrategyComposer(

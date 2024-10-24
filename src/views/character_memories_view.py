@@ -11,12 +11,12 @@ from src.characters.factories.character_information_provider import (
     CharacterInformationProvider,
 )
 from src.characters.factories.self_reflection_factory import SelfReflectionFactory
-from src.config.config_manager import ConfigManager
 from src.interfaces.web_interface_manager import WebInterfaceManager
 from src.prompting.composers.produce_tool_response_strategy_factory_composer import (
     ProduceToolResponseStrategyFactoryComposer,
 )
 from src.prompting.enums import LlmClientType
+from src.prompting.llms import Llms
 from src.services.web_service import WebService
 from src.voices.factories.direct_voice_line_generation_algorithm_factory import (
     DirectVoiceLineGenerationAlgorithmFactory,
@@ -79,7 +79,7 @@ class CharacterMemoriesView(MethodView):
         elif action == "produce_self_reflection" and character_identifier:
             produce_tool_response_strategy_factory = (
                 ProduceToolResponseStrategyFactoryComposer(
-                    LlmClientType.OPEN_ROUTER, ConfigManager().get_heavy_llm()
+                    LlmClientType.OPEN_ROUTER, Llms().for_self_reflection()
                 ).compose_factory()
             )
             character_information_factory = CharacterInformationProvider(
