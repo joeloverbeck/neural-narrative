@@ -28,6 +28,7 @@ from src.maps.factories.store_generated_place_command_factory import (
 )
 from src.maps.models.area import Area
 from src.maps.models.location import Location
+from src.maps.models.place_description import PlaceDescription
 from src.maps.models.region import Region
 from src.maps.models.world import World
 from src.maps.weathers_manager import WeathersManager
@@ -92,7 +93,7 @@ class PlaceService:
             )
         else:
             raise NotImplemented(
-                f"Case not handled for template type '{template_type}'."
+                f"Case not handled for template type '{template_type.value}'."
             )
 
         place_generation_tool_response_provider = PlaceGenerationToolResponseProvider(
@@ -123,7 +124,9 @@ class PlaceService:
 
         produce_tool_response_strategy_factory = (
             ProduceToolResponseStrategyFactoryComposer(
-                LlmClientType.OPEN_ROUTER, self._llms.for_place_description()
+                LlmClientType.INSTRUCTOR,
+                self._llms.for_place_description(),
+                PlaceDescription,
             ).compose_factory()
         )
         place_manager_factory = PlaceManagerFactory(playthrough_name)
