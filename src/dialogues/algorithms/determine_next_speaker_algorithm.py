@@ -16,6 +16,7 @@ from src.prompting.products.concrete_llm_tool_response_product import (
 class DetermineNextSpeakerAlgorithm:
     def __init__(
         self,
+        playthrough_name: str,
         participants: Participants,
         transcription: Transcription,
         speech_turn_choice_tool_response_provider_factory: SpeechTurnChoiceToolResponseProviderFactory,
@@ -32,7 +33,9 @@ class DetermineNextSpeakerAlgorithm:
             speech_turn_choice_tool_response_provider_factory
         )
 
-        self._playthrough_manager = playthrough_manager
+        self._playthrough_manager = playthrough_manager or PlaythroughManager(
+            playthrough_name
+        )
 
     def _choose_next_speaker(self) -> LlmToolResponseProduct:
         """Determine the next speaker in the dialogue."""
