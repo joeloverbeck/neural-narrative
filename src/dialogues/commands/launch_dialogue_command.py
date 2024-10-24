@@ -26,7 +26,6 @@ from src.dialogues.factories.store_dialogues_command_factory import (
 from src.dialogues.factories.summarize_dialogue_command_factory import (
     SummarizeDialogueCommandFactory,
 )
-from src.dialogues.messages_to_llm import MessagesToLlm
 from src.dialogues.models.dialogue_summary import DialogueSummary
 from src.dialogues.participants import Participants
 from src.dialogues.strategies.concrete_involve_player_in_dialogue_strategy import (
@@ -51,7 +50,6 @@ class LaunchDialogueCommand(Command):
         player_identifier: str,
         participants: Participants,
         purpose: Optional[str],
-        messages_to_llm: Optional[MessagesToLlm],
         transcription: Optional[Transcription],
         dialogue_observer: Observer,
         player_input_factory: PlayerInputFactory,
@@ -65,7 +63,6 @@ class LaunchDialogueCommand(Command):
         self._player_identifier = player_identifier
         self._participants = participants
         self._purpose = purpose
-        self._messages_to_llm = messages_to_llm
         self._transcription = transcription
         self._dialogue_observer = dialogue_observer
         self._player_input_factory = player_input_factory
@@ -95,7 +92,6 @@ class LaunchDialogueCommand(Command):
             self._participants,
             self._purpose,
             llm_client,
-            self._messages_to_llm,
             self._transcription,
             involve_player_in_dialogue_strategy,
             self._message_data_producer_for_speech_turn_strategy,

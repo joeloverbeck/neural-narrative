@@ -8,7 +8,6 @@ from src.dialogues.abstracts.strategies import MessageDataProducerForSpeechTurnS
 from src.dialogues.factories.llm_speech_data_provider_factory import (
     LlmSpeechDataProviderFactory,
 )
-from src.dialogues.messages_to_llm import MessagesToLlm
 from src.dialogues.transcription import Transcription
 from src.prompting.abstracts.factory_products import LlmToolResponseProduct
 
@@ -19,13 +18,11 @@ class CreateSpeechTurnDataCommand(Command, Subject):
 
     def __init__(
         self,
-        messages_to_llm: MessagesToLlm,
         transcription: Transcription,
         speech_turn_choice_response: LlmToolResponseProduct,
         llm_speech_data_provider_factory: LlmSpeechDataProviderFactory,
         message_data_producer_for_speech_turn_strategy: MessageDataProducerForSpeechTurnStrategy,
     ):
-        self._messages_to_llm = messages_to_llm
         self._transcription = transcription
         self._speech_turn_choice_response = speech_turn_choice_response
         self._llm_speech_data_provider_factory = llm_speech_data_provider_factory

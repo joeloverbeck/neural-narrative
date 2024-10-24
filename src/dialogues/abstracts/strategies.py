@@ -6,7 +6,6 @@ from src.dialogues.abstracts.factory_products import (
     PlayerInputProduct,
     SpeechDataProduct,
 )
-from src.dialogues.messages_to_llm import MessagesToLlm
 from src.dialogues.transcription import Transcription
 from src.prompting.abstracts.factory_products import (
     LlmToolResponseProduct,
@@ -16,9 +15,7 @@ from src.prompting.abstracts.factory_products import (
 
 class InvolvePlayerInDialogueStrategy(Protocol):
 
-    def do_algorithm(
-        self, messages_to_llm: MessagesToLlm, transcription: Transcription
-    ) -> PlayerInputProduct:
+    def do_algorithm(self, transcription: Transcription) -> PlayerInputProduct:
         pass
 
 
