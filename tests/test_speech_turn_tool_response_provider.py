@@ -48,8 +48,8 @@ def test_init_with_valid_parameters():
     assert provider._transcription == transcription
     assert provider._character_factory == character_factory
     assert (
-            provider._produce_tool_response_strategy_factory
-            == produce_tool_response_strategy_factory
+        provider._produce_tool_response_strategy_factory
+        == produce_tool_response_strategy_factory
     )
     assert provider._filesystem_manager == filesystem_manager
 
@@ -225,8 +225,8 @@ def test_get_prompt_kwargs_with_player_identifier():
     )
     assert prompt_kwargs["all_participants"] == expected_all_participants
     assert (
-            prompt_kwargs["participants_without_player"]
-            == expected_participants_without_player
+        prompt_kwargs["participants_without_player"]
+        == expected_participants_without_player
     )
     assert prompt_kwargs["dialogue"] == transcription.get()
 

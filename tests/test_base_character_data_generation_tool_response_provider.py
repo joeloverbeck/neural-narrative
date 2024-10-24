@@ -203,7 +203,7 @@ def test_create_llm_response_exception():
     # Mock generate_product to raise exception
     provider.generate_product = MagicMock(side_effect=Exception("Test Exception"))
 
-    with patch("src.base.tools.capture_traceback") as mock_capture_traceback:
+    with patch("src.base.tools.capture_traceback"):
         result = provider.create_llm_response()
         assert isinstance(result, ConcreteLlmToolResponseProduct)
         assert not result.is_valid()

@@ -18,15 +18,7 @@ class VoiceLineGenerationError(Exception):
     pass
 
 
-class PlotBlueprintGenerationError(Exception):
-    pass
-
-
 class StoryUniverseGenerationError(Exception):
-    pass
-
-
-class WorldGenerationError(Exception):
     pass
 
 

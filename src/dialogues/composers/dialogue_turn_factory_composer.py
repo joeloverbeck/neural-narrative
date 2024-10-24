@@ -1,12 +1,11 @@
 from typing import Optional
 
+from src.base.playthrough_manager import PlaythroughManager
+from src.characters.factories.character_factory import CharacterFactory
 from src.dialogues.abstracts.abstract_factories import DialogueTurnFactorySubject
 from src.dialogues.abstracts.strategies import (
     InvolvePlayerInDialogueStrategy,
     MessageDataProducerForSpeechTurnStrategy,
-)
-from src.dialogues.composers.determine_system_message_for_speech_turn_strategy_composer import (
-    DetermineSystemMessageForSpeechTurnStrategyComposer,
 )
 from src.dialogues.composers.llm_speech_data_provider_factory_composer import (
     LlmSpeechDataProviderFactoryComposer,
@@ -27,14 +26,10 @@ from src.dialogues.factories.concrete_dialogue_turn_factory import (
 from src.dialogues.factories.create_speech_turn_data_command_factory import (
     CreateSpeechTurnDataCommandFactory,
 )
-from src.dialogues.factories.determine_user_messages_for_speech_turn_strategy_factory import (
-    DetermineUserMessagesForSpeechTurnStrategyFactory,
-)
 from src.dialogues.messages_to_llm import MessagesToLlm
 from src.dialogues.participants import Participants
 from src.dialogues.transcription import Transcription
 from src.prompting.abstracts.llm_client import LlmClient
-from src.prompting.llms import Llms
 
 
 class DialogueTurnFactoryComposer:
@@ -64,28 +59,14 @@ class DialogueTurnFactoryComposer:
         )
 
     def compose(self) -> DialogueTurnFactorySubject:
-        llms = Llms()
         speech_turn_choice_tool_response_provider_factory = (
             SpeechTurnChoiceToolResponseFactoryComposer(
                 self._playthrough_name, self._player_identifier, self._participants
             ).compose()
         )
         llm_speech_data_provider_factory = LlmSpeechDataProviderFactoryComposer(
-            self._llm_client, llms.for_speech_turn()
+            self._playthrough_name, self._participants, self._purpose
         ).compose()
-        determine_system_message_for_speech_turn_strategy = (
-            DetermineSystemMessageForSpeechTurnStrategyComposer(
-                self._playthrough_name,
-                self._participants,
-                self._purpose,
-                self._messages_to_llm,
-            ).compose()
-        )
-        determine_user_messages_for_speech_turn_strategy_factory = (
-            DetermineUserMessagesForSpeechTurnStrategyFactory(
-                self._playthrough_name, self._player_identifier
-            )
-        )
         create_speech_turn_data_command_factory = CreateSpeechTurnDataCommandFactory(
             self._messages_to_llm,
             self._transcription,
@@ -93,20 +74,22 @@ class DialogueTurnFactoryComposer:
             self._message_data_producer_for_speech_turn_strategy,
         )
 
+        character_factory = CharacterFactory(self._playthrough_name)
+
         return ConcreteDialogueTurnFactory(
             DialogueTurnFactoryConfig(
                 self._playthrough_name,
+                PlaythroughManager(self._playthrough_name).get_player_identifier(),
                 self._participants,
                 self._messages_to_llm,
                 self._transcription,
             ),
             DialogueTurnFactoryFactoriesConfig(
+                character_factory,
                 speech_turn_choice_tool_response_provider_factory,
                 create_speech_turn_data_command_factory,
-                determine_user_messages_for_speech_turn_strategy_factory,
             ),
             DialogueTurnFactoryStrategiesConfig(
-                self._involve_player_in_dialogue_strategy,
-                determine_system_message_for_speech_turn_strategy,
+                self._involve_player_in_dialogue_strategy
             ),
         )

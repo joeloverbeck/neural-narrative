@@ -20,19 +20,6 @@ class MessagesToLlm:
                 latest_entry_index = len(self._messages) - 1
                 self._guiding_message_indices.append(latest_entry_index)
 
-    def extend_from_messages_to_llm(self, origin_messages_to_llm: "MessagesToLlm"):
-        has_user_or_assistant_message = any(
-            msg["role"] in ["assistant", "user"] for msg in self._messages
-        )
-        for i, msg in enumerate(origin_messages_to_llm.get()):
-            if (
-                    has_user_or_assistant_message
-                    and i in origin_messages_to_llm.get_guiding_message_indices()
-            ):
-                continue
-            else:
-                self.add_message(msg["role"], msg["content"])
-
     def get(self) -> List[dict]:
         return self._messages
 

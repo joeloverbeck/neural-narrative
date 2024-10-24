@@ -1,15 +1,15 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from src.dialogues.messages_to_llm import MessagesToLlm
 from src.dialogues.participants import Participants
 from src.dialogues.transcription import Transcription
 
 
 @dataclass
-class DialogueTurnFactoryConfig:
+class LlmSpeechDataProviderConfig:
     playthrough_name: str
-    player_identifier: str
+    speaker_identifier: str
+    speaker_name: str
     participants: Participants
-    messages_to_llm: Optional[MessagesToLlm] = None
-    transcription: Optional[Transcription] = None
+    purpose: Optional[str]
+    transcription: Transcription

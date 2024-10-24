@@ -1,5 +1,7 @@
 from unittest.mock import MagicMock
+
 import pytest
+
 from src.dialogues.messages_to_llm import MessagesToLlm
 from src.dialogues.products.concrete_speech_data_product import (
     ConcreteSpeechDataProduct,

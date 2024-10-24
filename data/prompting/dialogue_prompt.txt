@@ -34,3 +34,6 @@ Maintain Roleplay Integrity:
 - Avoid sounding like a helpful assistant.
 
 {dialogue_purpose}
+
+Dialogue so far:
+{dialogue}
