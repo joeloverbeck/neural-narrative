@@ -67,11 +67,7 @@ class DialogueTurnFactoryComposer:
         llms = Llms()
         speech_turn_choice_tool_response_provider_factory = (
             SpeechTurnChoiceToolResponseFactoryComposer(
-                self._playthrough_name,
-                self._player_identifier,
-                self._participants,
-                self._llm_client,
-                llms.for_speech_turn_choice(),
+                self._playthrough_name, self._player_identifier, self._participants
             ).compose()
         )
         llm_speech_data_provider_factory = LlmSpeechDataProviderFactoryComposer(
@@ -96,6 +92,7 @@ class DialogueTurnFactoryComposer:
             llm_speech_data_provider_factory,
             self._message_data_producer_for_speech_turn_strategy,
         )
+
         return ConcreteDialogueTurnFactory(
             DialogueTurnFactoryConfig(
                 self._playthrough_name,
