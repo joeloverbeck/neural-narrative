@@ -1,12 +1,15 @@
 from typing import Optional
 
-from src.base.constants import TRAVEL_NARRATION_PROMPT_FILE, TRAVEL_NARRATION_TOOL_FILE
+from pydantic import BaseModel
+
+from src.base.constants import TRAVEL_NARRATION_PROMPT_FILE
 from src.base.playthrough_manager import PlaythroughManager
 from src.characters.factories.player_and_followers_information_factory import (
     PlayerAndFollowersInformationFactory,
 )
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.factories.map_manager_factory import MapManagerFactory
+from src.movements.models.travel_narration import TravelNarration
 from src.prompting.abstracts.abstract_factories import (
     ProduceToolResponseStrategyFactory,
 )
@@ -72,15 +75,13 @@ class TravelNarrationFactory(BaseToolResponseProvider):
         return prompt_data
 
     def _get_tool_data(self) -> dict:
-        return self._filesystem_manager.load_existing_or_new_json_file(
-            TRAVEL_NARRATION_TOOL_FILE
-        )
+        return TravelNarration.model_json_schema()
 
     def get_user_content(self) -> str:
         return "Write the narration of the travel from the origin area to the destination area, filtered through the first-person perspective of the player, as per the above instructions."
 
-    def create_product_from_dict(self, arguments: dict):
+    def create_product_from_base_model(self, base_model: BaseModel):
         return TravelNarrationProduct(
-            travel_narration=arguments.get("narration", "The travel was uneventful."),
+            travel_narration=base_model.travel_narration,
             is_valid=True,
         )
