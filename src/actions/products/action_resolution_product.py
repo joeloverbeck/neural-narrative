@@ -1,11 +1,13 @@
 from typing import Optional
+
 from src.services.web_service import WebService
 
 
 class ActionResolutionProduct:
 
-    def __init__(self, narrative: str, outcome: str, is_valid: bool, error:
-    Optional[str] = None):
+    def __init__(
+        self, narrative: str, outcome: str, is_valid: bool, error: Optional[str] = None
+    ):
         if not narrative:
             raise ValueError("narrative can't be empty.")
         if not outcome:
@@ -16,7 +18,6 @@ class ActionResolutionProduct:
         self._error = error
         self._narrative_voice_line_file_name = None
         self._outcome_voice_line_file_name = None
-        self._consequences_voice_line_file_name = None
 
     def get_narrative(self) -> str:
         return self._narrative
@@ -37,9 +38,11 @@ class ActionResolutionProduct:
         self._outcome_voice_line_file_name = file_name
 
     def get_narrative_voice_line_url(self):
-        return WebService.get_file_url('voice_lines', self.
-                                       _narrative_voice_line_file_name)
+        return WebService.get_file_url(
+            "voice_lines", self._narrative_voice_line_file_name
+        )
 
     def get_outcome_voice_line_url(self):
-        return WebService.get_file_url('voice_lines', self.
-                                       _outcome_voice_line_file_name)
+        return WebService.get_file_url(
+            "voice_lines", self._outcome_voice_line_file_name
+        )

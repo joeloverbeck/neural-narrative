@@ -19,14 +19,6 @@ class VoiceManager:
         self._requests_manager = requests_manager or RequestsManager()
         self._filesystem_manager = filesystem_manager or FilesystemManager()
 
-    @staticmethod
-    def _get_timestamp(filename):
-        """
-        Extract the timestamp from the filename.
-        Assumes the timestamp is the first 14 characters of the filename.
-        """
-        return filename[:14]
-
     def get_all_tags(self):
         all_tags = set()
         for tags in self._filesystem_manager.load_existing_or_new_json_file(

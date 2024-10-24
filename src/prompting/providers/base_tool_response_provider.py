@@ -1,3 +1,4 @@
+import logging
 from abc import abstractmethod
 from typing import Optional
 
@@ -9,6 +10,8 @@ from src.filesystem.filesystem_manager import FilesystemManager
 from src.prompting.abstracts.abstract_factories import (
     ProduceToolResponseStrategyFactory,
 )
+
+logger = logging.getLogger(__name__)
 
 
 class BaseToolResponseProvider:
@@ -80,11 +83,10 @@ class BaseToolResponseProvider:
             prompt_template = self._read_prompt_file(prompt_file)
             formatted_prompt = self._format_prompt(prompt_template, **prompt_kwargs)
         tool_data = self._get_tool_data()
-        print(f"Tool data: {tool_data}")
         tool_instructions = self._read_tool_instructions()
         tool_prompt = self._generate_tool_prompt(tool_data, tool_instructions)
         system_content = self._generate_system_content(formatted_prompt, tool_prompt)
-        print(f"system content: {system_content}")
+        logger.info(system_content)
         self.peep_into_system_content(system_content)
         user_content = self.get_user_content()
         return self._produce_tool_response(system_content, user_content)

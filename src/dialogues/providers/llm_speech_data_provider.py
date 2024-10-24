@@ -1,56 +1,95 @@
 import logging
+from typing import Optional
 
-from src.base.constants import MAX_RETRIES_WHEN_FAILED_TO_RETURN_FUNCTION_CALL
-from src.dialogues.abstracts.abstract_factories import SpeechDataFactory
-from src.dialogues.abstracts.factory_products import SpeechDataProduct
-from src.dialogues.abstracts.strategies import ProcessLlmContentIntoSpeechDataStrategy
-from src.dialogues.messages_to_llm import MessagesToLlm
+from pydantic import BaseModel
+
+from src.base.constants import (
+    DIALOGUE_PROMPT_FILE,
+)
+from src.base.validators import validate_non_empty_string
+from src.dialogues.configs.llm_speech_data_provider_config import (
+    LlmSpeechDataProviderConfig,
+)
+from src.dialogues.configs.llm_speech_data_provider_factories_config import (
+    LlmSpeechDataProviderFactoriesConfig,
+)
+from src.dialogues.models.speech_turn import SpeechTurn
 from src.dialogues.products.concrete_speech_data_product import (
     ConcreteSpeechDataProduct,
 )
-from src.prompting.factories.llm_content_provider_factory import (
-    LlmContentProviderFactory,
-)
+from src.filesystem.filesystem_manager import FilesystemManager
+from src.prompting.providers.base_tool_response_provider import BaseToolResponseProvider
+from src.time.time_manager import TimeManager
 
 logger = logging.getLogger(__name__)
 
 
-class LlmSpeechDataProvider(SpeechDataFactory):
-
+class LlmSpeechDataProvider(BaseToolResponseProvider):
     def __init__(
         self,
-        messages_to_llm: MessagesToLlm,
-        llm_content_provider_factory: LlmContentProviderFactory,
-        process_llm_content_into_speech_data_strategy: ProcessLlmContentIntoSpeechDataStrategy,
+        config: LlmSpeechDataProviderConfig,
+        factories_config: LlmSpeechDataProviderFactoriesConfig,
+        time_manager: Optional[TimeManager] = None,
+        filesystem_manager: Optional[FilesystemManager] = None,
     ):
-        assert process_llm_content_into_speech_data_strategy
-        self._messages_to_llm = messages_to_llm
-        self._llm_content_provider_factory = llm_content_provider_factory
-        self._process_llm_content_into_speech_data_strategy = (
-            process_llm_content_into_speech_data_strategy
+        super().__init__(
+            factories_config.produce_tool_response_strategy_factory, filesystem_manager
         )
-        self._max_retries = MAX_RETRIES_WHEN_FAILED_TO_RETURN_FUNCTION_CALL
 
-    def create_speech_data(self) -> SpeechDataProduct:
-        while self._max_retries > 0:
-            llm_content_product = (
-                self._llm_content_provider_factory.create_llm_content_provider(
-                    self._messages_to_llm
-                ).generate_content()
-            )
-            speech_data_product = (
-                self._process_llm_content_into_speech_data_strategy.do_algorithm(
-                    llm_content_product
-                )
-            )
-            if speech_data_product.is_valid():
-                return speech_data_product
-            self._max_retries -= 1
-            logger.error(
-                f"Failed to produce valid speech data: {speech_data_product.get_error()}"
-            )
-        return ConcreteSpeechDataProduct(
-            {},
-            is_valid=False,
-            error=f"Exhausted all retries when trying to get a valid response out of the LLM.",
+        validate_non_empty_string(config.playthrough_name, "playthrough_name")
+        validate_non_empty_string(config.speaker_identifier, "speaker_identifier")
+        validate_non_empty_string(config.speaker_name, "speaker_name")
+
+        self._config = config
+        self._factories_config = factories_config
+
+        self._time_manager = time_manager or TimeManager(self._config.playthrough_name)
+
+    def _format_participant_details(self) -> str:
+        return "\n".join(
+            [
+                f"{participant['name']}: {participant['description']}. Equipment: {participant['equipment']}"
+                for _, participant in self._config.participants.get().items()
+                if participant["name"] != self._config.speaker_name
+            ]
         )
+
+    def _format_dialogue_purpose(self) -> str:
+        if self._config.purpose:
+            return f"The purpose of this dialogue is: {self._config.purpose}"
+        return ""
+
+    def get_prompt_file(self) -> str:
+        return DIALOGUE_PROMPT_FILE
+
+    def _get_tool_data(self) -> dict:
+        return SpeechTurn.model_json_schema()
+
+    def get_user_content(self) -> str:
+        return f"Write {self._config.speaker_name}'s speech."
+
+    def create_product_from_base_model(self, base_model: BaseModel):
+        speech_data = {
+            "name": base_model.name,
+            "narration_text": base_model.narration_text,
+            "speech": base_model.speech,
+        }
+
+        return ConcreteSpeechDataProduct(speech_data, is_valid=True)
+
+    def get_prompt_kwargs(self) -> dict:
+        participant_details = self._format_participant_details()
+        dialogue_purpose = self._format_dialogue_purpose()
+
+        return {
+            "places_descriptions": self._factories_config.places_descriptions_provider.get_information(),
+            "hour": self._time_manager.get_hour(),
+            "time_group": self._time_manager.get_time_of_the_day(),
+            "name": self._config.speaker_name,
+            "participant_details": participant_details,
+            "character_information": self._factories_config.character_information_provider_factory.create_provider(
+                self._config.speaker_identifier
+            ).get_information(),
+            "dialogue_purpose": dialogue_purpose,
+            "dialogue": self._config.transcription.get_prettified_transcription(),
+        }

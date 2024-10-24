@@ -1,6 +1,8 @@
 import os
 from typing import List
+
 from flask import session, url_for
+
 from src.base.abstracts.observer import Observer
 from src.base.constants import NARRATOR_VOICE_MODEL
 from src.characters.characters_manager import CharactersManager
@@ -27,6 +29,10 @@ class WebAmbientNarrationObserver(Observer):
         file_name = DirectVoiceLineGenerationAlgorithmFactory.create_algorithm(
             "narrator", message["message_text"], NARRATOR_VOICE_MODEL
         ).direct_voice_line_generation()
+
+        if not file_name:
+            file_name = "NONE"
+
         self._messages.append(
             {
                 "alignment": message["alignment"],

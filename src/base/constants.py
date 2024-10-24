@@ -13,8 +13,6 @@ TIME_ADVANCED_DUE_TO_EXITING_LOCATION = 1
 TIME_ADVANCED_DUE_TO_TRAVELING = 10
 TIME_ADVANCED_DUE_TO_SEARCHING_FOR_LOCATION = 2
 MAX_RETRIES: int = 10
-MAX_RETRIES_WHEN_UNRECOVERABLE_SPEECH_TURN_CHOICE: int = 3
-MAX_RETRIES_WHEN_FAILED_TO_RETURN_FUNCTION_CALL: int = 3
 REQUEST_OK: int = 200
 TOO_MANY_REQUESTS_ERROR_NUMBER: int = 429
 UNAUTHORIZED_ERROR_NUMBER: int = 401
@@ -24,7 +22,6 @@ WAIT_TIME_WHEN_TOO_MANY_REQUESTS_ERROR: int = 10
 WAIT_TIME_WHEN_UNAUTHORIZED_ERROR: int = 10
 WAIT_TIME_WHEN_EMPTY_CONTENT: int = 5
 WAIT_TIME_WHEN_MALFORMED_COMPLETION: int = 5
-CONFIG_FILE: str = "data/llm/config.json"
 XTTS_CONFIG_FILE: str = "data/voices/xtts_config.json"
 LOGGING_CONFIG_FILE: str = "data/logging/logging_config.json"
 VOICE_MODELS_FILE: str = "data/voices/voice_models.json"
@@ -32,8 +29,7 @@ VOICE_LINES_FOLDER_PATH: str = "static/voice_lines"
 PLAYTHROUGHS_FOLDER: str = "playthroughs"
 CHARACTERS_FOLDER_NAME: str = "characters"
 IMAGES_FOLDER_NAME: str = "images"
-ONGOING_DIALOGUE_FOLDER_NAME: str = "ongoing dialogue"
-ONGOING_DIALOGUE_FILE: str = "ongoing_dialogue.json"
+ONGOING_DIALOGUE_FILE: str = "ongoing_dialogue.txt"
 DEFAULT_IMAGE_FILE: str = "static/images/default.png"
 PLAYTHROUGH_METADATA_FILE: str = "playthrough_metadata.json"
 MAP_FILE: str = "map.json"
@@ -76,37 +72,7 @@ PLACES_DESCRIPTIONS_BLOCK: str = "data/prompting/blocks/places_descriptions.txt"
 PLAYER_AND_FOLLOWERS_INFORMATION_BLOCK: str = (
     "data/prompting/blocks/player_and_followers_information.txt"
 )
-SPEECH_PATTERNS_GENERATION_TOOL_FILE: str = (
-    "data/prompting/characters/speech_patterns_generation_tool.json"
-)
-SPEECH_GENERATOR_TOOL_FILE: str = "data/prompting/speech_generator_tool.json"
 SPEECH_TURN_TOOL_FILE: str = "data/prompting/speech_turn_tool.json"
-DIALOGUE_SUMMARIZATION_TOOL_FILE: str = (
-    "data/prompting/dialogue_summarization_tool.json"
-)
-STORY_UNIVERSE_GENERATION_TOOL_FILE: str = (
-    "data/prompting/base/story_universe_generation_tool.json"
-)
-WORLD_GENERATION_TOOL_FILE: str = "data/prompting/places/world_generation_tool.json"
-REGION_GENERATION_TOOL_FILE: str = "data/prompting/places/region_generation_tool.json"
-AREA_GENERATION_TOOL_FILE: str = "data/prompting/places/area_generation_tool.json"
-LOCATION_GENERATION_TOOL_FILE: str = (
-    "data/prompting/places/location_generation_tool.json"
-)
-PLACE_DESCRIPTION_TOOL_FILE: str = "data/prompting/places/place_description_tool.json"
-TRAVEL_NARRATION_TOOL_FILE: str = "data/prompting/places/travel_narration_tool.json"
-CHARACTER_DESCRIPTION_GENERATION_TOOL_FILE: str = (
-    "data/prompting/characters/character_description_generation_tool.json"
-)
-AMBIENT_NARRATION_GENERATION_TOOL_FILE: str = (
-    "data/prompting/ambient_narration_generation_tool.json"
-)
-SELF_REFLECTION_GENERATION_TOOL_FILE: str = (
-    "data/prompting/characters/self_reflection_generation_tool.json"
-)
-GOAL_RESOLUTION_GENERATION_TOOL_FILE: str = (
-    "data/prompting/goal_resolution_generation_tool.json"
-)
 RESEARCH_RESOLUTION_GENERATION_TOOL_FILE: str = (
     "data/prompting/actions/research_resolution_generation_tool.json"
 )
@@ -115,12 +81,6 @@ INVESTIGATE_RESOLUTION_GENERATION_TOOL_FILE: str = (
 )
 GATHER_SUPPLIES_RESOLUTION_GENERATION_TOOL_FILE: str = (
     "data/prompting/actions/gather_supplies_resolution_generation_tool.json"
-)
-SECRETS_GENERATION_TOOL_FILE: str = (
-    "data/prompting/characters/secrets_generation_tool.json"
-)
-CONNECTION_GENERATION_TOOL_FILE: str = (
-    "data/prompting/characters/connection_generation_tool.json"
 )
 CHARACTER_GENERATION_INSTRUCTIONS_FILE: str = (
     "data/prompting/characters/base_character_data_generation_prompt.txt"
@@ -171,9 +131,6 @@ AMBIENT_NARRATION_GENERATION_PROMPT_FILE: str = (
 )
 SELF_REFLECTION_GENERATION_PROMPT_FILE: str = (
     "data/prompting/characters/self_reflection_generation_prompt.txt"
-)
-GOAL_RESOLUTION_GENERATION_PROMPT_FILE: str = (
-    "data/prompting/goal_resolution_generation_prompt.txt"
 )
 GOALS_GENERATION_PROMPT_FILE: str = (
     "data/prompting/concepts/goals_generation_prompt.txt"

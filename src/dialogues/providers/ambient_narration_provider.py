@@ -1,11 +1,13 @@
 from typing import Optional
 
+from pydantic import BaseModel
+
 from src.base.constants import (
     AMBIENT_NARRATION_GENERATION_PROMPT_FILE,
-    AMBIENT_NARRATION_GENERATION_TOOL_FILE,
 )
 from src.base.playthrough_manager import PlaythroughManager
 from src.characters.character import Character
+from src.dialogues.models.ambient_narration import AmbientNarration
 from src.dialogues.products.ambient_narration_product import AmbientNarrationProduct
 from src.dialogues.transcription import Transcription
 from src.filesystem.filesystem_manager import FilesystemManager
@@ -45,17 +47,13 @@ class AmbientNarrationProvider(BaseToolResponseProvider):
         return AMBIENT_NARRATION_GENERATION_PROMPT_FILE
 
     def _get_tool_data(self) -> dict:
-        return self._filesystem_manager.load_existing_or_new_json_file(
-            AMBIENT_NARRATION_GENERATION_TOOL_FILE
-        )
+        return AmbientNarration.model_json_schema()
 
     def get_user_content(self) -> str:
         return "Write two or three sentences of ambient narration, as per the provided instructions."
 
-    def create_product_from_dict(self, arguments: dict):
-        return AmbientNarrationProduct(
-            arguments.get("ambient_narration"), is_valid=True
-        )
+    def create_product_from_base_model(self, base_model: BaseModel):
+        return AmbientNarrationProduct(base_model.ambient_narration, is_valid=True)
 
     def get_prompt_kwargs(self) -> dict:
         setting_description = self._place_description_manager.get_place_description(
@@ -64,6 +62,7 @@ class AmbientNarrationProvider(BaseToolResponseProvider):
         personality = Character(
             self._playthrough_name, self._playthrough_manager.get_player_identifier()
         ).personality
+
         return {
             "setting_description": setting_description,
             "hour": self._time_manager.get_hour(),

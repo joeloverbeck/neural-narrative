@@ -20,6 +20,7 @@ from src.dialogues.factories.load_data_from_ongoing_dialogue_command_factory imp
 )
 from src.dialogues.factories.web_player_input_factory import WebPlayerInputFactory
 from src.dialogues.messages_to_llm import MessagesToLlm
+from src.dialogues.models.ambient_narration import AmbientNarration
 from src.dialogues.observers.web_ambient_narration_observer import (
     WebAmbientNarrationObserver,
 )
@@ -65,7 +66,9 @@ class DialogueService:
 
         produce_tool_response_strategy_factory = (
             ProduceToolResponseStrategyFactoryComposer(
-                LlmClientType.OPEN_ROUTER, Llms().for_ambient_narration()
+                LlmClientType.INSTRUCTOR,
+                Llms().for_ambient_narration(),
+                AmbientNarration,
             ).compose_factory()
         )
         playthrough_name = session.get("playthrough_name")

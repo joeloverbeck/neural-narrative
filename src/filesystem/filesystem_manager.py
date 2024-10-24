@@ -20,7 +20,7 @@ from src.base.constants import (
     OPENAI_SECRET_KEY_FILE,
     IMAGES_FOLDER_NAME,
     OPENAI_PROJECT_KEY_FILE,
-    ONGOING_DIALOGUE_FOLDER_NAME,
+    ONGOING_DIALOGUE_FILE,
     RUNPOD_SECRET_KEY_FILE,
     VOICE_LINES_FOLDER_PATH,
 )
@@ -228,16 +228,8 @@ class FilesystemManager:
     def get_file_path_to_ongoing_dialogue(self, playthrough_name: str) -> str:
         return os.path.join(
             self.get_file_path_to_playthrough_folder(playthrough_name),
-            ONGOING_DIALOGUE_FOLDER_NAME,
+            ONGOING_DIALOGUE_FILE,
         )
-
-    def get_file_path_to_ongoing_dialogue_folder(self, playthrough_name: str) -> str:
-        if not playthrough_name:
-            raise ValueError("playthrough_name should not be empty.")
-        folder_path = self.get_file_path_to_ongoing_dialogue(playthrough_name)
-        if not folder_path:
-            os.makedirs(folder_path)
-        return folder_path
 
     def get_file_path_to_interesting_situations(self, playthrough_name: str) -> str:
         if not playthrough_name:

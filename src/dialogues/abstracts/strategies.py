@@ -1,5 +1,6 @@
 from abc import abstractmethod, ABC
 from typing import Protocol, List
+
 from src.characters.character import Character
 from src.dialogues.abstracts.factory_products import (
     PlayerInputProduct,
@@ -18,22 +19,6 @@ class InvolvePlayerInDialogueStrategy(Protocol):
     def do_algorithm(
         self, messages_to_llm: MessagesToLlm, transcription: Transcription
     ) -> PlayerInputProduct:
-        pass
-
-
-class DetermineUserMessagesForSpeechTurnStrategy(ABC):
-
-    @abstractmethod
-    def do_algorithm(self, speech_turn_tool_response_product: LlmToolResponseProduct):
-        pass
-
-
-class DetermineSystemMessageForSpeechTurnStrategy(ABC):
-
-    @abstractmethod
-    def do_algorithm(
-        self, speech_turn_choice_tool_response_product: LlmToolResponseProduct
-    ):
         pass
 
 

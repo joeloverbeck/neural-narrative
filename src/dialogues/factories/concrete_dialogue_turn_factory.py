@@ -1,5 +1,5 @@
 import logging
-from typing import List
+from typing import List, Optional
 
 from src.base.abstracts.observer import Observer
 from src.base.playthrough_manager import PlaythroughManager
@@ -13,9 +13,7 @@ from src.dialogues.configs.dialogue_turn_factory_strategies_config import (
     DialogueTurnFactoryStrategiesConfig,
 )
 from src.dialogues.exceptions import InvalidNextSpeakerError, DialogueProcessingError
-from src.dialogues.messages_to_llm import MessagesToLlm
 from src.dialogues.products.concrete_dialogue_product import ConcreteDialogueProduct
-from src.dialogues.transcription import Transcription
 from src.prompting.abstracts.factory_products import LlmToolResponseProduct
 from src.prompting.products.concrete_llm_tool_response_product import (
     ConcreteLlmToolResponseProduct,
@@ -31,34 +29,16 @@ class ConcreteDialogueTurnFactory(DialogueTurnFactorySubject):
         dialogue_turn_factory_config: DialogueTurnFactoryConfig,
         dialogue_turn_factory_factories_config: DialogueTurnFactoryFactoriesConfig,
         dialogue_turn_factory_strategies_config: DialogueTurnFactoryStrategiesConfig,
-        playthrough_manager: PlaythroughManager = None,
+        playthrough_manager: Optional[PlaythroughManager] = None,
     ):
-        self._playthrough_name = dialogue_turn_factory_config.playthrough_name
-        self._participants = dialogue_turn_factory_config.participants
-        self._involve_player_in_dialogue_strategy = (
-            dialogue_turn_factory_strategies_config.involve_player_in_dialogue_strategy
-        )
-        self._speech_turn_choice_tool_response_provider_factory = (
-            dialogue_turn_factory_factories_config.speech_turn_choice_tool_response_provider_factory
-        )
-        self._determine_system_message_for_speech_turn_strategy = (
-            dialogue_turn_factory_strategies_config.determine_system_message_for_speech_turn_strategy
-        )
-        self._determine_user_messages_for_speech_turn_strategy_factory = (
-            dialogue_turn_factory_factories_config.determine_user_messages_for_speech_turn_strategy_factory
-        )
-        self._messages_to_llm = (
-            dialogue_turn_factory_config.messages_to_llm or MessagesToLlm()
-        )
-        self._transcription = (
-            dialogue_turn_factory_config.transcription or Transcription()
-        )
-        self._create_speech_turn_data_command_factory = (
-            dialogue_turn_factory_factories_config.create_speech_turn_data_command_factory
-        )
+        self._config = dialogue_turn_factory_config
+        self._factories_config = dialogue_turn_factory_factories_config
+        self._strategies_config = dialogue_turn_factory_strategies_config
+
         self._playthrough_manager = playthrough_manager or PlaythroughManager(
-            self._playthrough_name
+            self._config.playthrough_name
         )
+
         self._observers: List[Observer] = []
 
     def attach(self, observer: Observer) -> None:
@@ -74,14 +54,14 @@ class ConcreteDialogueTurnFactory(DialogueTurnFactorySubject):
 
     def _get_player_input(self) -> PlayerInputProduct:
         """Retrieve and process player input."""
-        return self._involve_player_in_dialogue_strategy.do_algorithm(
-            self._messages_to_llm, self._transcription
+        return self._strategies_config.involve_player_in_dialogue_strategy.do_algorithm(
+            self._config.messages_to_llm, self._config.transcription
         )
 
     def _choose_next_speaker(self) -> LlmToolResponseProduct:
         """Determine the next speaker in the dialogue."""
-        response_provider = self._speech_turn_choice_tool_response_provider_factory.create_speech_turn_choice_tool_response_provider(
-            self._transcription
+        response_provider = self._factories_config.speech_turn_choice_tool_response_provider_factory.create_speech_turn_choice_tool_response_provider(
+            self._config.transcription
         )
         response_product = response_provider.generate_product()
 
@@ -107,37 +87,43 @@ class ConcreteDialogueTurnFactory(DialogueTurnFactorySubject):
         player_input_product: PlayerInputProduct,
         speech_turn_choice_response: LlmToolResponseProduct,
     ):
+        """Process the speech turn for the given speaker."""
+
         if "voice_model" not in speech_turn_choice_response.get():
             raise ValueError("voice_model can't be empty.")
-        """Process the speech turn for the given speaker."""
-        self._determine_system_message_for_speech_turn_strategy.do_algorithm(
+
+        # Add the player input to the ongoing messages:
+        if not self._config.player_identifier or player_input_product.is_silent():
+            self._config.messages_to_llm.add_message(
+                "user",
+                f"{self._factories_config.character_factory.create_character(self._config.player_identifier).name}: {player_input_product.get()}",
+            )
+
+        command = self._factories_config.create_speech_turn_data_command_factory.create_command(
             speech_turn_choice_response
         )
-        user_messages_strategy = self._determine_user_messages_for_speech_turn_strategy_factory.create_strategy(
-            player_input_product, self._messages_to_llm
-        )
-        user_messages_strategy.do_algorithm(speech_turn_choice_response)
-        command = self._create_speech_turn_data_command_factory.create_command(
-            speech_turn_choice_response
-        )
+
         for observer in self._observers:
             command.attach(observer)
+
         command.execute()
 
     def _create_dialogue_product(self, has_ended: bool) -> DialogueProduct:
         """Create a dialogue product indicating whether the dialogue has ended."""
         return ConcreteDialogueProduct(
-            self._messages_to_llm, self._transcription, has_ended=has_ended
+            self._config.messages_to_llm,
+            self._config.transcription,
+            has_ended=has_ended,
         )
 
     def _determine_next_speaker(self) -> LlmToolResponseProduct:
-        if not self._participants.has_only_two_participants_with_player(
+        if not self._config.participants.has_only_two_participants_with_player(
             self._playthrough_manager.get_player_identifier()
         ):
             return self._choose_next_speaker()
         else:
             return ConcreteLlmToolResponseProduct(
-                self._participants.get_other_participant_data(
+                self._config.participants.get_other_participant_data(
                     self._playthrough_manager.get_player_identifier()
                 ),
                 is_valid=True,
