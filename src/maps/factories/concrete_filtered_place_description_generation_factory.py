@@ -1,8 +1,9 @@
 from typing import Optional
 
+from pydantic import BaseModel
+
 from src.base.constants import (
     PLACE_DESCRIPTION_PROMPT_FILE,
-    PLACE_DESCRIPTION_TOOL_FILE,
 )
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.configs.filtered_place_description_generation_factory_config import (
@@ -11,9 +12,7 @@ from src.maps.configs.filtered_place_description_generation_factory_config impor
 from src.maps.configs.filtered_place_description_generation_factory_factories_config import (
     FilteredPlaceDescriptionGenerationFactoryFactoriesConfig,
 )
-from src.prompting.abstracts.abstract_factories import (
-    FilteredPlaceDescriptionGenerationFactory,
-)
+from src.maps.models.place_description import PlaceDescription
 from src.prompting.products.concrete_filtered_place_description_generation_product import (
     ConcreteFilteredPlaceDescriptionGenerationProduct,
 )
@@ -21,9 +20,7 @@ from src.prompting.providers.base_tool_response_provider import BaseToolResponse
 from src.time.time_manager import TimeManager
 
 
-class ConcreteFilteredPlaceDescriptionGenerationFactory(
-    BaseToolResponseProvider, FilteredPlaceDescriptionGenerationFactory
-):
+class ConcreteFilteredPlaceDescriptionGenerationFactory(BaseToolResponseProvider):
 
     def __init__(
         self,
@@ -43,9 +40,7 @@ class ConcreteFilteredPlaceDescriptionGenerationFactory(
         return PLACE_DESCRIPTION_PROMPT_FILE
 
     def _get_tool_data(self) -> dict:
-        return self._filesystem_manager.load_existing_or_new_json_file(
-            PLACE_DESCRIPTION_TOOL_FILE
-        )
+        return PlaceDescription.model_json_schema()
 
     def get_user_content(self) -> str:
         return "Write the description of the indicated place, filtered through the perspective of the character whose data has been provided, as per the above instructions."
@@ -57,14 +52,14 @@ class ConcreteFilteredPlaceDescriptionGenerationFactory(
         place_full_data = self._factories_config.map_manager_factory.create_map_manager().get_place_full_data(
             self._config.place_identifier
         )
-        place_data = place_full_data[f"{place_type}_data"]
+        place_data = place_full_data[f"{place_type.value}_data"]
         data_for_prompt = {
             "hour": self._time_manager.get_hour(),
             "time_of_the_day": self._time_manager.get_time_of_the_day(),
             "weather": self._factories_config.weathers_manager.get_weather_description(
                 self._factories_config.weathers_manager.get_current_weather_identifier()
             ),
-            "place_type": place_type,
+            "place_type": place_type.value,
             "place_template": place_data["name"],
             "place_description": place_data["description"],
         }
@@ -75,10 +70,7 @@ class ConcreteFilteredPlaceDescriptionGenerationFactory(
         )
         return data_for_prompt
 
-    def create_product_from_dict(self, arguments: dict):
-        description = arguments.get(
-            "description", "I'm not sure what to say now about this place."
-        )
+    def create_product_from_base_model(self, base_model: BaseModel):
         return ConcreteFilteredPlaceDescriptionGenerationProduct(
-            description, is_valid=True
+            base_model.description, is_valid=True
         )

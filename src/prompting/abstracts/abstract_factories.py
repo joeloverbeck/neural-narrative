@@ -10,7 +10,6 @@ from src.prompting.abstracts.factory_products import (
     ToolResponseParsingProduct,
     SystemContentForPromptProduct,
     UserContentForCharacterGenerationProduct,
-    FilteredPlaceDescriptionGenerationProduct,
 )
 from src.prompting.abstracts.llm_client import LlmClient
 from src.prompting.abstracts.strategies import ProduceToolResponseStrategy
@@ -62,14 +61,6 @@ class UserContentForCharacterGenerationFactory(Protocol):
     def create_user_content_for_character_generation(
         self,
     ) -> UserContentForCharacterGenerationProduct:
-        pass
-
-
-class FilteredPlaceDescriptionGenerationFactory(Protocol):
-
-    def generate_filtered_place_description(
-        self,
-    ) -> FilteredPlaceDescriptionGenerationProduct:
         pass
 
 
