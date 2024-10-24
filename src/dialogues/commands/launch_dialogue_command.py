@@ -27,11 +27,16 @@ from src.dialogues.factories.summarize_dialogue_command_factory import (
     SummarizeDialogueCommandFactory,
 )
 from src.dialogues.messages_to_llm import MessagesToLlm
+from src.dialogues.models.dialogue_summary import DialogueSummary
 from src.dialogues.participants import Participants
 from src.dialogues.strategies.concrete_involve_player_in_dialogue_strategy import (
     ConcreteInvolvePlayerInDialogueStrategy,
 )
 from src.dialogues.transcription import Transcription
+from src.prompting.composers.produce_tool_response_strategy_factory_composer import (
+    ProduceToolResponseStrategyFactoryComposer,
+)
+from src.prompting.enums import LlmClientType
 from src.prompting.factories.openrouter_llm_client_factory import (
     OpenRouterLlmClientFactory,
 )
@@ -95,9 +100,17 @@ class LaunchDialogueCommand(Command):
             involve_player_in_dialogue_strategy,
             self._message_data_producer_for_speech_turn_strategy,
         ).compose()
+
         dialogue_turn_factory.attach(self._dialogue_observer)
+
+        produce_tool_response_strategy_factory = (
+            ProduceToolResponseStrategyFactoryComposer(
+                LlmClientType.INSTRUCTOR, Llms().for_dialogue_summary(), DialogueSummary
+            ).compose_factory()
+        )
+
         dialogue_summary_provider_factory = DialogueSummaryProviderFactory(
-            llm_client, self._llms.for_dialogue_summary()
+            produce_tool_response_strategy_factory
         )
         store_character_memory_command_factory = StoreCharacterMemoryCommandFactory(
             self._playthrough_name
