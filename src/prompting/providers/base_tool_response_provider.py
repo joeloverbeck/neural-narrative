@@ -58,7 +58,7 @@ class BaseToolResponseProvider:
         elif isinstance(tool_response, BaseModel):
             return self.create_product_from_base_model(tool_response)
         else:
-            raise NotImplemented(
+            raise NotImplementedError(
                 f"Case not implemented for when the tool response is of type '{type(tool_response)}.'"
             )
 
@@ -98,7 +98,7 @@ class BaseToolResponseProvider:
         raise NotImplemented("Should be implemented.")
 
     def create_product_from_dict(self, arguments: dict):
-        raise NotImplemented(
+        raise NotImplementedError(
             "Detected that the tool response was a dict, so this should be implemented."
         )
 
