@@ -37,11 +37,6 @@ from src.concepts.factories.plot_twists_factory import PlotTwistsFactory
 from src.concepts.factories.scenarios_factory import (
     ScenariosFactory,
 )
-from src.concepts.models.dilemmas import Dilemmas
-from src.concepts.models.goals import Goals
-from src.concepts.models.plot_blueprint import PlotBlueprint
-from src.concepts.models.plot_twists import PlotTwists
-from src.concepts.models.scenarios import Scenarios
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.interfaces.web_interface_manager import WebInterfaceManager
 from src.maps.composers.places_descriptions_provider_composer import (
@@ -50,7 +45,6 @@ from src.maps.composers.places_descriptions_provider_composer import (
 from src.prompting.composers.produce_tool_response_strategy_factory_composer import (
     ProduceToolResponseStrategyFactoryComposer,
 )
-from src.prompting.enums import LlmClientType
 from src.prompting.llms import Llms
 
 logger = logging.getLogger(__name__)
@@ -100,31 +94,12 @@ class StoryHubView(MethodView):
 
         llms = Llms()
 
-        plot_blueprint_produce_tool_response_strategy_factory = (
+        produce_tool_response_strategy_factory = (
             ProduceToolResponseStrategyFactoryComposer(
-                LlmClientType.INSTRUCTOR, llms.for_concept_generation(), PlotBlueprint
+                llms.for_concept_generation(),
             ).compose_factory()
         )
-        scenarios_produce_tool_response_strategy_factory = (
-            ProduceToolResponseStrategyFactoryComposer(
-                LlmClientType.INSTRUCTOR, llms.for_concept_generation(), Scenarios
-            ).compose_factory()
-        )
-        dilemmas_produce_tool_response_strategy_factory = (
-            ProduceToolResponseStrategyFactoryComposer(
-                LlmClientType.INSTRUCTOR, llms.for_concept_generation(), Dilemmas
-            ).compose_factory()
-        )
-        goals_produce_tool_response_strategy_factory = (
-            ProduceToolResponseStrategyFactoryComposer(
-                LlmClientType.INSTRUCTOR, llms.for_concept_generation(), Goals
-            ).compose_factory()
-        )
-        plot_twists_produce_tool_response_strategy_factory = (
-            ProduceToolResponseStrategyFactoryComposer(
-                LlmClientType.INSTRUCTOR, llms.for_concept_generation(), PlotTwists
-            ).compose_factory()
-        )
+
         player_data_for_prompt_factory = PlayerDataForPromptFactory(
             playthrough_name, CharacterFactory(playthrough_name_obj)
         )
@@ -146,7 +121,7 @@ class StoryHubView(MethodView):
                     "response_key": "plot_blueprints",
                     "factory_args": [
                         playthrough_name_obj,
-                        plot_blueprint_produce_tool_response_strategy_factory,
+                        produce_tool_response_strategy_factory,
                         places_descriptions_provider,
                         player_and_followers_information_factory,
                     ],
@@ -157,7 +132,7 @@ class StoryHubView(MethodView):
                     "response_key": "interesting_situations",
                     "factory_args": [
                         playthrough_name_obj,
-                        scenarios_produce_tool_response_strategy_factory,
+                        produce_tool_response_strategy_factory,
                         places_descriptions_provider,
                         player_and_followers_information_factory,
                     ],
@@ -168,7 +143,7 @@ class StoryHubView(MethodView):
                     "response_key": "interesting_dilemmas",
                     "factory_args": [
                         playthrough_name_obj,
-                        dilemmas_produce_tool_response_strategy_factory,
+                        produce_tool_response_strategy_factory,
                         places_descriptions_provider,
                         player_and_followers_information_factory,
                     ],
@@ -179,7 +154,7 @@ class StoryHubView(MethodView):
                     "response_key": "goals",
                     "factory_args": [
                         playthrough_name_obj,
-                        goals_produce_tool_response_strategy_factory,
+                        produce_tool_response_strategy_factory,
                         places_descriptions_provider,
                         player_and_followers_information_factory,
                     ],
@@ -190,7 +165,7 @@ class StoryHubView(MethodView):
                     "response_key": "plot_twists",
                     "factory_args": [
                         playthrough_name_obj,
-                        plot_twists_produce_tool_response_strategy_factory,
+                        produce_tool_response_strategy_factory,
                         places_descriptions_provider,
                         player_and_followers_information_factory,
                     ],
@@ -200,7 +175,7 @@ class StoryHubView(MethodView):
                 mapping = generate_action_mapping[action_name]
                 factory_instance = mapping["factory_class"](*mapping["factory_args"])
                 algorithm_instance = mapping["algorithm_class"](
-                    playthrough_name_obj, factory_instance
+                    playthrough_name_obj, action_name, factory_instance
                 )
                 try:
                     items = algorithm_instance.do_algorithm()

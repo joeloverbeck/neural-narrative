@@ -32,7 +32,7 @@ def test_get_tool_data():
     )
 
     # Act
-    tool_data = cf._get_tool_data()
+    tool_data = cf._get_tool_data(Connection)
 
     # Assert
     expected_schema = Connection.model_json_schema()
@@ -278,7 +278,7 @@ def test_generate_product():
         )
 
         # Act
-        product = cf.generate_product()
+        product = cf.generate_product(Connection)
 
         # Assert
         assert isinstance(product, ConnectionProduct)
@@ -286,7 +286,7 @@ def test_generate_product():
         assert product.is_valid()
 
         # Ensure the strategy was called with the correct system_content and user_content
-        expected_system_content = (
+        (
             "This is a prompt for Alice and Bob.\n\nThese are tool instructions. "
             + str(Connection.model_json_schema())
         )

@@ -5,6 +5,7 @@ from src.base.abstracts.command import Command
 from src.base.constants import STORY_UNIVERSES_TEMPLATE_FILE
 from src.base.exceptions import StoryUniverseGenerationError
 from src.base.factories.story_universe_factory import StoryUniverseFactory
+from src.base.models.story_universe import StoryUniverse
 from src.base.products.story_universe_product import StoryUniverseProduct
 from src.base.validators import validate_non_empty_string
 from src.filesystem.filesystem_manager import FilesystemManager
@@ -25,7 +26,8 @@ class GenerateStoryUniverseCommand(Command):
     def execute(self) -> None:
         try:
             product = cast(
-                StoryUniverseProduct, self._story_universe_factory.generate_product()
+                StoryUniverseProduct,
+                self._story_universe_factory.generate_product(StoryUniverse),
             )
         except ValueError as e:
             error_message = f"Failed to generate a story universe. Error: {e}"

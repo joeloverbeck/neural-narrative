@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Protocol
+from typing import Protocol, Dict
 
 from src.dialogues.transcription import Transcription
 
@@ -30,7 +30,11 @@ class PlayerInputProduct(ABC):
 class SpeechDataProduct(ABC):
 
     @abstractmethod
-    def get(self) -> dict[str, str]:
+    def get(self) -> Dict[str, str]:
+        pass
+
+    @abstractmethod
+    def set(self, speech_data: Dict[str, str]) -> None:
         pass
 
     @abstractmethod

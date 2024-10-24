@@ -10,6 +10,7 @@ from src.dialogues.factories.ambient_narration_provider_factory import (
 from src.dialogues.factories.handle_possible_existence_of_ongoing_conversation_command_factory import (
     HandlePossibleExistenceOfOngoingConversationCommandFactory,
 )
+from src.dialogues.models.ambient_narration import AmbientNarration
 from src.dialogues.observers.web_ambient_narration_observer import (
     WebAmbientNarrationObserver,
 )
@@ -44,7 +45,7 @@ class ProduceAmbientNarrationCommand(Command):
             AmbientNarrationProduct,
             self._ambient_narration_provider_factory.create_provider(
                 self._transcription
-            ).generate_product(),
+            ).generate_product(AmbientNarration),
         )
 
         if not product.is_valid():

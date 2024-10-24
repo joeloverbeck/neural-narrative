@@ -13,6 +13,7 @@ from src.maps.configs.filtered_place_description_generation_factory_factories_co
 from src.maps.factories.concrete_filtered_place_description_generation_factory import (
     ConcreteFilteredPlaceDescriptionGenerationFactory,
 )
+from src.maps.models.area import Area
 from src.maps.models.place_description import PlaceDescription
 from src.prompting.abstracts.abstract_factories import (
     ProduceToolResponseStrategyFactory,
@@ -27,8 +28,6 @@ TOOL_INSTRUCTIONS_FOR_INSTRUCTOR_FILE = "tool_instructions_for_instructor.txt"
 
 
 # Begin tests
-
-
 def test_get_tool_data():
     config = FilteredPlaceDescriptionGenerationFactoryConfig(
         playthrough_name="test_playthrough", place_identifier="test_place"
@@ -37,7 +36,7 @@ def test_get_tool_data():
     factory = ConcreteFilteredPlaceDescriptionGenerationFactory(
         config=config, factories_config=factories_config
     )
-    result = factory._get_tool_data()
+    result = factory._get_tool_data(PlaceDescription)
     assert result == PlaceDescription.model_json_schema()
 
 
@@ -220,7 +219,7 @@ def test_generate_product():
         strategy
     )
 
-    product = factory.generate_product()
+    product = factory.generate_product(Area)
 
     assert isinstance(product, ConcreteFilteredPlaceDescriptionGenerationProduct)
     assert product.get() == "Generated description."

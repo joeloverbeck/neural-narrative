@@ -1,4 +1,5 @@
 import sys
+
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.images.factories.openai_generated_image_factory import (
     OpenAIGeneratedImageFactory,

@@ -7,7 +7,6 @@ from src.base.constants import (
 )
 from src.characters.character import Character
 from src.characters.character_memories import CharacterMemories
-from src.characters.models.secrets import Secrets
 from src.characters.products.secrets_product import SecretsProduct
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.providers.places_descriptions_provider import PlacesDescriptionsProvider
@@ -37,14 +36,11 @@ class SecretsFactory(BaseToolResponseProvider):
             self._playthrough_name
         )
 
-    def _get_tool_data(self) -> dict:
-        return Secrets.model_json_schema()
-
     def get_user_content(self) -> str:
         return "Create secrets for a character that are compelling and truly worth being hidden. Follow the provided instructions."
 
-    def create_product_from_base_model(self, base_model: BaseModel):
-        return SecretsProduct(base_model.secrets, is_valid=True)
+    def create_product_from_base_model(self, response_model: BaseModel):
+        return SecretsProduct(response_model.secrets, is_valid=True)
 
     def get_prompt_file(self) -> Optional[str]:
         return SECRETS_GENERATION_PROMPT_FILE

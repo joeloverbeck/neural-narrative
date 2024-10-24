@@ -24,15 +24,12 @@ class StoryUniverseFactory(BaseToolResponseProvider):
         super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
         self._story_universe_notion = story_universe_notion
 
-    def _get_tool_data(self) -> dict:
-        return StoryUniverse.model_json_schema()
-
     def get_user_content(self) -> str:
         return f"Come up with a universe for a narrative based on the user's notion: {self._story_universe_notion}"
 
-    def create_product_from_base_model(self, base_model: StoryUniverse):
+    def create_product_from_base_model(self, response_model: StoryUniverse):
         return StoryUniverseProduct(
-            base_model.name, base_model.description, base_model.categories
+            response_model.name, response_model.description, response_model.categories
         )
 
     def get_prompt_file(self) -> Optional[str]:

@@ -4,11 +4,8 @@ from flask import Flask
 
 from src.base.constants import (
     RESEARCH_RESOLUTION_GENERATION_PROMPT_FILE,
-    RESEARCH_RESOLUTION_GENERATION_TOOL_FILE,
     INVESTIGATE_RESOLUTION_GENERATION_PROMPT_FILE,
-    INVESTIGATE_RESOLUTION_GENERATION_TOOL_FILE,
     GATHER_SUPPLIES_RESOLUTION_GENERATION_PROMPT_FILE,
-    GATHER_SUPPLIES_RESOLUTION_GENERATION_TOOL_FILE,
 )
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.views.action_view import action_view
@@ -67,7 +64,6 @@ def research():
         action_icon="fa-book",
         action_endpoint="research",
         prompt_file=RESEARCH_RESOLUTION_GENERATION_PROMPT_FILE,
-        tool_file=RESEARCH_RESOLUTION_GENERATION_TOOL_FILE,
     )
 
 
@@ -78,7 +74,6 @@ def investigate():
         action_icon="fa-search",
         action_endpoint="investigate",
         prompt_file=INVESTIGATE_RESOLUTION_GENERATION_PROMPT_FILE,
-        tool_file=INVESTIGATE_RESOLUTION_GENERATION_TOOL_FILE,
     )
 
 
@@ -89,7 +84,6 @@ def gather_supplies():
         action_icon="fa-clipboard-list",
         action_endpoint="gather_supplies",
         prompt_file=GATHER_SUPPLIES_RESOLUTION_GENERATION_PROMPT_FILE,
-        tool_file=GATHER_SUPPLIES_RESOLUTION_GENERATION_TOOL_FILE,
     )
 
 

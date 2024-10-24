@@ -15,14 +15,11 @@ from src.prompting.instructor_llm_client import InstructorLlmClient
 class InstructorLlmClientFactory(LlmClientFactory):
     def __init__(
         self,
-        response_model: Type[BaseModel],
         filesystem_manager: Optional[FilesystemManager] = None,
     ):
-        self._response_model = response_model
-
         self._filesystem_manager = filesystem_manager or FilesystemManager()
 
-    def create_llm_client(self) -> LlmClient:
+    def create_llm_client(self, response_model: Type[BaseModel]) -> LlmClient:
         return InstructorLlmClient(
             instructor.from_openai(
                 OpenAI(
@@ -31,5 +28,5 @@ class InstructorLlmClientFactory(LlmClientFactory):
                 ),
                 mode=Mode.JSON,
             ),
-            self._response_model,
+            response_model,
         )

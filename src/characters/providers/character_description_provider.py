@@ -6,9 +6,6 @@ from src.base.constants import (
     CHARACTER_DESCRIPTION_GENERATION_PROMPT_FILE,
 )
 from src.characters.character import Character
-from src.characters.models.character_description_for_portrait import (
-    CharacterDescriptionForPortrait,
-)
 from src.characters.products.character_description_product import (
     CharacterDescriptionProduct,
 )
@@ -34,14 +31,11 @@ class CharacterDescriptionProvider(BaseToolResponseProvider):
     def get_prompt_file(self) -> Optional[str]:
         return CHARACTER_DESCRIPTION_GENERATION_PROMPT_FILE
 
-    def _get_tool_data(self) -> dict:
-        return CharacterDescriptionForPortrait.model_json_schema()
-
     def get_user_content(self) -> str:
         return "Craft a detailed and vivid description of the character's appearance suitable for an image-generating AI, as per the above instructions."
 
-    def create_product_from_base_model(self, base_model: BaseModel):
-        return CharacterDescriptionProduct(base_model.description, is_valid=True)
+    def create_product_from_base_model(self, response_model: BaseModel):
+        return CharacterDescriptionProduct(response_model.description, is_valid=True)
 
     def get_prompt_kwargs(self) -> dict:
         return {

@@ -19,7 +19,6 @@ from src.dialogues.factories.load_data_from_ongoing_dialogue_command_factory imp
     LoadDataFromOngoingDialogueCommandFactory,
 )
 from src.dialogues.factories.web_player_input_factory import WebPlayerInputFactory
-from src.dialogues.models.ambient_narration import AmbientNarration
 from src.dialogues.observers.web_ambient_narration_observer import (
     WebAmbientNarrationObserver,
 )
@@ -44,7 +43,6 @@ from src.maps.weathers_manager import WeathersManager
 from src.prompting.composers.produce_tool_response_strategy_factory_composer import (
     ProduceToolResponseStrategyFactoryComposer,
 )
-from src.prompting.enums import LlmClientType
 from src.prompting.llms import Llms
 
 
@@ -64,9 +62,7 @@ class DialogueService:
 
         produce_tool_response_strategy_factory = (
             ProduceToolResponseStrategyFactoryComposer(
-                LlmClientType.INSTRUCTOR,
                 Llms().for_ambient_narration(),
-                AmbientNarration,
             ).compose_factory()
         )
         playthrough_name = session.get("playthrough_name")

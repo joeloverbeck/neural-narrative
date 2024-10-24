@@ -72,15 +72,6 @@ PLACES_DESCRIPTIONS_BLOCK: str = "data/prompting/blocks/places_descriptions.txt"
 PLAYER_AND_FOLLOWERS_INFORMATION_BLOCK: str = (
     "data/prompting/blocks/player_and_followers_information.txt"
 )
-RESEARCH_RESOLUTION_GENERATION_TOOL_FILE: str = (
-    "data/prompting/actions/research_resolution_generation_tool.json"
-)
-INVESTIGATE_RESOLUTION_GENERATION_TOOL_FILE: str = (
-    "data/prompting/actions/investigate_resolution_generation_tool.json"
-)
-GATHER_SUPPLIES_RESOLUTION_GENERATION_TOOL_FILE: str = (
-    "data/prompting/actions/gather_supplies_resolution_generation_tool.json"
-)
 CHARACTER_GENERATION_INSTRUCTIONS_FILE: str = (
     "data/prompting/characters/base_character_data_generation_prompt.txt"
 )

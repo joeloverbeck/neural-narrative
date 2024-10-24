@@ -7,14 +7,12 @@ from src.characters.commands.generate_character_secrets_command import (
     GenerateCharacterSecretsCommand,
 )
 from src.characters.factories.secrets_factory import SecretsFactory
-from src.characters.models.secrets import Secrets
 from src.maps.composers.places_descriptions_provider_composer import (
     PlacesDescriptionsProviderComposer,
 )
 from src.prompting.composers.produce_tool_response_strategy_factory_composer import (
     ProduceToolResponseStrategyFactoryComposer,
 )
-from src.prompting.enums import LlmClientType
 from src.prompting.llms import Llms
 
 
@@ -55,12 +53,9 @@ class CharacterSecretsView(MethodView):
         character_identifier = request.form.get("character_identifier")
         if action == "generate_secrets" and character_identifier:
             try:
-
                 produce_tool_response_strategy_factory = (
                     ProduceToolResponseStrategyFactoryComposer(
-                        LlmClientType.INSTRUCTOR,
                         Llms().for_secrets_generation(),
-                        Secrets,
                     ).compose_factory()
                 )
                 secrets_factory = SecretsFactory(

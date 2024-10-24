@@ -1,4 +1,6 @@
-from typing import Optional
+from typing import Optional, Type
+
+from pydantic import BaseModel
 
 from src.actions.products.action_resolution_product import ActionResolutionProduct
 from src.base.validators import validate_non_empty_string
@@ -25,7 +27,6 @@ class ActionResolutionFactory(BaseToolResponseProvider):
         places_descriptions_factory: PlacesDescriptionsProvider,
         players_and_followers_information_factory: PlayerAndFollowersInformationFactory,
         prompt_file: str,
-        tool_file: str,
         filesystem_manager: Optional[FilesystemManager] = None,
         time_manager: Optional[TimeManager] = None,
     ):
@@ -33,6 +34,7 @@ class ActionResolutionFactory(BaseToolResponseProvider):
         validate_non_empty_string(action_goal, "action_goal")
 
         super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
+
         self._playthrough_name = playthrough_name
         self._action_name = action_name
         self._action_goal = action_goal
@@ -41,7 +43,6 @@ class ActionResolutionFactory(BaseToolResponseProvider):
             players_and_followers_information_factory
         )
         self._prompt_file = prompt_file
-        self._tool_file = tool_file
 
         self._time_manager = time_manager or TimeManager(self._playthrough_name)
 
@@ -66,13 +67,10 @@ class ActionResolutionFactory(BaseToolResponseProvider):
         )
         return prompt_data
 
-    def _get_tool_data(self) -> dict:
-        return self._filesystem_manager.load_existing_or_new_json_file(self._tool_file)
-
     def get_user_content(self) -> str:
         return f"Generate a detailed narrative describing the player's attempt at a {self._action_name} action within a rich, immersive world. Use the provided information about the player, their followers, the world's conditions, and the specific locations involved. {self._action_name} goal: {self._action_goal}"
 
-    def create_product_from_dict(self, arguments: dict):
+    def create_product_from_base_model(self, base_model: Type[BaseModel]):
         return ActionResolutionProduct(
-            arguments.get("narrative"), arguments.get("outcome"), is_valid=True
+            base_model.narrative, base_model.outcome, is_valid=True
         )

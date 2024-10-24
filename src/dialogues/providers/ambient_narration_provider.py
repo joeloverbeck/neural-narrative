@@ -7,7 +7,6 @@ from src.base.constants import (
 )
 from src.base.playthrough_manager import PlaythroughManager
 from src.characters.character import Character
-from src.dialogues.models.ambient_narration import AmbientNarration
 from src.dialogues.products.ambient_narration_product import AmbientNarrationProduct
 from src.dialogues.transcription import Transcription
 from src.filesystem.filesystem_manager import FilesystemManager
@@ -46,14 +45,11 @@ class AmbientNarrationProvider(BaseToolResponseProvider):
     def get_prompt_file(self) -> str:
         return AMBIENT_NARRATION_GENERATION_PROMPT_FILE
 
-    def _get_tool_data(self) -> dict:
-        return AmbientNarration.model_json_schema()
-
     def get_user_content(self) -> str:
         return "Write two or three sentences of ambient narration, as per the provided instructions."
 
-    def create_product_from_base_model(self, base_model: BaseModel):
-        return AmbientNarrationProduct(base_model.ambient_narration, is_valid=True)
+    def create_product_from_base_model(self, response_model: BaseModel):
+        return AmbientNarrationProduct(response_model.ambient_narration, is_valid=True)
 
     def get_prompt_kwargs(self) -> dict:
         setting_description = self._place_description_manager.get_place_description(

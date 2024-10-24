@@ -7,6 +7,7 @@ from src.characters.factories.store_character_memory_command_factory import (
 from src.dialogues.factories.dialogue_summary_provider_factory import (
     DialogueSummaryProviderFactory,
 )
+from src.dialogues.models.dialogue_summary import DialogueSummary
 from src.dialogues.participants import Participants
 from src.dialogues.transcription import Transcription
 
@@ -42,7 +43,7 @@ class SummarizeDialogueCommand(Command):
         summary_product = (
             self._dialogue_summary_provider_factory.create_dialogue_summary_provider(
                 self._transcription
-            ).generate_product()
+            ).generate_product(DialogueSummary)
         )
 
         if not summary_product.is_valid():

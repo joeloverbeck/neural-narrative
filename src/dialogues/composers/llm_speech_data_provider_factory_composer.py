@@ -7,7 +7,6 @@ from src.characters.factories.character_information_provider_factory import (
 from src.dialogues.factories.llm_speech_data_provider_factory import (
     LlmSpeechDataProviderFactory,
 )
-from src.dialogues.models.speech_turn import SpeechTurn
 from src.dialogues.participants import Participants
 from src.maps.composers.places_descriptions_provider_composer import (
     PlacesDescriptionsProviderComposer,
@@ -15,7 +14,6 @@ from src.maps.composers.places_descriptions_provider_composer import (
 from src.prompting.composers.produce_tool_response_strategy_factory_composer import (
     ProduceToolResponseStrategyFactoryComposer,
 )
-from src.prompting.enums import LlmClientType
 from src.prompting.llms import Llms
 
 
@@ -33,7 +31,7 @@ class LlmSpeechDataProviderFactoryComposer:
     def compose(self) -> LlmSpeechDataProviderFactory:
         produce_tool_response_strategy_factory = (
             ProduceToolResponseStrategyFactoryComposer(
-                LlmClientType.INSTRUCTOR, Llms().for_speech_turn(), SpeechTurn
+                Llms().for_speech_turn(),
             ).compose_factory()
         )
 

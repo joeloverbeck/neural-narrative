@@ -54,36 +54,31 @@ class PlaceGenerationToolResponseProvider(
         self._template_type = template_type
         self._notion = notion
 
-    def _get_tool_data(self) -> dict:
-        template_type_data = self._get_template_type_data()
-
-        return template_type_data.base_model.model_json_schema()
-
     def _get_template_type_data(self) -> Optional[TemplateTypeData]:
         data_mapping: Dict[TemplateType, TemplateTypeData] = {
             TemplateType.WORLD: TemplateTypeData(
                 prompt_file=WORLD_GENERATION_PROMPT_FILE,
                 father_templates_file_path=STORY_UNIVERSES_TEMPLATE_FILE,
                 current_place_templates_file_path=WORLDS_TEMPLATES_FILE,
-                base_model=World,
+                response_model=World,
             ),
             TemplateType.REGION: TemplateTypeData(
                 prompt_file=REGION_GENERATION_PROMPT_FILE,
                 father_templates_file_path=WORLDS_TEMPLATES_FILE,
                 current_place_templates_file_path=REGIONS_TEMPLATES_FILE,
-                base_model=Region,
+                response_model=Region,
             ),
             TemplateType.AREA: TemplateTypeData(
                 prompt_file=AREA_GENERATION_PROMPT_FILE,
                 father_templates_file_path=REGIONS_TEMPLATES_FILE,
                 current_place_templates_file_path=AREAS_TEMPLATES_FILE,
-                base_model=Area,
+                response_model=Area,
             ),
             TemplateType.LOCATION: TemplateTypeData(
                 prompt_file=LOCATION_GENERATION_PROMPT_FILE,
                 father_templates_file_path=AREAS_TEMPLATES_FILE,
                 current_place_templates_file_path=LOCATIONS_TEMPLATES_FILE,
-                base_model=Location,
+                response_model=Location,
             ),
         }
 
@@ -123,11 +118,14 @@ class PlaceGenerationToolResponseProvider(
             )
         return user_content
 
-    def create_product_from_base_model(self, base_model: BaseModel):
-        logger.warning(base_model)
-        arguments = {"name": base_model.name, "description": base_model.description}
+    def create_product_from_base_model(self, response_model: BaseModel):
+        logger.warning(response_model)
+        arguments = {
+            "name": response_model.name,
+            "description": response_model.description,
+        }
 
         if self._template_type == TemplateType.LOCATION:
-            arguments.update({"type": base_model.type})
+            arguments.update({"type": response_model.type})
 
         return ConcreteLlmToolResponseProduct(arguments, is_valid=True)

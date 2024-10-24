@@ -6,6 +6,7 @@ from src.characters.factories.connection_factory import ConnectionFactory
 from src.characters.factories.store_character_memory_command_factory import (
     StoreCharacterMemoryCommandFactory,
 )
+from src.characters.models.connection import Connection
 from src.characters.products.connection_product import ConnectionProduct
 
 
@@ -29,7 +30,9 @@ class GenerateConnectionCommand(Command):
         )
 
     def execute(self) -> None:
-        product = cast(ConnectionProduct, self._connection_factory.generate_product())
+        product = cast(
+            ConnectionProduct, self._connection_factory.generate_product(Connection)
+        )
         if not product.is_valid():
             raise ValueError(
                 f"Failed to generate a valid connection between characters. Error: {product.get_error()}"

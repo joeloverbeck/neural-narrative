@@ -6,7 +6,6 @@ from pydantic import BaseModel
 from src.base.constants import CHOOSING_SPEECH_TURN_PROMPT_FILE
 from src.base.validators import validate_non_empty_string
 from src.characters.factories.character_factory import CharacterFactory
-from src.dialogues.models.speech_turn_choice import SpeechTurnChoice
 from src.dialogues.participants import Participants
 from src.dialogues.transcription import Transcription
 from src.filesystem.filesystem_manager import FilesystemManager
@@ -43,17 +42,14 @@ class SpeechTurnChoiceToolResponseProvider(BaseToolResponseProvider):
     def get_prompt_file(self) -> str:
         return CHOOSING_SPEECH_TURN_PROMPT_FILE
 
-    def _get_tool_data(self) -> dict:
-        return SpeechTurnChoice.model_json_schema()
-
     def get_user_content(self) -> str:
         return "Choose who will speak next in this dialogue. Choose only among the allowed participants."
 
-    def create_product_from_base_model(self, base_model: BaseModel):
+    def create_product_from_base_model(self, response_model: BaseModel):
         llm_response = {
-            "identifier": str(base_model.identifier),
-            "name": base_model.name,
-            "reason": base_model.reason,
+            "identifier": str(response_model.identifier),
+            "name": response_model.name,
+            "reason": response_model.reason,
         }
 
         # The system requires to include the "voice_model" into the llm_response.
