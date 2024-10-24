@@ -14,6 +14,7 @@ from src.characters.factories.player_data_for_prompt_factory import (
     PlayerDataForPromptFactory,
 )
 from src.maps.factories.map_manager_factory import MapManagerFactory
+from src.movements.models.travel_narration import TravelNarration
 from src.prompting.composers.produce_tool_response_strategy_factory_composer import (
     ProduceToolResponseStrategyFactoryComposer,
 )
@@ -37,7 +38,7 @@ class TravelView(MethodView):
 
         produce_tool_response_strategy_factory = (
             ProduceToolResponseStrategyFactoryComposer(
-                LlmClientType.OPEN_ROUTER, Llms().for_travel_narration()
+                LlmClientType.INSTRUCTOR, Llms().for_travel_narration(), TravelNarration
             ).compose_factory()
         )
         player_data_for_prompt_factory = PlayerDataForPromptFactory(
