@@ -7,7 +7,6 @@ from src.base.abstracts.subject import Subject
 from src.dialogues.abstracts.factory_products import (
     DialogueProduct,
     PlayerInputProduct,
-    SummaryProduct,
 )
 
 
@@ -21,12 +20,6 @@ class PlayerInputFactory(ABC):
 
     @abstractmethod
     def create_player_input(self) -> PlayerInputProduct:
-        pass
-
-
-class DialogueSummaryProvider(Protocol):
-
-    def create_summary(self) -> SummaryProduct:
         pass
 
 

@@ -1,5 +1,7 @@
 import logging.config
+
 from flask import Flask
+
 from src.base.constants import (
     RESEARCH_RESOLUTION_GENERATION_PROMPT_FILE,
     RESEARCH_RESOLUTION_GENERATION_TOOL_FILE,

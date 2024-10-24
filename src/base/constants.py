@@ -72,7 +72,6 @@ PLACES_DESCRIPTIONS_BLOCK: str = "data/prompting/blocks/places_descriptions.txt"
 PLAYER_AND_FOLLOWERS_INFORMATION_BLOCK: str = (
     "data/prompting/blocks/player_and_followers_information.txt"
 )
-SPEECH_TURN_TOOL_FILE: str = "data/prompting/speech_turn_tool.json"
 RESEARCH_RESOLUTION_GENERATION_TOOL_FILE: str = (
     "data/prompting/actions/research_resolution_generation_tool.json"
 )
@@ -88,7 +87,6 @@ CHARACTER_GENERATION_INSTRUCTIONS_FILE: str = (
 SPEECH_PATTERNS_GENERATION_PROMPT_FILE: str = (
     "data/prompting/characters/speech_patterns_generation_prompt.txt"
 )
-TOOL_INSTRUCTIONS_FILE: str = "data/prompting/tool_instructions.txt"
 TOOL_INSTRUCTIONS_FOR_INSTRUCTOR_FILE: str = (
     "data/prompting/tool_instructions_for_instructor.txt"
 )

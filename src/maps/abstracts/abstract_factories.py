@@ -1,41 +1,25 @@
-from abc import ABC, abstractmethod
 from typing import Protocol, List
-from src.maps.abstracts.factory_products import PlaceDataProduct, CurrentPlaceProduct, PlaceTemplateProduct, \
-    FullPlaceDataProduct, RandomTemplateTypeMapEntryCreationResult, CardinalConnectionCreationProduct
 
-
-class PlaceDataFactory(ABC):
-
-    @abstractmethod
-    def create_place_data(self) -> PlaceDataProduct:
-        pass
-
-
-class CurrentPlaceFactory(ABC):
-
-    @abstractmethod
-    def create_current_place(self) -> CurrentPlaceProduct:
-        pass
+from src.maps.abstracts.factory_products import (
+    PlaceTemplateProduct,
+    RandomTemplateTypeMapEntryCreationResult,
+    CardinalConnectionCreationProduct,
+)
 
 
 class RandomPlaceTemplateBasedOnCategoriesFactory(Protocol):
 
-    def create_random_place_template_based_on_categories(self,
-                                                         place_templates: dict,
-                                                         categories: List[str]) -> PlaceTemplateProduct:
-        pass
-
-
-class FullPlaceDataFactory(Protocol):
-
-    def create_full_place_data(self) -> FullPlaceDataProduct:
+    def create_random_place_template_based_on_categories(
+        self, place_templates: dict, categories: List[str]
+    ) -> PlaceTemplateProduct:
         pass
 
 
 class RandomTemplateTypeMapEntryProvider(Protocol):
 
-    def create_random_place_type_map_entry(self
-                                           ) -> RandomTemplateTypeMapEntryCreationResult:
+    def create_random_place_type_map_entry(
+        self,
+    ) -> RandomTemplateTypeMapEntryCreationResult:
         pass
 
 

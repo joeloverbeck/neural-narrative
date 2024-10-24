@@ -51,12 +51,6 @@ class FilesystemManager:
             return []
 
     @staticmethod
-    def read_json_file(file_path: str) -> dict:
-        """Load JSON data from a file."""
-        with open(file_path, "r", encoding="utf-8") as file:
-            return json.load(file)
-
-    @staticmethod
     def create_empty_file_if_not_exists(file_path: str) -> None:
         """Create an empty file if it does not exist."""
         if not os.path.exists(file_path):

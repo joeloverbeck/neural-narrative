@@ -120,13 +120,11 @@ def test_do_algorithm_with_input(
     mock_player_input_product.is_goodbye.return_value = False
     mock_player_input_product.is_silent.return_value = False
     mock_command = Mock()
-    (
-        mock_command_factory.create_introduce_player_input_into_dialogue_command.return_value
-    ) = mock_command
+    (mock_command_factory.create_command.return_value) = mock_command
     strategy.attach(mock_observer)
     result = strategy.do_algorithm(mock_transcription)
     assert result == mock_player_input_product
-    mock_command_factory.create_introduce_player_input_into_dialogue_command.assert_called_once_with(
+    mock_command_factory.create_command.assert_called_once_with(
         mock_player_input_product, mock_transcription
     )
     mock_command.attach.assert_called_once_with(mock_observer)

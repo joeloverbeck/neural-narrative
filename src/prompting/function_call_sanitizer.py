@@ -6,9 +6,6 @@ from src.base.validators import validate_non_empty_string
 
 
 class FunctionCallSanitizer:
-    (INSERT_LINE_BREAK_AFTER_PERIOD_WITH_NO_SPACE_FOLLOWED_BY_LETTER_REGEX) = (
-        re.compile("\\.(?=[A-Z])")
-    )
     REPLACE_INCORRECT_CLOSING_FUNCTION_TAG_REGEX = re.compile("\\[/function]")
     REMOVE_EXTRA_CHARACTERS_AFTER_JSON_REGEX = re.compile("(}.*?)(</function>)")
     FIX_CLOSING_FUNCTION_TAG_WITHOUT_LT_OR_SLASH = re.compile(

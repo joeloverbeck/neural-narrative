@@ -22,6 +22,3 @@ class MessagesToLlm:
 
     def get(self) -> List[dict]:
         return self._messages
-
-    def get_guiding_message_indices(self) -> List[int]:
-        return self._guiding_message_indices

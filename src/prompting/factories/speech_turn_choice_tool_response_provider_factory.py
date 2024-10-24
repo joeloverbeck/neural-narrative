@@ -27,7 +27,7 @@ class SpeechTurnChoiceToolResponseProviderFactory:
             produce_tool_response_strategy_factory
         )
 
-    def create_speech_turn_choice_tool_response_provider(
+    def create_provider(
         self, transcription: Transcription
     ) -> SpeechTurnChoiceToolResponseProvider:
         return SpeechTurnChoiceToolResponseProvider(

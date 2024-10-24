@@ -22,7 +22,7 @@ class IntroducePlayerInputIntoDialogueCommandFactory:
             self._message_data_producer_for_introduce_player_input_into_dialogue_strategy
         ) = message_data_producer_for_introduce_player_input_into_dialogue_strategy
 
-    def create_introduce_player_input_into_dialogue_command(
+    def create_command(
         self, player_input_product: PlayerInputProduct, transcription: Transcription
     ) -> IntroducePlayerInputIntoDialogueCommand:
         return IntroducePlayerInputIntoDialogueCommand(

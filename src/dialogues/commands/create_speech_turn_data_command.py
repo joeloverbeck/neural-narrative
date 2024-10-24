@@ -31,6 +31,34 @@ class CreateSpeechTurnDataCommand(Command, Subject):
         )
         self._observers: List[Observer] = []
 
+    def _fix_invalid_speech_data(self, speech_data_product):
+        if not speech_data_product.is_valid():
+            logger.error(
+                "Failed to produce speech data: %s", speech_data_product.get_error()
+            )
+
+            # If it turns out that there isn't a name applied, we enter the name we have.
+            if not "name" in speech_data_product.get():
+                speech_data_product.get()[
+                    "name"
+                ] = self._speech_turn_choice_response.get()["name"]
+
+            speech_data_product.get()["narration_text"] = f"Looks confused."
+            speech_data_product.get()["speech"] = "I don't know what to say."
+
+    @staticmethod
+    def _fix_missing_narration_text(
+        name: str, narration_text: str, speech_data_product
+    ):
+        if not narration_text or narration_text.lower() == "none":
+            logger.warning(
+                f"Speech turn didn't produce narration text. Content: {speech_data_product.get()}"
+            )
+
+            speech_data_product.get()[
+                "narration_text"
+            ] = f"{name} takes a moment to speak."
+
     def attach(self, observer: Observer) -> None:
         self._observers.append(observer)
 
@@ -50,33 +78,23 @@ class CreateSpeechTurnDataCommand(Command, Subject):
             ).generate_product()
         )
 
-        if not speech_data_product.is_valid():
-            logger.error(
-                "Failed to produce speech data: %s", speech_data_product.get_error()
-            )
-            speech_data_product.get()["narration_text"] = f"Looks confused."
-            speech_data_product.get()["speech"] = "I don't know what to say."
+        self._fix_invalid_speech_data(speech_data_product)
+
         narration_text = speech_data_product.get()["narration_text"]
 
-        if not narration_text:
-            logger.warning(
-                f"Speech turn didn't produce narration text. Content: {speech_data_product.get()}"
+        if "name" in speech_data_product.get():
+            name = speech_data_product.get()["name"]
+
+            self._fix_missing_narration_text(name, narration_text, speech_data_product)
+
+            # Add the speech turn to the transcription.
+            self._transcription.add_speech_turn(
+                name,
+                f"*{speech_data_product.get()['narration_text']}* {speech_data_product.get()['speech']}",
             )
 
-        name = speech_data_product.get()["name"]
-
-        if not narration_text or narration_text.lower() == "none":
-            speech_data_product.get()[
-                "narration_text"
-            ] = f"{name} takes a moment to speak."
-
-        self._transcription.add_speech_turn(
-            name,
-            f"*{speech_data_product.get()['narration_text']}* {speech_data_product.get()['speech']}",
-        )
-
-        self.notify(
-            self._message_data_producer_for_speech_turn_strategy.produce_message_data(
-                self._speech_turn_choice_response, speech_data_product
+            self.notify(
+                self._message_data_producer_for_speech_turn_strategy.produce_message_data(
+                    self._speech_turn_choice_response, speech_data_product
+                )
             )
-        )
