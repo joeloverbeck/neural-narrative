@@ -11,6 +11,7 @@ from src.characters.factories.character_information_provider import (
     CharacterInformationProvider,
 )
 from src.characters.factories.self_reflection_factory import SelfReflectionFactory
+from src.characters.models.self_reflection import SelfReflection
 from src.interfaces.web_interface_manager import WebInterfaceManager
 from src.prompting.composers.produce_tool_response_strategy_factory_composer import (
     ProduceToolResponseStrategyFactoryComposer,
@@ -79,7 +80,9 @@ class CharacterMemoriesView(MethodView):
         elif action == "produce_self_reflection" and character_identifier:
             produce_tool_response_strategy_factory = (
                 ProduceToolResponseStrategyFactoryComposer(
-                    LlmClientType.OPEN_ROUTER, Llms().for_self_reflection()
+                    LlmClientType.INSTRUCTOR,
+                    Llms().for_self_reflection(),
+                    SelfReflection,
                 ).compose_factory()
             )
             character_information_factory = CharacterInformationProvider(

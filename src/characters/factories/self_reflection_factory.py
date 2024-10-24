@@ -1,14 +1,17 @@
 from typing import Optional
 
+from pydantic import BaseModel
+
 from src.base.constants import (
     SELF_REFLECTION_GENERATION_PROMPT_FILE,
-    SELF_REFLECTION_GENERATION_TOOL_FILE,
 )
+from src.base.validators import validate_non_empty_string
 from src.characters.character import Character
 from src.characters.characters_manager import CharactersManager
 from src.characters.factories.character_information_provider import (
     CharacterInformationProvider,
 )
+from src.characters.models.self_reflection import SelfReflection
 from src.characters.products.self_reflection_product import SelfReflectionProduct
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.prompting.abstracts.abstract_factories import (
@@ -29,10 +32,10 @@ class SelfReflectionFactory(BaseToolResponseProvider):
         characters_manager: Optional[CharactersManager] = None,
     ):
         super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
-        if not playthrough_name:
-            raise ValueError("playthrough_name can't be empty.")
-        if not character_identifier:
-            raise ValueError("character_identifier can't be empty.")
+
+        validate_non_empty_string(playthrough_name, "playthrough_name")
+        validate_non_empty_string(character_identifier, "character_identifier")
+
         self._playthrough_name = playthrough_name
         self._character_identifier = character_identifier
         self._character_information_factory = character_information_factory
@@ -44,15 +47,18 @@ class SelfReflectionFactory(BaseToolResponseProvider):
         return SELF_REFLECTION_GENERATION_PROMPT_FILE
 
     def _get_tool_data(self) -> dict:
-        return self._filesystem_manager.load_existing_or_new_json_file(
-            SELF_REFLECTION_GENERATION_TOOL_FILE
-        )
+        return SelfReflection.model_json_schema()
 
     def get_user_content(self) -> str:
         return "Write a meaningful and compelling self-reflection from the first-person perspective of the character regarding their memories. Follow the provided instructions."
 
-    def create_product_from_dict(self, arguments: dict):
-        return SelfReflectionProduct(arguments.get("self_reflection"), is_valid=True)
+    def create_product_from_base_model(self, base_model: BaseModel):
+        # have in mind that the self-reflection can come with multiple paragraphs.
+        self_reflection = str(base_model.self_reflection)
+
+        return SelfReflectionProduct(
+            self_reflection.replace("\n\n", "\n"), is_valid=True
+        )
 
     def get_prompt_kwargs(self) -> dict:
         character = Character(self._playthrough_name, self._character_identifier)
