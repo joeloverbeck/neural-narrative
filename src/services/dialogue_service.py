@@ -19,7 +19,6 @@ from src.dialogues.factories.load_data_from_ongoing_dialogue_command_factory imp
     LoadDataFromOngoingDialogueCommandFactory,
 )
 from src.dialogues.factories.web_player_input_factory import WebPlayerInputFactory
-from src.dialogues.messages_to_llm import MessagesToLlm
 from src.dialogues.models.ambient_narration import AmbientNarration
 from src.dialogues.observers.web_ambient_narration_observer import (
     WebAmbientNarrationObserver,
@@ -60,7 +59,6 @@ class DialogueService:
 
     @staticmethod
     def process_ambient_message():
-        messages_to_llm = MessagesToLlm()
         transcription = Transcription()
         web_ambient_narration_observer = WebAmbientNarrationObserver()
 
@@ -110,11 +108,9 @@ class DialogueService:
             playthrough_name,
             participants,
             session.get("purpose", ""),
-            messages_to_llm,
             transcription,
         )
         produce_ambient_narration_command = ProduceAmbientNarrationCommand(
-            messages_to_llm,
             transcription,
             web_ambient_narration_observer,
             ambient_narration_provider_factory,

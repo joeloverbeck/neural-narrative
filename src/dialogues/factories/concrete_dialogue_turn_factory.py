@@ -55,7 +55,7 @@ class ConcreteDialogueTurnFactory(DialogueTurnFactorySubject):
     def _get_player_input(self) -> PlayerInputProduct:
         """Retrieve and process player input."""
         return self._strategies_config.involve_player_in_dialogue_strategy.do_algorithm(
-            self._config.messages_to_llm, self._config.transcription
+            self._config.transcription
         )
 
     def _choose_next_speaker(self) -> LlmToolResponseProduct:
@@ -92,13 +92,6 @@ class ConcreteDialogueTurnFactory(DialogueTurnFactorySubject):
         if "voice_model" not in speech_turn_choice_response.get():
             raise ValueError("voice_model can't be empty.")
 
-        # Add the player input to the ongoing messages:
-        if not self._config.player_identifier or player_input_product.is_silent():
-            self._config.messages_to_llm.add_message(
-                "user",
-                f"{self._factories_config.character_factory.create_character(self._config.player_identifier).name}: {player_input_product.get()}",
-            )
-
         command = self._factories_config.create_speech_turn_data_command_factory.create_command(
             speech_turn_choice_response
         )
@@ -111,7 +104,6 @@ class ConcreteDialogueTurnFactory(DialogueTurnFactorySubject):
     def _create_dialogue_product(self, has_ended: bool) -> DialogueProduct:
         """Create a dialogue product indicating whether the dialogue has ended."""
         return ConcreteDialogueProduct(
-            self._config.messages_to_llm,
             self._config.transcription,
             has_ended=has_ended,
         )

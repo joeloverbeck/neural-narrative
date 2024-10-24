@@ -1,5 +1,7 @@
 from unittest.mock import Mock
+
 import pytest
+
 from src.base.abstracts.observer import Observer
 from src.dialogues.abstracts.abstract_factories import PlayerInputFactory
 from src.dialogues.abstracts.factory_products import PlayerInputProduct
@@ -84,7 +86,7 @@ def test_do_algorithm_goodbye(
         mock_player_input_product
     )
     mock_player_input_product.is_goodbye.return_value = True
-    result = strategy.do_algorithm(Mock(), mock_transcription)
+    result = strategy.do_algorithm(mock_transcription)
     assert result == mock_player_input_product
     mock_player_input_factory.create_player_input.assert_called_once()
     mock_player_input_product.is_goodbye.assert_called_once()
@@ -98,7 +100,7 @@ def test_do_algorithm_silent_player(
     )
     mock_player_input_product.is_goodbye.return_value = False
     mock_player_input_product.is_silent.return_value = True
-    result = strategy.do_algorithm(Mock(), mock_transcription)
+    result = strategy.do_algorithm(mock_transcription)
     assert result == mock_player_input_product
     mock_player_input_factory.create_player_input.assert_called_once()
     mock_player_input_product.is_silent.assert_called_once()
@@ -122,7 +124,7 @@ def test_do_algorithm_with_input(
         mock_command_factory.create_introduce_player_input_into_dialogue_command.return_value
     ) = mock_command
     strategy.attach(mock_observer)
-    result = strategy.do_algorithm(Mock(), mock_transcription)
+    result = strategy.do_algorithm(mock_transcription)
     assert result == mock_player_input_product
     mock_command_factory.create_introduce_player_input_into_dialogue_command.assert_called_once_with(
         mock_player_input_product, mock_transcription
