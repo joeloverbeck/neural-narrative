@@ -2,7 +2,6 @@ from src.characters.factories.character_generation_guidelines_provider_factory i
     CharacterGenerationGuidelinesProviderFactory,
 )
 from src.characters.models.character_guidelines import CharacterGuidelines
-from src.config.config_manager import ConfigManager
 from src.maps.factories.map_manager_factory import MapManagerFactory
 from src.maps.factories.place_descriptions_for_prompt_factory import (
     PlaceDescriptionsForPromptFactory,
@@ -14,6 +13,7 @@ from src.prompting.composers.produce_tool_response_strategy_factory_composer imp
     ProduceToolResponseStrategyFactoryComposer,
 )
 from src.prompting.enums import LlmClientType
+from src.prompting.llms import Llms
 
 
 class CharacterGenerationGuidelinesProviderFactoryComposer:
@@ -25,7 +25,7 @@ class CharacterGenerationGuidelinesProviderFactoryComposer:
         produce_tool_response_strategy_factory = (
             ProduceToolResponseStrategyFactoryComposer(
                 LlmClientType.INSTRUCTOR,
-                ConfigManager().get_heavy_llm(),
+                Llms().for_character_generation_guidelines(),
                 CharacterGuidelines,
             ).compose_factory()
         )

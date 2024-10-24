@@ -1,11 +1,13 @@
 from typing import Optional
 
+from pydantic import BaseModel
+
 from src.base.constants import (
     SECRETS_GENERATION_PROMPT_FILE,
-    SECRETS_GENERATION_TOOL_FILE,
 )
 from src.characters.character import Character
 from src.characters.character_memories import CharacterMemories
+from src.characters.models.secrets import Secrets
 from src.characters.products.secrets_product import SecretsProduct
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.providers.places_descriptions_provider import PlacesDescriptionsProvider
@@ -27,6 +29,7 @@ class SecretsFactory(BaseToolResponseProvider):
         character_memories: Optional[CharacterMemories] = None,
     ):
         super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
+
         self._playthrough_name = playthrough_name
         self._character_identifier = character_identifier
         self._places_descriptions_factory = places_descriptions_factory
@@ -35,18 +38,13 @@ class SecretsFactory(BaseToolResponseProvider):
         )
 
     def _get_tool_data(self) -> dict:
-        return self._filesystem_manager.load_existing_or_new_json_file(
-            SECRETS_GENERATION_TOOL_FILE
-        )
+        return Secrets.model_json_schema()
 
     def get_user_content(self) -> str:
         return "Create secrets for a character that are compelling and truly worth being hidden. Follow the provided instructions."
 
-    def create_product_from_dict(self, arguments: dict):
-        secrets = arguments.get("secrets")
-        if not secrets:
-            raise ValueError("The LLM didn't produce valid secrets.")
-        return SecretsProduct(secrets, is_valid=True)
+    def create_product_from_base_model(self, base_model: BaseModel):
+        return SecretsProduct(base_model.secrets, is_valid=True)
 
     def get_prompt_file(self) -> Optional[str]:
         return SECRETS_GENERATION_PROMPT_FILE

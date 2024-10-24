@@ -25,7 +25,6 @@ from src.characters.models.character_description_for_portrait import (
     CharacterDescriptionForPortrait,
 )
 from src.characters.models.speech_patterns import SpeechPatterns
-from src.config.config_manager import ConfigManager
 from src.images.factories.generate_character_image_command_factory import (
     GenerateCharacterImageCommandFactory,
 )
@@ -45,6 +44,7 @@ from src.prompting.factories.character_generation_instructions_formatter_factory
     CharacterGenerationInstructionsFormatterFactory,
 )
 from src.prompting.factories.openai_llm_client_factory import OpenAILlmClientFactory
+from src.prompting.llms import Llms
 from src.requests.factories.ConcreteUrlContentFactory import ConcreteUrlContentFactory
 from src.voices.algorithms.match_voice_data_to_voice_model_algorithm import (
     MatchVoiceDataToVoiceModelAlgorithm,
@@ -59,10 +59,12 @@ class GenerateCharacterCommandFactoryComposer:
         self._playthrough_name = playthrough_name
 
     def compose_factory(self) -> GenerateCharacterCommandFactory:
+        llms = Llms()
+
         speech_patterns_produce_tool_response_strategy_factory = (
             ProduceToolResponseStrategyFactoryComposer(
                 LlmClientType.INSTRUCTOR,
-                ConfigManager().get_heavy_llm(),
+                llms.for_speech_patterns_generation(),
                 SpeechPatterns,
             ).compose_factory()
         )
@@ -96,7 +98,7 @@ class GenerateCharacterCommandFactoryComposer:
         character_description_produce_tool_response_strategy_factory = (
             ProduceToolResponseStrategyFactoryComposer(
                 LlmClientType.INSTRUCTOR,
-                ConfigManager().get_heavy_llm(),
+                llms.for_character_description(),
                 CharacterDescriptionForPortrait,
             ).compose_factory()
         )
@@ -133,7 +135,7 @@ class GenerateCharacterCommandFactoryComposer:
         base_character_data_produce_tool_response_strategy_factory = (
             ProduceToolResponseStrategyFactoryComposer(
                 LlmClientType.INSTRUCTOR,
-                ConfigManager().get_heavy_llm(),
+                llms.for_base_character_data_generation(),
                 BaseCharacterData,
             ).compose_factory()
         )

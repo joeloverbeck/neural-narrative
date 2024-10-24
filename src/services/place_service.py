@@ -7,7 +7,6 @@ from src.characters.character import Character
 from src.characters.factories.character_information_provider import (
     CharacterInformationProvider,
 )
-from src.config.config_manager import ConfigManager
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.commands.generate_place_command import GeneratePlaceCommand
 from src.maps.composers.visit_place_command_factory_composer import (
@@ -36,6 +35,7 @@ from src.prompting.composers.produce_tool_response_strategy_factory_composer imp
     ProduceToolResponseStrategyFactoryComposer,
 )
 from src.prompting.enums import LlmClientType
+from src.prompting.llms import Llms
 from src.prompting.providers.place_generation_tool_response_provider import (
     PlaceGenerationToolResponseProvider,
 )
@@ -46,8 +46,8 @@ from src.voices.factories.direct_voice_line_generation_algorithm_factory import 
 
 class PlaceService:
 
-    def __init__(self, config_manager: Optional[ConfigManager] = None):
-        self._config_manager = config_manager or ConfigManager()
+    def __init__(self, llms: Optional[Llms] = None):
+        self._llms = llms or Llms()
 
     @staticmethod
     def _generate_place_description_voice_line(playthrough_name, description_text):
@@ -59,34 +59,35 @@ class PlaceService:
             player.name, description_text, player.voice_model
         ).direct_voice_line_generation()
 
-    @staticmethod
     def run_generate_place_command(
-        father_place_name: str, template_type: TemplateType, notion: str
+        self, father_place_name: str, template_type: TemplateType, notion: str
     ):
         father_template_type = PARENT_TEMPLATE_TYPE.get(template_type)
 
         if template_type == TemplateType.LOCATION:
             produce_tool_response_strategy_factory = (
                 ProduceToolResponseStrategyFactoryComposer(
-                    LlmClientType.INSTRUCTOR, ConfigManager().get_heavy_llm(), Location
+                    LlmClientType.INSTRUCTOR,
+                    self._llms.for_place_generation(),
+                    Location,
                 ).compose_factory()
             )
         elif template_type == TemplateType.AREA:
             produce_tool_response_strategy_factory = (
                 ProduceToolResponseStrategyFactoryComposer(
-                    LlmClientType.INSTRUCTOR, ConfigManager().get_heavy_llm(), Area
+                    LlmClientType.INSTRUCTOR, self._llms.for_place_generation(), Area
                 ).compose_factory()
             )
         elif template_type == TemplateType.REGION:
             produce_tool_response_strategy_factory = (
                 ProduceToolResponseStrategyFactoryComposer(
-                    LlmClientType.INSTRUCTOR, ConfigManager().get_heavy_llm(), Region
+                    LlmClientType.INSTRUCTOR, self._llms.for_place_generation(), Region
                 ).compose_factory()
             )
         elif template_type == TemplateType.WORLD:
             produce_tool_response_strategy_factory = (
                 ProduceToolResponseStrategyFactoryComposer(
-                    LlmClientType.INSTRUCTOR, ConfigManager().get_heavy_llm(), World
+                    LlmClientType.INSTRUCTOR, self._llms.for_place_generation(), World
                 ).compose_factory()
             )
         else:
@@ -122,7 +123,7 @@ class PlaceService:
 
         produce_tool_response_strategy_factory = (
             ProduceToolResponseStrategyFactoryComposer(
-                LlmClientType.OPEN_ROUTER, ConfigManager().get_heavy_llm()
+                LlmClientType.OPEN_ROUTER, self._llms.for_place_description()
             ).compose_factory()
         )
         place_manager_factory = PlaceManagerFactory(playthrough_name)

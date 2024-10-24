@@ -29,7 +29,6 @@ from src.characters.factories.store_character_memory_command_factory import (
     StoreCharacterMemoryCommandFactory,
 )
 from src.characters.participants_manager import ParticipantsManager
-from src.config.config_manager import ConfigManager
 from src.maps.composers.places_descriptions_provider_composer import (
     PlacesDescriptionsProviderComposer,
 )
@@ -38,6 +37,7 @@ from src.prompting.composers.produce_tool_response_strategy_factory_composer imp
     ProduceToolResponseStrategyFactoryComposer,
 )
 from src.prompting.enums import LlmClientType
+from src.prompting.llms import Llms
 from src.voices.factories.direct_voice_line_generation_algorithm_factory import (
     DirectVoiceLineGenerationAlgorithmFactory,
 )
@@ -86,9 +86,11 @@ def action_view(action_name, action_icon, action_endpoint, prompt_file, tool_fil
                     flash(f"Please enter a {action_name.lower()} goal.", "error")
                     return redirect(url_for(action_endpoint))
 
+            llms = Llms()
+
             produce_tool_response_strategy_factory = (
                 ProduceToolResponseStrategyFactoryComposer(
-                    LlmClientType.OPEN_ROUTER, ConfigManager().get_heavy_llm()
+                    LlmClientType.OPEN_ROUTER, llms.for_action_resolution()
                 ).compose_factory()
             )
 

@@ -7,7 +7,7 @@ from src.characters.commands.generate_character_secrets_command import (
     GenerateCharacterSecretsCommand,
 )
 from src.characters.factories.secrets_factory import SecretsFactory
-from src.config.config_manager import ConfigManager
+from src.characters.models.secrets import Secrets
 from src.maps.composers.places_descriptions_provider_composer import (
     PlacesDescriptionsProviderComposer,
 )
@@ -15,6 +15,7 @@ from src.prompting.composers.produce_tool_response_strategy_factory_composer imp
     ProduceToolResponseStrategyFactoryComposer,
 )
 from src.prompting.enums import LlmClientType
+from src.prompting.llms import Llms
 
 
 class CharacterSecretsView(MethodView):
@@ -57,7 +58,9 @@ class CharacterSecretsView(MethodView):
 
                 produce_tool_response_strategy_factory = (
                     ProduceToolResponseStrategyFactoryComposer(
-                        LlmClientType.OPEN_ROUTER, ConfigManager().get_heavy_llm()
+                        LlmClientType.INSTRUCTOR,
+                        Llms().for_secrets_generation(),
+                        Secrets,
                     ).compose_factory()
                 )
                 secrets_factory = SecretsFactory(

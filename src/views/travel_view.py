@@ -13,13 +13,13 @@ from src.characters.factories.player_and_followers_information_factory import (
 from src.characters.factories.player_data_for_prompt_factory import (
     PlayerDataForPromptFactory,
 )
-from src.config.config_manager import ConfigManager
 from src.maps.factories.map_manager_factory import MapManagerFactory
 from src.prompting.composers.produce_tool_response_strategy_factory_composer import (
     ProduceToolResponseStrategyFactoryComposer,
 )
 from src.prompting.enums import LlmClientType
 from src.prompting.factories.travel_narration_factory import TravelNarrationFactory
+from src.prompting.llms import Llms
 from src.services.place_service import PlaceService
 from src.services.web_service import WebService
 from src.time.time_manager import TimeManager
@@ -37,7 +37,7 @@ class TravelView(MethodView):
 
         produce_tool_response_strategy_factory = (
             ProduceToolResponseStrategyFactoryComposer(
-                LlmClientType.OPEN_ROUTER, ConfigManager().get_heavy_llm()
+                LlmClientType.OPEN_ROUTER, Llms().for_travel_narration()
             ).compose_factory()
         )
         player_data_for_prompt_factory = PlayerDataForPromptFactory(

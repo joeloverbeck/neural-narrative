@@ -5,6 +5,7 @@ from src.characters.characters_manager import CharactersManager
 from src.characters.commands.generate_connection_command import (
     GenerateConnectionCommand,
 )
+from src.characters.factories.character_factory import CharacterFactory
 from src.characters.factories.character_information_provider_factory import (
     CharacterInformationProviderFactory,
 )
@@ -12,11 +13,12 @@ from src.characters.factories.connection_factory import ConnectionFactory
 from src.characters.factories.store_character_memory_command_factory import (
     StoreCharacterMemoryCommandFactory,
 )
-from src.config.config_manager import ConfigManager
+from src.characters.models.connection import Connection
 from src.prompting.composers.produce_tool_response_strategy_factory_composer import (
     ProduceToolResponseStrategyFactoryComposer,
 )
 from src.prompting.enums import LlmClientType
+from src.prompting.llms import Llms
 
 
 class ConnectionsView(MethodView):
@@ -50,16 +52,21 @@ class ConnectionsView(MethodView):
 
             produce_tool_response_strategy_factory = (
                 ProduceToolResponseStrategyFactoryComposer(
-                    LlmClientType.OPEN_ROUTER, ConfigManager().get_heavy_llm()
+                    LlmClientType.INSTRUCTOR,
+                    Llms().for_character_connection(),
+                    Connection,
                 ).compose_factory()
             )
             character_information_provider_factory = (
                 CharacterInformationProviderFactory(playthrough_name)
             )
+
+            character_factory = CharacterFactory(playthrough_name)
+
             connection_factory = ConnectionFactory(
-                playthrough_name,
                 character_a_identifier,
                 character_b_identifier,
+                character_factory,
                 character_information_provider_factory,
                 produce_tool_response_strategy_factory,
             )

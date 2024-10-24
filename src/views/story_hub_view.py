@@ -42,7 +42,6 @@ from src.concepts.models.goals import Goals
 from src.concepts.models.plot_blueprint import PlotBlueprint
 from src.concepts.models.plot_twists import PlotTwists
 from src.concepts.models.scenarios import Scenarios
-from src.config.config_manager import ConfigManager
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.interfaces.web_interface_manager import WebInterfaceManager
 from src.maps.composers.places_descriptions_provider_composer import (
@@ -52,6 +51,7 @@ from src.prompting.composers.produce_tool_response_strategy_factory_composer imp
     ProduceToolResponseStrategyFactoryComposer,
 )
 from src.prompting.enums import LlmClientType
+from src.prompting.llms import Llms
 
 logger = logging.getLogger(__name__)
 
@@ -98,29 +98,31 @@ class StoryHubView(MethodView):
         filesystem_manager = FilesystemManager()
         playthrough_name_obj = playthrough_name
 
+        llms = Llms()
+
         plot_blueprint_produce_tool_response_strategy_factory = (
             ProduceToolResponseStrategyFactoryComposer(
-                LlmClientType.INSTRUCTOR, ConfigManager().get_heavy_llm(), PlotBlueprint
+                LlmClientType.INSTRUCTOR, llms.for_concept_generation(), PlotBlueprint
             ).compose_factory()
         )
         scenarios_produce_tool_response_strategy_factory = (
             ProduceToolResponseStrategyFactoryComposer(
-                LlmClientType.INSTRUCTOR, ConfigManager().get_heavy_llm(), Scenarios
+                LlmClientType.INSTRUCTOR, llms.for_concept_generation(), Scenarios
             ).compose_factory()
         )
         dilemmas_produce_tool_response_strategy_factory = (
             ProduceToolResponseStrategyFactoryComposer(
-                LlmClientType.INSTRUCTOR, ConfigManager().get_heavy_llm(), Dilemmas
+                LlmClientType.INSTRUCTOR, llms.for_concept_generation(), Dilemmas
             ).compose_factory()
         )
         goals_produce_tool_response_strategy_factory = (
             ProduceToolResponseStrategyFactoryComposer(
-                LlmClientType.INSTRUCTOR, ConfigManager().get_heavy_llm(), Goals
+                LlmClientType.INSTRUCTOR, llms.for_concept_generation(), Goals
             ).compose_factory()
         )
         plot_twists_produce_tool_response_strategy_factory = (
             ProduceToolResponseStrategyFactoryComposer(
-                LlmClientType.INSTRUCTOR, ConfigManager().get_heavy_llm(), PlotTwists
+                LlmClientType.INSTRUCTOR, llms.for_concept_generation(), PlotTwists
             ).compose_factory()
         )
         player_data_for_prompt_factory = PlayerDataForPromptFactory(
