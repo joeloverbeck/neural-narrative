@@ -45,6 +45,7 @@ def test_two_participants_with_player():
     playthrough_manager.get_player_identifier.return_value = "1"
 
     algorithm = DetermineNextSpeakerAlgorithm(
+        "playthrough",
         participants=participants,
         transcription=transcription,
         speech_turn_choice_tool_response_provider_factory=speech_turn_choice_tool_response_provider_factory,
@@ -113,6 +114,7 @@ def test_more_than_two_participants():
     playthrough_manager.get_player_identifier.return_value = "1"
 
     algorithm = DetermineNextSpeakerAlgorithm(
+        "playthrough",
         participants=participants,
         transcription=transcription,
         speech_turn_choice_tool_response_provider_factory=speech_turn_choice_tool_response_provider_factory,
@@ -177,6 +179,7 @@ def test_invalid_response_product():
     playthrough_manager.get_player_identifier.return_value = "1"
 
     algorithm = DetermineNextSpeakerAlgorithm(
+        "playthrough",
         participants=participants,
         transcription=transcription,
         speech_turn_choice_tool_response_provider_factory=speech_turn_choice_tool_response_provider_factory,
@@ -242,6 +245,7 @@ def test_next_speaker_is_player():
     playthrough_manager.get_player_identifier.return_value = "1"
 
     algorithm = DetermineNextSpeakerAlgorithm(
+        "playthrough",
         participants=participants,
         transcription=transcription,
         speech_turn_choice_tool_response_provider_factory=speech_turn_choice_tool_response_provider_factory,
@@ -307,6 +311,7 @@ def test_voice_model_missing_in_response():
     playthrough_manager.get_player_identifier.return_value = "1"
 
     algorithm = DetermineNextSpeakerAlgorithm(
+        "playthrough",
         participants=participants,
         transcription=transcription,
         speech_turn_choice_tool_response_provider_factory=speech_turn_choice_tool_response_provider_factory,
@@ -344,6 +349,7 @@ def test_not_enough_participants():
     # Exercise & Verify
     with pytest.raises(ValueError) as exc_info:
         DetermineNextSpeakerAlgorithm(
+            "playthrough",
             participants=participants,
             transcription=transcription,
             speech_turn_choice_tool_response_provider_factory=speech_turn_choice_tool_response_provider_factory,

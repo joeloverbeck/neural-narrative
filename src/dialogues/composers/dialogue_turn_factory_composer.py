@@ -76,6 +76,7 @@ class DialogueTurnFactoryComposer:
         character_factory = CharacterFactory(self._playthrough_name)
 
         determine_next_speaker_algorithm = DetermineNextSpeakerAlgorithm(
+            self._playthrough_name,
             self._participants,
             self._transcription,
             speech_turn_choice_tool_response_provider_factory,

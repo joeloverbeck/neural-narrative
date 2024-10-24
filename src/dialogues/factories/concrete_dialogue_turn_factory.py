@@ -3,6 +3,7 @@ from typing import List, Optional
 
 from src.base.abstracts.observer import Observer
 from src.base.playthrough_manager import PlaythroughManager
+from src.base.tools import capture_traceback
 from src.dialogues.abstracts.abstract_factories import DialogueTurnFactorySubject
 from src.dialogues.abstracts.factory_products import DialogueProduct, PlayerInputProduct
 from src.dialogues.configs.dialogue_turn_factory_config import DialogueTurnFactoryConfig
@@ -101,4 +102,5 @@ class ConcreteDialogueTurnFactory(DialogueTurnFactorySubject):
                 "Was unable to find a file. Error: %s", e
             ) from e
         except Exception as e:
+            capture_traceback()
             raise DialogueProcessingError("An unexpected error occurred: %s", e) from e
