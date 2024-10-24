@@ -1,6 +1,6 @@
 import logging
 from time import sleep
-from typing import Optional
+from typing import Optional, Type
 
 from pydantic import BaseModel
 
@@ -14,9 +14,11 @@ from src.base.constants import (
 from src.base.enums import AiCompletionErrorType
 from src.dialogues.messages_to_llm import MessagesToLlm
 from src.filesystem.filesystem_manager import FilesystemManager
-from src.prompting.abstracts.abstract_factories import LlmContentProvider
+from src.prompting.abstracts.abstract_factories import (
+    LlmContentProvider,
+    LlmClientFactory,
+)
 from src.prompting.abstracts.factory_products import LlmContentProduct
-from src.prompting.abstracts.llm_client import LlmClient
 from src.prompting.products.base_model_llm_content_product import (
     BaseModelLlmContentProduct,
 )
@@ -33,7 +35,7 @@ class ConcreteLlmContentProvider(LlmContentProvider):
         self,
         model: str,
         messages_to_llm: MessagesToLlm,
-        llm_client: LlmClient,
+        llm_client_factory: LlmClientFactory,
         max_retries=MAX_RETRIES,
         temperature=1.0,
         top_p=1.0,
@@ -41,7 +43,7 @@ class ConcreteLlmContentProvider(LlmContentProvider):
     ):
         self._model = model
         self._messages_to_llm = messages_to_llm
-        self._llm_client = llm_client
+        self._llm_client_factory = llm_client_factory
         self._max_retries = max_retries
         self._temperature = temperature
         self._top_p = top_p
@@ -49,9 +51,11 @@ class ConcreteLlmContentProvider(LlmContentProvider):
 
         self._filesystem_manager = filesystem_manager or FilesystemManager()
 
-    def generate_content(self) -> LlmContentProduct:
+    def generate_content(self, response_model: Type[BaseModel]) -> LlmContentProduct:
         while self._retry_count < self._max_retries:
-            ai_completion_product = self._llm_client.generate_completion(
+            ai_completion_product = self._llm_client_factory.create_llm_client(
+                response_model
+            ).generate_completion(
                 model=self._model,
                 messages_to_llm=self._messages_to_llm,
                 temperature=self._temperature,

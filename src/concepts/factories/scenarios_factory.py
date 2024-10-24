@@ -9,7 +9,6 @@ from src.characters.factories.player_and_followers_information_factory import (
     PlayerAndFollowersInformationFactory,
 )
 from src.concepts.factories.base_concept_factory import BaseConceptFactory
-from src.concepts.models.scenarios import Scenarios
 from src.concepts.products.scenarios_product import (
     ScenariosProduct,
 )
@@ -35,11 +34,10 @@ class ScenariosFactory(BaseConceptFactory):
             produce_tool_response_strategy_factory,
             places_descriptions_factory,
             player_and_followers_information_factory,
-            base_model=Scenarios,
             prompt_file=SCENARIOS_GENERATION_PROMPT_FILE,
             user_content="Write three very interesting and intriguing scenarios that could stem from the information provided, as per the above instructions.",
             filesystem_manager=filesystem_manager,
         )
 
-    def create_product_from_base_model(self, base_model: BaseModel):
-        return ScenariosProduct(base_model.scenarios, is_valid=True)
+    def create_product_from_base_model(self, response_model: BaseModel):
+        return ScenariosProduct(response_model.scenarios, is_valid=True)

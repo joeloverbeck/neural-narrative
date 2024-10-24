@@ -12,7 +12,6 @@ from src.maps.configs.filtered_place_description_generation_factory_config impor
 from src.maps.configs.filtered_place_description_generation_factory_factories_config import (
     FilteredPlaceDescriptionGenerationFactoryFactoriesConfig,
 )
-from src.maps.models.place_description import PlaceDescription
 from src.prompting.products.concrete_filtered_place_description_generation_product import (
     ConcreteFilteredPlaceDescriptionGenerationProduct,
 )
@@ -38,9 +37,6 @@ class ConcreteFilteredPlaceDescriptionGenerationFactory(BaseToolResponseProvider
 
     def get_prompt_file(self) -> Optional[str]:
         return PLACE_DESCRIPTION_PROMPT_FILE
-
-    def _get_tool_data(self) -> dict:
-        return PlaceDescription.model_json_schema()
 
     def get_user_content(self) -> str:
         return "Write the description of the indicated place, filtered through the perspective of the character whose data has been provided, as per the above instructions."
@@ -70,7 +66,7 @@ class ConcreteFilteredPlaceDescriptionGenerationFactory(BaseToolResponseProvider
         )
         return data_for_prompt
 
-    def create_product_from_base_model(self, base_model: BaseModel):
+    def create_product_from_base_model(self, response_model: BaseModel):
         return ConcreteFilteredPlaceDescriptionGenerationProduct(
-            base_model.description, is_valid=True
+            response_model.description, is_valid=True
         )

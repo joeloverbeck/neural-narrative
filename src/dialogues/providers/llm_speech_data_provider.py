@@ -13,7 +13,6 @@ from src.dialogues.configs.llm_speech_data_provider_config import (
 from src.dialogues.configs.llm_speech_data_provider_factories_config import (
     LlmSpeechDataProviderFactoriesConfig,
 )
-from src.dialogues.models.speech_turn import SpeechTurn
 from src.dialogues.products.concrete_speech_data_product import (
     ConcreteSpeechDataProduct,
 )
@@ -62,20 +61,26 @@ class LlmSpeechDataProvider(BaseToolResponseProvider):
     def get_prompt_file(self) -> str:
         return DIALOGUE_PROMPT_FILE
 
-    def _get_tool_data(self) -> dict:
-        return SpeechTurn.model_json_schema()
-
     def get_user_content(self) -> str:
         return f"Write {self._config.speaker_name}'s speech."
 
-    def create_product_from_base_model(self, base_model: BaseModel):
-        speech_data = {
-            "name": base_model.name,
-            "narration_text": base_model.narration_text,
-            "speech": base_model.speech,
-        }
+    def create_product_from_base_model(self, response_model: BaseModel):
+        # The base model is a MaybeSpeechTurn, given that it fails somewhat often.
+        if response_model.result is not None:
+            speech_data_response = response_model.result
 
-        return ConcreteSpeechDataProduct(speech_data, is_valid=True)
+            speech_data = {
+                "name": speech_data_response.name,
+                "narration_text": speech_data_response.narration_text,
+                "speech": speech_data_response.speech.speech,
+            }
+
+            return ConcreteSpeechDataProduct(speech_data, is_valid=True)
+
+        # The call failed.
+        return ConcreteSpeechDataProduct(
+            None, is_valid=False, error=response_model.message
+        )
 
     def get_prompt_kwargs(self) -> dict:
         participant_details = self._format_participant_details()

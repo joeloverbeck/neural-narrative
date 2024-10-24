@@ -9,7 +9,6 @@ from src.characters.factories.player_and_followers_information_factory import (
     PlayerAndFollowersInformationFactory,
 )
 from src.concepts.factories.base_concept_factory import BaseConceptFactory
-from src.concepts.models.dilemmas import Dilemmas
 from src.concepts.products.interesting_dilemmas_product import (
     InterestingDilemmasProduct,
 )
@@ -35,11 +34,10 @@ class DilemmasFactory(BaseConceptFactory):
             produce_tool_response_strategy_factory,
             places_descriptions_factory,
             player_and_followers_information_factory,
-            base_model=Dilemmas,
             prompt_file=INTERESTING_DILEMMAS_GENERATION_PROMPT_FILE,
             user_content="Write a list of three intriguing moral and ethical dilemmas that could stem from the provided information, as per the above instructions.",
             filesystem_manager=filesystem_manager,
         )
 
-    def create_product_from_base_model(self, base_model: BaseModel):
-        return InterestingDilemmasProduct(base_model.dilemmas, is_valid=True)
+    def create_product_from_base_model(self, response_model: BaseModel):
+        return InterestingDilemmasProduct(response_model.dilemmas, is_valid=True)

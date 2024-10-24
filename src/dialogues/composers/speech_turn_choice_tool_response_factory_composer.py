@@ -1,10 +1,8 @@
 from src.characters.factories.character_factory import CharacterFactory
-from src.dialogues.models.speech_turn_choice import SpeechTurnChoice
 from src.dialogues.participants import Participants
 from src.prompting.composers.produce_tool_response_strategy_factory_composer import (
     ProduceToolResponseStrategyFactoryComposer,
 )
-from src.prompting.enums import LlmClientType
 from src.prompting.factories.speech_turn_choice_tool_response_provider_factory import (
     SpeechTurnChoiceToolResponseProviderFactory,
 )
@@ -31,9 +29,7 @@ class SpeechTurnChoiceToolResponseFactoryComposer:
 
         produce_tool_response_strategy_factory = (
             ProduceToolResponseStrategyFactoryComposer(
-                LlmClientType.INSTRUCTOR,
                 Llms().for_speech_turn_choice(),
-                SpeechTurnChoice,
             ).compose_factory()
         )
 

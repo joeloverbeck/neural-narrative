@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Protocol
+from typing import Protocol, Type
+
+from pydantic import BaseModel
 
 from src.prompting.abstracts.factory_products import (
     LlmToolResponseProduct,
@@ -37,14 +39,14 @@ class ToolResponseDataExtractionProvider(ABC):
 class LlmContentProvider(ABC):
 
     @abstractmethod
-    def generate_content(self) -> LlmContentProduct:
+    def generate_content(self, response_model: Type[BaseModel]) -> LlmContentProduct:
         pass
 
 
 class LlmClientFactory(ABC):
 
     @abstractmethod
-    def create_llm_client(self) -> LlmClient:
+    def create_llm_client(self, response_model: Type[BaseModel]) -> LlmClient:
         pass
 
 

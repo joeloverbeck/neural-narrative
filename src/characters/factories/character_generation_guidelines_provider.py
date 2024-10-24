@@ -7,7 +7,6 @@ from src.base.constants import (
     CHARACTER_GENERATION_GUIDELINES_PROMPT_FILE,
     TOOL_INSTRUCTIONS_FOR_INSTRUCTOR_FILE,
 )
-from src.characters.models.character_guidelines import CharacterGuidelines
 from src.characters.products.character_generation_guidelines_product import (
     CharacterGenerationGuidelinesProduct,
 )
@@ -54,9 +53,6 @@ class CharacterGenerationGuidelinesProvider(BaseToolResponseProvider):
         )
         return prompt_data
 
-    def _get_tool_data(self) -> dict:
-        return CharacterGuidelines.model_json_schema()
-
     def _read_tool_instructions(self) -> str:
         """Reads the tool instructions from the filesystem."""
         return self._filesystem_manager.read_file(TOOL_INSTRUCTIONS_FOR_INSTRUCTOR_FILE)
@@ -64,8 +60,8 @@ class CharacterGenerationGuidelinesProvider(BaseToolResponseProvider):
     def get_user_content(self) -> str:
         return "Write three entries that are guidelines for creating interesting characters based on the above combination of places. Follow the provided instructions."
 
-    def create_product_from_base_model(self, base_model: BaseModel):
+    def create_product_from_base_model(self, response_model: BaseModel):
         return CharacterGenerationGuidelinesProduct(
-            base_model.guidelines,
+            response_model.guidelines,
             is_valid=True,
         )

@@ -4,6 +4,7 @@ from src.base.abstracts.command import Command
 from src.characters.character import Character
 from src.characters.characters_manager import CharactersManager
 from src.characters.factories.secrets_factory import SecretsFactory
+from src.characters.models.secrets import Secrets
 from src.characters.products.secrets_product import SecretsProduct
 
 
@@ -24,7 +25,7 @@ class GenerateCharacterSecretsCommand(Command):
         )
 
     def execute(self) -> None:
-        product = cast(SecretsProduct, self._secrets_factory.generate_product())
+        product = cast(SecretsProduct, self._secrets_factory.generate_product(Secrets))
         if not product.is_valid():
             raise ValueError(
                 f"Was unable to generate secrets. Error: {product.get_error()}"

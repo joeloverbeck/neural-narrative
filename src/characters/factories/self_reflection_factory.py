@@ -11,7 +11,6 @@ from src.characters.characters_manager import CharactersManager
 from src.characters.factories.character_information_provider import (
     CharacterInformationProvider,
 )
-from src.characters.models.self_reflection import SelfReflection
 from src.characters.products.self_reflection_product import SelfReflectionProduct
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.prompting.abstracts.abstract_factories import (
@@ -46,15 +45,12 @@ class SelfReflectionFactory(BaseToolResponseProvider):
     def get_prompt_file(self) -> Optional[str]:
         return SELF_REFLECTION_GENERATION_PROMPT_FILE
 
-    def _get_tool_data(self) -> dict:
-        return SelfReflection.model_json_schema()
-
     def get_user_content(self) -> str:
         return "Write a meaningful and compelling self-reflection from the first-person perspective of the character regarding their memories. Follow the provided instructions."
 
-    def create_product_from_base_model(self, base_model: BaseModel):
+    def create_product_from_base_model(self, response_model: BaseModel):
         # have in mind that the self-reflection can come with multiple paragraphs.
-        self_reflection = str(base_model.self_reflection)
+        self_reflection = str(response_model.self_reflection)
 
         return SelfReflectionProduct(
             self_reflection.replace("\n\n", "\n"), is_valid=True

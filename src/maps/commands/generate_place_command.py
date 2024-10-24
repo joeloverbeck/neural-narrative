@@ -9,6 +9,10 @@ from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.factories.store_generated_place_command_factory import (
     StoreGeneratedPlaceCommandFactory,
 )
+from src.maps.models.area import Area
+from src.maps.models.location import Location
+from src.maps.models.region import Region
+from src.maps.models.world import World
 from src.maps.place_data import PlaceData
 from src.prompting.providers.place_generation_tool_response_provider import (
     PlaceGenerationToolResponseProvider,
@@ -81,9 +85,28 @@ class GeneratePlaceCommand(Command):
             raise ValueError(
                 f"There isn't a '{self._father_place_template_type}' template named '{self._father_place_name}'."
             )
-        llm_tool_response_product = (
-            self._place_generation_tool_response_provider.generate_product()
-        )
+
+        if self._place_template_type == TemplateType.LOCATION:
+            llm_tool_response_product = (
+                self._place_generation_tool_response_provider.generate_product(Location)
+            )
+        elif self._place_template_type == TemplateType.AREA:
+            llm_tool_response_product = (
+                self._place_generation_tool_response_provider.generate_product(Area)
+            )
+        elif self._place_template_type == TemplateType.REGION:
+            llm_tool_response_product = (
+                self._place_generation_tool_response_provider.generate_product(Region)
+            )
+        elif self._place_template_type == TemplateType.WORLD:
+            llm_tool_response_product = (
+                self._place_generation_tool_response_provider.generate_product(World)
+            )
+        else:
+            raise NotImplementedError(
+                f"Product generation not implemented for template type '{self._place_template_type}'."
+            )
+
         if not llm_tool_response_product.is_valid():
             raise ValueError(
                 f"Unable to produce a tool response for '{self._place_template_type.value}' generation: {llm_tool_response_product.get_error()}"

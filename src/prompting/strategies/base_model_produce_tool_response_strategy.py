@@ -1,3 +1,5 @@
+from typing import Type
+
 from pydantic import BaseModel
 
 from src.dialogues.messages_to_llm import MessagesToLlm
@@ -16,7 +18,7 @@ class BaseModelProduceToolResponseStrategy(ProduceToolResponseStrategy):
         self._llm_content_provider_factory = llm_content_provider_factory
 
     def produce_tool_response(
-        self, system_content: str, user_content: str
+        self, system_content: str, user_content: str, response_model: Type[BaseModel]
     ) -> BaseModel:
         messages_to_llm = MessagesToLlm()
         messages_to_llm.add_message("system", system_content)
@@ -25,7 +27,7 @@ class BaseModelProduceToolResponseStrategy(ProduceToolResponseStrategy):
         llm_content_product = (
             self._llm_content_provider_factory.create_llm_content_provider(
                 messages_to_llm
-            ).generate_content()
+            ).generate_content(response_model)
         )
 
         if not llm_content_product.is_valid():

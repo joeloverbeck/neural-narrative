@@ -1,6 +1,8 @@
 import logging
 from typing import List
 
+import instructor
+
 from src.base.abstracts.command import Command
 from src.base.abstracts.observer import Observer
 from src.base.abstracts.subject import Subject
@@ -8,6 +10,7 @@ from src.dialogues.abstracts.strategies import MessageDataProducerForSpeechTurnS
 from src.dialogues.factories.llm_speech_data_provider_factory import (
     LlmSpeechDataProviderFactory,
 )
+from src.dialogues.models.speech_turn import get_custom_speech_turn_class
 from src.dialogues.transcription import Transcription
 from src.prompting.abstracts.factory_products import LlmToolResponseProduct
 
@@ -37,13 +40,19 @@ class CreateSpeechTurnDataCommand(Command, Subject):
                 "Failed to produce speech data: %s", speech_data_product.get_error()
             )
 
+            # Could be that the internal dictionary is None.
+            if not speech_data_product.get():
+                speech_data_product.set({})
+
             # If it turns out that there isn't a name applied, we enter the name we have.
             if not "name" in speech_data_product.get():
                 speech_data_product.get()[
                     "name"
                 ] = self._speech_turn_choice_response.get()["name"]
 
-            speech_data_product.get()["narration_text"] = f"Looks confused."
+            speech_data_product.get()[
+                "narration_text"
+            ] = f"{self._speech_turn_choice_response.get()["name"]} looks confused."
             speech_data_product.get()["speech"] = "I don't know what to say."
 
     @staticmethod
@@ -75,7 +84,13 @@ class CreateSpeechTurnDataCommand(Command, Subject):
                 self._speech_turn_choice_response.get()["identifier"],
                 self._speech_turn_choice_response.get()["name"],
                 self._transcription,
-            ).generate_product()
+            ).generate_product(
+                instructor.Maybe(
+                    get_custom_speech_turn_class(
+                        self._speech_turn_choice_response.get()["name"]
+                    )
+                )
+            )
         )
 
         self._fix_invalid_speech_data(speech_data_product)

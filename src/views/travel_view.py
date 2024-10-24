@@ -18,7 +18,6 @@ from src.movements.models.travel_narration import TravelNarration
 from src.prompting.composers.produce_tool_response_strategy_factory_composer import (
     ProduceToolResponseStrategyFactoryComposer,
 )
-from src.prompting.enums import LlmClientType
 from src.prompting.factories.travel_narration_factory import TravelNarrationFactory
 from src.prompting.llms import Llms
 from src.services.place_service import PlaceService
@@ -38,7 +37,7 @@ class TravelView(MethodView):
 
         produce_tool_response_strategy_factory = (
             ProduceToolResponseStrategyFactoryComposer(
-                LlmClientType.INSTRUCTOR, Llms().for_travel_narration(), TravelNarration
+                Llms().for_travel_narration()
             ).compose_factory()
         )
         player_data_for_prompt_factory = PlayerDataForPromptFactory(
@@ -57,7 +56,7 @@ class TravelView(MethodView):
             produce_tool_response_strategy_factory,
             player_and_followers_information_factory,
             map_manager_factory,
-        ).generate_product()
+        ).generate_product(TravelNarration)
         if not product.is_valid():
             return redirect(url_for("location-hub"))
         travel_narration = product.get()

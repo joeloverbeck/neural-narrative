@@ -29,7 +29,7 @@ def test_get_tool_data():
         ),
         character_generation_instructions_formatter_factory=MagicMock(),
     )
-    tool_data = provider._get_tool_data()
+    tool_data = provider._get_tool_data(BaseCharacterData)
     expected_schema = BaseCharacterData.model_json_schema()
     assert tool_data == expected_schema
 
@@ -322,7 +322,7 @@ def test_generate_product_integration():
         filesystem_manager=filesystem_manager,
     )
 
-    product = provider.generate_product()
+    product = provider.generate_product(BaseCharacterData)
     assert isinstance(product, ConcreteLlmToolResponseProduct)
     assert product.is_valid()
     assert product.get()["name"] == "Test Name"

@@ -6,6 +6,7 @@ from src.characters.character_guidelines_manager import CharacterGuidelinesManag
 from src.characters.factories.character_generation_guidelines_provider_factory import (
     CharacterGenerationGuidelinesProviderFactory,
 )
+from src.characters.models.character_guidelines import CharacterGuidelines
 from src.characters.products.character_generation_guidelines_product import (
     CharacterGenerationGuidelinesProduct,
 )
@@ -51,7 +52,9 @@ class GenerateCharacterGenerationGuidelinesAlgorithm:
         )
         result = cast(
             CharacterGenerationGuidelinesProduct,
-            self._character_generation_guidelines_provider_factory.create_provider().generate_product(),
+            self._character_generation_guidelines_provider_factory.create_provider().generate_product(
+                CharacterGuidelines
+            ),
         )
         if not result.is_valid():
             raise ValueError(

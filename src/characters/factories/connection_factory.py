@@ -9,7 +9,6 @@ from src.characters.factories.character_factory import CharacterFactory
 from src.characters.factories.character_information_provider_factory import (
     CharacterInformationProviderFactory,
 )
-from src.characters.models.connection import Connection
 from src.characters.products.connection_product import ConnectionProduct
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.prompting.abstracts.abstract_factories import (
@@ -38,14 +37,11 @@ class ConnectionFactory(BaseToolResponseProvider):
             character_information_provider_factory
         )
 
-    def _get_tool_data(self) -> dict:
-        return Connection.model_json_schema()
-
     def get_user_content(self) -> str:
         return "Generate a meaningful and compelling connection between the two provided characters. Follow the instructions."
 
-    def create_product_from_base_model(self, base_model: BaseModel):
-        return ConnectionProduct(base_model.connection, is_valid=True)
+    def create_product_from_base_model(self, response_model: BaseModel):
+        return ConnectionProduct(response_model.connection, is_valid=True)
 
     def get_prompt_file(self) -> Optional[str]:
         return CONNECTION_GENERATION_PROMPT_FILE

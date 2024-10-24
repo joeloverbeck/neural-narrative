@@ -2,6 +2,7 @@ from typing import Optional
 
 from src.base.playthrough_manager import PlaythroughManager
 from src.dialogues.exceptions import InvalidNextSpeakerError
+from src.dialogues.models.speech_turn_choice import SpeechTurnChoice
 from src.dialogues.participants import Participants
 from src.dialogues.transcription import Transcription
 from src.prompting.abstracts.factory_products import LlmToolResponseProduct
@@ -44,7 +45,7 @@ class DetermineNextSpeakerAlgorithm:
                 self._transcription
             )
         )
-        response_product = response_provider.generate_product()
+        response_product = response_provider.generate_product(SpeechTurnChoice)
 
         if not response_product.is_valid():
             raise InvalidNextSpeakerError(response_product.get_error())

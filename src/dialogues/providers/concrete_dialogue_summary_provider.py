@@ -5,7 +5,6 @@ from pydantic import BaseModel
 from src.base.constants import (
     SUMMARIZE_DIALOGUE_PROMPT_FILE,
 )
-from src.dialogues.models.dialogue_summary import DialogueSummary
 from src.dialogues.products.concrete_summary_product import ConcreteSummaryProduct
 from src.dialogues.transcription import Transcription
 from src.filesystem.filesystem_manager import FilesystemManager
@@ -29,14 +28,11 @@ class ConcreteDialogueSummaryProvider(BaseToolResponseProvider):
     def get_prompt_file(self) -> str:
         return SUMMARIZE_DIALOGUE_PROMPT_FILE
 
-    def _get_tool_data(self) -> dict:
-        return DialogueSummary.model_json_schema()
-
     def get_user_content(self) -> str:
         return "Summarize the provided dialogue. Do not write any preamble, just do it as instructed."
 
     def get_prompt_kwargs(self) -> dict:
         return {"transcription": self._transcription.get_prettified_transcription()}
 
-    def create_product_from_base_model(self, base_model: BaseModel):
-        return ConcreteSummaryProduct(base_model.summary, is_valid=True)
+    def create_product_from_base_model(self, response_model: BaseModel):
+        return ConcreteSummaryProduct(response_model.summary, is_valid=True)

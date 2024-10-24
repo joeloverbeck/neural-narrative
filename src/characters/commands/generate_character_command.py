@@ -10,6 +10,7 @@ from src.characters.factories.speech_patterns_provider_factory import (
 from src.characters.factories.store_generated_character_command_factory import (
     StoreGeneratedCharacterCommandFactory,
 )
+from src.characters.models.speech_patterns import SpeechPatterns
 from src.characters.products.speech_patterns_product import SpeechPatternsProduct
 from src.characters.providers.base_character_data_generation_tool_response_provider import (
     BaseCharacterDataGenerationToolResponseProvider,
@@ -70,7 +71,7 @@ class GenerateCharacterCommand(Command):
             SpeechPatternsProduct,
             self._speech_patterns_provider_factory.create_provider(
                 character_data
-            ).generate_product(),
+            ).generate_product(SpeechPatterns),
         )
         if not product.is_valid():
             raise CharacterGenerationError(

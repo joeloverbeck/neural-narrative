@@ -113,7 +113,7 @@ def test_get_tool_data_returns_correct_schema():
     )
 
     # Act
-    tool_data = provider._get_tool_data()
+    tool_data = provider._get_tool_data(SpeechTurnChoice)
 
     # Assert
     assert tool_data == SpeechTurnChoice.model_json_schema()
@@ -266,7 +266,7 @@ def test_generate_product_calls_produce_tool_response():
     )
 
     # Act
-    product = provider.generate_product()
+    product = provider.generate_product(SpeechTurnChoice)
 
     # Assert
     assert product.is_valid() is True
@@ -301,24 +301,6 @@ def test_create_product_from_base_model_with_invalid_model():
     # Act & Assert
     with pytest.raises(AttributeError):
         provider.create_product_from_base_model(base_model)
-
-
-def test_create_product_from_dict_not_implemented():
-    # Arrange
-    provider = SpeechTurnChoiceToolResponseProvider(
-        player_identifier="1",
-        participants=Participants(),
-        transcription=Transcription(),
-        character_factory=MagicMock(spec=CharacterFactory),
-        produce_tool_response_strategy_factory=cast(
-            ProduceToolResponseStrategyFactory,
-            MagicMock(spec=ProduceToolResponseStrategyFactory),
-        ),
-    )
-
-    # Act & Assert
-    with pytest.raises(NotImplementedError):
-        provider.create_product_from_dict({"identifier": "2", "name": "Alice"})
 
 
 def test_peep_into_system_content_does_nothing():
@@ -369,7 +351,7 @@ def test_generate_product_with_invalid_tool_response():
 
     # Act & Assert
     with pytest.raises(NotImplementedError):
-        provider.generate_product()
+        provider.generate_product(SpeechTurnChoice)
 
 
 def test_get_formatted_prompt_returns_none():
@@ -422,7 +404,7 @@ def test_generate_product_reads_correct_prompt_file():
     )
 
     # Act
-    provider.generate_product()
+    provider.generate_product(SpeechTurnChoice)
 
     # Assert
     filesystem_manager.read_file.assert_any_call(CHOOSING_SPEECH_TURN_PROMPT_FILE)

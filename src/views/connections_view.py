@@ -13,11 +13,9 @@ from src.characters.factories.connection_factory import ConnectionFactory
 from src.characters.factories.store_character_memory_command_factory import (
     StoreCharacterMemoryCommandFactory,
 )
-from src.characters.models.connection import Connection
 from src.prompting.composers.produce_tool_response_strategy_factory_composer import (
     ProduceToolResponseStrategyFactoryComposer,
 )
-from src.prompting.enums import LlmClientType
 from src.prompting.llms import Llms
 
 
@@ -52,9 +50,7 @@ class ConnectionsView(MethodView):
 
             produce_tool_response_strategy_factory = (
                 ProduceToolResponseStrategyFactoryComposer(
-                    LlmClientType.INSTRUCTOR,
                     Llms().for_character_connection(),
-                    Connection,
                 ).compose_factory()
             )
             character_information_provider_factory = (

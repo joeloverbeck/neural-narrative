@@ -3,6 +3,9 @@ from typing import Optional
 
 from src.base.abstracts.command import Command
 from src.base.constants import DEFAULT_IMAGE_FILE, IMAGE_GENERATION_PROMPT_FILE
+from src.characters.models.character_description_for_portrait import (
+    CharacterDescriptionForPortrait,
+)
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.images.configs.generate_character_image_command_config import (
     GenerateCharacterImageCommandConfig,
@@ -47,7 +50,9 @@ class GenerateCharacterImageCommand(Command):
         description_provider = self._factories_config.character_description_provider_factory.create_provider(
             character
         )
-        description_product = description_provider.generate_product()
+        description_product = description_provider.generate_product(
+            CharacterDescriptionForPortrait
+        )
         character.update_data({"description_for_portrait": description_product.get()})
         character.save()
 

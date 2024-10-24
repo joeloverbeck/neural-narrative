@@ -12,6 +12,9 @@ from src.actions.algorithms.store_action_resolution_algorithm import (
     StoreActionResolutionAlgorithm,
 )
 from src.actions.factories.action_resolution_factory import ActionResolutionFactory
+from src.actions.models.gather_supplies import GatherSupplies
+from src.actions.models.investigate import Investigate
+from src.actions.models.research import Research
 from src.base.playthrough_manager import PlaythroughManager
 from src.characters.character import Character
 from src.characters.characters_manager import CharactersManager
@@ -36,7 +39,6 @@ from src.maps.factories.map_manager_factory import MapManagerFactory
 from src.prompting.composers.produce_tool_response_strategy_factory_composer import (
     ProduceToolResponseStrategyFactoryComposer,
 )
-from src.prompting.enums import LlmClientType
 from src.prompting.llms import Llms
 from src.voices.factories.direct_voice_line_generation_algorithm_factory import (
     DirectVoiceLineGenerationAlgorithmFactory,
@@ -45,7 +47,7 @@ from src.voices.factories.direct_voice_line_generation_algorithm_factory import 
 logger = logging.getLogger(__name__)
 
 
-def action_view(action_name, action_icon, action_endpoint, prompt_file, tool_file):
+def action_view(action_name, action_icon, action_endpoint, prompt_file):
     if request.method == "GET":
         playthrough_name = session.get("playthrough_name")
         if not playthrough_name:
@@ -90,7 +92,7 @@ def action_view(action_name, action_icon, action_endpoint, prompt_file, tool_fil
 
             produce_tool_response_strategy_factory = (
                 ProduceToolResponseStrategyFactoryComposer(
-                    LlmClientType.OPEN_ROUTER, llms.for_action_resolution()
+                    llms.for_action_resolution()
                 ).compose_factory()
             )
 
@@ -113,7 +115,6 @@ def action_view(action_name, action_icon, action_endpoint, prompt_file, tool_fil
                 ).compose_provider(),
                 players_and_followers_information_factory=players_and_followers_information_factory,
                 prompt_file=prompt_file,
-                tool_file=tool_file,
             )
             store_character_memory_command_factory = StoreCharacterMemoryCommandFactory(
                 playthrough_name
@@ -136,7 +137,16 @@ def action_view(action_name, action_icon, action_endpoint, prompt_file, tool_fil
                 produce_voice_lines_for_action_resolution_algorithm,
             )
             try:
-                result = action_resolution_algorithm.do_algorithm()
+                if action_name.lower() == "investigate":
+                    result = action_resolution_algorithm.do_algorithm(Investigate)
+                elif action_name.lower() == "research":
+                    result = action_resolution_algorithm.do_algorithm(Research)
+                elif action_name.lower() == "gather supplies":
+                    result = action_resolution_algorithm.do_algorithm(GatherSupplies)
+                else:
+                    raise NotImplementedError(
+                        f"Action resolution algorithm not handled for action name '{action_name}'."
+                    )
             except ValueError as e:
                 logger.error("Unexpected error: %s", e)
                 if request.headers.get("X-Requested-With") == "XMLHttpRequest":

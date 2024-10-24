@@ -1,6 +1,4 @@
-from typing import Optional, Type
-
-from pydantic import BaseModel
+from typing import Optional
 
 from src.characters.factories.player_and_followers_information_factory import (
     PlayerAndFollowersInformationFactory,
@@ -22,7 +20,6 @@ class BaseConceptFactory(BaseToolResponseProvider):
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         places_descriptions_factory: PlacesDescriptionsProvider,
         player_and_followers_information_factory: PlayerAndFollowersInformationFactory,
-        base_model: Type[BaseModel],
         prompt_file: str,
         user_content: str,
         filesystem_manager: Optional[FilesystemManager] = None,
@@ -33,12 +30,8 @@ class BaseConceptFactory(BaseToolResponseProvider):
         self._player_and_followers_information_factory = (
             player_and_followers_information_factory
         )
-        self._base_model = base_model
         self._prompt_file = prompt_file
         self._user_content = user_content
-
-    def _get_tool_data(self) -> dict:
-        return self._base_model.model_json_schema()
 
     def get_user_content(self) -> str:
         return self._user_content
@@ -51,6 +44,3 @@ class BaseConceptFactory(BaseToolResponseProvider):
             self._places_descriptions_factory,
             self._player_and_followers_information_factory,
         )
-
-    def create_product_from_dict(self, arguments: dict):
-        raise NotImplementedError("Subclasses must implement create_product.")

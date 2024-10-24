@@ -26,16 +26,11 @@ from src.maps.factories.place_manager_factory import PlaceManagerFactory
 from src.maps.factories.store_generated_place_command_factory import (
     StoreGeneratedPlaceCommandFactory,
 )
-from src.maps.models.area import Area
-from src.maps.models.location import Location
 from src.maps.models.place_description import PlaceDescription
-from src.maps.models.region import Region
-from src.maps.models.world import World
 from src.maps.weathers_manager import WeathersManager
 from src.prompting.composers.produce_tool_response_strategy_factory_composer import (
     ProduceToolResponseStrategyFactoryComposer,
 )
-from src.prompting.enums import LlmClientType
 from src.prompting.llms import Llms
 from src.prompting.providers.place_generation_tool_response_provider import (
     PlaceGenerationToolResponseProvider,
@@ -65,36 +60,11 @@ class PlaceService:
     ):
         father_template_type = PARENT_TEMPLATE_TYPE.get(template_type)
 
-        if template_type == TemplateType.LOCATION:
-            produce_tool_response_strategy_factory = (
-                ProduceToolResponseStrategyFactoryComposer(
-                    LlmClientType.INSTRUCTOR,
-                    self._llms.for_place_generation(),
-                    Location,
-                ).compose_factory()
-            )
-        elif template_type == TemplateType.AREA:
-            produce_tool_response_strategy_factory = (
-                ProduceToolResponseStrategyFactoryComposer(
-                    LlmClientType.INSTRUCTOR, self._llms.for_place_generation(), Area
-                ).compose_factory()
-            )
-        elif template_type == TemplateType.REGION:
-            produce_tool_response_strategy_factory = (
-                ProduceToolResponseStrategyFactoryComposer(
-                    LlmClientType.INSTRUCTOR, self._llms.for_place_generation(), Region
-                ).compose_factory()
-            )
-        elif template_type == TemplateType.WORLD:
-            produce_tool_response_strategy_factory = (
-                ProduceToolResponseStrategyFactoryComposer(
-                    LlmClientType.INSTRUCTOR, self._llms.for_place_generation(), World
-                ).compose_factory()
-            )
-        else:
-            raise NotImplemented(
-                f"Case not handled for template type '{template_type.value}'."
-            )
+        produce_tool_response_strategy_factory = (
+            ProduceToolResponseStrategyFactoryComposer(
+                self._llms.for_place_generation(),
+            ).compose_factory()
+        )
 
         place_generation_tool_response_provider = PlaceGenerationToolResponseProvider(
             father_place_name,
@@ -124,9 +94,7 @@ class PlaceService:
 
         produce_tool_response_strategy_factory = (
             ProduceToolResponseStrategyFactoryComposer(
-                LlmClientType.INSTRUCTOR,
                 self._llms.for_place_description(),
-                PlaceDescription,
             ).compose_factory()
         )
         place_manager_factory = PlaceManagerFactory(playthrough_name)
@@ -141,11 +109,13 @@ class PlaceService:
         )
         description_product = ConcreteFilteredPlaceDescriptionGenerationFactory(
             config, factories_config
-        ).generate_product()
+        ).generate_product(PlaceDescription)
+
         if description_product.is_valid():
             description = description_product.get()
         else:
             return description_product.get_error(), None
+
         voice_line_file_name = self._generate_place_description_voice_line(
             playthrough_name, description
         )

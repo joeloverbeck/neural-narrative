@@ -4,6 +4,7 @@ from typing import cast, Optional
 from src.characters.character import Character
 from src.characters.characters_manager import CharactersManager
 from src.characters.factories.self_reflection_factory import SelfReflectionFactory
+from src.characters.models.self_reflection import SelfReflection
 from src.characters.products.produce_self_reflection_product import (
     ProduceSelfReflectionProduct,
 )
@@ -41,7 +42,8 @@ class ProduceSelfReflectionAlgorithm:
 
     def do_algorithm(self) -> ProduceSelfReflectionProduct:
         product = cast(
-            SelfReflectionProduct, self._self_reflection_factory.generate_product()
+            SelfReflectionProduct,
+            self._self_reflection_factory.generate_product(SelfReflection),
         )
         if not product.is_valid():
             raise ValueError(

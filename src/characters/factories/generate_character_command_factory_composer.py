@@ -20,11 +20,6 @@ from src.characters.factories.speech_patterns_provider_factory import (
 from src.characters.factories.store_generated_character_command_factory import (
     StoreGeneratedCharacterCommandFactory,
 )
-from src.characters.models.base_character_data import BaseCharacterData
-from src.characters.models.character_description_for_portrait import (
-    CharacterDescriptionForPortrait,
-)
-from src.characters.models.speech_patterns import SpeechPatterns
 from src.images.factories.generate_character_image_command_factory import (
     GenerateCharacterImageCommandFactory,
 )
@@ -39,7 +34,6 @@ from src.movements.movement_manager import MovementManager
 from src.prompting.composers.produce_tool_response_strategy_factory_composer import (
     ProduceToolResponseStrategyFactoryComposer,
 )
-from src.prompting.enums import LlmClientType
 from src.prompting.factories.character_generation_instructions_formatter_factory import (
     CharacterGenerationInstructionsFormatterFactory,
 )
@@ -63,9 +57,7 @@ class GenerateCharacterCommandFactoryComposer:
 
         speech_patterns_produce_tool_response_strategy_factory = (
             ProduceToolResponseStrategyFactoryComposer(
-                LlmClientType.INSTRUCTOR,
                 llms.for_speech_patterns_generation(),
-                SpeechPatterns,
             ).compose_factory()
         )
         speech_patterns_provider_factory = SpeechPatternsProviderFactory(
@@ -97,9 +89,7 @@ class GenerateCharacterCommandFactoryComposer:
 
         character_description_produce_tool_response_strategy_factory = (
             ProduceToolResponseStrategyFactoryComposer(
-                LlmClientType.INSTRUCTOR,
                 llms.for_character_description(),
-                CharacterDescriptionForPortrait,
             ).compose_factory()
         )
 
@@ -134,9 +124,7 @@ class GenerateCharacterCommandFactoryComposer:
         # We need a specific produce_tool_response_strategy_factory given that we pass the BaseModel.
         base_character_data_produce_tool_response_strategy_factory = (
             ProduceToolResponseStrategyFactoryComposer(
-                LlmClientType.INSTRUCTOR,
                 llms.for_base_character_data_generation(),
-                BaseCharacterData,
             ).compose_factory()
         )
 

@@ -60,9 +60,6 @@ class BaseCharacterDataGenerationToolResponseProvider(
             self._playthrough_name
         )
 
-    def _get_tool_data(self) -> dict:
-        return BaseCharacterData.model_json_schema()
-
     def get_formatted_prompt(self) -> str:
         templates = self._load_templates()
         instructions = (
@@ -82,33 +79,33 @@ class BaseCharacterDataGenerationToolResponseProvider(
             )
         return user_content_product.get()
 
-    def create_product_from_base_model(self, base_model: BaseModel):
+    def create_product_from_base_model(self, response_model: BaseModel):
         arguments = {
-            "name": base_model.name,
-            "description": base_model.description,
-            "personality": base_model.personality,
-            "profile": base_model.profile,
-            "likes": base_model.likes,
-            "dislikes": base_model.dislikes,
-            "secrets": base_model.secrets,
-            "health": base_model.health,
-            "equipment": base_model.equipment,
-            "voice_gender": base_model.voice_gender,
-            "voice_age": base_model.voice_age,
-            "voice_emotion": base_model.voice_emotion,
-            "voice_tempo": base_model.voice_tempo,
-            "voice_volume": base_model.voice_volume,
-            "voice_texture": base_model.voice_texture,
-            "voice_tone": base_model.voice_tone,
-            "voice_style": base_model.voice_style,
-            "voice_personality": base_model.voice_personality,
-            "voice_special_effects": base_model.voice_special_effects,
+            "name": response_model.name,
+            "description": response_model.description,
+            "personality": response_model.personality,
+            "profile": response_model.profile,
+            "likes": response_model.likes,
+            "dislikes": response_model.dislikes,
+            "secrets": response_model.secrets,
+            "health": response_model.health,
+            "equipment": response_model.equipment,
+            "voice_gender": response_model.voice_gender,
+            "voice_age": response_model.voice_age,
+            "voice_emotion": response_model.voice_emotion,
+            "voice_tempo": response_model.voice_tempo,
+            "voice_volume": response_model.voice_volume,
+            "voice_texture": response_model.voice_texture,
+            "voice_tone": response_model.voice_tone,
+            "voice_style": response_model.voice_style,
+            "voice_personality": response_model.voice_personality,
+            "voice_special_effects": response_model.voice_special_effects,
         }
         return ConcreteLlmToolResponseProduct(arguments, is_valid=True)
 
     def create_llm_response(self) -> LlmToolResponseProduct:
         try:
-            return self.generate_product()
+            return self.generate_product(BaseCharacterData)
         except Exception as e:
             capture_traceback()
             return ConcreteLlmToolResponseProduct(
