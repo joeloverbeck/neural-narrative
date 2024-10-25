@@ -19,5 +19,12 @@
       "dark fantasy",
       "romance"
     ]
+  },
+  "Terra Firma": {
+    "description": "Terra Firma is a world that closely resembles the Earth of the 2020s, with its diverse geographical features, ranging from vast oceans and continents to towering mountain ranges and sprawling deserts. The planet is teeming with a wide variety of flora and fauna, populating various ecosystems and habitats.\nThe human civilizations on Terra Firma are divided into numerous countries, each with its own distinct culture, language, and traditions. Some nations are governed by democracies, while others are ruled by monarchies or authoritarian regimes. Global politics are marked by complex alliances and tensions between these nations.\nThe global economy is primarily based on trade and currency, with some regions enjoying abundant resources while others struggle with scarcity. Competition for control over valuable resources often leads to conflicts and power struggles among nations and corporations.\nTechnology on Terra Firma is highly advanced, with breakthroughs in fields such as computing, medicine, and space exploration. However, magic is not present in this world, and scientific advancements are made through rigorous research and experimentation.\nReligious beliefs vary greatly across the planet, with major world religions such as Christianity, Islam, Hinduism, and Buddhism having significant followings. These religious differences sometimes lead to conflicts and misunderstandings between different groups.\nSocial status on Terra Firma is largely determined by factors such as wealth, education, and occupation, although there is some degree of social mobility. The world is inhabited by humans, with no evidence of other sentient species or alien life forms.",
+    "categories": [
+      "realistic",
+      "philosophical"
+    ]
   }
 }
