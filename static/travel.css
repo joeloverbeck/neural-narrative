@@ -1,11 +1,148 @@
 /* static/travel.css */
 
-.travel-narration {
-    background-color: #f0f8ff;
+/* Additional styles for the travel page */
+.travel-container {
+    margin-top: 20px;
+}
+
+.destination-place {
+    font-size: 16px;
+    color: #444;
+    text-align: right;
+}
+
+/* Style the action-button specifically for the travel page */
+.action-button {
+    background-color: #22A7F0; /* Light blue color */
+}
+
+.action-button i {
+    margin-right: 10px;
+    font-size: 20px;
+}
+
+.action-button:hover {
+    background-color: #1F8DC3; /* Slightly darker blue on hover */
+    transform: translateY(-3px);
+}
+
+.action-button:focus {
+    outline: none;
+}
+
+.action-button:active {
+    transform: translateY(2px);
+}
+
+/* Style for the narration and outcome sections */
+#travel-narration-container .narration,
+#travel-narration-container .outcome {
+    background-color: #f9f9f9;
     padding: 20px;
-    margin: 30px auto;
+    margin: 20px auto;
     border-radius: 10px;
     max-width: 800px;
-    font-size: 18px;
+    font-size: 16px;
     line-height: 1.6;
+    text-align: left;
+    color: #333;
+    position: relative;
+}
+
+#travel-narration-container h3 {
+    margin-top: 0;
+}
+
+/* Adjustments for the 'Enter Destination Area' button */
+#travel-narration-container form {
+    text-align: center;
+    margin-top: 30px;
+}
+
+#travel-narration-container .action-button {
+    background-color: #28a745; /* Green color for entering destination */
+}
+
+#travel-narration-container .action-button:hover {
+    background-color: #218838;
+}
+
+/* Additional styles to make the page fancy */
+body {
+    background: linear-gradient(120deg, #e0f7fa, #e0e0e0);
+}
+
+/* Styles for the travel information */
+.current-time,
+.current-place,
+.destination-place {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 15px;
+    text-align: center;
+    position: relative;
+    padding: 15px 20px;
+    background: linear-gradient(135deg, #ffffff, #e0f7fa);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: background 0.3s ease;
+}
+
+.current-time:hover,
+.current-place:hover,
+.destination-place:hover {
+    background: linear-gradient(135deg, #e0f7fa, #ffffff);
+}
+
+.current-time::before,
+.current-place::before,
+.destination-place::before {
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    margin-right: 8px;
+    position: absolute;
+    left: 20px;
+}
+
+.current-time::before {
+    content: '\f017'; /* Font Awesome clock icon */
+}
+
+.current-place::before {
+    content: '\f3c5'; /* Font Awesome map-marker-alt icon */
+}
+
+.destination-place::before {
+    content: '\f5a0'; /* Font Awesome map-signs icon */
+}
+
+/* Style for the travel context textarea */
+.travel-context {
+    width: 100%;
+    max-width: 600px;
+    height: 80px;
+    margin: 20px auto 10px auto;
+    padding: 12px 15px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    resize: vertical;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+    display: block;
+}
+
+.travel-context:focus {
+    outline: none;
+    border-color: #22A7F0;
+    box-shadow: 0 0 5px rgba(34, 167, 240, 0.5);
+}
+
+/* Adjust the position of the Travel button */
+.ajax-form {
+    text-align: center;
+}
+
+.action-button {
+    margin-top: 15px;
 }

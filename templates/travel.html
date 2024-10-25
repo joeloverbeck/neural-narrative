@@ -1,25 +1,39 @@
 <!-- templates/travel.html -->
 {% extends 'base.html' %}
 
+{% block title %}Travel{% endblock %}
+
 {% block styles %}
-{{super()}}
+{{ super() }}
 <link href="{{ url_for('static', filename='travel.css') }}" rel="stylesheet" type="text/css">
 {% endblock %}
 
-{% block title %}Travel to {{ destination_name }}{% endblock %}
-
 {% block content %}
-<h1>Traveling to {{ destination_name }}</h1>
+<div class="travel-container">
+    <h1 class="page-title"><i class="fas fa-route"></i> Travel</h1>
+    <p class="current-time">Current Time: {{ current_time }}</p>
+    <p class="current-place">Origin: {{ origin_area_name }}</p>
+    <p class="destination-place">Destination: {{ destination_area_name }}</p>
 
-<!-- Display the travel narration in a prominent way -->
-<div class="travel-narration">
-    <p>{{ travel_narration }}</p>
+    <!-- Travel Form -->
+    <form action="{{ url_for('travel') }}" method="post" class="ajax-form" data-success-handler="travelSuccess"
+          id="travel-form">
+        <input type="hidden" name="submit_action" value="travel">
+        <!-- Textarea for travel context -->
+        <textarea name="travel_context" placeholder="Enter travel context (optional)" class="travel-context"></textarea>
+        <button type="submit" class="action-button">
+            <i class="fas fa-walking"></i> Travel
+        </button>
+    </form>
+
+    <!-- Container to display travel narration -->
+    <div id="travel-narration-container"></div>
 </div>
+{% endblock %}
 
-<!-- Form to proceed to the destination -->
-<form method="post">
-    <input name="action" type="hidden" value="Enter Area">
-    <input name="destination_identifier" type="hidden" value="{{ destination_identifier }}">
-    <input type="submit" value="Enter {{ destination_name }}">
-</form>
+{% block scripts %}
+{{ super() }}
+<script src="{{ url_for('static', filename='main.js') }}"></script>
+<script src="{{ url_for('static', filename='actions.js') }}"></script>
+<script src="{{ url_for('static', filename='travel.js') }}"></script>
 {% endblock %}

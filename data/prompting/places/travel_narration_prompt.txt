@@ -1,8 +1,36 @@
-You are a Dungeon Master, the director of a roleplaying session, and you are tasked with narrating the travel between an area of origin and the destination area.
-You must narrate this travel from the first-person perspective of the player, filtered through their personality and experiences.
-Here's the description of the area of origin, named {origin_area_template}: {origin_area_description}
-Here's the description of the destination area, named {destination_area_template}: {destination_area_description}
------
+You are to generate a detailed narrative describing the player's journey from the origin area to the destination area within a rich, immersive world. Use the provided information about the player, their followers, the world's conditions, and the specific locations involved. Your narrative should be engaging, realistic, and narrated from the first-person perspective of the player, reflecting their personality, experiences, and emotions.
+Instructions:
+1. Viability and Realism Assessment: Carefully consider the journey based on:
+- Player Information: The player's personality, experiences, skills, resources, and reputation.
+- Followers' Information: The abilities, personalities, and resources of any followers accompanying the player.
+- Location Characteristics: The terrain and environmental factors between the origin and destination areas.
+- Time of Day: How the current time might affect the journey (e.g., visibility, encounters, weather conditions).
+- Potential Challenges: Difficult terrain, weather conditions, obstacles, etc.
+2. Narrative of the Journey:
+- Perspective and Tone: Write in the first person, past tense, capturing the player's inner thoughts, feelings, and reactions.
+- Character Interactions: Include interactions between the player and their followers, highlighting their personalities, relationships, and any peculiarities.
+- Environmental Details: Provide vivid descriptions of the environment, weather, and notable landmarks or events encountered.
+- Challenges and Obstacles: Describe specific challenges faced during the journey and how the player and followers addressed them.
+- Emotional Landscape: Delve into the player's emotional state, including hopes, fears, motivations, and reflections on past experiences.
+- Alignment with Lore: Ensure the journey aligns with the world's lore, the player's personal history, and established facts.
+3. Outcome - Arrival at Destination:
+- Arrival Description: Conclude with a detailed depiction of the destination area as perceived by the player upon arrival.
+- Immediate Impressions: Express the player's thoughts, feelings, and any immediate actions they intend to take.
+- Consequences: Mention any notable consequences, positive or negative, resulting from the journey.
+4. Tone and Style:
+- Engaging Narrative: Maintain an immersive narrative style that reflects the player's unique voice.
+- Consistency: Ensure consistency with the established world setting, the player's character, and their relationships with followers.
+Provided Information:
+- Travel Context: {travel_context}
+- Current Time: {time_of_day}
+- Origin Area: {origin_area_template}
+{origin_area_description}
+- Destination Area: {destination_area_template}
+{destination_area_description}
+- Player and Followers Information:
 {player_and_followers_information}
-You must write the narration from the first-person perspective of the player character.
-Important: do not write any preamble to the tool call you're ordered to produce.
+Example Format:
+"As I departed from the familiar sights of {origin_area_template}, a sense of anticipation stirred within me..."
+Your Task:
+Using the above instructions and information, craft a compelling narrative that captures the essence of the player's journey from the origin area to the destination area. Reflect on the experiences along the way, the player's unique perspective, and the interactions with their followers, ensuring the story is engaging and true to the characters involved.
+Important: you're supposed to write from the first-person perspective of {player_name}, so don't refer to {player_name} as if they were a separate character.
