@@ -125,6 +125,7 @@ class PlaceService:
     def exit_location(playthrough_name: str):
         playthrough_manager = PlaythroughManager(playthrough_name)
         filesystem_manager = FilesystemManager()
+
         if (
             not PlaceManagerFactory(playthrough_name)
             .create_place_manager()
@@ -134,6 +135,7 @@ class PlaceService:
             raise ValueError(
                 "Somehow tried to exit a location when the current place wasn't a location."
             )
+
         map_file = filesystem_manager.load_existing_or_new_json_file(
             filesystem_manager.get_file_path_to_map(playthrough_name)
         )

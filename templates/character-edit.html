@@ -1,0 +1,95 @@
+<!-- templates/character-edit.html -->
+
+{% extends "base.html" %}
+
+{% block title %}Edit Character{% endblock %}
+
+{% block styles %}
+{{ super() }}
+<link href="{{ url_for('static', filename='character-edit.css') }}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block content %}
+<div class="character-edit-container">
+    <h1 class="page-title"><i class="fas fa-edit"></i> Edit Character</h1>
+
+    <!-- Select Character Section -->
+    <div class="collapsible-section">
+        <button class="collapsible active">
+            <i class="fas fa-user"></i> Select a Character
+        </button>
+        <div class="content">
+            <form action="{{ url_for('character-edit') }}" method="get" class="select-character-form">
+                <label for="character_selector">Select a character:</label>
+                <select id="character_selector" name="character_identifier" onchange="this.form.submit()">
+                    <option value="">-- Select a character --</option>
+                    {% for character in all_characters %}
+                    <option value="{{ character.identifier }}" {% if character.selected %}selected{% endif %}>
+                        {{ character.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </form>
+        </div>
+    </div>
+
+    {% if selected_character %}
+    <!-- Edit Character Data Section -->
+    <div class="collapsible-section">
+        <button class="collapsible active">
+            <i class="fas fa-user-edit"></i> Edit {{ selected_character.name }}
+        </button>
+        <div class="content">
+            <form method="post" class="edit-character-form">
+                <input name="character_identifier" type="hidden" value="{{ selected_character.identifier }}">
+
+                <label for="description">Description:</label>
+                <textarea id="description" name="description" rows="5">{{ character_data.description }}</textarea>
+
+                <label for="profile">Profile:</label>
+                <textarea id="profile" name="profile" rows="10">{{ character_data.profile }}</textarea>
+
+                <label for="health">Health:</label>
+                <input type="text" id="health" name="health" value="{{ character_data.health }}">
+
+                <label for="equipment">Equipment:</label>
+                <textarea id="equipment" name="equipment" rows="5">{{ character_data.equipment }}</textarea>
+
+                <button type="submit" class="action-button">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Navigation Buttons -->
+    <div class="buttons">
+        <a href="{{ url_for('characters-hub') }}" class="button">
+            <i class="fas fa-users"></i> Characters Hub
+        </a>
+        <a href="{{ url_for('index') }}" class="button">
+            <i class="fa-solid fa-dungeon"></i> Home
+        </a>
+        <a href="{{ url_for('places') }}" class="button">
+            <i class="fas fa-map"></i> Places
+        </a>
+        <a href="{{ url_for('story-hub') }}" class="button">
+            <i class="fas fa-feather-alt"></i> Story Hub
+        </a>
+        <a href="{{ url_for('location-hub') }}" class="button">
+            <i class="fas fa-map-marker-alt"></i> Location Hub
+        </a>
+        <a href="{{ url_for('participants') }}" class="button">
+            <i class="fas fa-comments"></i> Chat
+        </a>
+        <a href="{{ url_for('actions') }}" class="button">
+            <i class="fas fa-bolt"></i> Actions
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='main.js') }}"></script>
+{% endblock %}

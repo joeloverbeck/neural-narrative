@@ -71,8 +71,6 @@ class VoiceStyleEnum(str, Enum):
     FLIRTATIOUS = "FLIRTATIOUS"
     HUMOROUS_SARCASTIC = "HUMOROUS/SARCASTIC"
     MELODIC = "MELODIC"
-    NARRATIVE = "NARRATIVE"
-    INSTRUCTIONAL = "INSTRUCTIONAL"
 
 
 class VoicePersonalityEnum(str, Enum):

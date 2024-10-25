@@ -1,4 +1,5 @@
 from typing import Optional
+
 from src.base.abstracts.command import Command
 from src.base.constants import TIME_ADVANCED_DUE_TO_EXITING_LOCATION
 from src.base.playthrough_manager import PlaythroughManager
@@ -59,6 +60,7 @@ class VisitPlaceCommand(Command):
 
     def execute(self) -> None:
         self._playthrough_manager.update_current_place(self._place_identifier)
+
         if not self._place_manager_factory.create_place_manager().is_visited(
             self._place_identifier
         ):

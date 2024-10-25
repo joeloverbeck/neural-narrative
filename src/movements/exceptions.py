@@ -1,0 +1,2 @@
+class PlaceCharacterAtPlaceError(Exception):
+    pass

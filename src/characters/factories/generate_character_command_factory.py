@@ -1,6 +1,12 @@
 import logging
 
 from src.characters.commands.generate_character_command import GenerateCharacterCommand
+from src.characters.configs.generate_character_command_config import (
+    GenerateCharacterCommandConfig,
+)
+from src.characters.configs.generate_character_command_factories_config import (
+    GenerateCharacterCommandFactoriesConfig,
+)
 from src.characters.enums import CharacterGenerationType
 from src.characters.factories.automatic_user_content_for_character_generation_factory import (
     AutomaticUserContentForCharacterGenerationFactory,
@@ -21,7 +27,9 @@ from src.images.factories.generate_character_image_command_factory import (
     GenerateCharacterImageCommandFactory,
 )
 from src.maps.places_templates_parameter import PlacesTemplatesParameter
-from src.movements.movement_manager import MovementManager
+from src.movements.factories.place_character_at_place_command_factory import (
+    PlaceCharacterAtPlaceCommandFactory,
+)
 from src.prompting.abstracts.abstract_factories import (
     ProduceToolResponseStrategyFactory,
 )
@@ -42,7 +50,7 @@ class GenerateCharacterCommandFactory:
         speech_patterns_provider_factory: SpeechPatternsProviderFactory,
         store_generate_character_command_factory: StoreGeneratedCharacterCommandFactory,
         generate_character_image_command_factory: GenerateCharacterImageCommandFactory,
-        movement_manager: MovementManager,
+        place_character_at_place_command_factory: PlaceCharacterAtPlaceCommandFactory,
     ):
         self._playthrough_name = playthrough_name
         self._character_generation_instructions_formatter_factory = (
@@ -58,7 +66,9 @@ class GenerateCharacterCommandFactory:
         self._generate_character_image_command_factory = (
             generate_character_image_command_factory
         )
-        self._movement_manager = movement_manager
+        self._place_character_at_place_command_factory = (
+            place_character_at_place_command_factory
+        )
 
     def create_generate_character_command(
         self,
@@ -73,32 +83,40 @@ class GenerateCharacterCommandFactory:
         )
         if character_generation_type == CharacterGenerationType.AUTOMATIC:
             return GenerateCharacterCommand(
-                self._playthrough_name,
-                BaseCharacterDataGenerationToolResponseProviderFactory(
-                    self._playthrough_name,
-                    self._produce_tool_response_strategy_factory,
-                    AutomaticUserContentForCharacterGenerationFactory(),
-                    self._character_generation_instructions_formatter_factory,
-                ).create_response_provider(places_templates_parameter),
-                self._speech_patterns_provider_factory,
-                self._store_generate_character_command_factory,
-                self._generate_character_image_command_factory,
-                place_character_at_current_place,
-                self._movement_manager,
+                GenerateCharacterCommandConfig(
+                    self._playthrough_name, place_character_at_current_place
+                ),
+                GenerateCharacterCommandFactoriesConfig(
+                    BaseCharacterDataGenerationToolResponseProviderFactory(
+                        self._playthrough_name,
+                        self._produce_tool_response_strategy_factory,
+                        AutomaticUserContentForCharacterGenerationFactory(),
+                        self._character_generation_instructions_formatter_factory,
+                    ).create_response_provider(places_templates_parameter),
+                    self._speech_patterns_provider_factory,
+                    self._store_generate_character_command_factory,
+                    self._generate_character_image_command_factory,
+                    self._place_character_at_place_command_factory,
+                ),
             )
         if character_generation_type == CharacterGenerationType.PLAYER_GUIDED:
             return GenerateCharacterCommand(
-                self._playthrough_name,
-                BaseCharacterDataGenerationToolResponseProviderFactory(
-                    self._playthrough_name,
-                    self._produce_tool_response_strategy_factory,
-                    PlayerGuidedUserContentForCharacterGenerationFactory(user_content),
-                    self._character_generation_instructions_formatter_factory,
-                ).create_response_provider(places_templates_parameter),
-                self._speech_patterns_provider_factory,
-                self._store_generate_character_command_factory,
-                self._generate_character_image_command_factory,
-                place_character_at_current_place,
-                self._movement_manager,
+                GenerateCharacterCommandConfig(
+                    self._playthrough_name, place_character_at_current_place
+                ),
+                GenerateCharacterCommandFactoriesConfig(
+                    BaseCharacterDataGenerationToolResponseProviderFactory(
+                        self._playthrough_name,
+                        self._produce_tool_response_strategy_factory,
+                        PlayerGuidedUserContentForCharacterGenerationFactory(
+                            user_content
+                        ),
+                        self._character_generation_instructions_formatter_factory,
+                    ).create_response_provider(places_templates_parameter),
+                    self._speech_patterns_provider_factory,
+                    self._store_generate_character_command_factory,
+                    self._generate_character_image_command_factory,
+                    self._place_character_at_place_command_factory,
+                ),
             )
         raise ValueError(f"Not implemented for case '{character_generation_type}'.")

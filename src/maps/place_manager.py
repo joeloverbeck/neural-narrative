@@ -1,3 +1,4 @@
+import logging
 from typing import Dict, List, Optional
 
 from src.base.enums import TemplateType
@@ -5,12 +6,14 @@ from src.base.playthrough_manager import PlaythroughManager
 from src.maps.map_repository import MapRepository
 from src.maps.templates_repository import TemplatesRepository
 
+logger = logging.getLogger(__name__)
+
 
 class PlaceManager:
 
     def __init__(
         self,
-            playthrough_name: str,
+        playthrough_name: str,
         map_repository: MapRepository,
         template_repository: TemplatesRepository,
         playthrough_manager: Optional[PlaythroughManager] = None,
@@ -50,7 +53,7 @@ class PlaceManager:
             )
 
     def get_place_categories(
-            self, place_template: str, place_type: TemplateType
+        self, place_template: str, place_type: TemplateType
     ) -> List[str]:
         templates = self._template_repository.load_template(place_type)
         place_data = templates.get(place_template)
@@ -81,15 +84,20 @@ class PlaceManager:
         self._map_repository.save_map_data(map_file)
 
     def remove_character_from_place(
-            self, character_identifier_to_remove: str, place_identifier: str
+        self, character_identifier_to_remove: str, place_identifier: str
     ):
         place = self.get_place(place_identifier)
+
         place["characters"] = [
             character_id
             for character_id in place.get("characters", [])
             if character_id != character_identifier_to_remove
         ]
+
         map_file = self._map_repository.load_map_data()
+
+        map_file[place_identifier] = place
+
         self._map_repository.save_map_data(map_file)
 
     def get_current_place_type(self) -> TemplateType:
@@ -104,7 +112,7 @@ class PlaceManager:
             )
         map_file = self._map_repository.load_map_data()
         if (
-                place_identifier
+            place_identifier
             in map_file[self._playthrough_manager.get_current_place_identifier()][
                 "locations"
             ]

@@ -118,10 +118,12 @@ def test_execute_invalid_speech_data():
 
     # Assert
     speech_data_product.get_error.assert_called()
-    assert speech_data_product.get()["narration_text"] == "Looks confused."
+    assert (
+        speech_data_product.get()["narration_text"] == "Character Two looks confused."
+    )
     assert speech_data_product.get()["speech"] == "I don't know what to say."
     transcription.add_speech_turn.assert_called_with(
-        "Character Two", "*Looks confused.* I don't know what to say."
+        "Character Two", "*Character Two looks confused.* I don't know what to say."
     )
     observer.update.assert_called_with({"message": "some data"})
 
@@ -176,13 +178,10 @@ def test_execute_missing_narration_text():
     command.execute()
 
     # Assert
-    assert (
-        speech_data_product.get()["narration_text"]
-        == "Character Three takes a moment to speak."
-    )
+    assert speech_data_product.get()["narration_text"] is None
     transcription.add_speech_turn.assert_called_with(
         "Character Three",
-        "*Character Three takes a moment to speak.* This is my speech.",
+        "This is my speech.",
     )
     observer.update.assert_called_with({"message": "some data"})
 
@@ -338,56 +337,6 @@ def test_logging_on_invalid_speech_data(caplog):
 
     # Assert
     assert "Failed to produce speech data: Error generating speech data" in caplog.text
-
-
-# Test case 7: Logging on missing narration text
-def test_logging_on_missing_narration_text(caplog):
-    # Arrange
-    transcription = Mock()
-    transcription.add_speech_turn = Mock()
-
-    speech_turn_choice_response = Mock()
-    speech_turn_choice_response.get.return_value = {
-        "identifier": "character_7",
-        "name": "Character Seven",
-    }
-
-    speech_data_product = Mock()
-    speech_data_product.is_valid.return_value = True
-    speech_data_product.get.return_value = {
-        "narration_text": None,
-        "speech": "I have nothing to say.",
-        "name": "Character Seven",
-    }
-
-    llm_speech_data_provider_factory = Mock()
-    llm_speech_data_provider = Mock()
-    llm_speech_data_provider.generate_product.return_value = speech_data_product
-    llm_speech_data_provider_factory.create_llm_speech_data_provider.return_value = (
-        llm_speech_data_provider
-    )
-
-    message_data_producer_for_speech_turn_strategy = Mock()
-    message_data_producer_for_speech_turn_strategy.produce_message_data.return_value = {
-        "message": "some data"
-    }
-
-    command = CreateSpeechTurnDataCommand(
-        transcription,
-        speech_turn_choice_response,
-        llm_speech_data_provider_factory,
-        cast(
-            MessageDataProducerForSpeechTurnStrategy,
-            message_data_producer_for_speech_turn_strategy,
-        ),
-    )
-
-    # Act
-    with caplog.at_level(logging.WARNING):
-        command.execute()
-
-    # Assert
-    assert "Speech turn didn't produce narration text. Content:" in caplog.text
 
 
 # Test case 9: Exception handling during execution

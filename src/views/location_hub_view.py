@@ -1,4 +1,6 @@
-from flask import session, redirect, url_for, render_template, request, jsonify
+import logging
+
+from flask import session, redirect, url_for, render_template, request, jsonify, flash
 from flask.views import MethodView
 
 from src.base.algorithms.produce_and_update_next_identifier_algorithm import (
@@ -10,7 +12,11 @@ from src.base.factories.store_last_identifier_command_factory import (
     StoreLastIdentifierCommandFactory,
 )
 from src.base.playthrough_manager import PlaythroughManager
+from src.base.tools import capture_traceback
 from src.characters.characters_manager import CharactersManager
+from src.maps.composers.place_selection_manager_composer import (
+    PlaceSelectionManagerComposer,
+)
 from src.maps.composers.random_template_type_map_entry_provider_factory_composer import (
     RandomTemplateTypeMapEntryProviderFactoryComposer,
 )
@@ -46,7 +52,6 @@ from src.maps.factories.place_manager_factory import PlaceManagerFactory
 from src.maps.map_manager import MapManager
 from src.maps.map_repository import MapRepository
 from src.maps.navigation_manager import NavigationManager
-from src.maps.place_selection_manager import PlaceSelectionManager
 from src.maps.providers.concrete_random_place_type_map_entry_provider import (
     ConcreteRandomTemplateTypeMapEntryProvider,
 )
@@ -56,6 +61,8 @@ from src.services.character_service import CharacterService
 from src.services.place_service import PlaceService
 from src.services.web_service import WebService
 from src.time.time_manager import TimeManager
+
+logger = logging.getLogger(__name__)
 
 
 class LocationHubView(MethodView):
@@ -80,7 +87,7 @@ class LocationHubView(MethodView):
         web_service.format_image_urls_of_characters(characters_at_current_place)
         followers = characters_manager.get_followers()
         web_service.format_image_urls_of_characters(followers)
-        exploration_result_message = session.get("no_available_templates", None)
+
         locations_present = None
         cardinal_connections = None
         can_search_for_location = False
@@ -95,10 +102,11 @@ class LocationHubView(MethodView):
             ).get_cardinal_connections(
                 playthrough_manager.get_current_place_identifier()
             )
-            place_manager_factory = PlaceManagerFactory(playthrough_name)
-            place_selection_manager = PlaceSelectionManager(
-                place_manager_factory, template_repository
-            )
+
+            place_selection_manager = PlaceSelectionManagerComposer(
+                playthrough_name
+            ).compose_manager()
+
             available_location_types = (
                 place_selection_manager.get_available_location_types(current_place)
             )
@@ -143,7 +151,6 @@ class LocationHubView(MethodView):
             cardinal_connections=cardinal_connections,
             current_hour=current_hour,
             current_time_of_day=current_time_of_day,
-            exploration_result_message=exploration_result_message,
             location_types=available_location_types,
             current_weather=current_weather,
             current_weather_description=current_weather_description,
@@ -277,9 +284,12 @@ class LocationHubView(MethodView):
             ),
         ).create_cardinal_connection()
         if not result.was_successful():
-            session["no_available_templates"] = result.get_error()
+            flash(
+                f"Wasn't able to explore cardinal direction: {result.get_error()}",
+                "error",
+            )
             return redirect(url_for("location-hub"))
-        session.pop("no_available_templates", None)
+
         return redirect(url_for("location-hub"))
 
     @staticmethod
@@ -297,10 +307,15 @@ class LocationHubView(MethodView):
             MapRepository(playthrough_name),
             TemplatesRepository(),
         )
+
+        place_selection_manager = PlaceSelectionManagerComposer(
+            playthrough_name
+        ).compose_manager()
+
         father_template = map_manager.get_current_place_template()
         random_place_template_based_on_categories_factory = (
             ConcreteRandomPlaceTemplateBasedOnCategoriesFactory(
-                playthrough_name, location_type
+                place_selection_manager, location_type
             )
         )
 
@@ -323,33 +338,46 @@ class LocationHubView(MethodView):
             )
         )
         place_manager_factory = PlaceManagerFactory(playthrough_name)
-        result = ConcreteRandomTemplateTypeMapEntryProvider(
-            RandomTemplateTypeMapEntryProviderConfig(
-                father_identifier,
-                father_template,
-                TemplateType.LOCATION,
-                TemplateType.AREA,
-            ),
-            RandomTemplateTypeMapEntryProviderFactoriesConfig(
-                random_place_template_based_on_categories_factory,
-                create_map_entry_for_playthrough_command_provider_factory,
-                place_manager_factory,
-            ),
-        ).create_random_place_type_map_entry()
-        if (
-            result.get_result_type()
-            == RandomTemplateTypeMapEntryCreationResultType.FAILURE
-            or result.get_result_type()
-            == RandomTemplateTypeMapEntryCreationResultType.NO_AVAILABLE_TEMPLATES
-        ):
-            session["no_available_templates"] = result.get_error()
-        else:
-            session.pop("no_available_templates", None)
-            new_id, _ = (
-                map_manager.get_identifier_and_place_template_of_latest_map_entry()
+
+        random_template_type_map_entry_provider = (
+            ConcreteRandomTemplateTypeMapEntryProvider(
+                RandomTemplateTypeMapEntryProviderConfig(
+                    father_identifier,
+                    father_template,
+                    TemplateType.LOCATION,
+                    TemplateType.AREA,
+                ),
+                RandomTemplateTypeMapEntryProviderFactoriesConfig(
+                    random_place_template_based_on_categories_factory,
+                    create_map_entry_for_playthrough_command_provider_factory,
+                    place_manager_factory,
+                ),
             )
-            place_manager.add_location(new_id)
-            TimeManager(playthrough_name).advance_time(
-                TIME_ADVANCED_DUE_TO_SEARCHING_FOR_LOCATION
+        )
+
+        try:
+            result = (
+                random_template_type_map_entry_provider.create_random_place_type_map_entry()
             )
+
+            if (
+                result.get_result_type()
+                == RandomTemplateTypeMapEntryCreationResultType.FAILURE
+                or result.get_result_type()
+                == RandomTemplateTypeMapEntryCreationResultType.NO_AVAILABLE_TEMPLATES
+            ):
+                flash(f"Couldn't attach location. Error: {result.get_error()}", "error")
+            else:
+                new_id, _ = (
+                    map_manager.get_identifier_and_place_template_of_latest_map_entry()
+                )
+                place_manager.add_location(new_id)
+
+                TimeManager(playthrough_name).advance_time(
+                    TIME_ADVANCED_DUE_TO_SEARCHING_FOR_LOCATION
+                )
+        except Exception as e:
+            capture_traceback()
+            flash(f"Couldn't attach location. Error: {str(e)}", "error")
+
         return redirect(url_for("location-hub"))

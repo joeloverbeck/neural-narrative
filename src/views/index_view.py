@@ -26,7 +26,7 @@ class IndexView(MethodView):
     def get(self):
         filesystem_manager = FilesystemManager()
         playthrough_names = filesystem_manager.get_playthrough_names()
-        session.pop("no_available_templates", None)
+
         story_universes = filesystem_manager.load_existing_or_new_json_file(
             STORY_UNIVERSES_TEMPLATE_FILE
         )

@@ -18,6 +18,7 @@ class OpenAiLlmClient(LlmClient):
     def __init__(self, client: OpenAI):
         if not client:
             raise ValueError("client must not be empty.")
+
         # Unless you supress logging messages lower than WARNING, the log file will get swamped with messages.
         logging.getLogger("httpx").setLevel(logging.WARNING)
         self._client = client

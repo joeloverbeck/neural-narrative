@@ -29,8 +29,9 @@ from src.images.factories.openai_generated_image_factory import (
 from src.maps.composers.places_descriptions_provider_composer import (
     PlacesDescriptionsProviderComposer,
 )
-from src.maps.factories.place_manager_factory import PlaceManagerFactory
-from src.movements.movement_manager import MovementManager
+from src.movements.factories.place_character_at_place_command_factory import (
+    PlaceCharacterAtPlaceCommandFactory,
+)
 from src.prompting.composers.produce_tool_response_strategy_factory_composer import (
     ProduceToolResponseStrategyFactoryComposer,
 )
@@ -108,10 +109,7 @@ class GenerateCharacterCommandFactoryComposer:
             generated_image_factory,
             url_content_factory,
         )
-        place_manager_factory = PlaceManagerFactory(self._playthrough_name)
-        movement_manager = MovementManager(
-            self._playthrough_name, place_manager_factory
-        )
+
         places_description_provider = PlacesDescriptionsProviderComposer(
             self._playthrough_name
         ).compose_provider()
@@ -128,6 +126,10 @@ class GenerateCharacterCommandFactoryComposer:
             ).compose_factory()
         )
 
+        place_character_at_place_command_factory = PlaceCharacterAtPlaceCommandFactory(
+            self._playthrough_name
+        )
+
         return GenerateCharacterCommandFactory(
             self._playthrough_name,
             character_generation_instructions_formatter_factory,
@@ -135,5 +137,5 @@ class GenerateCharacterCommandFactoryComposer:
             speech_patterns_provider_factory,
             store_generate_character_command_factory,
             generate_character_image_command_factory,
-            movement_manager,
+            place_character_at_place_command_factory,
         )

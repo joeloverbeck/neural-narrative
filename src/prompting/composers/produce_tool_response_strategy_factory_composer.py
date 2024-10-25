@@ -10,19 +10,20 @@ from src.prompting.factories.instructor_llm_client_factory import (
 from src.prompting.factories.llm_content_provider_factory import (
     LlmContentProviderFactory,
 )
+from src.prompting.llm import Llm
 
 
 class ProduceToolResponseStrategyFactoryComposer:
     def __init__(
         self,
-        model: str,
+        llm: Llm,
     ):
-        self._model = model
+        self._llm = llm
 
     def compose_factory(self) -> ProduceToolResponseStrategyFactory:
         llm_content_provider_factory = LlmContentProviderFactory(
             InstructorLlmClientFactory(),
-            self._model,
+            self._llm,
         )
 
         return BaseModelProduceToolResponseStrategyFactory(llm_content_provider_factory)

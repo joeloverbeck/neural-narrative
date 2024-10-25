@@ -5,6 +5,9 @@ from src.base.enums import IdentifierType
 from src.base.factories.store_last_identifier_command_factory import (
     StoreLastIdentifierCommandFactory,
 )
+from src.maps.composers.place_selection_manager_composer import (
+    PlaceSelectionManagerComposer,
+)
 from src.maps.factories.concrete_random_place_template_based_on_categories_factory import (
     ConcreteRandomPlaceTemplateBasedOnCategoriesFactory,
 )
@@ -15,8 +18,6 @@ from src.maps.factories.place_manager_factory import PlaceManagerFactory
 from src.maps.factories.random_template_type_map_entry_provider_factory import (
     RandomTemplateTypeMapEntryProviderFactory,
 )
-from src.maps.place_selection_manager import PlaceSelectionManager
-from src.maps.templates_repository import TemplatesRepository
 
 
 class RandomTemplateTypeMapEntryProviderFactoryComposer:
@@ -25,11 +26,9 @@ class RandomTemplateTypeMapEntryProviderFactoryComposer:
         self._playthrough_name = playthrough_name
 
     def compose_factory(self) -> RandomTemplateTypeMapEntryProviderFactory:
-        place_manager_factory = PlaceManagerFactory(self._playthrough_name)
-        template_repository = TemplatesRepository()
-        place_selection_manager = PlaceSelectionManager(
-            place_manager_factory, template_repository
-        )
+        place_selection_manager = PlaceSelectionManagerComposer(
+            self._playthrough_name
+        ).compose_manager()
         random_place_template_based_on_categories_factory = (
             ConcreteRandomPlaceTemplateBasedOnCategoriesFactory(place_selection_manager)
         )
@@ -49,6 +48,9 @@ class RandomTemplateTypeMapEntryProviderFactoryComposer:
                 self._playthrough_name, produce_and_update_next_identifier
             )
         )
+
+        place_manager_factory = PlaceManagerFactory(self._playthrough_name)
+
         return RandomTemplateTypeMapEntryProviderFactory(
             self._playthrough_name,
             random_place_template_based_on_categories_factory,

@@ -194,7 +194,8 @@ def test_remove_character_from_place_success(place_manager, mock_map_repository)
     )
     expected_characters = ["char2", "char3"]
     assert place["characters"] == expected_characters
-    mock_map_repository.save_map_data.assert_called_once_with(map_data)
+    updated_map_data = {"place1": {"id": "place1", "characters": ["char2", "char3"]}}
+    mock_map_repository.save_map_data.assert_called_once_with(updated_map_data)
 
 
 def test_get_current_place_type_success(

@@ -37,10 +37,10 @@
     <!-- Weather Section -->
     {% if current_place_type.value == "area" %}
     <div class="collapsible-section">
-        <button class="collapsible active">
+        <button class="collapsible">
             <i class="fas fa-cloud-sun"></i> Weather
         </button>
-        <div class="content" style="display: block;">
+        <div class="content">
             <!-- Weather Display -->
             <div class="weather-card">
                 <div class="weather-icon">
@@ -76,13 +76,6 @@
             <i class="fas fa-map-signs"></i> Place Actions
         </button>
         <div class="content">
-            <!-- Exploration message -->
-            {% if exploration_result_message %}
-            <div class="message">
-                <p>{{ exploration_result_message }}</p>
-            </div>
-            {% endif %}
-
             <!-- Begin grouping of buttons -->
 
             <!-- Place Description Actions -->

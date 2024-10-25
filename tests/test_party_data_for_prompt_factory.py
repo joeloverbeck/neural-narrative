@@ -46,6 +46,7 @@ class TestPartyDataForPromptFactory:
 
 
 from unittest.mock import MagicMock
+
 from src.base.playthrough_manager import PlaythroughManager
 from src.characters.character import Character
 from src.characters.character_memories import CharacterMemories
@@ -186,7 +187,7 @@ def test_get_party_data_for_prompt():
     expected_data_for_prompt = {
         "key1": "value1",
         "followers_information": "followers_info",
-        "combined_memories": combined_memories,
+        "combined_memories": "memory1\nmemory2",
     }
     assert result == expected_data_for_prompt
     player_data_for_prompt_factory.create_player_data_for_prompt.assert_called_once()

@@ -204,11 +204,12 @@ function initCollapsibles(){
     const collapsibles = document.querySelectorAll('.collapsible');
     collapsibles.forEach(function(collapsible) {
         collapsible.addEventListener('click', function() {
-            this.classList.toggle('active');
             const content = this.nextElementSibling;
             if (content.style.display === 'block') {
+                this.classList.remove('active');
                 content.style.display = 'none';
             } else {
+                this.classList.add('active');
                 content.style.display = 'block';
             }
         });

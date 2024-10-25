@@ -24,7 +24,7 @@ sample_character_data = {
         "voice_volume": "Medium",
         "voice_tone": "Warm",
         "voice_texture": "Smooth",
-        "voice_style": "Narrative",
+        "voice_style": "Formal",
         "voice_personality": "Calm",
         "voice_special_effects": "None",
         "voice_model": "Model A",
@@ -224,7 +224,7 @@ def test_properties_return_correct_values(mock_filesystem_manager):
     assert character.voice_volume == "Medium"
     assert character.voice_tone == "Warm"
     assert character.voice_texture == "Smooth"
-    assert character.voice_style == "Narrative"
+    assert character.voice_style == "Formal"
     assert character.voice_personality == "Calm"
     assert character.voice_special_effects == "None"
     assert character.voice_model == "Model A"

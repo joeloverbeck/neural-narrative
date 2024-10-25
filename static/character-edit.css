@@ -1,0 +1,29 @@
+/* static/character-edit.css */
+
+/* Container styles */
+.character-edit-container {
+    margin-top: 20px;
+}
+
+/* Form styles */
+.edit-character-form label {
+    font-size: 18px;
+    color: #555;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.edit-character-form textarea,
+.edit-character-form input[type="text"] {
+    width: 100%;
+    max-width: 600px;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.edit-character-form .action-button {
+    margin-top: 20px;
+}

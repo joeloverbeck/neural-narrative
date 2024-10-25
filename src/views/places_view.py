@@ -1,6 +1,6 @@
 import logging
 
-from flask import render_template, request, session, redirect, url_for, flash, jsonify
+from flask import render_template, request, redirect, url_for, flash, jsonify
 from flask.views import MethodView
 
 from src.base.constants import (
@@ -20,7 +20,7 @@ class PlacesView(MethodView):
 
     def get(self):
         filesystem_manager = FilesystemManager()
-        session.pop("no_available_templates", None)
+
         story_universes = filesystem_manager.load_existing_or_new_json_file(
             STORY_UNIVERSES_TEMPLATE_FILE
         )

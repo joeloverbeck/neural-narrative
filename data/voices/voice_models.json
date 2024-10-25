@@ -151,7 +151,7 @@
     "NEUTRAL",
     "NORMAL VOLUME",
     "GRAVELLY/RASPY",
-    "INSTRUCTIONAL",
+    "FORMAL",
     "CHARMING",
     "NO SPECIAL EFFECTS"
   ],
@@ -175,7 +175,7 @@
     "NEUTRAL",
     "NORMAL VOLUME",
     "NASAL",
-    "INSTRUCTIONAL",
+    "FORMAL",
     "SKEPTICAL",
     "NO SPECIAL EFFECTS"
   ],
@@ -223,7 +223,7 @@
     "NEUTRAL",
     "SOFT-SPOKEN/QUIET",
     "WHISPERY/AIRY",
-    "NARRATIVE",
+    "FORMAL",
     "INNOCENT/NAIVE",
     "NO SPECIAL EFFECTS"
   ],
@@ -247,7 +247,7 @@
     "NORMAL VOLUME",
     "NEUTRAL",
     "SMOOTH",
-    "INSTRUCTIONAL",
+    "FORMAL",
     "WISE/PHILOSOPHICAL",
     "NO SPECIAL EFFECTS"
   ],
@@ -332,7 +332,7 @@
     "SLOW",
     "NORMAL VOLUME",
     "GRAVELLY/RASPY",
-    "INSTRUCTIONAL",
+    "FORMAL",
     "NO SPECIAL EFFECTS"
   ],
   "mq203memorya_kelloggchildvoice": [
@@ -343,7 +343,7 @@
     "NORMAL VOLUME",
     "NEUTRAL",
     "SMOOTH",
-    "INSTRUCTIONAL",
+    "FORMAL",
     "MYSTERIOUS",
     "GHOSTLY/ECHOED"
   ],
@@ -379,7 +379,7 @@
     "LOUD",
     "SMOOTH",
     "WARM",
-    "INSTRUCTIONAL",
+    "FORMAL",
     "OPTIMISTIC",
     "NO SPECIAL EFFECTS"
   ],
@@ -391,7 +391,7 @@
     "NORMAL VOLUME",
     "SMOOTH",
     "AUTHORITATIVE",
-    "INSTRUCTIONAL",
+    "FORMAL",
     "HEROIC/BRAVE",
     "NO SPECIAL EFFECTS"
   ],
@@ -451,7 +451,7 @@
     "LOUD",
     "METALLIC/MECHANICAL",
     "NEUTRAL",
-    "NARRATIVE",
+    "FORMAL",
     "PARANOID",
     "ROBOTIC/SYNTHESIZED"
   ],
@@ -499,7 +499,7 @@
     "SOFT-SPOKEN/QUIET",
     "SMOOTH",
     "WARM",
-    "NARRATIVE",
+    "FORMAL",
     "MYSTERIOUS",
     "NO SPECIAL EFFECTS"
   ],
@@ -607,7 +607,7 @@
     "NORMAL VOLUME",
     "MUFFLED",
     "NEUTRAL",
-    "NARRATIVE",
+    "FORMAL",
     "MYSTERIOUS",
     "RETRO"
   ],
@@ -619,7 +619,7 @@
     "NORMAL VOLUME",
     "SMOOTH",
     "NEUTRAL",
-    "NARRATIVE",
+    "FORMAL",
     "STOIC",
     "NO SPECIAL EFFECTS"
   ],
@@ -631,7 +631,7 @@
     "SOFT-SPOKEN/QUIET",
     "GRAVELLY/RASPY",
     "NEUTRAL",
-    "INSTRUCTIONAL",
+    "FORMAL",
     "STOIC",
     "NO SPECIAL EFFECTS"
   ],
@@ -763,7 +763,7 @@
     "NORMAL VOLUME",
     "NASAL",
     "NEUTRAL",
-    "NARRATIVE",
+    "FORMAL",
     "NOBLE",
     "NO SPECIAL EFFECTS"
   ],
@@ -957,6 +957,54 @@
     "WARM",
     "INTENSE/DRAMATIC",
     "PASSIONATE",
+    "NO SPECIAL EFFECTS"
+  ],
+  "npcfmadisonli": [
+    "FEMALE",
+    "MIDDLE-AGED",
+    "CALM",
+    "SLOW",
+    "SOFT-SPOKEN/QUIET",
+    "SMOOTH",
+    "NEUTRAL",
+    "FORMAL",
+    "NOBLE",
+    "NO SPECIAL EFFECTS"
+  ],
+  "mq101neighborfemale02voice": [
+    "FEMALE",
+    "YOUNG ADULT/ADULT",
+    "EXCITED",
+    "MODERATE",
+    "LOUD",
+    "MUFFLED",
+    "WARM",
+    "INTENSE/DRAMATIC",
+    "PASSIONATE",
+    "NO SPECIAL EFFECTS"
+  ],
+  "fo4_maleeventoned": [
+    "MALE",
+    "MIDDLE-AGED",
+    "PLAYFUL",
+    "MODERATE",
+    "NORMAL VOLUME",
+    "NASAL",
+    "WARM",
+    "INTENSE/DRAMATIC",
+    "CHARMING",
+    "NO SPECIAL EFFECTS"
+  ],
+  "malecoward": [
+    "MALE",
+    "MIDDLE-AGED",
+    "CONFIDENT/DETERMINED",
+    "MODERATE",
+    "NORMAL VOLUME",
+    "GRAVELLY/RASPY",
+    "NEUTRAL",
+    "FORMAL",
+    "NOBLE",
     "NO SPECIAL EFFECTS"
   ]
 }

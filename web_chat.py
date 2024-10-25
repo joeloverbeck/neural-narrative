@@ -10,6 +10,7 @@ from src.base.constants import (
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.views.action_view import action_view
 from src.views.actions_view import ActionsView
+from src.views.character_edit_view import CharacterEditView
 from src.views.character_generation_view import CharacterGenerationView
 from src.views.character_memories_view import CharacterMemoriesView
 from src.views.character_secrets_view import CharacterSecretsView
@@ -41,6 +42,9 @@ app.add_url_rule("/chat", view_func=ChatView.as_view("chat"))
 app.add_url_rule(
     "/character-generation",
     view_func=CharacterGenerationView.as_view("character-generation"),
+)
+app.add_url_rule(
+    "/character-edit", view_func=CharacterEditView.as_view("character-edit")
 )
 app.add_url_rule(
     "/character-memories",

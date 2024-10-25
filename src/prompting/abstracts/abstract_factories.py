@@ -14,6 +14,7 @@ from src.prompting.abstracts.factory_products import (
 )
 from src.prompting.abstracts.llm_client import LlmClient
 from src.prompting.abstracts.strategies import ProduceToolResponseStrategy
+from src.prompting.llm import Llm
 
 
 class ToolResponseParsingProvider(ABC):
@@ -46,7 +47,7 @@ class LlmContentProvider(ABC):
 class LlmClientFactory(ABC):
 
     @abstractmethod
-    def create_llm_client(self, response_model: Type[BaseModel]) -> LlmClient:
+    def create_llm_client(self, llm: Llm, response_model: Type[BaseModel]) -> LlmClient:
         pass
 
 

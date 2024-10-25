@@ -2,8 +2,13 @@ import logging
 from typing import Type
 
 from instructor import Instructor
+from openai.types.chat import (
+    ChatCompletionUserMessageParam,
+    ChatCompletionSystemMessageParam,
+)
 from pydantic import BaseModel
 
+from src.base.constants import MAX_RETRIES
 from src.dialogues.messages_to_llm import MessagesToLlm
 from src.prompting.abstracts.ai_completion_product import AiCompletionProduct
 from src.prompting.abstracts.llm_client import LlmClient
@@ -28,10 +33,21 @@ class InstructorLlmClient(LlmClient):
     def generate_completion(
         self, model: str, messages_to_llm: MessagesToLlm, temperature=1.0, top_p=1.0
     ) -> AiCompletionProduct:
+        # Convert messages_to_llm.get() to the expected message types
+        messages = [
+            (
+                ChatCompletionUserMessageParam(**message)
+                if message["role"] == "user"
+                else ChatCompletionSystemMessageParam(**message)
+            )
+            for message in messages_to_llm.get()
+        ]
+
         model_result = self._client.chat.completions.create(
-            response_model=self._response_model,
             model=model,
-            messages=messages_to_llm.get(),
+            max_retries=MAX_RETRIES,
+            messages=messages,
+            response_model=self._response_model,
         )
 
         return InstructorAiCompletionProduct(model_result)
