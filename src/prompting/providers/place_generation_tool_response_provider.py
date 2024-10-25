@@ -119,10 +119,12 @@ class PlaceGenerationToolResponseProvider(
         return user_content
 
     def create_product_from_base_model(self, response_model: BaseModel):
-        logger.warning(response_model)
+
+        description = str(response_model.description)
+
         arguments = {
             "name": response_model.name,
-            "description": response_model.description,
+            "description": description.replace("\n\n", "\n"),
         }
 
         if self._template_type == TemplateType.LOCATION:

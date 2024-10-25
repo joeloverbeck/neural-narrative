@@ -72,15 +72,18 @@ class GeneratePlaceCommand(Command):
         Execute the command to generate and store the new place.
         """
         father_template_file = TEMPLATE_FILES.get(self._father_place_template_type)
+
         if not father_template_file:
             raise ValueError(
                 f"Unrecognized father_place_template_type '{self._father_place_template_type}'."
             )
+
         father_place_templates = (
             self._filesystem_manager.load_existing_or_new_json_file(
                 father_template_file
             )
         )
+
         if self._father_place_name not in father_place_templates:
             raise ValueError(
                 f"There isn't a '{self._father_place_template_type}' template named '{self._father_place_name}'."
@@ -111,12 +114,15 @@ class GeneratePlaceCommand(Command):
             raise ValueError(
                 f"Unable to produce a tool response for '{self._place_template_type.value}' generation: {llm_tool_response_product.get_error()}"
             )
+
         father_place_data = father_place_templates[self._father_place_name]
         categories = father_place_data.get("categories", [])
+
         if not categories:
             raise ValueError(
                 f"There were no categories for father place '{self._father_place_name}'."
             )
+
         response_dict = llm_tool_response_product.get()
         type_data = response_dict["type"] if "type" in response_dict else None
         place_data = PlaceData(
