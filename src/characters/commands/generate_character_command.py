@@ -29,7 +29,9 @@ class GenerateCharacterCommand(Command):
         self._config = config
         self._factories_config = factories_config
 
-        self._playthrough_manager = playthrough_manager
+        self._playthrough_manager = playthrough_manager or PlaythroughManager(
+            self._config.playthrough_name
+        )
         self._characters_manager = characters_manager or CharactersManager(
             self._config.playthrough_name
         )

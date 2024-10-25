@@ -31,9 +31,7 @@ class TestConcreteRandomPlaceTemplateBasedOnCategoriesFactory:
             place_selection_manager=mock_place_selection_manager,
             location_type=location_type,
         )
-        result = factory.create_random_place_template_based_on_categories(
-            place_templates, categories
-        )
+        result = factory.create_place(place_templates, categories)
         assert result.is_valid() == True
         assert result.get() == "Place1"
         assert result.get_error() is None
@@ -62,9 +60,7 @@ class TestConcreteRandomPlaceTemplateBasedOnCategoriesFactory:
             place_selection_manager=mock_place_selection_manager,
             location_type=location_type,
         )
-        result = factory.create_random_place_template_based_on_categories(
-            place_templates, categories
-        )
+        result = factory.create_place(place_templates, categories)
         assert result.is_valid() == False
         assert result.get() is None
         assert (
@@ -92,9 +88,7 @@ class TestConcreteRandomPlaceTemplateBasedOnCategoriesFactory:
             place_selection_manager=mock_place_selection_manager,
             location_type=location_type,
         )
-        result = factory.create_random_place_template_based_on_categories(
-            place_templates, categories
-        )
+        result = factory.create_place(place_templates, categories)
         assert result.is_valid() == False
         assert result.get() is None
         assert (
@@ -121,9 +115,7 @@ class TestConcreteRandomPlaceTemplateBasedOnCategoriesFactory:
             location_type=location_type,
         )
         with pytest.raises(Exception) as exc_info:
-            factory.create_random_place_template_based_on_categories(
-                place_templates, categories
-            )
+            factory.create_place(place_templates, categories)
         assert "Attempted to create a random place" in str(exc_info)
 
     def test_create_random_place_template_with_none_location_type(self):
@@ -147,9 +139,7 @@ class TestConcreteRandomPlaceTemplateBasedOnCategoriesFactory:
             place_selection_manager=mock_place_selection_manager,
             location_type=location_type,
         )
-        result = factory.create_random_place_template_based_on_categories(
-            place_templates, categories
-        )
+        result = factory.create_place(place_templates, categories)
         assert result.is_valid() == True
         assert result.get() == "Place3"
         assert result.get_error() is None
@@ -171,9 +161,7 @@ class TestConcreteRandomPlaceTemplateBasedOnCategoriesFactory:
             place_selection_manager=mock_place_selection_manager,
             location_type=location_type,
         )
-        result = factory.create_random_place_template_based_on_categories(
-            place_templates, categories
-        )
+        result = factory.create_place(place_templates, categories)
         assert result.is_valid() == False
         assert result.get() is None
         assert (
@@ -203,9 +191,7 @@ class TestConcreteRandomPlaceTemplateBasedOnCategoriesFactory:
             location_type=location_type,
         )
         with pytest.raises(Exception) as exc_info:
-            factory.create_random_place_template_based_on_categories(
-                place_templates, categories
-            )
+            factory.create_place(place_templates, categories)
         assert "Error during filtering" in str(exc_info)
 
     def test_create_random_place_template_exception_in_select_random_place(self):
@@ -229,7 +215,5 @@ class TestConcreteRandomPlaceTemplateBasedOnCategoriesFactory:
             location_type=location_type,
         )
         with pytest.raises(Exception) as exc_info:
-            factory.create_random_place_template_based_on_categories(
-                place_templates, categories
-            )
+            factory.create_place(place_templates, categories)
         assert "Error during random selection" in str(exc_info)

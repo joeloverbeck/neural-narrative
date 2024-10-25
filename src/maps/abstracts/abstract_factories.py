@@ -9,7 +9,7 @@ from src.maps.abstracts.factory_products import (
 
 class RandomPlaceTemplateBasedOnCategoriesFactory(Protocol):
 
-    def create_random_place_template_based_on_categories(
+    def create_place(
         self, place_templates: dict, categories: List[str]
     ) -> PlaceTemplateProduct:
         pass
@@ -17,7 +17,7 @@ class RandomPlaceTemplateBasedOnCategoriesFactory(Protocol):
 
 class RandomTemplateTypeMapEntryProvider(Protocol):
 
-    def create_random_place_type_map_entry(
+    def create_map_entry(
         self,
     ) -> RandomTemplateTypeMapEntryCreationResult:
         pass

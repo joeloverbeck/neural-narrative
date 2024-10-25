@@ -25,7 +25,7 @@ class ConcreteRandomPlaceTemplateBasedOnCategoriesFactory(
         self._place_selection_manager = place_selection_manager
         self._location_type = location_type
 
-    def create_random_place_template_based_on_categories(
+    def create_place(
         self, place_templates: dict, categories: List[str]
     ) -> PlaceTemplateProduct:
         if not categories:

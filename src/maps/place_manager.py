@@ -68,6 +68,7 @@ class PlaceManager:
 
     def get_places_of_type(self, place_type: TemplateType) -> List[str]:
         map_data = self._map_repository.load_map_data()
+
         return [
             place_data.get("place_template")
             for place_data in map_data.values()

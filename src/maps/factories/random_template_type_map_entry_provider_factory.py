@@ -14,6 +14,9 @@ from src.maps.configs.random_template_type_map_entry_provider_factories_config i
 from src.maps.factories.create_map_entry_for_playthrough_command_provider_factory import (
     CreateMapEntryForPlaythroughCommandProviderFactory,
 )
+from src.maps.factories.filter_out_used_templates_algorithm_factory import (
+    FilterOutUsedTemplatesAlgorithmFactory,
+)
 from src.maps.factories.place_manager_factory import PlaceManagerFactory
 from src.maps.providers.concrete_random_place_type_map_entry_provider import (
     ConcreteRandomTemplateTypeMapEntryProvider,
@@ -24,17 +27,19 @@ class RandomTemplateTypeMapEntryProviderFactory:
 
     def __init__(
         self,
-        playthrough_name: str,
         random_place_template_based_on_categories_factory: RandomPlaceTemplateBasedOnCategoriesFactory,
         create_map_entry_for_playthrough_command_provider_factory: CreateMapEntryForPlaythroughCommandProviderFactory,
+        filter_out_used_templates_algorithm_factory: FilterOutUsedTemplatesAlgorithmFactory,
         place_manager_factory: PlaceManagerFactory,
     ):
-        self._playthrough_name = playthrough_name
         self._random_place_template_based_on_categories_factory = (
             random_place_template_based_on_categories_factory
         )
         self._create_map_entry_for_playthrough_command_provider_factory = (
             create_map_entry_for_playthrough_command_provider_factory
+        )
+        self._filter_out_used_templates_algorithm_factory = (
+            filter_out_used_templates_algorithm_factory
         )
         self._place_manager_factory = place_manager_factory
 
@@ -54,4 +59,5 @@ class RandomTemplateTypeMapEntryProviderFactory:
                 self._create_map_entry_for_playthrough_command_provider_factory,
                 self._place_manager_factory,
             ),
+            filter_out_used_templates_algorithm_factory=self._filter_out_used_templates_algorithm_factory,
         )

@@ -7,9 +7,7 @@ from pydantic import BaseModel
 
 from src.prompting.abstracts.factory_products import (
     LlmToolResponseProduct,
-    ExtractedDataProduct,
     LlmContentProduct,
-    ToolResponseParsingProduct,
     UserContentForCharacterGenerationProduct,
 )
 from src.prompting.abstracts.llm_client import LlmClient
@@ -17,23 +15,9 @@ from src.prompting.abstracts.strategies import ProduceToolResponseStrategy
 from src.prompting.llm import Llm
 
 
-class ToolResponseParsingProvider(ABC):
-
-    @abstractmethod
-    def parse_tool_response(self) -> ToolResponseParsingProduct:
-        pass
-
-
 class ToolResponseProvider(Protocol):
 
     def create_llm_response(self) -> LlmToolResponseProduct:
-        pass
-
-
-class ToolResponseDataExtractionProvider(ABC):
-
-    @abstractmethod
-    def extract_data(self) -> ExtractedDataProduct:
         pass
 
 

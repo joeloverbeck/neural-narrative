@@ -38,7 +38,6 @@ class ConcreteLlmContentProvider(LlmContentProvider):
         self._llm_client_factory = llm_client_factory
         self._temperature = temperature
         self._top_p = top_p
-        self._retry_count = 0
 
         self._filesystem_manager = filesystem_manager or FilesystemManager()
 
@@ -53,7 +52,6 @@ class ConcreteLlmContentProvider(LlmContentProvider):
         )
 
         if ai_completion_product.is_valid():
-            self._retry_count = 0
             content = ai_completion_product.get()
 
             if isinstance(content, str):

@@ -32,7 +32,7 @@ class CreateInitialMapCommand(Command):
             self._story_universe_template,
             TemplateType.STORY_UNIVERSE,
             TemplateType.WORLD,
-        ).create_random_place_type_map_entry()
+        ).create_map_entry()
         if (
             result.get_result_type()
             == RandomTemplateTypeMapEntryCreationResultType.FAILURE
@@ -47,7 +47,7 @@ class CreateInitialMapCommand(Command):
         )
         result = self._random_template_type_map_entry_provider_factory.create_provider(
             latest_identifier, world_template, TemplateType.WORLD, TemplateType.REGION
-        ).create_random_place_type_map_entry()
+        ).create_map_entry()
         if (
             result.get_result_type()
             == RandomTemplateTypeMapEntryCreationResultType.FAILURE
@@ -62,7 +62,7 @@ class CreateInitialMapCommand(Command):
         )
         result = self._random_template_type_map_entry_provider_factory.create_provider(
             latest_identifier, region_template, TemplateType.REGION, TemplateType.AREA
-        ).create_random_place_type_map_entry()
+        ).create_map_entry()
         if (
             result.get_result_type()
             == RandomTemplateTypeMapEntryCreationResultType.FAILURE

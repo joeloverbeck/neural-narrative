@@ -316,6 +316,33 @@ function updateDescription(type) {
     descriptionElement.innerText = description || 'No description provided for the selected item.';
 }
 
+function moveCursorToEnd(element) {
+    // For modern browsers
+    if (typeof element.setSelectionRange === "function") {
+        // Ensure the element is focused
+        element.focus();
+        // Move cursor to the end
+        const length = element.value.length;
+        element.setSelectionRange(length, length);
+    } else if (typeof element.createTextRange !== "undefined") { // For older IE
+        element.focus();
+        const range = element.createTextRange();
+        range.collapse(false);
+        range.select();
+    }
+}
+
+function initInputCursor() {
+    const textInputs = document.querySelectorAll('input[type="text"]');
+    textInputs.forEach(function(input) {
+        input.addEventListener('focus', function() {
+            setTimeout(() => {
+                moveCursorToEnd(this);
+            }, 0);
+        });
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize audio playback elements on page load
     initAudioPlayback();
@@ -340,6 +367,9 @@ document.addEventListener('DOMContentLoaded', () => {
             onError: errorHandler
         });
     });
+
+    // Initialize input cursor positioning
+    initInputCursor();
 
     // Call page-specific initialization if it exists
     if (typeof pageInit === 'function') {

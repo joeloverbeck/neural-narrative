@@ -23,9 +23,9 @@ class ConcreteCardinalConnectionCreationFactory(CardinalConnectionCreationFactor
 
     def __init__(
         self,
-            config: CardinalConnectionCreationFactoryConfig,
-            factories_config: CardinalConnectionCreationFactoryFactoriesConfig,
-            playthrough_manager: Optional[PlaythroughManager] = None,
+        config: CardinalConnectionCreationFactoryConfig,
+        factories_config: CardinalConnectionCreationFactoryFactoriesConfig,
+        playthrough_manager: Optional[PlaythroughManager] = None,
     ):
         self._config = config
         self._factories_config = factories_config
@@ -37,12 +37,14 @@ class ConcreteCardinalConnectionCreationFactory(CardinalConnectionCreationFactor
         father_template = (
             self._factories_config.map_manager_factory.create_map_manager().get_father_template()
         )
+
         father_identifier = self._factories_config.hierarchy_manager_factory.create_hierarchy_manager().get_father_identifier(
             self._playthrough_manager.get_current_place_identifier()
         )
+
         return self._factories_config.random_template_type_map_entry_provider_factory.create_provider(
             father_identifier, father_template, TemplateType.REGION, TemplateType.AREA
-        ).create_random_place_type_map_entry()
+        ).create_map_entry()
 
     def _create_cardinal_connection(self) -> None:
         new_id, _ = (
@@ -64,16 +66,17 @@ class ConcreteCardinalConnectionCreationFactory(CardinalConnectionCreationFactor
 
     def create_cardinal_connection(self) -> CardinalConnectionCreationProduct:
         result = self._get_random_area()
+
         if (
-                result.get_result_type()
-                == RandomTemplateTypeMapEntryCreationResultType.NO_AVAILABLE_TEMPLATES
+            result.get_result_type()
+            == RandomTemplateTypeMapEntryCreationResultType.NO_AVAILABLE_TEMPLATES
         ):
             return ConcreteCardinalConnectionCreationProduct(
                 was_successful=False, error="No remaining areas to add to map."
             )
         if (
-                result.get_result_type()
-                == RandomTemplateTypeMapEntryCreationResultType.FAILURE
+            result.get_result_type()
+            == RandomTemplateTypeMapEntryCreationResultType.FAILURE
         ):
             return ConcreteCardinalConnectionCreationProduct(
                 was_successful=False,

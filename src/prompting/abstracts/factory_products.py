@@ -6,21 +6,6 @@ from typing import Protocol, Union
 from pydantic import BaseModel
 
 
-class ToolResponseParsingProduct(ABC):
-
-    @abstractmethod
-    def get(self) -> dict:
-        pass
-
-    @abstractmethod
-    def is_valid(self) -> bool:
-        pass
-
-    @abstractmethod
-    def get_error(self) -> str:
-        pass
-
-
 class LlmToolResponseProduct(ABC):
     """
     Each distinct product of a product family should have a base interface. All
@@ -37,13 +22,6 @@ class LlmToolResponseProduct(ABC):
 
     @abstractmethod
     def get_error(self) -> str:
-        pass
-
-
-class ExtractedDataProduct(ABC):
-
-    @abstractmethod
-    def get(self):
         pass
 
 

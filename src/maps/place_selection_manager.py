@@ -54,6 +54,7 @@ class PlaceSelectionManager:
     ) -> Dict:
         """Filter places whose categories match any of the father place's categories."""
         filtered_places = {}
+
         for name, data in place_templates.items():
             place_categories = data.get("categories", [])
             place_type = data.get("type", None)
@@ -64,6 +65,7 @@ class PlaceSelectionManager:
             if location_type and place_type != location_type:
                 continue
             filtered_places[name] = data
+
         return filtered_places
 
     @staticmethod

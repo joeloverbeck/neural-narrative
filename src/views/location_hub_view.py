@@ -3,14 +3,8 @@ import logging
 from flask import session, redirect, url_for, render_template, request, jsonify, flash
 from flask.views import MethodView
 
-from src.base.algorithms.produce_and_update_next_identifier_algorithm import (
-    ProduceAndUpdateNextIdentifierAlgorithm,
-)
 from src.base.constants import TIME_ADVANCED_DUE_TO_SEARCHING_FOR_LOCATION
-from src.base.enums import TemplateType, IdentifierType
-from src.base.factories.store_last_identifier_command_factory import (
-    StoreLastIdentifierCommandFactory,
-)
+from src.base.enums import TemplateType
 from src.base.playthrough_manager import PlaythroughManager
 from src.base.tools import capture_traceback
 from src.characters.characters_manager import CharactersManager
@@ -26,24 +20,12 @@ from src.maps.configs.cardinal_connection_creation_factory_config import (
 from src.maps.configs.cardinal_connection_creation_factory_factories_config import (
     CardinalConnectionCreationFactoryFactoriesConfig,
 )
-from src.maps.configs.random_template_type_map_entry_provider_config import (
-    RandomTemplateTypeMapEntryProviderConfig,
-)
-from src.maps.configs.random_template_type_map_entry_provider_factories_config import (
-    RandomTemplateTypeMapEntryProviderFactoriesConfig,
-)
 from src.maps.enums import (
     CardinalDirection,
     RandomTemplateTypeMapEntryCreationResultType,
 )
 from src.maps.factories.concrete_cardinal_connection_creation_factory import (
     ConcreteCardinalConnectionCreationFactory,
-)
-from src.maps.factories.concrete_random_place_template_based_on_categories_factory import (
-    ConcreteRandomPlaceTemplateBasedOnCategoriesFactory,
-)
-from src.maps.factories.create_map_entry_for_playthrough_command_provider_factory import (
-    CreateMapEntryForPlaythroughCommandProviderFactory,
 )
 from src.maps.factories.hierarchy_manager_factory import HierarchyManagerFactory
 from src.maps.factories.map_manager_factory import MapManagerFactory
@@ -52,9 +34,6 @@ from src.maps.factories.place_manager_factory import PlaceManagerFactory
 from src.maps.map_manager import MapManager
 from src.maps.map_repository import MapRepository
 from src.maps.navigation_manager import NavigationManager
-from src.maps.providers.concrete_random_place_type_map_entry_provider import (
-    ConcreteRandomTemplateTypeMapEntryProvider,
-)
 from src.maps.templates_repository import TemplatesRepository
 from src.maps.weathers_manager import WeathersManager
 from src.services.character_service import CharacterService
@@ -263,11 +242,13 @@ class LocationHubView(MethodView):
     @staticmethod
     def handle_explore_cardinal_direction(playthrough_name):
         cardinal_direction = CardinalDirection(request.form.get("cardinal_direction"))
+
         random_template_type_map_entry_provider_factory = (
             RandomTemplateTypeMapEntryProviderFactoryComposer(
                 playthrough_name
             ).compose_factory()
         )
+
         hierarchy_manager_factory = HierarchyManagerFactory(playthrough_name)
         map_manager_factory = MapManagerFactory(playthrough_name)
         map_repository = MapRepository(playthrough_name)
@@ -283,6 +264,7 @@ class LocationHubView(MethodView):
                 navigation_manager_factory,
             ),
         ).create_cardinal_connection()
+
         if not result.was_successful():
             flash(
                 f"Wasn't able to explore cardinal direction: {result.get_error()}",
@@ -290,6 +272,7 @@ class LocationHubView(MethodView):
             )
             return redirect(url_for("location-hub"))
 
+        flash(f"Area located {cardinal_direction.value}.", "success")
         return redirect(url_for("location-hub"))
 
     @staticmethod
@@ -299,7 +282,6 @@ class LocationHubView(MethodView):
 
     @staticmethod
     def handle_search_for_location(playthrough_name):
-        location_type = request.form.get("location_type")
         place_manager = PlaceManagerFactory(playthrough_name).create_place_manager()
         map_manager = MapManager(
             playthrough_name,
@@ -308,57 +290,21 @@ class LocationHubView(MethodView):
             TemplatesRepository(),
         )
 
-        place_selection_manager = PlaceSelectionManagerComposer(
-            playthrough_name
-        ).compose_manager()
-
         father_template = map_manager.get_current_place_template()
-        random_place_template_based_on_categories_factory = (
-            ConcreteRandomPlaceTemplateBasedOnCategoriesFactory(
-                place_selection_manager, location_type
-            )
-        )
 
         playthrough_manager = PlaythroughManager(playthrough_name)
         father_identifier = playthrough_manager.get_current_place_identifier()
 
-        store_last_identifier_command_factory = StoreLastIdentifierCommandFactory(
-            playthrough_name
-        )
-
-        produce_and_update_next_identifier = ProduceAndUpdateNextIdentifierAlgorithm(
-            playthrough_name,
-            IdentifierType.PLACES,
-            store_last_identifier_command_factory,
-        )
-
-        create_map_entry_for_playthrough_command_provider_factory = (
-            CreateMapEntryForPlaythroughCommandProviderFactory(
-                playthrough_name, produce_and_update_next_identifier
-            )
-        )
-        place_manager_factory = PlaceManagerFactory(playthrough_name)
-
         random_template_type_map_entry_provider = (
-            ConcreteRandomTemplateTypeMapEntryProvider(
-                RandomTemplateTypeMapEntryProviderConfig(
-                    father_identifier,
-                    father_template,
-                    TemplateType.LOCATION,
-                    TemplateType.AREA,
-                ),
-                RandomTemplateTypeMapEntryProviderFactoriesConfig(
-                    random_place_template_based_on_categories_factory,
-                    create_map_entry_for_playthrough_command_provider_factory,
-                    place_manager_factory,
-                ),
-            )
+            RandomTemplateTypeMapEntryProviderFactoryComposer(
+                playthrough_name
+            ).compose_factory()
+        ).create_provider(
+            father_identifier, father_template, TemplateType.AREA, TemplateType.LOCATION
         )
 
         try:
-            result = (
-                random_template_type_map_entry_provider.create_random_place_type_map_entry()
-            )
+            result = random_template_type_map_entry_provider.create_map_entry()
 
             if (
                 result.get_result_type()
