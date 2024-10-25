@@ -22,6 +22,7 @@ class ChatView(MethodView):
         if not playthrough_name:
             return redirect(url_for("index"))
         playthrough_manager = PlaythroughManager(playthrough_name)
+
         if not dialogue_participants and not playthrough_manager.has_ongoing_dialogue(
             playthrough_name
         ):

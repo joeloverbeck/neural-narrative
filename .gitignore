@@ -169,3 +169,9 @@ cython_debug/
 /static/voice_lines
 /voice_models
 /playthroughs/*
+
+/data/templates/locations.json
+/data/templates/areas.json
+/data/templates/regions.json
+/data/templates/worlds.json
+/data/templates/story_universes.json

@@ -28,8 +28,12 @@ class StoryUniverseFactory(BaseToolResponseProvider):
         return f"Come up with a universe for a narrative based on the user's notion: {self._story_universe_notion}"
 
     def create_product_from_base_model(self, response_model: StoryUniverse):
+        description = response_model.description
+
         return StoryUniverseProduct(
-            response_model.name, response_model.description, response_model.categories
+            response_model.name,
+            description.replace("\n\n", "\n"),
+            [category.lower() for category in response_model.categories],
         )
 
     def get_prompt_file(self) -> Optional[str]:

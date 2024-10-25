@@ -44,7 +44,7 @@ Neural Narrative
             <i class="fas fa-plus-circle"></i> Create Playthrough
         </button>
         <div class="content">
-            <form action="/" method="post" class="ajax-form">
+            <form action="/" method="post" class="ajax-form" data-success-handler="createPlaythroughSuccess">
                 <input type="hidden" name="submit_action" value="create_playthrough">
 
                 <label for="playthrough_name">Playthrough Name:</label>
