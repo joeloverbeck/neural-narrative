@@ -1,6 +1,7 @@
 # test_speech_turn_choice_tool_response_provider.py
+from pathlib import Path
 from typing import cast
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 import pytest
 from pydantic import BaseModel
@@ -231,10 +232,11 @@ def test_get_prompt_kwargs_with_player_identifier():
     assert prompt_kwargs["dialogue"] == transcription.get()
 
 
-def test_generate_product_calls_produce_tool_response():
+@patch("src.prompting.providers.base_tool_response_provider.read_file")
+def test_generate_product_calls_produce_tool_response(mock_read_file):
     # Arrange
     filesystem_manager = MagicMock(spec=FilesystemManager)
-    filesystem_manager.read_file.return_value = "Prompt content"
+    mock_read_file.return_value = "Prompt content"
     produce_tool_response_strategy_factory = MagicMock(
         spec=ProduceToolResponseStrategyFactory
     )
@@ -323,10 +325,11 @@ def test_peep_into_system_content_does_nothing():
     assert result is None  # Method does nothing
 
 
-def test_generate_product_with_invalid_tool_response():
+@patch("src.prompting.providers.base_tool_response_provider.read_file")
+def test_generate_product_with_invalid_tool_response(mock_read_file):
     # Arrange
     filesystem_manager = MagicMock(spec=FilesystemManager)
-    filesystem_manager.read_file.return_value = "Prompt content"
+    mock_read_file.return_value = "Prompt content"
     produce_tool_response_strategy_factory = MagicMock(
         spec=ProduceToolResponseStrategyFactory
     )
@@ -373,10 +376,11 @@ def test_get_formatted_prompt_returns_none():
     assert result is None  # Should return None as per implementation
 
 
-def test_generate_product_reads_correct_prompt_file():
+@patch("src.prompting.providers.base_tool_response_provider.read_file")
+def test_generate_product_reads_correct_prompt_file(mock_read_file):
     # Arrange
     filesystem_manager = MagicMock(spec=FilesystemManager)
-    filesystem_manager.read_file.side_effect = lambda x: f"Content of {x}"
+    mock_read_file.side_effect = lambda x: f"Content of {x}"
     produce_tool_response_strategy_factory = MagicMock(
         spec=ProduceToolResponseStrategyFactory
     )
@@ -407,14 +411,15 @@ def test_generate_product_reads_correct_prompt_file():
     provider.generate_product(SpeechTurnChoice)
 
     # Assert
-    filesystem_manager.read_file.assert_any_call(CHOOSING_SPEECH_TURN_PROMPT_FILE)
+    mock_read_file.assert_any_call(Path(CHOOSING_SPEECH_TURN_PROMPT_FILE))
 
 
-def test_generate_system_content_calls_format_prompt_correctly():
+@patch("src.prompting.providers.base_tool_response_provider.read_file")
+def test_generate_system_content_calls_format_prompt_correctly(mock_read_file):
     # Arrange
     filesystem_manager = MagicMock(spec=FilesystemManager)
     prompt_content = "Prompt template with {placeholder}"
-    filesystem_manager.read_file.return_value = prompt_content
+    mock_read_file.return_value = prompt_content
     provider = SpeechTurnChoiceToolResponseProvider(
         player_identifier="1",
         participants=Participants(),

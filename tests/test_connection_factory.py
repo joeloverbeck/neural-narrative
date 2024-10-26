@@ -194,7 +194,8 @@ def test_get_prompt_kwargs():
     assert prompt_kwargs == expected_prompt_kwargs
 
 
-def test_generate_product():
+@patch("src.prompting.providers.base_tool_response_provider.read_file")
+def test_generate_product(mock_read_file):
     # Arrange
     character_a_identifier = "char_a"
     character_b_identifier = "char_b"
@@ -249,7 +250,7 @@ def test_generate_product():
         else:
             return ""
 
-    filesystem_manager.read_file.side_effect = read_file_side_effect
+    mock_read_file.side_effect = read_file_side_effect
 
     # Mock the tool instructions constant
     with patch(

@@ -1,4 +1,5 @@
 import logging
+from pathlib import Path
 from typing import Optional
 
 from pydantic import BaseModel
@@ -13,6 +14,7 @@ from src.base.constants import (
 from src.base.tools import capture_traceback
 from src.characters.characters_manager import CharactersManager
 from src.characters.models.base_character_data import BaseCharacterData
+from src.filesystem.file_operations import read_file
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.places_templates_parameter import PlacesTemplatesParameter
 from src.prompting.abstracts.abstract_factories import (
@@ -133,8 +135,8 @@ class BaseCharacterDataGenerationToolResponseProvider(
         locations_templates = self._filesystem_manager.load_existing_or_new_json_file(
             LOCATIONS_TEMPLATES_FILE
         )
-        character_generation_instructions = self._filesystem_manager.read_file(
-            CHARACTER_GENERATION_INSTRUCTIONS_FILE
+        character_generation_instructions = read_file(
+            Path(CHARACTER_GENERATION_INSTRUCTIONS_FILE)
         )
         return {
             "playthrough_metadata": playthrough_metadata,

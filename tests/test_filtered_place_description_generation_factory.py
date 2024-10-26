@@ -1,6 +1,6 @@
 # test_concrete_filtered_place_description_generation_factory.py
 from typing import cast
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 from pydantic import BaseModel
 
@@ -146,7 +146,8 @@ def test_get_prompt_kwargs():
     assert result == expected
 
 
-def test_generate_product():
+@patch("src.prompting.providers.base_tool_response_provider.read_file")
+def test_generate_product(mock_read_file):
     config = FilteredPlaceDescriptionGenerationFactoryConfig(
         playthrough_name="test_playthrough", place_identifier="test_place"
     )
@@ -173,7 +174,7 @@ def test_generate_product():
     time_manager.get_time_of_the_day.return_value = "noon"
 
     filesystem_manager = MagicMock()
-    filesystem_manager.read_file.side_effect = lambda x: f"Content of {x}"
+    mock_read_file.side_effect = lambda x: f"Content of {x}"
 
     factory = ConcreteFilteredPlaceDescriptionGenerationFactory(
         config=config,

@@ -1,4 +1,5 @@
 import logging
+from pathlib import Path
 from typing import Optional
 
 from src.base.abstracts.command import Command
@@ -6,6 +7,7 @@ from src.base.constants import DEFAULT_IMAGE_FILE, IMAGE_GENERATION_PROMPT_FILE
 from src.characters.models.character_description_for_portrait import (
     CharacterDescriptionForPortrait,
 )
+from src.filesystem.file_operations import read_file
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.images.configs.generate_character_image_command_config import (
     GenerateCharacterImageCommandConfig,
@@ -56,13 +58,12 @@ class GenerateCharacterImageCommand(Command):
         character.update_data({"description_for_portrait": description_product.get()})
         character.save()
 
-    def _generate_prompt(self, character) -> str:
+    @staticmethod
+    def _generate_prompt(character) -> str:
         """
         Generates the image generation prompt using the character's description.
         """
-        prompt_template = self._filesystem_manager.read_file(
-            IMAGE_GENERATION_PROMPT_FILE
-        )
+        prompt_template = read_file(Path(IMAGE_GENERATION_PROMPT_FILE))
         return prompt_template.format(
             character_description=character.description_for_portrait
         )

@@ -1,5 +1,6 @@
+from pathlib import Path
 from typing import cast
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 import pytest
 
@@ -17,19 +18,18 @@ from src.images.configs.generate_character_image_command_factories_config import
 from src.requests.abstracts.abstract_factories import UrlContentFactory
 
 
-def test_execute_success():
+@patch("src.images.commands.generate_character_image_command.read_file")
+def test_execute_success(mock_read_file):
     character = Mock()
     character.has_description_for_portrait.return_value = True
     character.description_for_portrait = "A brave knight in shining armor."
     character_factory = Mock()
     character_factory.create_character.return_value = character
     filesystem_manager = Mock()
-    prompt_template_content = Mock()
     prompt_template_content = (
         "Create an image of the following character: {character_description}"
     )
-    filesystem_manager.read_file.return_value = prompt_template_content
-    target_image_path = Mock()
+    mock_read_file.return_value = prompt_template_content
     target_image_path = "/path/to/character/image.png"
     filesystem_manager.get_file_path_to_character_image.return_value = target_image_path
     generated_image_factory = Mock()
@@ -58,7 +58,7 @@ def test_execute_success():
     )
     command.execute()
     character_factory.create_character.assert_called_once_with("character1")
-    filesystem_manager.read_file.assert_called_once_with(IMAGE_GENERATION_PROMPT_FILE)
+    mock_read_file.assert_called_once_with(Path(IMAGE_GENERATION_PROMPT_FILE))
     expected_prompt = prompt_template_content.format(
         character_description=character.description_for_portrait
     )
@@ -71,7 +71,8 @@ def test_execute_success():
     )
 
 
-def test_execute_character_without_description():
+@patch("src.images.commands.generate_character_image_command.read_file")
+def test_execute_character_without_description(mock_read_file):
     character = Mock()
     character.has_description_for_portrait.return_value = False
     character_factory = Mock()
@@ -85,12 +86,10 @@ def test_execute_character_without_description():
         description_provider
     )
     filesystem_manager = Mock()
-    prompt_template_content = Mock()
     prompt_template_content = (
         "Create an image of the following character: {character_description}"
     )
-    filesystem_manager.read_file.return_value = prompt_template_content
-    target_image_path = Mock()
+    mock_read_file.return_value = prompt_template_content
     target_image_path = "/path/to/character/image.png"
     filesystem_manager.get_file_path_to_character_image.return_value = target_image_path
     generated_image_factory = Mock()
@@ -129,19 +128,18 @@ def test_execute_character_without_description():
     filesystem_manager.write_binary_file.assert_called_once()
 
 
-def test_execute_image_generation_failure():
+@patch("src.images.commands.generate_character_image_command.read_file")
+def test_execute_image_generation_failure(mock_read_file):
     character = Mock()
     character.has_description_for_portrait.return_value = True
     character.description_for_portrait = "A brave knight in shining armor."
     character_factory = Mock()
     character_factory.create_character.return_value = character
     filesystem_manager = Mock()
-    prompt_template_content = Mock()
     prompt_template_content = (
         "Create an image of the following character: {character_description}"
     )
-    filesystem_manager.read_file.return_value = prompt_template_content
-    target_image_path = Mock()
+    mock_read_file.return_value = prompt_template_content
     target_image_path = "/path/to/character/image.png"
     filesystem_manager.get_file_path_to_character_image.return_value = target_image_path
     generated_image_factory = Mock()
@@ -170,7 +168,8 @@ def test_execute_image_generation_failure():
     filesystem_manager.write_binary_file.assert_not_called()
 
 
-def test_execute_image_download_failure():
+@patch("src.images.commands.generate_character_image_command.read_file")
+def test_execute_image_download_failure(mock_read_file):
     character = Mock()
     character.has_description_for_portrait.return_value = True
     character.description_for_portrait = "A brave knight in shining armor."
@@ -180,7 +179,7 @@ def test_execute_image_download_failure():
     prompt_template_content = (
         "Create an image of the following character: {character_description}"
     )
-    filesystem_manager.read_file.return_value = prompt_template_content
+    mock_read_file.return_value = prompt_template_content
     target_image_path = "/path/to/character/image.png"
     filesystem_manager.get_file_path_to_character_image.return_value = target_image_path
     generated_image_factory = Mock()

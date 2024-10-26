@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Optional, Type
 
 from pydantic import BaseModel
@@ -7,6 +8,7 @@ from src.base.validators import validate_non_empty_string
 from src.characters.factories.player_and_followers_information_factory import (
     PlayerAndFollowersInformationFactory,
 )
+from src.filesystem.file_operations import read_file
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.providers.places_descriptions_provider import PlacesDescriptionsProvider
 from src.prompting.abstracts.abstract_factories import (
@@ -53,8 +55,12 @@ class ActionResolutionFactory(BaseToolResponseProvider):
         prompt_data = {
             "hour": self._time_manager.get_hour(),
             "time_of_day": self._time_manager.get_time_of_the_day(),
-            "facts_known": self._filesystem_manager.read_file(
-                self._filesystem_manager.get_file_path_to_facts(self._playthrough_name)
+            "facts_known": read_file(
+                Path(
+                    self._filesystem_manager.get_file_path_to_facts(
+                        self._playthrough_name
+                    )
+                )
             ),
         }
         prompt_data.update(

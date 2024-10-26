@@ -5,6 +5,7 @@ import shutil
 import sys
 from datetime import datetime
 from json import JSONDecodeError
+from pathlib import Path
 from typing import List, Optional, Dict
 
 from src.base.constants import (
@@ -25,30 +26,12 @@ from src.base.constants import (
     VOICE_LINES_FOLDER_PATH,
 )
 from src.base.exceptions import FailedToLoadJsonError
+from src.filesystem.file_operations import read_file
 
 logger = logging.getLogger(__name__)
 
 
 class FilesystemManager:
-
-    @staticmethod
-    def read_file(file_path: str) -> Optional[str]:
-        with open(file_path, "r", encoding="utf-8") as file:
-            file_contents = file.read().strip()
-            if file_contents:
-                return file_contents
-            return None
-
-    def read_file_lines(self, file_path: str) -> List[str]:
-        if os.path.exists(file_path):
-            file_content = self.read_file(file_path)
-            return (
-                [line for line in file_content.strip().split("\n") if line]
-                if file_content
-                else []
-            )
-        else:
-            return []
 
     @staticmethod
     def create_empty_file_if_not_exists(file_path: str) -> None:
@@ -121,9 +104,10 @@ class FilesystemManager:
                 with open(file_path, "w", encoding="utf-8") as file:
                     file.write("\n".join(lines))
 
-    def load_openrouter_secret_key(self):
+    @staticmethod
+    def load_openrouter_secret_key():
         try:
-            return self.read_file(OPENROUTER_SECRET_KEY_FILE)
+            return read_file(Path(OPENROUTER_SECRET_KEY_FILE))
         except FileNotFoundError:
             sys.exit(
                 f"Error: File '{OPENROUTER_SECRET_KEY_FILE}'not found. Please check the file path."
@@ -131,9 +115,10 @@ class FilesystemManager:
         except Exception as e:
             sys.exit(f"An unexpected error occurred: {str(e)}")
 
-    def load_runpod_secret_key(self) -> str:
+    @staticmethod
+    def load_runpod_secret_key() -> str:
         try:
-            return self.read_file(RUNPOD_SECRET_KEY_FILE)
+            return read_file(Path(RUNPOD_SECRET_KEY_FILE))
         except FileNotFoundError:
             sys.exit(
                 f"Error: File '{RUNPOD_SECRET_KEY_FILE}'not found. Please check the file path."
@@ -148,9 +133,10 @@ class FilesystemManager:
         os.makedirs(VOICE_LINES_FOLDER_PATH, exist_ok=True)
         return os.path.join(VOICE_LINES_FOLDER_PATH, file_name)
 
-    def load_openai_secret_key(self):
+    @staticmethod
+    def load_openai_secret_key():
         try:
-            return self.read_file(OPENAI_SECRET_KEY_FILE)
+            return read_file(Path(OPENAI_SECRET_KEY_FILE))
         except FileNotFoundError:
             sys.exit(
                 f"Error: File '{OPENAI_SECRET_KEY_FILE}' not found. Please check the file path."
@@ -158,9 +144,10 @@ class FilesystemManager:
         except Exception as e:
             sys.exit(f"An unexpected error occurred: {str(e)}")
 
-    def load_openai_project_key(self):
+    @staticmethod
+    def load_openai_project_key():
         try:
-            return self.read_file(OPENAI_PROJECT_KEY_FILE)
+            return read_file(Path(OPENAI_PROJECT_KEY_FILE))
         except FileNotFoundError:
             sys.exit(
                 f"Error: File '{OPENAI_PROJECT_KEY_FILE}' not found. Please check the file path."
@@ -230,7 +217,7 @@ class FilesystemManager:
             raise ValueError("playthrough_name should not be empty.")
         return os.path.join(
             self.get_file_path_to_playthrough_folder(playthrough_name),
-            "interesting_situations.txt",
+            "scenarios.txt",
         )
 
     def get_file_path_to_plot_twists(self, playthrough_name: str) -> str:
@@ -251,7 +238,7 @@ class FilesystemManager:
             raise ValueError("playthrough_name should not be empty.")
         return os.path.join(
             self.get_file_path_to_playthrough_folder(playthrough_name),
-            "interesting_dilemmas.txt",
+            "dilemmas.txt",
         )
 
     def get_file_path_to_goals(self, playthrough_name: str) -> str:

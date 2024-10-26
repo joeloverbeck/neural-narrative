@@ -257,10 +257,16 @@ def test_get_location_details_without_location():
     assert location_description == ""
 
 
-def test_generate_product_integration():
+@patch(
+    "src.characters.providers.base_character_data_generation_tool_response_provider.read_file"
+)
+@patch("src.prompting.providers.base_tool_response_provider.read_file")
+def test_generate_product_integration(mock_read_file, mock_read_file_2):
     # This test checks the integration of multiple methods
     filesystem_manager = MagicMock()
-    filesystem_manager.read_file.return_value = "tool_instructions"
+    # Mock the read_file function to return "tool_instructions"
+    mock_read_file.return_value = "tool_instructions"
+    mock_read_file_2.return_value = "tool_instructions"
     filesystem_manager.load_existing_or_new_json_file.return_value = {}
     filesystem_manager.get_file_path_to_playthrough_metadata.return_value = (
         "path/to/metadata"

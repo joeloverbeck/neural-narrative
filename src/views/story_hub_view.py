@@ -1,5 +1,6 @@
 import logging
 import os
+from pathlib import Path
 
 from flask import session, redirect, url_for, render_template, request, jsonify, flash
 from flask.views import MethodView
@@ -37,6 +38,7 @@ from src.concepts.factories.plot_twists_factory import PlotTwistsFactory
 from src.concepts.factories.scenarios_factory import (
     ScenariosFactory,
 )
+from src.filesystem.file_operations import read_file_lines, read_file
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.interfaces.web_interface_manager import WebInterfaceManager
 from src.maps.composers.places_descriptions_provider_composer import (
@@ -74,17 +76,16 @@ class StoryHubView(MethodView):
         data = {}
         for var_name, file_path_method in items_to_load:
             file_path = file_path_method(playthrough_name_obj)
-            data[var_name] = [
-                line for line in filesystem_manager.read_file_lines(file_path)
-            ]
+            data[var_name] = [line for line in read_file_lines(Path(file_path))]
         facts_file_path = filesystem_manager.get_file_path_to_facts(playthrough_name)
         if not os.path.exists(facts_file_path):
             filesystem_manager.write_file(facts_file_path, None)
-        facts = filesystem_manager.read_file(facts_file_path)
+        facts = read_file(Path(facts_file_path))
         data["facts"] = facts if facts else ""
         return render_template("story-hub.html", **data)
 
-    def post(self):
+    @staticmethod
+    def post():
         playthrough_name = session.get("playthrough_name")
         if not playthrough_name:
             return redirect(url_for("index"))

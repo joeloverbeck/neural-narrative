@@ -1,4 +1,5 @@
 import logging
+from pathlib import Path
 from typing import Optional
 
 from pydantic import BaseModel
@@ -10,6 +11,7 @@ from src.base.constants import (
 from src.characters.products.character_generation_guidelines_product import (
     CharacterGenerationGuidelinesProduct,
 )
+from src.filesystem.file_operations import read_file
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.factories.map_manager_factory import MapManagerFactory
 from src.maps.factories.place_manager_factory import PlaceManagerFactory
@@ -55,7 +57,7 @@ class CharacterGenerationGuidelinesProvider(BaseToolResponseProvider):
 
     def _read_tool_instructions(self) -> str:
         """Reads the tool instructions from the filesystem."""
-        return self._filesystem_manager.read_file(TOOL_INSTRUCTIONS_FOR_INSTRUCTOR_FILE)
+        return read_file(Path(TOOL_INSTRUCTIONS_FOR_INSTRUCTOR_FILE))
 
     def get_user_content(self) -> str:
         return "Write three entries that are guidelines for creating interesting characters based on the above combination of places. Follow the provided instructions."
