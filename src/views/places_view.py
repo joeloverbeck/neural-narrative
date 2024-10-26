@@ -1,4 +1,5 @@
 import logging
+from pathlib import Path
 
 from flask import render_template, request, redirect, url_for, flash, jsonify
 from flask.views import MethodView
@@ -10,27 +11,20 @@ from src.base.constants import (
     STORY_UNIVERSES_TEMPLATE_FILE,
 )
 from src.base.enums import TemplateType
-from src.filesystem.filesystem_manager import FilesystemManager
+from src.filesystem.file_operations import read_json_file
 from src.services.place_service import PlaceService
 
 logger = logging.getLogger(__name__)
 
 
 class PlacesView(MethodView):
+    @staticmethod
+    def get():
+        story_universes = read_json_file(Path(STORY_UNIVERSES_TEMPLATE_FILE))
+        worlds = read_json_file(Path(WORLDS_TEMPLATES_FILE))
+        regions = read_json_file(Path(REGIONS_TEMPLATES_FILE))
+        areas = read_json_file(Path(AREAS_TEMPLATES_FILE))
 
-    def get(self):
-        filesystem_manager = FilesystemManager()
-
-        story_universes = filesystem_manager.load_existing_or_new_json_file(
-            STORY_UNIVERSES_TEMPLATE_FILE
-        )
-        worlds = filesystem_manager.load_existing_or_new_json_file(
-            WORLDS_TEMPLATES_FILE
-        )
-        regions = filesystem_manager.load_existing_or_new_json_file(
-            REGIONS_TEMPLATES_FILE
-        )
-        areas = filesystem_manager.load_existing_or_new_json_file(AREAS_TEMPLATES_FILE)
         return render_template(
             "places.html",
             story_universes=story_universes,

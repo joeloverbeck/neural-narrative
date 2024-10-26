@@ -1,6 +1,8 @@
 import logging
+from pathlib import Path
 from typing import Dict, Optional
 
+from src.filesystem.file_operations import read_json_file
 from src.filesystem.filesystem_manager import FilesystemManager
 
 logger = logging.getLogger(__name__)
@@ -47,13 +49,17 @@ class Character:
         self._validate_required_attributes()
 
     def _load_character_data(self) -> Dict[str, str]:
-        characters_file = self._filesystem_manager.load_existing_or_new_json_file(
-            self._filesystem_manager.get_file_path_to_characters_file(
-                self.playthrough_name
+        characters_file = read_json_file(
+            Path(
+                self._filesystem_manager.get_file_path_to_characters_file(
+                    self.playthrough_name
+                )
             )
         )
+
         if self._identifier not in characters_file:
             raise KeyError(f"Character with identifier '{self._identifier}' not found.")
+
         return characters_file[self._identifier]
 
     def _validate_required_attributes(self):
@@ -66,9 +72,11 @@ class Character:
             )
 
     def save(self):
-        characters_file = self._filesystem_manager.load_existing_or_new_json_file(
-            self._filesystem_manager.get_file_path_to_characters_file(
-                self.playthrough_name
+        characters_file = read_json_file(
+            Path(
+                self._filesystem_manager.get_file_path_to_characters_file(
+                    self.playthrough_name
+                )
             )
         )
         characters_file[self._identifier] = self._data

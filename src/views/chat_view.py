@@ -1,10 +1,12 @@
 import logging
+from pathlib import Path
 
 from flask import redirect, session, render_template, url_for, flash, request, jsonify
 from flask.views import MethodView
 
 from src.base.constants import MAX_DIALOGUE_ENTRIES_FOR_WEB
 from src.base.playthrough_manager import PlaythroughManager
+from src.filesystem.file_operations import read_json_file
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.factories.map_manager_factory import MapManagerFactory
 from src.services.dialogue_service import DialogueService
@@ -30,8 +32,8 @@ class ChatView(MethodView):
             return redirect(url_for("participants"))
 
         filesystem_manager = FilesystemManager()
-        ongoing_dialogue_file = filesystem_manager.load_existing_or_new_json_file(
-            filesystem_manager.get_file_path_to_ongoing_dialogue(playthrough_name)
+        ongoing_dialogue_file = read_json_file(
+            Path(filesystem_manager.get_file_path_to_ongoing_dialogue(playthrough_name))
         )
 
         if not dialogue_participants:

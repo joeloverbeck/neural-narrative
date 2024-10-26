@@ -1,6 +1,8 @@
 import logging.config
+from pathlib import Path
 
 from src.base.enums import IdentifierType
+from src.filesystem.file_operations import read_json_file
 from src.filesystem.filesystem_manager import FilesystemManager
 
 logger = logging.getLogger(__name__)
@@ -21,9 +23,11 @@ class IdentifiersManager:
         return str(max_id)
 
     def determine_next_identifier(self, identifier_type: IdentifierType) -> int:
-        playthrough_metadata = self._filesystem_manager.load_existing_or_new_json_file(
-            self._filesystem_manager.get_file_path_to_playthrough_metadata(
-                self._playthrough_name
+        playthrough_metadata = read_json_file(
+            Path(
+                self._filesystem_manager.get_file_path_to_playthrough_metadata(
+                    self._playthrough_name
+                )
             )
         )
         try:

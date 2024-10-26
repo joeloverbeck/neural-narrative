@@ -1,5 +1,7 @@
+from pathlib import Path
+
 from src.base.constants import VOICE_MODELS_FILE
-from src.filesystem.filesystem_manager import FilesystemManager
+from src.filesystem.file_operations import read_json_file
 from src.requests.requests_manager import RequestsManager
 from src.voices.factories.direct_voice_line_generation_algorithm_factory import (
     DirectVoiceLineGenerationAlgorithmFactory,
@@ -8,9 +10,7 @@ from src.voices.factories.direct_voice_line_generation_algorithm_factory import 
 
 def main():
     available_speakers = RequestsManager().get_available_speakers()
-    implemented_voice_models = FilesystemManager().load_existing_or_new_json_file(
-        VOICE_MODELS_FILE
-    )
+    implemented_voice_models = read_json_file(Path(VOICE_MODELS_FILE))
     implemented_models_set = set(implemented_voice_models.keys())
     unimplemented_speakers = [
         speaker

@@ -14,7 +14,7 @@ from src.base.constants import (
 from src.base.tools import capture_traceback
 from src.characters.characters_manager import CharactersManager
 from src.characters.models.base_character_data import BaseCharacterData
-from src.filesystem.file_operations import read_file
+from src.filesystem.file_operations import read_file, read_json_file
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.places_templates_parameter import PlacesTemplatesParameter
 from src.prompting.abstracts.abstract_factories import (
@@ -118,23 +118,18 @@ class BaseCharacterDataGenerationToolResponseProvider(
 
     def _load_templates(self) -> dict:
         """Loads all necessary templates and metadata from the filesystem."""
-        playthrough_metadata = self._filesystem_manager.load_existing_or_new_json_file(
-            self._filesystem_manager.get_file_path_to_playthrough_metadata(
-                self._playthrough_name
+        playthrough_metadata = read_json_file(
+            Path(
+                self._filesystem_manager.get_file_path_to_playthrough_metadata(
+                    self._playthrough_name
+                )
             )
         )
-        worlds_templates = self._filesystem_manager.load_existing_or_new_json_file(
-            WORLDS_TEMPLATES_FILE
-        )
-        regions_templates = self._filesystem_manager.load_existing_or_new_json_file(
-            REGIONS_TEMPLATES_FILE
-        )
-        areas_templates = self._filesystem_manager.load_existing_or_new_json_file(
-            AREAS_TEMPLATES_FILE
-        )
-        locations_templates = self._filesystem_manager.load_existing_or_new_json_file(
-            LOCATIONS_TEMPLATES_FILE
-        )
+        worlds_templates = read_json_file(Path(WORLDS_TEMPLATES_FILE))
+        regions_templates = read_json_file(Path(REGIONS_TEMPLATES_FILE))
+        areas_templates = read_json_file(Path(AREAS_TEMPLATES_FILE))
+        locations_templates = read_json_file(Path(LOCATIONS_TEMPLATES_FILE))
+
         character_generation_instructions = read_file(
             Path(CHARACTER_GENERATION_INSTRUCTIONS_FILE)
         )

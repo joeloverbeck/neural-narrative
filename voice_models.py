@@ -1,10 +1,11 @@
 from collections import Counter
+from pathlib import Path
 from typing import Dict
 
 from src.base.constants import (
     VOICE_MODELS_FILE,
 )
-from src.filesystem.filesystem_manager import FilesystemManager
+from src.filesystem.file_operations import read_json_file
 from src.voices.enums import voice_categories_tags
 
 
@@ -13,7 +14,7 @@ def get_attribute_category(attribute, attribute_to_category: Dict[str, str]):
 
 
 def main():
-    voice_models = FilesystemManager().load_existing_or_new_json_file(VOICE_MODELS_FILE)
+    voice_models = read_json_file(Path(VOICE_MODELS_FILE))
     used_tags = {
         "genders": set(),
         "ages": set(),

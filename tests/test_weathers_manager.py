@@ -1,15 +1,18 @@
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
+
 import pytest
+
 from src.maps.weathers_manager import WeathersManager
 
 
-def test_get_all_weather_identifiers_returns_correct_identifiers():
+@patch("src.maps.weathers_manager.read_json_file")
+def test_get_all_weather_identifiers_returns_correct_identifiers(mock_read_json_file):
     mock_filesystem_manager = MagicMock()
     weather_data = {
         "sunny": {"description": "Clear sky with bright sun"},
         "rainy": {"description": "Lots of rain and clouds"},
     }
-    mock_filesystem_manager.load_existing_or_new_json_file.return_value = weather_data
+    mock_read_json_file.return_value = weather_data
     mock_map_manager_factory = MagicMock()
     weathers_manager = WeathersManager(
         map_manager_factory=mock_map_manager_factory,
@@ -21,10 +24,11 @@ def test_get_all_weather_identifiers_returns_correct_identifiers():
     assert "rainy" in weather_identifiers
 
 
-def test_get_all_weather_identifiers_with_empty_weathers_file():
+@patch("src.maps.weathers_manager.read_json_file")
+def test_get_all_weather_identifiers_with_empty_weathers_file(mock_read_json_file):
     mock_filesystem_manager = MagicMock()
     weather_data = {}
-    mock_filesystem_manager.load_existing_or_new_json_file.return_value = weather_data
+    mock_read_json_file.return_value = weather_data
     mock_map_manager_factory = MagicMock()
     weathers_manager = WeathersManager(
         map_manager_factory=mock_map_manager_factory,
@@ -58,13 +62,14 @@ def test_get_current_weather_identifier_raises_key_error_when_missing():
     assert "There's no key 'weather_identifier' in area data" in str(excinfo)
 
 
-def test_get_weather_description_returns_correct_description():
+@patch("src.maps.weathers_manager.read_json_file")
+def test_get_weather_description_returns_correct_description(mock_read_json_file):
     mock_filesystem_manager = MagicMock()
     weather_data = {
         "sunny": {"description": "Clear sky with bright sun"},
         "rainy": {"description": "Lots of rain and clouds"},
     }
-    mock_filesystem_manager.load_existing_or_new_json_file.return_value = weather_data
+    mock_read_json_file.return_value = weather_data
     mock_map_manager_factory = MagicMock()
     weathers_manager = WeathersManager(
         map_manager_factory=mock_map_manager_factory,
@@ -76,10 +81,13 @@ def test_get_weather_description_returns_correct_description():
     assert description == expected_description
 
 
-def test_get_weather_description_raises_key_error_when_identifier_missing():
+@patch("src.maps.weathers_manager.read_json_file")
+def test_get_weather_description_raises_key_error_when_identifier_missing(
+    mock_read_json_file,
+):
     mock_filesystem_manager = MagicMock()
     weather_data = {"sunny": {"description": "Clear sky with bright sun"}}
-    mock_filesystem_manager.load_existing_or_new_json_file.return_value = weather_data
+    mock_read_json_file.return_value = weather_data
     mock_map_manager_factory = MagicMock()
     weathers_manager = WeathersManager(
         map_manager_factory=mock_map_manager_factory,
@@ -90,10 +98,13 @@ def test_get_weather_description_raises_key_error_when_identifier_missing():
         weathers_manager.get_weather_description(weather_identifier)
 
 
-def test_get_weather_description_raises_key_error_when_description_missing():
+@patch("src.maps.weathers_manager.read_json_file")
+def test_get_weather_description_raises_key_error_when_description_missing(
+    mock_read_json_file,
+):
     mock_filesystem_manager = MagicMock()
     weather_data = {"sunny": {"not_description": "Should have description key"}}
-    mock_filesystem_manager.load_existing_or_new_json_file.return_value = weather_data
+    mock_read_json_file.return_value = weather_data
     mock_map_manager_factory = MagicMock()
     weathers_manager = WeathersManager(
         map_manager_factory=mock_map_manager_factory,
@@ -104,13 +115,14 @@ def test_get_weather_description_raises_key_error_when_description_missing():
         weathers_manager.get_weather_description(weather_identifier)
 
 
-def test_get_all_weather_identifiers_with_invalid_keys():
+@patch("src.maps.weathers_manager.read_json_file")
+def test_get_all_weather_identifiers_with_invalid_keys(mock_read_json_file):
     mock_filesystem_manager = MagicMock()
     weather_data = {
         "sunny": {"description": "Clear sky with bright sun"},
         "": {"description": "No weather"},
     }
-    mock_filesystem_manager.load_existing_or_new_json_file.return_value = weather_data
+    mock_read_json_file.return_value = weather_data
     mock_map_manager_factory = MagicMock()
     weathers_manager = WeathersManager(
         map_manager_factory=mock_map_manager_factory,

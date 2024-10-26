@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import Optional
 
 from src.characters.character import Character
-from src.filesystem.file_operations import read_file
+from src.filesystem.file_operations import read_file, write_file
 from src.filesystem.filesystem_manager import FilesystemManager
 
 
@@ -30,4 +30,4 @@ class CharacterMemories:
             self._playthrough_name, character.identifier, character.name
         )
 
-        self._filesystem_manager.write_file(file_path, memories)
+        write_file(Path(file_path), memories)

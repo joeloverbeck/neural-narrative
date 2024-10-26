@@ -1,4 +1,5 @@
 import logging
+from pathlib import Path
 from typing import Generic, TypeVar, List, Optional
 
 from src.base.validators import validate_non_empty_string
@@ -7,6 +8,7 @@ from src.concepts.models.goals import Goals
 from src.concepts.models.plot_blueprint import PlotBlueprint
 from src.concepts.models.plot_twists import PlotTwists
 from src.concepts.models.scenarios import Scenarios
+from src.filesystem.file_operations import append_to_file
 from src.filesystem.filesystem_manager import FilesystemManager
 
 logger = logging.getLogger(__name__)
@@ -75,7 +77,7 @@ class BaseConceptAlgorithm(Generic[TProduct, TFactory]):
                 )
             curated_items.append(item)
         content = "\n".join(filter(None, [item for item in curated_items]))
-        self._filesystem_manager.append_to_file(file_path, content)
+        append_to_file(Path(file_path), content)
         logger.info(f"Saved generated items to '{file_path}'.")
 
     def get_save_file_path(self) -> str:

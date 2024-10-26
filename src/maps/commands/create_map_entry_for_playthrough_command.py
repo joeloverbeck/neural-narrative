@@ -1,4 +1,5 @@
 import logging.config
+from pathlib import Path
 from typing import Optional, Dict, Any
 
 from src.base.abstracts.command import Command
@@ -8,6 +9,7 @@ from src.base.algorithms.produce_and_update_next_identifier_algorithm import (
 from src.base.constants import PARENT_KEYS
 from src.base.enums import TemplateType
 from src.base.identifiers_manager import IdentifiersManager
+from src.filesystem.file_operations import read_json_file
 from src.filesystem.filesystem_manager import FilesystemManager
 
 logger = logging.getLogger(__name__)
@@ -58,8 +60,8 @@ class CreateMapEntryForPlaythroughCommand(Command):
 
     def execute(self) -> None:
         """Create a map entry for the playthrough using the selected place."""
-        map_file = self._filesystem_manager.load_existing_or_new_json_file(
-            self._filesystem_manager.get_file_path_to_map(self._playthrough_name)
+        map_file = read_json_file(
+            Path(self._filesystem_manager.get_file_path_to_map(self._playthrough_name))
         )
         new_id = self._produce_and_update_next_identifier.do_algorithm()
 

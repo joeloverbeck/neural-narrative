@@ -1,5 +1,8 @@
+from pathlib import Path
+
 from src.base.abstracts.command import Command
 from src.base.enums import IdentifierType
+from src.filesystem.file_operations import read_json_file
 from src.filesystem.filesystem_manager import FilesystemManager
 
 
@@ -17,7 +20,7 @@ class StoreLastIdentifierCommand(Command):
         file_path = filesystem_manager.get_file_path_to_playthrough_metadata(
             self._playthrough_name
         )
-        json_data = filesystem_manager.load_existing_or_new_json_file(file_path)
+        json_data = read_json_file(Path(file_path))
         if self._identifier_type == IdentifierType.CHARACTERS:
             json_data["last_identifiers"]["characters"] = str(self._new_id)
         elif self._identifier_type == IdentifierType.PLACES:

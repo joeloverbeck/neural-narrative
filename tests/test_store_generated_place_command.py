@@ -1,211 +1,290 @@
 import logging
-from typing import cast
+from enum import Enum
+from pathlib import Path
+from unittest.mock import patch
+
 import pytest
+
 from src.base.constants import TEMPLATE_FILES
 from src.base.enums import TemplateType
-from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.commands.store_generated_place_command import StoreGeneratedPlaceCommand
 from src.maps.place_data import PlaceData
 
 
-class MockFilesystemManager:
-
-    def __init__(self):
-        self.files = {}
-
-    def load_existing_or_new_json_file(self, filename: str):
-        if filename is None:
-            raise ValueError("Filename cannot be None")
-        return self.files.get(filename, {})
-
-    def save_json_file(self, data, filename: str):
-        if filename is None:
-            raise ValueError("Filename cannot be None")
-        self.files[filename] = data
-
-
-def test_store_generated_place_command_normal_case():
+def test_execute_adds_place_data_correctly():
+    # Arrange
     place_data = PlaceData(
-        name="TestPlace",
-        description="A test place",
+        name="Test Place",
+        description="A test place.",
         categories=["Category1", "Category2"],
-        type=None,
+        type=None,  # Not needed for non-LOCATION types
     )
-    template_type = TemplateType.REGION
-    filesystem_manager = MockFilesystemManager()
-    command = StoreGeneratedPlaceCommand(
-        place_data, template_type, cast(FilesystemManager, filesystem_manager)
-    )
-    command.execute()
-    expected_data = {
-        "TestPlace": {
-            "description": "A test place",
-            "categories": ["category1", "category2"],
-        }
-    }
-    assert filesystem_manager.files[TEMPLATE_FILES[template_type]] == expected_data
+    template_type = TemplateType.AREA  # Non-LOCATION type
+    command = StoreGeneratedPlaceCommand(place_data, template_type)
+
+    # Mock the file operations
+    mock_template_file = {}
+
+    with patch(
+        "src.maps.commands.store_generated_place_command.read_json_file",
+        return_value=mock_template_file,
+    ) as mock_read_json_file:
+        with patch(
+            "src.maps.commands.store_generated_place_command.write_json_file"
+        ) as mock_write_json_file:
+            # Act
+            command.execute()
+
+            # Assert
+            expected_data = {
+                place_data.name: {
+                    "description": place_data.description,
+                    "categories": [c.lower() for c in place_data.categories],
+                }
+            }
+            expected_file_path = Path(TEMPLATE_FILES.get(template_type))
+            mock_read_json_file.assert_called_once_with(expected_file_path)
+            mock_write_json_file.assert_called_once_with(
+                expected_file_path, expected_data
+            )
 
 
-def test_store_generated_place_command_categories_lowercase():
+def test_execute_adds_place_data_with_type_for_location():
+    # Arrange
     place_data = PlaceData(
-        name="TestPlace",
-        description="A test place",
-        categories=["Category1", "CATEGORY2"],
-        type=None,
-    )
-    template_type = TemplateType.REGION
-    filesystem_manager = MockFilesystemManager()
-    command = StoreGeneratedPlaceCommand(
-        place_data, template_type, cast(FilesystemManager, filesystem_manager)
-    )
-    command.execute()
-    saved_data = filesystem_manager.files[TEMPLATE_FILES[template_type]]
-    categories = saved_data["TestPlace"]["categories"]
-    assert categories == ["category1", "category2"]
-
-
-def test_store_generated_place_command_location_with_type():
-    place_data = PlaceData(
-        name="TestLocation",
-        description="A test location",
+        name="Test Location",
+        description="A test location.",
         categories=["Category1", "Category2"],
-        type="BAR",
+        type="TestType",
     )
     template_type = TemplateType.LOCATION
-    filesystem_manager = MockFilesystemManager()
-    command = StoreGeneratedPlaceCommand(
-        place_data, template_type, cast(FilesystemManager, filesystem_manager)
+    command = StoreGeneratedPlaceCommand(place_data, template_type)
+
+    mock_template_file = {}
+
+    with patch(
+        "src.maps.commands.store_generated_place_command.read_json_file",
+        return_value=mock_template_file,
+    ) as mock_read_json_file:
+        with patch(
+            "src.maps.commands.store_generated_place_command.write_json_file"
+        ) as mock_write_json_file:
+            # Act
+            command.execute()
+
+            # Assert
+            expected_data = {
+                place_data.name: {
+                    "description": place_data.description,
+                    "categories": [c.lower() for c in place_data.categories],
+                    "type": place_data.type,
+                }
+            }
+            expected_file_path = Path(TEMPLATE_FILES.get(template_type))
+            mock_read_json_file.assert_called_once_with(expected_file_path)
+            mock_write_json_file.assert_called_once_with(
+                expected_file_path, expected_data
+            )
+
+
+def test_execute_raises_keyerror_when_type_missing_for_location():
+    # Arrange
+    place_data = PlaceData(
+        name="Test Location",
+        description="A test location.",
+        categories=["Category1", "Category2"],
+        type=None,  # Missing type
     )
-    command.execute()
-    expected_data = {
-        "TestLocation": {
-            "description": "A test location",
-            "categories": ["category1", "category2"],
-            "type": "BAR",
+    template_type = TemplateType.LOCATION
+    command = StoreGeneratedPlaceCommand(place_data, template_type)
+
+    mock_template_file = {}
+
+    with patch(
+        "src.maps.commands.store_generated_place_command.read_json_file",
+        return_value=mock_template_file,
+    ):
+        # Act & Assert
+        with pytest.raises(
+            KeyError,
+            match="Was tasked with storing a location, but the place data didn't contain the 'type' key.",
+        ):
+            command.execute()
+
+
+def test_execute_updates_existing_template_file():
+    # Arrange
+    existing_place_name = "Existing Place"
+    existing_place_data = {
+        existing_place_name: {
+            "description": "An existing place.",
+            "categories": ["existingcategory"],  # noqa
         }
     }
-    assert filesystem_manager.files[TEMPLATE_FILES[template_type]] == expected_data
 
-
-def test_store_generated_place_command_location_without_type_raises_key_error():
+    new_place_name = "New Place"
     place_data = PlaceData(
-        name="TestLocation",
-        description="A test location",
+        name=new_place_name,
+        description="A new place.",
+        categories=["NewCategory1", "NewCategory2"],
+        type=None,
+    )
+    template_type = TemplateType.AREA
+    command = StoreGeneratedPlaceCommand(place_data, template_type)
+
+    mock_template_file = existing_place_data.copy()
+
+    with patch(
+        "src.maps.commands.store_generated_place_command.read_json_file",
+        return_value=mock_template_file,
+    ) as mock_read_json_file:
+        with patch(
+            "src.maps.commands.store_generated_place_command.write_json_file"
+        ) as mock_write_json_file:
+            # Act
+            command.execute()
+
+            # Assert
+            expected_data = existing_place_data.copy()
+            expected_data.update(
+                {
+                    new_place_name: {
+                        "description": place_data.description,
+                        "categories": [c.lower() for c in place_data.categories],
+                    }
+                }
+            )
+            expected_file_path = Path(TEMPLATE_FILES.get(template_type))
+            mock_read_json_file.assert_called_once_with(expected_file_path)
+            mock_write_json_file.assert_called_once_with(
+                expected_file_path, expected_data
+            )
+
+
+def test_execute_updates_existing_place_data():
+    # Arrange
+    place_name = "Test Place"
+    existing_place_data = {
+        place_name: {
+            "description": "Old description.",
+            "categories": ["oldcategory"],  # noqa
+        }
+    }
+
+    place_data = PlaceData(
+        name=place_name,
+        description="New description.",
+        categories=["NewCategory"],
+        type=None,
+    )
+    template_type = TemplateType.AREA
+    command = StoreGeneratedPlaceCommand(place_data, template_type)
+
+    mock_template_file = existing_place_data.copy()
+
+    with patch(
+        "src.maps.commands.store_generated_place_command.read_json_file",
+        return_value=mock_template_file,
+    ) as mock_read_json_file:
+        with patch(
+            "src.maps.commands.store_generated_place_command.write_json_file"
+        ) as mock_write_json_file:
+            # Act
+            command.execute()
+
+            # Assert
+            expected_data = {
+                place_name: {
+                    "description": place_data.description,
+                    "categories": [c.lower() for c in place_data.categories],
+                }
+            }
+            expected_file_path = Path(TEMPLATE_FILES.get(template_type))
+            mock_read_json_file.assert_called_once_with(expected_file_path)
+            mock_write_json_file.assert_called_once_with(
+                expected_file_path, expected_data
+            )
+
+
+def test_execute_with_empty_categories():
+    # Arrange
+    place_data = PlaceData(
+        name="Test Place", description="A test place.", categories=[], type=None
+    )
+    template_type = TemplateType.AREA
+    command = StoreGeneratedPlaceCommand(place_data, template_type)
+
+    mock_template_file = {}
+
+    with patch(
+        "src.maps.commands.store_generated_place_command.read_json_file",
+        return_value=mock_template_file,
+    ) as mock_read_json_file:
+        with patch(
+            "src.maps.commands.store_generated_place_command.write_json_file"
+        ) as mock_write_json_file:
+            # Act
+            command.execute()
+
+            # Assert
+            expected_data = {
+                place_data.name: {
+                    "description": place_data.description,
+                    "categories": [],
+                }
+            }
+            expected_file_path = Path(TEMPLATE_FILES.get(template_type))
+            mock_read_json_file.assert_called_once_with(expected_file_path)
+            mock_write_json_file.assert_called_once_with(
+                expected_file_path, expected_data
+            )
+
+
+def test_execute_logs_info_message(caplog):
+    # Arrange
+    place_data = PlaceData(
+        name="Test Place",
+        description="A test place.",
         categories=["Category1", "Category2"],
         type=None,
     )
-    template_type = TemplateType.LOCATION
-    filesystem_manager = MockFilesystemManager()
-    command = StoreGeneratedPlaceCommand(
-        place_data, template_type, cast(FilesystemManager, filesystem_manager)
-    )
-    with pytest.raises(KeyError) as exc_info:
-        command.execute()
-    assert (
-        "Was tasked with storing a location, but the place data didn't contain the 'type' key."
-        in str(exc_info)
-    )
-
-
-def test_store_generated_place_command_updates_existing_file():
-    initial_data = {
-        "ExistingPlace": {
-            "description": "An existing place",
-            "categories": ["existingcategory"],
-        }
-    }
-    place_data = PlaceData(
-        name="NewPlace", description="A new place", categories=["Category1"], type=None
-    )
     template_type = TemplateType.AREA
-    filesystem_manager = MockFilesystemManager()
-    filesystem_manager.files[TEMPLATE_FILES[template_type]] = initial_data
-    command = StoreGeneratedPlaceCommand(
-        place_data, template_type, cast(FilesystemManager, filesystem_manager)
-    )
-    command.execute()
-    expected_data = {
-        "ExistingPlace": {
-            "description": "An existing place",
-            "categories": ["existingcategory"],
-        },
-        "NewPlace": {"description": "A new place", "categories": ["category1"]},
-    }
-    assert filesystem_manager.files[TEMPLATE_FILES[template_type]] == expected_data
+    command = StoreGeneratedPlaceCommand(place_data, template_type)
+
+    mock_template_file = {}
+
+    with patch(
+        "src.maps.commands.store_generated_place_command.read_json_file",
+        return_value=mock_template_file,
+    ):
+        with patch("src.maps.commands.store_generated_place_command.write_json_file"):
+            # Act
+            with caplog.at_level(logging.INFO):
+                command.execute()
+
+                # Assert
+                expected_message = (
+                    f"Saved {template_type} template '{place_data.name}'."
+                )
+                assert expected_message in caplog.text
 
 
-def test_store_generated_place_command_logging(caplog):
+def test_execute_raises_exception_when_template_file_not_found():
+    # Arrange
     place_data = PlaceData(
-        name="TestPlace",
-        description="A test place",
-        categories=["Category1"],
+        name="Test Place",
+        description="A test place.",
+        categories=["Category1", "Category2"],
         type=None,
     )
-    template_type = TemplateType.AREA
-    filesystem_manager = MockFilesystemManager()
-    command = StoreGeneratedPlaceCommand(
-        place_data, template_type, cast(FilesystemManager, filesystem_manager)
-    )
-    with caplog.at_level(logging.INFO):
+
+    # Create an invalid template type that's not in TEMPLATE_FILES
+    class InvalidTemplateType(Enum):
+        INVALID = "invalid"
+
+    invalid_template_type = InvalidTemplateType.INVALID
+    command = StoreGeneratedPlaceCommand(place_data, invalid_template_type)  # noqa
+
+    # Act & Assert
+    with pytest.raises(TypeError):
         command.execute()
-    assert f"Saved {template_type} template 'TestPlace'." in caplog.text
-
-
-def test_store_generated_place_command_empty_categories():
-    place_data = PlaceData(
-        name="TestPlace", description="A test place", categories=[], type=None
-    )
-    template_type = TemplateType.AREA
-    filesystem_manager = MockFilesystemManager()
-    command = StoreGeneratedPlaceCommand(
-        place_data, template_type, cast(FilesystemManager, filesystem_manager)
-    )
-    command.execute()
-    expected_data = {"TestPlace": {"description": "A test place", "categories": []}}
-    assert filesystem_manager.files[TEMPLATE_FILES[template_type]] == expected_data
-
-
-def test_store_generated_place_command_save_raises_exception():
-    place_data = PlaceData(
-        name="TestPlace",
-        description="A test place",
-        categories=["Category1"],
-        type=None,
-    )
-    template_type = TemplateType.AREA
-    filesystem_manager = MockFilesystemManager()
-
-    def mock_save_json_file(data, filename):
-        raise IOError("Failed to save file")
-
-    filesystem_manager.save_json_file = mock_save_json_file
-    command = StoreGeneratedPlaceCommand(
-        place_data, template_type, cast(FilesystemManager, filesystem_manager)
-    )
-    with pytest.raises(IOError) as exc_info:
-        command.execute()
-    assert "Failed to save file" in str(exc_info)
-
-
-def test_store_generated_place_command_load_raises_exception():
-    place_data = PlaceData(
-        name="TestPlace",
-        description="A test place",
-        categories=["Category1"],
-        type=None,
-    )
-    template_type = TemplateType.AREA
-    filesystem_manager = MockFilesystemManager()
-
-    def mock_load_existing_or_new_json_file(filename):
-        raise IOError("Failed to load file")
-
-    filesystem_manager.load_existing_or_new_json_file = (
-        mock_load_existing_or_new_json_file
-    )
-    command = StoreGeneratedPlaceCommand(
-        place_data, template_type, cast(FilesystemManager, filesystem_manager)
-    )
-    with pytest.raises(IOError) as exc_info:
-        command.execute()
-    assert "Failed to load file" in str(exc_info)

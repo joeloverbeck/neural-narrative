@@ -1,16 +1,16 @@
 import logging
-from typing import Optional
+from pathlib import Path
 
 from src.base.abstracts.command import Command
 from src.base.constants import TEMPLATE_FILES, PARENT_TEMPLATE_TYPE
 from src.base.enums import TemplateType
 from src.base.validators import validate_non_empty_string
-from src.filesystem.filesystem_manager import FilesystemManager
+from src.filesystem.file_operations import read_json_file
 from src.maps.factories.store_generated_place_command_factory import (
     StoreGeneratedPlaceCommandFactory,
 )
 from src.maps.models.area import Area
-from src.maps.models.location import Location
+from src.maps.models.location import get_custom_location_class
 from src.maps.models.region import Region
 from src.maps.models.world import World
 from src.maps.place_data import PlaceData
@@ -33,7 +33,6 @@ class GeneratePlaceCommand(Command):
         father_place_name: str,
         place_generation_tool_response_provider: PlaceGenerationToolResponseProvider,
         store_generated_place_command_factory: StoreGeneratedPlaceCommandFactory,
-        filesystem_manager: Optional[FilesystemManager] = None,
     ):
         """
         Initialize the GeneratePlaceCommand.
@@ -43,7 +42,6 @@ class GeneratePlaceCommand(Command):
             father_place_template_type (TemplateType): The type of the parent place.
             father_place_name (str): The name of the parent place.
             place_generation_tool_response_provider (PlaceGenerationToolResponseProvider): Provider for generating the place data.
-            filesystem_manager (Optional[FilesystemManager], optional): Filesystem manager instance. Defaults to FilesystemManager.
         """
         validate_non_empty_string(father_place_name, "father_place_name")
 
@@ -65,7 +63,6 @@ class GeneratePlaceCommand(Command):
             raise ValueError(
                 f"Attempted to create a '{self._place_template_type.value}' from something other than a '{expected_parent.value}'! The parent place was '{self._father_place_template_type.value}'."
             )
-        self._filesystem_manager = filesystem_manager or FilesystemManager()
 
     def execute(self) -> None:
         """
@@ -78,11 +75,7 @@ class GeneratePlaceCommand(Command):
                 f"Unrecognized father_place_template_type '{self._father_place_template_type}'."
             )
 
-        father_place_templates = (
-            self._filesystem_manager.load_existing_or_new_json_file(
-                father_template_file
-            )
-        )
+        father_place_templates = read_json_file(Path(father_template_file))
 
         if self._father_place_name not in father_place_templates:
             raise ValueError(
@@ -91,7 +84,9 @@ class GeneratePlaceCommand(Command):
 
         if self._place_template_type == TemplateType.LOCATION:
             llm_tool_response_product = (
-                self._place_generation_tool_response_provider.generate_product(Location)
+                self._place_generation_tool_response_provider.generate_product(
+                    get_custom_location_class()
+                )
             )
         elif self._place_template_type == TemplateType.AREA:
             llm_tool_response_product = (

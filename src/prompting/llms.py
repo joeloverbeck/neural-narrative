@@ -1,6 +1,8 @@
+from pathlib import Path
 from typing import Optional
 
 from src.base.constants import LLMS_FILE
+from src.filesystem.file_operations import read_json_file
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.prompting.llm import Llm
 
@@ -9,9 +11,7 @@ class Llms:
     def __init__(self, filesystem_manager: Optional[FilesystemManager] = None):
         self._filesystem_manager = filesystem_manager or FilesystemManager()
 
-        self._llms_file = self._filesystem_manager.load_existing_or_new_json_file(
-            LLMS_FILE
-        )
+        self._llms_file = read_json_file(Path(LLMS_FILE))
 
         self._models = self._llms_file["models"]
 

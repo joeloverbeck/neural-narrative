@@ -1,6 +1,8 @@
+from pathlib import Path
 from typing import Optional, List, Dict
 
 from src.base.constants import WEATHERS_FILE
+from src.filesystem.file_operations import read_json_file
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.factories.map_manager_factory import MapManagerFactory
 
@@ -15,8 +17,9 @@ class WeathersManager:
         self._map_manager_factory = map_manager_factory
         self._filesystem_manager = filesystem_manager or FilesystemManager()
 
-    def _load_weathers_file(self) -> Dict[str, Dict[str, str]]:
-        return self._filesystem_manager.load_existing_or_new_json_file(WEATHERS_FILE)
+    @staticmethod
+    def _load_weathers_file() -> Dict[str, Dict[str, str]]:
+        return read_json_file(Path(WEATHERS_FILE))
 
     def get_all_weather_identifiers(self) -> [List[str]]:
         weather_identifiers = []

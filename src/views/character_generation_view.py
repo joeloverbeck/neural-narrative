@@ -1,4 +1,5 @@
 import logging
+from pathlib import Path
 
 from flask import session, redirect, url_for, render_template, request, jsonify, flash
 from flask.views import MethodView
@@ -16,7 +17,7 @@ from src.characters.characters_manager import CharactersManager
 from src.characters.composers.character_generation_guidelines_provider_factory_composer import (
     CharacterGenerationGuidelinesProviderFactoryComposer,
 )
-from src.filesystem.filesystem_manager import FilesystemManager
+from src.filesystem.file_operations import read_json_file
 from src.maps.factories.hierarchy_manager_factory import HierarchyManagerFactory
 from src.services.character_service import CharacterService
 from src.services.web_service import WebService
@@ -26,7 +27,8 @@ logger = logging.getLogger(__name__)
 
 class CharacterGenerationView(MethodView):
 
-    def get(self):
+    @staticmethod
+    def get():
         playthrough_name = session.get("playthrough_name")
         if not playthrough_name:
             return redirect(url_for("index"))
@@ -43,12 +45,10 @@ class CharacterGenerationView(MethodView):
         region_template = places_templates_parameter.get_region_template()
         area_template = places_templates_parameter.get_area_template()
         location_template = places_templates_parameter.get_location_template()
-        filesystem_manager = FilesystemManager()
-        character_generation_guidelines = (
-            filesystem_manager.load_existing_or_new_json_file(
-                CHARACTER_GENERATION_GUIDELINES_FILE
-            )
+        character_generation_guidelines = read_json_file(
+            Path(CHARACTER_GENERATION_GUIDELINES_FILE)
         )
+
         if (
             not character_guidelines_manager.create_key(
                 playthrough_manager.get_story_universe_template(),

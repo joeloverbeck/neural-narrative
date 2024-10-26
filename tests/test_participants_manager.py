@@ -1,5 +1,7 @@
 from unittest.mock import MagicMock, patch
+
 import pytest
+
 from src.base.playthrough_manager import PlaythroughManager
 from src.characters.characters_manager import CharactersManager
 from src.characters.participants_manager import ParticipantsManager
@@ -24,13 +26,6 @@ def mock_playthrough_manager():
         "src.base.playthrough_manager.PlaythroughManager"
     ) as MockPlaythroughManager:
         yield MockPlaythroughManager
-
-
-@pytest.fixture
-def participants_manager(
-    playthrough_name, mock_character_manager, mock_playthrough_manager
-):
-    return ParticipantsManager(playthrough_name)
 
 
 def test_initialization_with_provided_managers(

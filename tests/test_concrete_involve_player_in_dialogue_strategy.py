@@ -8,7 +8,6 @@ from src.dialogues.abstracts.factory_products import PlayerInputProduct
 from src.dialogues.factories.introduce_player_input_into_dialogue_command_factory import (
     IntroducePlayerInputIntoDialogueCommandFactory,
 )
-from src.dialogues.messages_to_llm import MessagesToLlm
 from src.dialogues.strategies.concrete_involve_player_in_dialogue_strategy import (
     ConcreteInvolvePlayerInDialogueStrategy,
 )
@@ -28,11 +27,6 @@ def mock_player_input_product():
 @pytest.fixture
 def mock_transcription():
     return Mock(spec=Transcription)
-
-
-@pytest.fixture
-def mock_messages_to_llm():
-    return Mock(spec=MessagesToLlm)
 
 
 @pytest.fixture

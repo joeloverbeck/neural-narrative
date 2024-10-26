@@ -1,4 +1,5 @@
 from unittest.mock import Mock, patch
+
 from src.base.exceptions import VoiceLineGenerationError
 from src.voices.algorithms.direct_voice_line_generation_algorithm import (
     DirectVoiceLineGenerationAlgorithm,
@@ -24,7 +25,7 @@ def test_direct_voice_line_generation_no_xtts_endpoint():
 
 
 @patch("time.strftime", return_value="20220101010101")
-def test_direct_voice_line_generation_processes_each_part(mock_strftime):
+def test_direct_voice_line_generation_processes_each_part(_mock_time_strftime):
     text = "This is *emphasized* text."
     voice_part_provider_factory = Mock()
     voice_part_provider = Mock()
@@ -81,8 +82,7 @@ def test_direct_voice_line_generation_processes_each_part(mock_strftime):
     voice_line_file_name_provider.provide_file_name.assert_called_once()
 
 
-@patch("time.strftime", return_value="20220101010101")
-def test_direct_voice_line_generation_no_voice_lines_generated(mock_strftime):
+def test_direct_voice_line_generation_no_voice_lines_generated():
     text = "Sample text with no voice lines generated."
     voice_part_provider_factory = Mock()
     voice_part_provider = Mock()
@@ -111,8 +111,7 @@ def test_direct_voice_line_generation_no_voice_lines_generated(mock_strftime):
     assert result is None
 
 
-@patch("time.strftime", return_value="20220101010101")
-def test_direct_voice_line_generation_handles_exceptions(mock_strftime):
+def test_direct_voice_line_generation_handles_exceptions():
     text = "Part one. *Part two with error*. Part three."
     voice_part_provider_factory = Mock()
     voice_part_provider = Mock()
@@ -159,8 +158,7 @@ def test_direct_voice_line_generation_handles_exceptions(mock_strftime):
     assert voice_part_provider.create_voice_part.call_count == 3
 
 
-@patch("time.strftime", return_value="20220101010101")
-def test_direct_voice_line_generation_calls_provide_file_name(mock_strftime):
+def test_direct_voice_line_generation_calls_provide_file_name():
     text = "Generate voice lines for this text."
     voice_part_provider_factory = Mock()
     voice_part_provider = Mock()

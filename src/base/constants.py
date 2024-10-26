@@ -141,30 +141,3 @@ CONNECTION_GENERATION_PROMPT_FILE: str = (
 OPENROUTER_API_URL: str = "https://openrouter.ai/api/v1"
 
 LLMS_FILE: str = "data/llm/llms.json"
-
-LOCATION_TYPES = [
-    "APARTMENT_BUILDING",
-    "BAR",
-    "BURIAL_SITE",
-    "BROTHEL",
-    "CAVE_SYSTEM",
-    "CHAMBER",
-    "CLEARING",
-    "COLLEGE",
-    "FORGE",
-    "FORTRESS",
-    "GREENHOUSE",
-    "HOSPITAL",
-    "INN",
-    "LABYRINTH",
-    "LIBRARY",
-    "MALL",
-    "MANSION",
-    "MINE",
-    "OASIS",
-    "PARK",
-    "POLICE_STATION",
-    "TRAINING_GROUND",
-    "WOODS",
-    "OTHER",
-]

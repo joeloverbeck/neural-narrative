@@ -1,9 +1,11 @@
 import logging
+from pathlib import Path
 from typing import Optional
 
 from src.base.abstracts.command import Command
 from src.base.playthrough_manager import PlaythroughManager
 from src.base.validators import validate_non_empty_string
+from src.filesystem.file_operations import read_json_file
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.movements.exceptions import PlaceCharacterAtPlaceError
 
@@ -40,8 +42,8 @@ class PlaceCharacterAtPlaceCommand(Command):
                 "If you intended to remove them from the followers and place them at a location, you should remove them from the followers first."
             )
 
-        map_file = self._filesystem_manager.load_existing_or_new_json_file(
-            self._filesystem_manager.get_file_path_to_map(self._playthrough_name)
+        map_file = read_json_file(
+            Path(self._filesystem_manager.get_file_path_to_map(self._playthrough_name))
         )
 
         place = map_file.get(self._place_identifier)

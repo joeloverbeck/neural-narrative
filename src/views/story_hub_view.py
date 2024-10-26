@@ -38,7 +38,7 @@ from src.concepts.factories.plot_twists_factory import PlotTwistsFactory
 from src.concepts.factories.scenarios_factory import (
     ScenariosFactory,
 )
-from src.filesystem.file_operations import read_file_lines, read_file
+from src.filesystem.file_operations import read_file_lines, read_file, write_file
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.interfaces.web_interface_manager import WebInterfaceManager
 from src.maps.composers.places_descriptions_provider_composer import (
@@ -78,8 +78,10 @@ class StoryHubView(MethodView):
             file_path = file_path_method(playthrough_name_obj)
             data[var_name] = [line for line in read_file_lines(Path(file_path))]
         facts_file_path = filesystem_manager.get_file_path_to_facts(playthrough_name)
+
         if not os.path.exists(facts_file_path):
-            filesystem_manager.write_file(facts_file_path, None)
+            write_file(Path(facts_file_path), "")
+
         facts = read_file(Path(facts_file_path))
         data["facts"] = facts if facts else ""
         return render_template("story-hub.html", **data)
@@ -221,8 +223,8 @@ class StoryHubView(MethodView):
         elif action == "save_facts":
             facts = request.form.get("facts", "")
             facts = WebInterfaceManager.remove_excessive_newline_characters(facts)
-            filesystem_manager.write_file(
-                filesystem_manager.get_file_path_to_facts(playthrough_name), facts
+            write_file(
+                Path(filesystem_manager.get_file_path_to_facts(playthrough_name)), facts
             )
             flash("Facts saved.", "success")
             return redirect(url_for("story-hub"))

@@ -1,4 +1,5 @@
 import logging.config
+from pathlib import Path
 from typing import Optional
 
 from src.base.abstracts.command import Command
@@ -7,6 +8,7 @@ from src.base.algorithms.produce_and_update_next_identifier_algorithm import (
 )
 from src.base.identifiers_manager import IdentifiersManager
 from src.characters.character_data import CharacterDataForStorage
+from src.filesystem.file_operations import read_json_file, write_json_file
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.voices.algorithms.match_voice_data_to_voice_model_algorithm import (
     MatchVoiceDataToVoiceModelAlgorithm,
@@ -31,6 +33,7 @@ class StoreGeneratedCharacterCommand(Command):
             raise ValueError("character_data can't be empty.")
         if not character_data["name"]:
             raise ValueError("malformed character_data.")
+
         self._playthrough_name = playthrough_name
         self._match_voice_data_to_voice_model_algorithm = (
             match_voice_data_to_voice_model_algorithm
@@ -69,12 +72,8 @@ class StoreGeneratedCharacterCommand(Command):
             raise ValueError(f"Invalid character_data: {e}")
 
     def execute(self) -> None:
-        characters_file = self._filesystem_manager.get_file_path_to_characters_file(
-            self._playthrough_name
-        )
-        characters = self._filesystem_manager.load_existing_or_new_json_file(
-            characters_file
-        )
+        characters_file = read_json_file(Path(self._playthrough_name))
+        characters = read_json_file(Path(characters_file))
         modified_character_data = {
             "name": self._character_data.name,
             "description": self._character_data.description,
@@ -114,7 +113,7 @@ class StoreGeneratedCharacterCommand(Command):
         characters[
             self._produce_and_update_next_identifier_algorithm.do_algorithm()
         ] = modified_character_data
-        self._filesystem_manager.save_json_file(characters, characters_file)
+        write_json_file(Path(characters_file), characters)
         logger.info(
             f"Saved character '{self._character_data.name}' at '{characters_file}'."
         )

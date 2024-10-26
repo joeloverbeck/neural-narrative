@@ -1,3 +1,4 @@
+from pathlib import Path
 from unittest.mock import Mock, patch
 
 import pytest
@@ -18,14 +19,13 @@ from src.base.exceptions import (
 from src.filesystem.filesystem_manager import FilesystemManager
 
 
-def test_create_playthrough_success():
+@patch("src.base.commands.create_playthrough_metadata_command.read_json_file")
+def test_create_playthrough_success(mock_read_json_file):
     playthrough_name = "test_playthrough"
     story_universe_template = "test_template"
     filesystem_manager = Mock(spec=FilesystemManager)
     filesystem_manager.playthrough_exists.return_value = False
-    filesystem_manager.load_existing_or_new_json_file.return_value = {
-        "test_template": {}
-    }
+    mock_read_json_file.return_value = {"test_template": {}}
     (filesystem_manager.get_file_path_to_playthrough_metadata.return_value) = (
         "metadata.json"
     )
@@ -46,9 +46,7 @@ def test_create_playthrough_success():
             filesystem_manager.playthrough_exists.assert_called_once_with(
                 "test_playthrough"
             )
-            filesystem_manager.load_existing_or_new_json_file.assert_called_once_with(
-                STORY_UNIVERSES_TEMPLATE_FILE
-            )
+            mock_read_json_file(Path(STORY_UNIVERSES_TEMPLATE_FILE))
             filesystem_manager.create_playthrough_folder.assert_called_once_with(
                 "test_playthrough"
             )
@@ -99,14 +97,13 @@ def test_create_playthrough_already_exists():
     assert filesystem_manager.create_playthrough_folder.call_count == 0
 
 
-def test_story_universe_template_not_found():
+@patch("src.base.commands.create_playthrough_metadata_command.read_json_file")
+def test_story_universe_template_not_found(mock_read_json_file):
     playthrough_name = "new_playthrough"
     story_universe_template = "missing_template"
     filesystem_manager = Mock(spec=FilesystemManager)
     filesystem_manager.playthrough_exists.return_value = False
-    filesystem_manager.load_existing_or_new_json_file.return_value = {
-        "other_template": {}
-    }
+    mock_read_json_file.return_value = {"other_template": {}}
     command = CreatePlaythroughMetadataCommand(
         playthrough_name=playthrough_name,
         story_universe_template=story_universe_template,
@@ -119,20 +116,17 @@ def test_story_universe_template_not_found():
         in str(exc_info)
     )
     filesystem_manager.playthrough_exists.assert_called_once_with("new_playthrough")
-    filesystem_manager.load_existing_or_new_json_file.assert_called_once_with(
-        STORY_UNIVERSES_TEMPLATE_FILE
-    )
+    mock_read_json_file.assert_called_once_with(Path(STORY_UNIVERSES_TEMPLATE_FILE))
     assert filesystem_manager.create_playthrough_folder.call_count == 0
 
 
-def test_io_error_during_save():
+@patch("src.base.commands.create_playthrough_metadata_command.read_json_file")
+def test_io_error_during_save(mock_read_json_file):
     playthrough_name = "test_playthrough"
     story_universe_template = "test_template"
     filesystem_manager = Mock(spec=FilesystemManager)
     filesystem_manager.playthrough_exists.return_value = False
-    filesystem_manager.load_existing_or_new_json_file.return_value = {
-        "test_template": {}
-    }
+    mock_read_json_file.return_value = {"test_template": {}}
     (filesystem_manager.get_file_path_to_playthrough_metadata.return_value) = (
         "metadata.json"
     )
@@ -155,14 +149,13 @@ def test_io_error_during_save():
         assert "Disk full" in str(exc_info)
 
 
-def test_random_hour_is_within_range():
+@patch("src.base.commands.create_playthrough_metadata_command.read_json_file")
+def test_random_hour_is_within_range(mock_read_json_file):
     playthrough_name = "test_playthrough"
     story_universe_template = "test_template"
     filesystem_manager = Mock(spec=FilesystemManager)
     filesystem_manager.playthrough_exists.return_value = False
-    filesystem_manager.load_existing_or_new_json_file.return_value = {
-        "test_template": {}
-    }
+    mock_read_json_file.return_value = {"test_template": {}}
     (filesystem_manager.get_file_path_to_playthrough_metadata.return_value) = (
         "metadata.json"
     )

@@ -1,4 +1,5 @@
 import logging
+from pathlib import Path
 from typing import cast, Optional
 
 from src.characters.character import Character
@@ -9,6 +10,7 @@ from src.characters.products.produce_self_reflection_product import (
     ProduceSelfReflectionProduct,
 )
 from src.characters.products.self_reflection_product import SelfReflectionProduct
+from src.filesystem.file_operations import append_to_file
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.voices.factories.direct_voice_line_generation_algorithm_factory import (
     DirectVoiceLineGenerationAlgorithmFactory,
@@ -50,9 +52,11 @@ class ProduceSelfReflectionAlgorithm:
                 f"Failed to generate the self-reflection. Error: {product.get_error()}"
             )
         character = Character(self._playthrough_name, self._character_identifier)
-        self._filesystem_manager.append_to_file(
-            self._filesystem_manager.get_file_path_to_character_memories(
-                self._playthrough_name, self._character_identifier, character.name
+        append_to_file(
+            Path(
+                self._filesystem_manager.get_file_path_to_character_memories(
+                    self._playthrough_name, self._character_identifier, character.name
+                )
             ),
             "\n" + product.get(),
         )

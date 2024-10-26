@@ -1,5 +1,6 @@
 # Mocking the FilesystemManager since its implementation is not provided
-from unittest.mock import MagicMock
+from pathlib import Path
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -9,9 +10,6 @@ from src.base.identifiers_manager import IdentifiersManager
 
 class FilesystemManager:
     def get_file_path_to_playthrough_metadata(self, playthrough_name: str):
-        pass
-
-    def load_existing_or_new_json_file(self, path):
         pass
 
 
@@ -50,7 +48,8 @@ def test_get_highest_identifier_with_empty_dict():
 
 
 # Tests for the determine_next_identifier method
-def test_determine_next_identifier_success():
+@patch("src.base.identifiers_manager.read_json_file")
+def test_determine_next_identifier_success(mock_read_json_file):
     playthrough_name = "test_playthrough"
     identifier_type = IdentifierType.PLACES
     playthrough_metadata = {"last_identifiers": {"places": "5", "characters": "10"}}
@@ -59,9 +58,7 @@ def test_determine_next_identifier_success():
     mock_filesystem_manager.get_file_path_to_playthrough_metadata.return_value = (
         "/path/to/metadata.json"
     )
-    mock_filesystem_manager.load_existing_or_new_json_file.return_value = (
-        playthrough_metadata
-    )
+    mock_read_json_file.return_value = playthrough_metadata
 
     identifiers_manager = IdentifiersManager(playthrough_name, mock_filesystem_manager)
     next_identifier = identifiers_manager.determine_next_identifier(identifier_type)
@@ -69,12 +66,11 @@ def test_determine_next_identifier_success():
     mock_filesystem_manager.get_file_path_to_playthrough_metadata.assert_called_once_with(
         playthrough_name
     )
-    mock_filesystem_manager.load_existing_or_new_json_file.assert_called_once_with(
-        "/path/to/metadata.json"
-    )
+    mock_read_json_file.assert_called_once_with(Path("/path/to/metadata.json"))
 
 
-def test_determine_next_identifier_missing_identifier_type():
+@patch("src.base.identifiers_manager.read_json_file")
+def test_determine_next_identifier_missing_identifier_type(mock_read_json_file):
     playthrough_name = "test_playthrough"
     identifier_type = IdentifierType.PLACES
     playthrough_metadata = {"last_identifiers": {"characters": "10"}}
@@ -83,16 +79,15 @@ def test_determine_next_identifier_missing_identifier_type():
     mock_filesystem_manager.get_file_path_to_playthrough_metadata.return_value = (
         "/path/to/metadata.json"
     )
-    mock_filesystem_manager.load_existing_or_new_json_file.return_value = (
-        playthrough_metadata
-    )
+    mock_read_json_file.return_value = playthrough_metadata
 
     identifiers_manager = IdentifiersManager(playthrough_name, mock_filesystem_manager)
     with pytest.raises(KeyError):
         identifiers_manager.determine_next_identifier(identifier_type)
 
 
-def test_determine_next_identifier_missing_last_identifiers():
+@patch("src.base.identifiers_manager.read_json_file")
+def test_determine_next_identifier_missing_last_identifiers(mock_read_json_file):
     playthrough_name = "test_playthrough"
     identifier_type = IdentifierType.PLACES
     playthrough_metadata = {
@@ -103,16 +98,15 @@ def test_determine_next_identifier_missing_last_identifiers():
     mock_filesystem_manager.get_file_path_to_playthrough_metadata.return_value = (
         "/path/to/metadata.json"
     )
-    mock_filesystem_manager.load_existing_or_new_json_file.return_value = (
-        playthrough_metadata
-    )
+    mock_read_json_file.return_value = playthrough_metadata
 
     identifiers_manager = IdentifiersManager(playthrough_name, mock_filesystem_manager)
     with pytest.raises(KeyError):
         identifiers_manager.determine_next_identifier(identifier_type)
 
 
-def test_determine_next_identifier_invalid_current_value():
+@patch("src.base.identifiers_manager.read_json_file")
+def test_determine_next_identifier_invalid_current_value(mock_read_json_file):
     playthrough_name = "test_playthrough"
     identifier_type = IdentifierType.PLACES
     playthrough_metadata = {
@@ -123,16 +117,15 @@ def test_determine_next_identifier_invalid_current_value():
     mock_filesystem_manager.get_file_path_to_playthrough_metadata.return_value = (
         "/path/to/metadata.json"
     )
-    mock_filesystem_manager.load_existing_or_new_json_file.return_value = (
-        playthrough_metadata
-    )
+    mock_read_json_file.return_value = playthrough_metadata
 
     identifiers_manager = IdentifiersManager(playthrough_name, mock_filesystem_manager)
     with pytest.raises(ValueError):
         identifiers_manager.determine_next_identifier(identifier_type)
 
 
-def test_determine_next_identifier_characters():
+@patch("src.base.identifiers_manager.read_json_file")
+def test_determine_next_identifier_characters(mock_read_json_file):
     playthrough_name = "test_playthrough"
     identifier_type = IdentifierType.CHARACTERS
     playthrough_metadata = {"last_identifiers": {"places": "5", "characters": "10"}}
@@ -141,9 +134,7 @@ def test_determine_next_identifier_characters():
     mock_filesystem_manager.get_file_path_to_playthrough_metadata.return_value = (
         "/path/to/metadata.json"
     )
-    mock_filesystem_manager.load_existing_or_new_json_file.return_value = (
-        playthrough_metadata
-    )
+    mock_read_json_file.return_value = playthrough_metadata
 
     identifiers_manager = IdentifiersManager(playthrough_name, mock_filesystem_manager)
     next_identifier = identifiers_manager.determine_next_identifier(identifier_type)

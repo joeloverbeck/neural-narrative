@@ -1,8 +1,10 @@
 import logging
 import wave
+from pathlib import Path
 from typing import Optional, List
 
 from src.base.constants import VOICE_MODELS_FILE
+from src.filesystem.file_operations import read_json_file
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.requests.requests_manager import RequestsManager
 
@@ -19,20 +21,18 @@ class VoiceManager:
         self._requests_manager = requests_manager or RequestsManager()
         self._filesystem_manager = filesystem_manager or FilesystemManager()
 
-    def get_all_tags(self):
+    @staticmethod
+    def get_all_tags():
         all_tags = set()
-        for tags in self._filesystem_manager.load_existing_or_new_json_file(
-            VOICE_MODELS_FILE
-        ).values():
+        for tags in read_json_file(Path(VOICE_MODELS_FILE)).values():
             all_tags.update(tags)
         return sorted(all_tags)
 
-    def filter_voice_models_by_tags(self, selected_tags):
+    @staticmethod
+    def filter_voice_models_by_tags(selected_tags):
         filtered_voice_models = {
             vm_name: tags
-            for vm_name, tags in self._filesystem_manager.load_existing_or_new_json_file(
-                VOICE_MODELS_FILE
-            ).items()
+            for vm_name, tags in read_json_file(Path(VOICE_MODELS_FILE)).items()
             if all(tag in tags for tag in selected_tags)
         }
         return filtered_voice_models

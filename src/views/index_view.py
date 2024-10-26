@@ -1,4 +1,5 @@
 import logging
+from pathlib import Path
 
 from flask import render_template, request, session, redirect, url_for, jsonify
 from flask.views import MethodView
@@ -11,6 +12,7 @@ from src.base.exceptions import NoEligibleWorldsError
 from src.base.factories.story_universe_factory import StoryUniverseFactory
 from src.base.playthrough_manager import PlaythroughManager
 from src.base.tools import capture_traceback
+from src.filesystem.file_operations import read_json_file
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.prompting.composers.produce_tool_response_strategy_factory_composer import (
     ProduceToolResponseStrategyFactoryComposer,
@@ -23,13 +25,12 @@ logger = logging.getLogger(__name__)
 
 class IndexView(MethodView):
 
-    def get(self):
+    @staticmethod
+    def get():
         filesystem_manager = FilesystemManager()
         playthrough_names = filesystem_manager.get_playthrough_names()
 
-        story_universes = filesystem_manager.load_existing_or_new_json_file(
-            STORY_UNIVERSES_TEMPLATE_FILE
-        )
+        story_universes = read_json_file(Path(STORY_UNIVERSES_TEMPLATE_FILE))
         return render_template(
             "index.html",
             playthrough_names=playthrough_names,

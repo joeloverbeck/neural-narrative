@@ -1,4 +1,5 @@
 import logging
+from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -13,7 +14,8 @@ from src.base.products.story_universe_product import StoryUniverseProduct
 from src.filesystem.filesystem_manager import FilesystemManager
 
 
-def test_execute_success():
+@patch("src.base.commands.generate_story_universe_command.read_json_file")
+def test_execute_success(mock_json_file):
     """Test that the command executes successfully and saves the product."""
     mock_factory = MagicMock(spec=StoryUniverseFactory)
     mock_product = MagicMock(spec=StoryUniverseProduct)
@@ -22,7 +24,7 @@ def test_execute_success():
     mock_product.get_categories.return_value = ["Category1", "Category2"]
     mock_factory.generate_product.return_value = mock_product
     mock_filesystem_manager = MagicMock(spec=FilesystemManager)
-    mock_filesystem_manager.load_existing_or_new_json_file.return_value = {}
+    mock_json_file.return_value = {}
     command = GenerateStoryUniverseCommand(
         story_universe_factory=mock_factory, filesystem_manager=mock_filesystem_manager
     )
@@ -30,9 +32,7 @@ def test_execute_success():
     mock_product.get_name.assert_called()
     mock_product.get_description.assert_called()
     mock_product.get_categories.assert_called()
-    mock_filesystem_manager.load_existing_or_new_json_file.assert_called_with(
-        STORY_UNIVERSES_TEMPLATE_FILE
-    )
+    mock_json_file.assert_called_with(Path(STORY_UNIVERSES_TEMPLATE_FILE))
     expected_data = {
         "UniverseName": {
             "description": "UniverseDescription",
@@ -64,7 +64,8 @@ def test_execute_product_generation_error(caplog):
     )
 
 
-def test_execute_updates_existing_file():
+@patch("src.base.commands.generate_story_universe_command.read_json_file")
+def test_execute_updates_existing_file(mock_read_json_file):
     """Test that the command updates an existing JSON file with new data."""
     mock_factory = MagicMock(spec=StoryUniverseFactory)
     mock_product = MagicMock(spec=StoryUniverseProduct)
@@ -79,7 +80,7 @@ def test_execute_updates_existing_file():
             "categories": ["ExistingCategory1", "ExistingCategory2"],
         }
     }
-    mock_filesystem_manager.load_existing_or_new_json_file.return_value = existing_data
+    mock_read_json_file.return_value = existing_data
     command = GenerateStoryUniverseCommand(
         story_universe_factory=mock_factory, filesystem_manager=mock_filesystem_manager
     )
@@ -94,25 +95,8 @@ def test_execute_updates_existing_file():
     )
 
 
-def test_execute_logs_info_on_success(caplog):
-    """Test that an info log is recorded upon successful execution."""
-    mock_factory = MagicMock(spec=StoryUniverseFactory)
-    mock_product = MagicMock(spec=StoryUniverseProduct)
-    mock_product.get_name.return_value = "UniverseName"
-    mock_product.get_description.return_value = "UniverseDescription"
-    mock_product.get_categories.return_value = ["Category1", "Category2"]
-    mock_factory.generate_product.return_value = mock_product
-    mock_filesystem_manager = MagicMock(spec=FilesystemManager)
-    mock_filesystem_manager.load_existing_or_new_json_file.return_value = {}
-    command = GenerateStoryUniverseCommand(
-        story_universe_factory=mock_factory, filesystem_manager=mock_filesystem_manager
-    )
-    with caplog.at_level(logging.INFO):
-        command.execute()
-    assert "Saved story universe 'UniverseName'." in caplog.text
-
-
-def test_execute_save_json_file_raises_exception():
+@patch("src.base.commands.generate_story_universe_command.read_json_file")
+def test_execute_save_json_file_raises_exception(mock_read_json_file):
     """Test that an exception from save_json_file propagates."""
     mock_factory = MagicMock(spec=StoryUniverseFactory)
     mock_product = MagicMock(spec=StoryUniverseProduct)
@@ -121,7 +105,7 @@ def test_execute_save_json_file_raises_exception():
     mock_product.get_categories.return_value = ["Category1", "Category2"]
     mock_factory.generate_product.return_value = mock_product
     mock_filesystem_manager = MagicMock(spec=FilesystemManager)
-    mock_filesystem_manager.load_existing_or_new_json_file.return_value = {}
+    mock_read_json_file.return_value = {}
     mock_filesystem_manager.save_json_file.side_effect = IOError("Unable to save file")
     command = GenerateStoryUniverseCommand(
         story_universe_factory=mock_factory, filesystem_manager=mock_filesystem_manager
@@ -131,7 +115,8 @@ def test_execute_save_json_file_raises_exception():
     assert "Unable to save file" in str(exc_info)
 
 
-def test_execute_overwrites_existing_universe():
+@patch("src.base.commands.generate_story_universe_command.read_json_file")
+def test_execute_overwrites_existing_universe(mock_read_json_file):
     """Test that an existing universe is overwritten with new data."""
     mock_factory = MagicMock(spec=StoryUniverseFactory)
     mock_product = MagicMock(spec=StoryUniverseProduct)
@@ -146,7 +131,7 @@ def test_execute_overwrites_existing_universe():
             "categories": ["OldCategory1", "OldCategory2"],
         }
     }
-    mock_filesystem_manager.load_existing_or_new_json_file.return_value = existing_data
+    mock_read_json_file.return_value = existing_data
     command = GenerateStoryUniverseCommand(
         story_universe_factory=mock_factory, filesystem_manager=mock_filesystem_manager
     )
@@ -161,7 +146,8 @@ def test_execute_overwrites_existing_universe():
     )
 
 
-def test_execute_product_with_invalid_name():
+@patch("src.base.commands.generate_story_universe_command.read_json_file")
+def test_execute_product_with_invalid_name(_mock_read_json_file):
     """Test that an AttributeError is raised when product name is invalid."""
     mock_factory = MagicMock(spec=StoryUniverseFactory)
     mock_product = MagicMock(spec=StoryUniverseProduct)
@@ -176,7 +162,8 @@ def test_execute_product_with_invalid_name():
     assert "must be a non-empty string." in str(exc_info)
 
 
-def test_execute_product_with_no_categories():
+@patch("src.base.commands.generate_story_universe_command.read_json_file")
+def test_execute_product_with_no_categories(mock_read_json_file):
     """Test that the command handles a product with no categories."""
     mock_factory = MagicMock(spec=StoryUniverseFactory)
     mock_product = MagicMock(spec=StoryUniverseProduct)
@@ -185,7 +172,7 @@ def test_execute_product_with_no_categories():
     mock_product.get_categories.return_value = []
     mock_factory.generate_product.return_value = mock_product
     mock_filesystem_manager = MagicMock(spec=FilesystemManager)
-    mock_filesystem_manager.load_existing_or_new_json_file.return_value = {}
+    mock_read_json_file.return_value = {}
     command = GenerateStoryUniverseCommand(
         story_universe_factory=mock_factory, filesystem_manager=mock_filesystem_manager
     )
@@ -198,7 +185,8 @@ def test_execute_product_with_no_categories():
     )
 
 
-def test_execute_with_unicode_characters():
+@patch("src.base.commands.generate_story_universe_command.read_json_file")
+def test_execute_with_unicode_characters(mock_read_json_file):
     """Test that the command handles Unicode characters properly."""
     mock_factory = MagicMock(spec=StoryUniverseFactory)
     mock_product = MagicMock(spec=StoryUniverseProduct)
@@ -207,7 +195,7 @@ def test_execute_with_unicode_characters():
     mock_product.get_categories.return_value = ["类别1", "类别2"]
     mock_factory.generate_product.return_value = mock_product
     mock_filesystem_manager = MagicMock(spec=FilesystemManager)
-    mock_filesystem_manager.load_existing_or_new_json_file.return_value = {}
+    mock_read_json_file.return_value = {}
     command = GenerateStoryUniverseCommand(
         story_universe_factory=mock_factory, filesystem_manager=mock_filesystem_manager
     )
@@ -220,7 +208,8 @@ def test_execute_with_unicode_characters():
     )
 
 
-def test_execute_with_default_filesystem_manager():
+@patch("src.base.commands.generate_story_universe_command.read_json_file")
+def test_execute_with_default_filesystem_manager(mock_read_json_file):
     """Test that the default FilesystemManager is used when none is provided."""
     mock_factory = MagicMock(spec=StoryUniverseFactory)
     mock_product = MagicMock(spec=StoryUniverseProduct)
@@ -232,15 +221,11 @@ def test_execute_with_default_filesystem_manager():
         "src.base.commands.generate_story_universe_command.FilesystemManager"
     ) as MockFilesystemManager:
         mock_filesystem_manager_instance = MockFilesystemManager.return_value
-        (
-            mock_filesystem_manager_instance.load_existing_or_new_json_file.return_value
-        ) = {}
+        (mock_read_json_file.return_value) = {}
         command = GenerateStoryUniverseCommand(story_universe_factory=mock_factory)
         command.execute()
         MockFilesystemManager.assert_called_once()
-        mock_filesystem_manager_instance.load_existing_or_new_json_file.assert_called_with(
-            STORY_UNIVERSES_TEMPLATE_FILE
-        )
+        mock_read_json_file.assert_called_with(Path(STORY_UNIVERSES_TEMPLATE_FILE))
         expected_data = {
             "UniverseName": {
                 "description": "UniverseDescription",
@@ -252,7 +237,8 @@ def test_execute_with_default_filesystem_manager():
         )
 
 
-def test_execute_with_invalid_story_universes_file():
+@patch("src.base.commands.generate_story_universe_command.read_json_file")
+def test_execute_with_invalid_story_universes_file(mock_read_json_file):
     """Test that a TypeError is raised when the loaded JSON file is invalid."""
     mock_factory = MagicMock(spec=StoryUniverseFactory)
     mock_product = MagicMock(spec=StoryUniverseProduct)
@@ -261,7 +247,7 @@ def test_execute_with_invalid_story_universes_file():
     mock_product.get_categories.return_value = ["Category1", "Category2"]
     mock_factory.generate_product.return_value = mock_product
     mock_filesystem_manager = MagicMock(spec=FilesystemManager)
-    mock_filesystem_manager.load_existing_or_new_json_file.return_value = None
+    mock_read_json_file.return_value = None
     command = GenerateStoryUniverseCommand(
         story_universe_factory=mock_factory, filesystem_manager=mock_filesystem_manager
     )

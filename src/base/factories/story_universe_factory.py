@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Optional
 
 from src.base.constants import (
@@ -6,6 +7,7 @@ from src.base.constants import (
 )
 from src.base.models.story_universe import StoryUniverse
 from src.base.products.story_universe_product import StoryUniverseProduct
+from src.filesystem.file_operations import read_json_file
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.prompting.abstracts.abstract_factories import (
     ProduceToolResponseStrategyFactory,
@@ -40,9 +42,7 @@ class StoryUniverseFactory(BaseToolResponseProvider):
         return STORY_UNIVERSE_GENERATION_PROMPT_FILE
 
     def get_prompt_kwargs(self) -> dict:
-        story_universes_file = self._filesystem_manager.load_existing_or_new_json_file(
-            STORY_UNIVERSES_TEMPLATE_FILE
-        )
+        story_universes_file = read_json_file(Path(STORY_UNIVERSES_TEMPLATE_FILE))
         return {
             "story_universe_names": [key for key, value in story_universes_file.items()]
         }

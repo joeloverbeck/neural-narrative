@@ -1,4 +1,5 @@
 import logging
+from pathlib import Path
 from typing import Optional, cast
 
 from src.base.abstracts.command import Command
@@ -8,6 +9,7 @@ from src.base.factories.story_universe_factory import StoryUniverseFactory
 from src.base.models.story_universe import StoryUniverse
 from src.base.products.story_universe_product import StoryUniverseProduct
 from src.base.validators import validate_non_empty_string
+from src.filesystem.file_operations import read_json_file
 from src.filesystem.filesystem_manager import FilesystemManager
 
 logger = logging.getLogger(__name__)
@@ -33,9 +35,7 @@ class GenerateStoryUniverseCommand(Command):
             error_message = f"Failed to generate a story universe. Error: {e}"
             logger.error(error_message)
             raise StoryUniverseGenerationError(error_message) from e
-        story_universes_file = self._filesystem_manager.load_existing_or_new_json_file(
-            STORY_UNIVERSES_TEMPLATE_FILE
-        )
+        story_universes_file = read_json_file(Path(STORY_UNIVERSES_TEMPLATE_FILE))
 
         product_name = product.get_name()
 

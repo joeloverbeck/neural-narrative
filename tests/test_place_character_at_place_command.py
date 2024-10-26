@@ -57,10 +57,14 @@ class TestPlaceCharacterAtPlaceCommand:
             exc_info.value
         )
 
-    @patch("src.base.playthrough_manager.PlaythroughManager")
+    @patch("src.movements.commands.place_character_at_place_command.read_json_file")
     @patch("src.filesystem.filesystem_manager.FilesystemManager")
+    @patch("src.base.playthrough_manager.PlaythroughManager")
     def test_execute_place_not_found_raises_value_error(
-        self, mock_filesystem_manager_class, mock_playthrough_manager_class
+        self,
+        mock_filesystem_manager_class,
+        mock_playthrough_manager_class,
+        mock_read_json_file,
     ):
         # Arrange
         playthrough_name = "test_playthrough"
@@ -72,7 +76,10 @@ class TestPlaceCharacterAtPlaceCommand:
         mock_playthrough_manager_class.return_value = mock_playthrough_manager
 
         mock_filesystem_manager = Mock(spec=FilesystemManager)
-        mock_filesystem_manager.load_existing_or_new_json_file.return_value = {}
+        mock_filesystem_manager.get_file_path_to_map.return_value = (
+            "dummy_path.json"  # Set a valid path
+        )
+        mock_read_json_file.return_value = {}
         mock_filesystem_manager_class.return_value = mock_filesystem_manager
 
         command = PlaceCharacterAtPlaceCommand(
@@ -88,10 +95,14 @@ class TestPlaceCharacterAtPlaceCommand:
             command.execute()
         assert f"Place ID {place_identifier} not found." in str(exc_info.value)
 
+    @patch("src.movements.commands.place_character_at_place_command.read_json_file")
     @patch("src.base.playthrough_manager.PlaythroughManager")
     @patch("src.filesystem.filesystem_manager.FilesystemManager")
     def test_execute_place_type_invalid_raises_exception(
-        self, mock_filesystem_manager_class, mock_playthrough_manager_class
+        self,
+        mock_filesystem_manager_class,
+        mock_playthrough_manager_class,
+        mock_read_json_file,
     ):
         # Arrange
         playthrough_name = "test_playthrough"
@@ -104,7 +115,10 @@ class TestPlaceCharacterAtPlaceCommand:
 
         map_file = {place_identifier: {"type": "invalid_type"}}
         mock_filesystem_manager = Mock(spec=FilesystemManager)
-        mock_filesystem_manager.load_existing_or_new_json_file.return_value = map_file
+        mock_filesystem_manager.get_file_path_to_map.return_value = (
+            "dummy_path.json"  # Set a valid path
+        )
+        mock_read_json_file.return_value = map_file
         mock_filesystem_manager_class.return_value = mock_filesystem_manager
 
         command = PlaceCharacterAtPlaceCommand(
@@ -122,10 +136,14 @@ class TestPlaceCharacterAtPlaceCommand:
             exc_info.value
         )
 
+    @patch("src.movements.commands.place_character_at_place_command.read_json_file")
     @patch("src.base.playthrough_manager.PlaythroughManager")
     @patch("src.filesystem.filesystem_manager.FilesystemManager")
     def test_execute_character_already_at_place_raises_exception(
-        self, mock_filesystem_manager_class, mock_playthrough_manager_class
+        self,
+        mock_filesystem_manager_class,
+        mock_playthrough_manager_class,
+        mock_read_json_file,
     ):
         # Arrange
         playthrough_name = "test_playthrough"
@@ -140,7 +158,10 @@ class TestPlaceCharacterAtPlaceCommand:
             place_identifier: {"type": "area", "characters": [character_identifier]}
         }
         mock_filesystem_manager = Mock(spec=FilesystemManager)
-        mock_filesystem_manager.load_existing_or_new_json_file.return_value = map_file
+        mock_read_json_file.return_value = map_file
+        mock_filesystem_manager.get_file_path_to_map.return_value = (
+            "dummy_path.json"  # Set a valid path
+        )
         mock_filesystem_manager_class.return_value = mock_filesystem_manager
 
         command = PlaceCharacterAtPlaceCommand(
@@ -159,11 +180,16 @@ class TestPlaceCharacterAtPlaceCommand:
             in str(exc_info.value)
         )
 
+    @patch("src.movements.commands.place_character_at_place_command.read_json_file")
     @patch("src.movements.commands.place_character_at_place_command.logger")
     @patch("src.base.playthrough_manager.PlaythroughManager")
     @patch("src.filesystem.filesystem_manager.FilesystemManager")
     def test_execute_character_placed_successfully(
-        self, mock_filesystem_manager_class, mock_playthrough_manager_class, mock_logger
+        self,
+        mock_filesystem_manager_class,
+        mock_playthrough_manager_class,
+        mock_logger,
+        mock_read_json_file,
     ):
         # Arrange
         playthrough_name = "test_playthrough"
@@ -176,7 +202,10 @@ class TestPlaceCharacterAtPlaceCommand:
 
         map_file = {place_identifier: {"type": "area", "characters": []}}
         mock_filesystem_manager = Mock(spec=FilesystemManager)
-        mock_filesystem_manager.load_existing_or_new_json_file.return_value = map_file
+        mock_read_json_file.return_value = map_file
+        mock_filesystem_manager.get_file_path_to_map.return_value = (
+            "dummy_path.json"  # Set a valid path
+        )
         mock_filesystem_manager_class.return_value = mock_filesystem_manager
 
         command = PlaceCharacterAtPlaceCommand(

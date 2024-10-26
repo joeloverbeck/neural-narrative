@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 from src.base.abstracts.command import Command
 from src.base.validators import validate_non_empty_string
@@ -9,6 +10,7 @@ from src.dialogues.factories.load_data_from_ongoing_dialogue_command_factory imp
 )
 from src.dialogues.participants import Participants
 from src.dialogues.transcription import Transcription
+from src.filesystem.file_operations import read_json_file
 from src.filesystem.filesystem_manager import FilesystemManager
 
 
@@ -46,10 +48,8 @@ class HandlePossibleExistenceOfOngoingConversationCommand(Command):
                 self._playthrough_name
             )
         )
-        if os.path.exists(
-            ongoing_dialogue_path
-        ) and "participants" in self._filesystem_manager.load_existing_or_new_json_file(
-            ongoing_dialogue_path
+        if os.path.exists(ongoing_dialogue_path) and "participants" in read_json_file(
+            Path(ongoing_dialogue_path)
         ):
             self._load_data_from_ongoing_dialogue_command_factory.create_load_data_from_ongoing_dialogue_command(
                 self._transcription

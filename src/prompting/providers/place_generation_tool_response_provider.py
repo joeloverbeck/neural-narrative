@@ -1,4 +1,5 @@
 import logging
+from pathlib import Path
 from typing import Optional, Dict
 
 from pydantic import BaseModel
@@ -16,9 +17,10 @@ from src.base.constants import (
 )
 from src.base.enums import TemplateType
 from src.base.validators import validate_non_empty_string
+from src.filesystem.file_operations import read_json_file
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.models.area import Area
-from src.maps.models.location import Location
+from src.maps.models.location import get_custom_location_class
 from src.maps.models.region import Region
 from src.maps.models.world import World
 from src.maps.template_type_data import TemplateTypeData
@@ -78,7 +80,7 @@ class PlaceGenerationToolResponseProvider(
                 prompt_file=LOCATION_GENERATION_PROMPT_FILE,
                 father_templates_file_path=AREAS_TEMPLATES_FILE,
                 current_place_templates_file_path=LOCATIONS_TEMPLATES_FILE,
-                response_model=Location,
+                response_model=get_custom_location_class(),
             ),
         }
 
@@ -94,14 +96,12 @@ class PlaceGenerationToolResponseProvider(
 
     def get_prompt_kwargs(self) -> dict:
         template_data = self._get_template_type_data()
-        father_templates_file = self._filesystem_manager.load_existing_or_new_json_file(
-            template_data.father_templates_file_path
+        father_templates_file = read_json_file(
+            Path(template_data.father_templates_file_path)
         )
         place_template = father_templates_file[self._father_place_identifier]
-        current_place_type_templates = (
-            self._filesystem_manager.load_existing_or_new_json_file(
-                template_data.current_place_templates_file_path
-            )
+        current_place_type_templates = read_json_file(
+            Path(template_data.current_place_templates_file_path)
         )
         return {
             "father_place_name": self._father_place_identifier,

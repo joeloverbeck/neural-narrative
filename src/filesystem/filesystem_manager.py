@@ -4,9 +4,8 @@ import os
 import shutil
 import sys
 from datetime import datetime
-from json import JSONDecodeError
 from pathlib import Path
-from typing import List, Optional, Dict
+from typing import List, Dict
 
 from src.base.constants import (
     CHARACTERS_FOLDER_NAME,
@@ -25,8 +24,7 @@ from src.base.constants import (
     RUNPOD_SECRET_KEY_FILE,
     VOICE_LINES_FOLDER_PATH,
 )
-from src.base.exceptions import FailedToLoadJsonError
-from src.filesystem.file_operations import read_file
+from src.filesystem.file_operations import read_file, read_json_file
 
 logger = logging.getLogger(__name__)
 
@@ -41,21 +39,6 @@ class FilesystemManager:
                 pass
 
     @staticmethod
-    def append_to_file(file_path: str, contents: str) -> None:
-        """Append the given contents to the file."""
-        with open(file_path, "a", encoding="utf-8") as file:
-            file.write(contents)
-
-    @staticmethod
-    def write_file(file_path: str, contents: Optional[str]) -> None:
-        """Write contents to a file, overwriting any existing data."""
-        with open(file_path, "w", encoding="utf-8") as file:
-            if contents:
-                file.write(contents)
-            else:
-                file.write("")
-
-    @staticmethod
     def write_binary_file(file_path: str, contents: bytes) -> None:
         """Write binary contents to a file."""
         with open(file_path, "wb") as f:
@@ -66,32 +49,6 @@ class FilesystemManager:
         """Serialize json_data to a JSON-formatted file with proper encoding."""
         with open(file_path, "w", encoding="utf-8") as f:
             json.dump(json_data, f, indent=4, ensure_ascii=False)  # noqa
-
-    @staticmethod
-    def load_existing_or_new_json_file(file_path: str) -> Dict:
-        """
-        Load existing data from a JSON file or create a new file if it doesn't exist.
-
-        Args:
-            file_path (str): The path to the JSON file.
-
-        Returns:
-            dict: The contents of the JSON file, either loaded or initialized as an empty dictionary.
-        """
-        if not file_path:
-            raise ValueError(
-                "Attempted to load or create new JSON file, but the path wasn't valid."
-            )
-        if not os.path.exists(file_path):
-            with open(file_path, "w", encoding="utf-8") as f:
-                json.dump({}, f)  # noqa
-        try:
-            with open(file_path, "r", encoding="utf-8") as f:
-                return json.load(f)
-        except JSONDecodeError as e:
-            raise FailedToLoadJsonError(
-                f"Failed to load file '{file_path}'. Error: {e}"
-            ) from e
 
     @staticmethod
     def remove_item_from_file(file_path: str, index: int):
@@ -348,8 +305,9 @@ class FilesystemManager:
             MEMORIES_FILE,
         )
 
-    def get_logging_config_file(self) -> dict:
-        return self.load_existing_or_new_json_file(LOGGING_CONFIG_FILE)
+    @staticmethod
+    def get_logging_config_file() -> dict:
+        return read_json_file(Path(LOGGING_CONFIG_FILE))
 
     def create_playthrough_folder(self, playthrough_name: str) -> None:
         """
