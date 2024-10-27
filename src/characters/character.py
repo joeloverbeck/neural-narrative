@@ -1,6 +1,7 @@
 import logging
 from typing import Dict, Optional
 
+from src.base.validators import validate_non_empty_string
 from src.filesystem.file_operations import read_json_file, write_json_file
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.filesystem.path_manager import PathManager
@@ -96,6 +97,19 @@ class Character:
                 )
                 pass
         self.save()
+
+    def get_info_for_prompt(self, role: str) -> str:
+        validate_non_empty_string(role, "role")
+        return f"""- {role} name: {self.name}
+ - Description: {self.description}
+ - Personality: {self.personality}
+ - Profile: {self.profile}
+ - Likes: {self.likes}
+ - Dislikes: {self.dislikes}
+ - Speech patterns: {self.speech_patterns}
+ - Equipment: {self.equipment}
+ - Health: {self.health}
+ -----"""
 
     def get_attribute(self, attr: str):
         return self._data.get(attr)

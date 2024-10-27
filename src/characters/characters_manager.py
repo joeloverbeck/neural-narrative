@@ -88,3 +88,12 @@ class CharactersManager:
     def get_all_character_names(self) -> List[str]:
         characters_file = self._load_characters_file()
         return [data.get("name", "") for data in characters_file.values()]
+
+    @staticmethod
+    def get_characters_info(characters: List[Character], role: str) -> Optional[str]:
+        followers_info = ""
+        for follower in characters:
+            followers_info += follower.get_info_for_prompt(role)
+        if not followers_info:
+            return None
+        return followers_info

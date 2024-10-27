@@ -1,8 +1,10 @@
+import logging
 from typing import List, Dict
 
 from flask import session, url_for
 
 from src.base.playthrough_manager import PlaythroughManager
+from src.characters.abstracts.strategies import OtherCharactersIdentifiersStrategy
 from src.characters.composers.local_information_factory_composer import (
     LocalInformationFactoryComposer,
 )
@@ -50,6 +52,8 @@ from src.prompting.composers.produce_tool_response_strategy_factory_composer imp
 )
 from src.prompting.llms import Llms
 
+logger = logging.getLogger(__name__)
+
 
 class DialogueService:
 
@@ -90,7 +94,12 @@ class DialogueService:
 
         return web_ambient_narration_observer.get_messages()[0]
 
-    def process_narrative_beat(self) -> dict:
+    def process_narrative_beat(self, participants_identifiers: List[str]) -> dict:
+        if not isinstance(participants_identifiers, list):
+            raise TypeError(
+                f"Expected participants_identifiers to be a list, but was '{type(participants_identifiers)}'."
+            )
+
         produce_tool_response_strategy_factory = (
             ProduceToolResponseStrategyFactoryComposer(
                 Llms().for_narrative_beat(),
@@ -101,9 +110,18 @@ class DialogueService:
             self._playthrough_name
         ).compose_factory()
 
+        class ParticipantsIdentifiersStrategy(OtherCharactersIdentifiersStrategy):
+            def __init__(self, inner_participants_identifiers: List[str]):
+                self._inner_participants_identifiers = inner_participants_identifiers
+
+            def get_data(self) -> List[str]:
+                return self._inner_participants_identifiers
+
         player_and_followers_information_factory = (
             PlayerAndFollowersInformationFactoryComposer(
-                self._playthrough_name
+                self._playthrough_name,
+                "Participant",
+                ParticipantsIdentifiersStrategy(participants_identifiers),
             ).compose_factory()
         )
 

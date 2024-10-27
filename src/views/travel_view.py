@@ -8,6 +8,9 @@ from src.characters.composers.player_and_followers_information_factory_composer 
     PlayerAndFollowersInformationFactoryComposer,
 )
 from src.characters.factories.character_factory import CharacterFactory
+from src.characters.strategies.followers_identifiers_strategy import (
+    FollowersIdentifiersStrategy,
+)
 from src.filesystem.config_loader import ConfigLoader
 from src.maps.factories.map_manager_factory import MapManagerFactory
 from src.movements.configs.travel_narration_factory_config import (
@@ -108,7 +111,7 @@ class TravelView(MethodView):
 
         player_and_followers_information_factory = (
             PlayerAndFollowersInformationFactoryComposer(
-                playthrough_name
+                playthrough_name, "Follower", FollowersIdentifiersStrategy()
             ).compose_factory()
         )
 

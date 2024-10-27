@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 
 from src.base.validators import validate_non_empty_string
 from src.characters.character import Character
@@ -46,3 +46,15 @@ class CharacterMemories:
         )
 
         write_file(file_path, memories)
+
+    def join_characters_memories(self, characters: List[Character]) -> List[str]:
+        joined_memories = []
+        for character in characters:
+            memories = self.load_memories(character)
+            memories_list = [
+                memory.strip()
+                for memory in memories.strip().split("\n")
+                if memory.strip()
+            ]
+            joined_memories.extend(memories_list)
+        return joined_memories

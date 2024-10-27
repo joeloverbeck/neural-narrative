@@ -10,6 +10,6 @@ Speech Patterns: {player_speech_patterns}
 Health: {player_health}
 Equipment: {player_equipment}
 -----
-{followers_information}
+{other_characters_information}
 Memories:
 {combined_memories}

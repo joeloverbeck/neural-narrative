@@ -18,20 +18,16 @@ from src.actions.models.research import Research
 from src.base.playthrough_manager import PlaythroughManager
 from src.characters.character import Character
 from src.characters.characters_manager import CharactersManager
-from src.characters.factories.character_factory import CharacterFactory
-from src.characters.factories.party_data_for_prompt_factory import (
-    PartyDataForPromptFactory,
-)
-from src.characters.factories.player_and_followers_information_factory import (
-    PlayerAndFollowersInformationFactory,
-)
-from src.characters.factories.player_data_for_prompt_factory import (
-    PlayerDataForPromptFactory,
+from src.characters.composers.player_and_followers_information_factory_composer import (
+    PlayerAndFollowersInformationFactoryComposer,
 )
 from src.characters.factories.store_character_memory_command_factory import (
     StoreCharacterMemoryCommandFactory,
 )
 from src.characters.participants_manager import ParticipantsManager
+from src.characters.strategies.followers_identifiers_strategy import (
+    FollowersIdentifiersStrategy,
+)
 from src.maps.composers.places_descriptions_provider_composer import (
     PlacesDescriptionsProviderComposer,
 )
@@ -96,15 +92,12 @@ def action_view(action_name, action_icon, action_endpoint, prompt_file):
                 ).compose_factory()
             )
 
-            player_data_for_prompt_factory = PlayerDataForPromptFactory(
-                playthrough_name, CharacterFactory(playthrough_name)
-            )
-            party_data_for_prompt_factory = PartyDataForPromptFactory(
-                playthrough_name, player_data_for_prompt_factory
-            )
             players_and_followers_information_factory = (
-                PlayerAndFollowersInformationFactory(party_data_for_prompt_factory)
+                PlayerAndFollowersInformationFactoryComposer(
+                    playthrough_name, "Follower", FollowersIdentifiersStrategy()
+                ).compose_factory()
             )
+
             action_resolution_factory = ActionResolutionFactory(
                 playthrough_name=playthrough_name,
                 action_name=action_name,

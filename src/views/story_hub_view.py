@@ -4,15 +4,11 @@ from flask import session, redirect, url_for, render_template, request, jsonify,
 from flask.views import MethodView
 
 from src.base.tools import capture_traceback
-from src.characters.factories.character_factory import CharacterFactory
-from src.characters.factories.party_data_for_prompt_factory import (
-    PartyDataForPromptFactory,
+from src.characters.composers.player_and_followers_information_factory_composer import (
+    PlayerAndFollowersInformationFactoryComposer,
 )
-from src.characters.factories.player_and_followers_information_factory import (
-    PlayerAndFollowersInformationFactory,
-)
-from src.characters.factories.player_data_for_prompt_factory import (
-    PlayerDataForPromptFactory,
+from src.characters.strategies.followers_identifiers_strategy import (
+    FollowersIdentifiersStrategy,
 )
 from src.concepts.algorithms.generate_dilemmas_algorithm import (
     GenerateDilemmasAlgorithm,
@@ -147,15 +143,12 @@ class StoryHubView(MethodView):
             ).compose_factory()
         )
 
-        player_data_for_prompt_factory = PlayerDataForPromptFactory(
-            playthrough_name, CharacterFactory(playthrough_name_obj)
+        player_and_followers_information_factory = (
+            PlayerAndFollowersInformationFactoryComposer(
+                playthrough_name, "Follower", FollowersIdentifiersStrategy()
+            ).compose_factory()
         )
-        party_data_for_prompt_factory = PartyDataForPromptFactory(
-            playthrough_name, player_data_for_prompt_factory
-        )
-        player_and_followers_information_factory = PlayerAndFollowersInformationFactory(
-            party_data_for_prompt_factory
-        )
+
         places_descriptions_provider = PlacesDescriptionsProviderComposer(
             playthrough_name
         ).compose_provider()

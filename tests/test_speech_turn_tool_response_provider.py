@@ -229,7 +229,7 @@ def test_get_prompt_kwargs_with_player_identifier():
         prompt_kwargs["participants_without_player"]
         == expected_participants_without_player
     )
-    assert prompt_kwargs["dialogue"] == transcription.get()
+    assert prompt_kwargs["dialogue"] == transcription.get_prettified_transcription()
 
 
 @patch("src.prompting.providers.base_tool_response_provider.read_file")
