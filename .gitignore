@@ -170,6 +170,13 @@ cython_debug/
 /voice_models
 /playthroughs/*
 
+
+/data/templates/locations.json
+/data/templates/areas.json
+/data/templates/regions.json
+/data/templates/worlds.json
+/data/templates/story_universes.json
+
 /data/templates/secret_locations.json
 /data/templates/secret_areas.json
 /data/templates/secret_regions.json
