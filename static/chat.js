@@ -60,7 +60,11 @@ function formatMessageTexts() {
 
 // Function to handle AJAX success for both chat and event forms
 function chatSuccessHandler(response) {
-    if (response.success) {
+    if (response.goodbye){
+        // Handle goodbye scenario
+        window.location.href = '/story-hub';
+    }
+    else if (response.success) {
         // Update the chat window with new messages
         appendMessages(response.messages);
         // Clear the input fields
@@ -68,9 +72,6 @@ function chatSuccessHandler(response) {
         $('#event-input').val('');
         // Scroll to the bottom
         $('#chat-window').scrollTop($('#chat-window')[0].scrollHeight);
-    } else if (response.goodbye) {
-        // Handle goodbye scenario
-        window.location.href = '/story-hub';
     } else {
         showToast(response.error || 'error',  'error');
     }

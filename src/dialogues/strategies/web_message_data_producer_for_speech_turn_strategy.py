@@ -47,7 +47,7 @@ class WebMessageDataProducerForSpeechTurnStrategy(
             "sender_name": name,
             "sender_photo_url": image_url,
             "message_text": format_speech(
-                narration_text, speech_turn_choice_response.get()["speech"]
+                narration_text, speech_data_product.get()["speech"]
             ),
             "voice_model": voice_model,
         }

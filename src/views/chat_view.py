@@ -3,6 +3,7 @@ import logging
 from flask import redirect, session, render_template, url_for, flash, request, jsonify
 from flask.views import MethodView
 
+from src.base.tools import capture_traceback
 from src.dialogues.algorithms.handle_dialogue_state_algorithm import (
     HandleDialogueStateAlgorithm,
 )
@@ -71,8 +72,6 @@ class ChatView(MethodView):
         user_input = request.form.get("user_input")
         event_input = request.form.get("event_input")
 
-        logger.info("Action: %s", action)
-
         if action == "Send":
             if not user_input:
                 if request.headers.get("X-Requested-With") == "XMLHttpRequest":
@@ -84,7 +83,16 @@ class ChatView(MethodView):
                     flash("Please enter a message.")
                     return redirect(url_for("chat"))
             dialogue_service = DialogueService()
-            messages, is_goodbye = dialogue_service.process_user_input(user_input)
+
+            try:
+                messages, is_goodbye = dialogue_service.process_user_input(user_input)
+            except Exception as e:
+                capture_traceback()
+                if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                    return jsonify({"success": False, "error": f"Error: {str(e)}"}), 200
+                else:
+                    return redirect(url_for("chat"))
+
             if is_goodbye:
                 session.pop("participants", None)
                 session.pop("dialogue", None)
