@@ -18,7 +18,9 @@ class FilterOutUsedTemplatesAlgorithm:
         self._templates_repository = templates_repository or TemplatesRepository()
 
     def do_algorithm(self) -> dict:
-        available_templates = self._templates_repository.load_template(self._place_type)
+        available_templates = self._templates_repository.load_templates(
+            self._place_type
+        )
 
         # This is the only place where we can filter the templates, removing those already used for place_type.
         used_templates = (

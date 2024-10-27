@@ -21,7 +21,8 @@ from src.prompting.llms import Llms
 
 class ConnectionsView(MethodView):
 
-    def get(self):
+    @staticmethod
+    def get():
         playthrough_name = session.get("playthrough_name")
         if not playthrough_name:
             return redirect(url_for("index"))
@@ -29,7 +30,8 @@ class ConnectionsView(MethodView):
         all_characters = characters_manager.get_all_characters()
         return render_template("connections.html", all_characters=all_characters)
 
-    def post(self):
+    @staticmethod
+    def post():
         playthrough_name = session.get("playthrough_name")
         if not playthrough_name:
             return jsonify({"success": False, "error": "Playthrough name not found."})

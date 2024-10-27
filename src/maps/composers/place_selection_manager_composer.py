@@ -1,7 +1,6 @@
 from src.base.validators import validate_non_empty_string
 from src.maps.factories.place_manager_factory import PlaceManagerFactory
 from src.maps.place_selection_manager import PlaceSelectionManager
-from src.maps.templates_repository import TemplatesRepository
 
 
 class PlaceSelectionManagerComposer:
@@ -12,5 +11,4 @@ class PlaceSelectionManagerComposer:
 
     def compose_manager(self) -> PlaceSelectionManager:
         place_manager_factory = PlaceManagerFactory(self._playthrough_name)
-        template_repository = TemplatesRepository()
-        return PlaceSelectionManager(place_manager_factory, template_repository)
+        return PlaceSelectionManager(place_manager_factory)

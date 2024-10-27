@@ -46,7 +46,7 @@ function playAudio(fileUrl, element) {
         // Play the audio
         element.audio.play().catch(function(error) {
             console.error('Error occurred while playing audio:', error);
-            showToast('The audio file couldn\'t be played.', error);
+            showToast('The audio file couldn\'t be played. Error: ' + error, 'error');
         });
         // Set the current playing audio
         currentAudio = element.audio;

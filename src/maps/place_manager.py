@@ -15,11 +15,11 @@ class PlaceManager:
         self,
         playthrough_name: str,
         map_repository: MapRepository,
-        template_repository: TemplatesRepository,
+        template_repository: Optional[TemplatesRepository] = None,
         playthrough_manager: Optional[PlaythroughManager] = None,
     ):
         self._map_repository = map_repository
-        self._template_repository = template_repository
+        self._template_repository = template_repository or TemplatesRepository()
         self._playthrough_manager = playthrough_manager or PlaythroughManager(
             playthrough_name
         )
@@ -55,7 +55,7 @@ class PlaceManager:
     def get_place_categories(
         self, place_template: str, place_type: TemplateType
     ) -> List[str]:
-        templates = self._template_repository.load_template(place_type)
+        templates = self._template_repository.load_templates(place_type)
         place_data = templates.get(place_template)
         if not place_data:
             raise ValueError(f"'{place_template}' not found in {place_type} templates.")

@@ -1,17 +1,11 @@
 import logging
-from pathlib import Path
 
 from flask import render_template, request, redirect, url_for, flash, jsonify
 from flask.views import MethodView
 
-from src.base.constants import (
-    WORLDS_TEMPLATES_FILE,
-    REGIONS_TEMPLATES_FILE,
-    AREAS_TEMPLATES_FILE,
-    STORY_UNIVERSES_TEMPLATE_FILE,
-)
 from src.base.enums import TemplateType
-from src.filesystem.file_operations import read_json_file
+from src.base.tools import capture_traceback
+from src.maps.templates_repository import TemplatesRepository
 from src.services.place_service import PlaceService
 
 logger = logging.getLogger(__name__)
@@ -20,10 +14,14 @@ logger = logging.getLogger(__name__)
 class PlacesView(MethodView):
     @staticmethod
     def get():
-        story_universes = read_json_file(Path(STORY_UNIVERSES_TEMPLATE_FILE))
-        worlds = read_json_file(Path(WORLDS_TEMPLATES_FILE))
-        regions = read_json_file(Path(REGIONS_TEMPLATES_FILE))
-        areas = read_json_file(Path(AREAS_TEMPLATES_FILE))
+        templates_repository = TemplatesRepository()
+
+        story_universes = templates_repository.load_templates(
+            TemplateType.STORY_UNIVERSE
+        )
+        worlds = templates_repository.load_templates(TemplateType.WORLD)
+        regions = templates_repository.load_templates(TemplateType.REGION)
+        areas = templates_repository.load_templates(TemplateType.AREA)
 
         return render_template(
             "places.html",
@@ -33,7 +31,8 @@ class PlacesView(MethodView):
             areas=areas,
         )
 
-    def post(self):
+    @staticmethod
+    def post():
         action = request.form.get("submit_action")
         action_configs = {
             "generate_world": {
@@ -105,6 +104,7 @@ class PlacesView(MethodView):
                         flash(action_config["success_message"], "success")
                     return redirect(url_for(action_config["redirect_url"]))
             except KeyError as e:
+                capture_traceback()
                 error_message = f"Missing required parameter: {e.args[0]}"
                 logger.error(error_message)
                 response = {"success": False, "error": error_message}

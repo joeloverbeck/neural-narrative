@@ -8,7 +8,8 @@ from src.characters.characters_manager import CharactersManager
 
 
 class CharacterEditView(MethodView):
-    def get(self):
+    @staticmethod
+    def get():
         playthrough_name = session.get("playthrough_name")
         if not playthrough_name:
             return redirect(url_for("index"))
@@ -45,7 +46,8 @@ class CharacterEditView(MethodView):
             character_data=character_data,
         )
 
-    def post(self):
+    @staticmethod
+    def post():
         playthrough_name = session.get("playthrough_name")
         if not playthrough_name:
             return redirect(url_for("index"))

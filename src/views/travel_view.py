@@ -3,12 +3,12 @@ import threading
 from flask import redirect, url_for, session, render_template, request, jsonify
 from flask.views import MethodView
 
-from src.base.constants import TIME_ADVANCED_DUE_TO_TRAVELING, NARRATOR_VOICE_MODEL
 from src.base.playthrough_manager import PlaythroughManager
 from src.characters.composers.player_and_followers_information_factory_composer import (
     PlayerAndFollowersInformationFactoryComposer,
 )
 from src.characters.factories.character_factory import CharacterFactory
+from src.filesystem.config_loader import ConfigLoader
 from src.maps.factories.map_manager_factory import MapManagerFactory
 from src.movements.configs.travel_narration_factory_config import (
     TravelNarrationFactoryConfig,
@@ -31,7 +31,8 @@ from src.voices.factories.direct_voice_line_generation_algorithm_factory import 
 
 class TravelView(MethodView):
 
-    def get(self):
+    @staticmethod
+    def get():
         playthrough_name = session.get("playthrough_name")
         if not playthrough_name:
             return redirect(url_for("index"))
@@ -69,12 +70,14 @@ class TravelView(MethodView):
         if not playthrough_name:
             return redirect(url_for("index"))
 
+        config_loader = ConfigLoader()
+
         if request.headers.get("X-Requested-With") == "XMLHttpRequest":
             # Handle AJAX request
             action = request.form.get("submit_action")
             if action == "travel":
                 TimeManager(playthrough_name).advance_time(
-                    TIME_ADVANCED_DUE_TO_TRAVELING
+                    config_loader.get_time_advanced_due_to_traveling()
                 )
                 return self.handle_travel(playthrough_name)
             else:
@@ -152,17 +155,23 @@ class TravelView(MethodView):
 
         result_dict = {}
 
+        config_loader = ConfigLoader()
+
         def generate_narrative_voice_line():
             result_dict["narrative_voice_line_url"] = (
                 direct_voice_line_generation_algorithm_factory.create_algorithm(
-                    "narrator", product.get_narrative(), NARRATOR_VOICE_MODEL
+                    "narrator",
+                    product.get_narrative(),
+                    config_loader.get_narrator_voice_model(),
                 ).direct_voice_line_generation()
             )
 
         def generate_outcome_voice_line():
             result_dict["outcome_voice_line_url"] = (
                 direct_voice_line_generation_algorithm_factory.create_algorithm(
-                    "narrator", product.get_outcome(), NARRATOR_VOICE_MODEL
+                    "narrator",
+                    product.get_outcome(),
+                    config_loader.get_narrator_voice_model(),
                 ).direct_voice_line_generation()
             )
 

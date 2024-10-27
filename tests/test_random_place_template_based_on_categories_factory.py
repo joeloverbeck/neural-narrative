@@ -180,7 +180,7 @@ class TestConcreteRandomPlaceTemplateBasedOnCategoriesFactory:
         categories = ["food"]
         location_type = "SomeLocationType"
 
-        def filter_places_by_categories_side_effect(*args, **kwargs):
+        def filter_places_by_categories_side_effect(*_args, **_kwargs):
             raise Exception("Error during filtering")
 
         (mock_place_selection_manager.filter_places_by_categories.side_effect) = (
@@ -204,7 +204,7 @@ class TestConcreteRandomPlaceTemplateBasedOnCategoriesFactory:
             filtered_places
         )
 
-        def select_random_place_side_effect(*args, **kwargs):
+        def select_random_place_side_effect(*_args, **_kwargs):
             raise Exception("Error during random selection")
 
         mock_place_selection_manager.select_random_place.side_effect = (

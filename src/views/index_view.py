@@ -1,5 +1,4 @@
 import logging
-from pathlib import Path
 
 from flask import render_template, request, session, redirect, url_for, jsonify
 from flask.views import MethodView
@@ -7,13 +6,15 @@ from flask.views import MethodView
 from src.base.commands.generate_story_universe_command import (
     GenerateStoryUniverseCommand,
 )
-from src.base.constants import STORY_UNIVERSES_TEMPLATE_FILE
+from src.base.enums import TemplateType
 from src.base.exceptions import NoEligibleWorldsError
 from src.base.factories.story_universe_factory import StoryUniverseFactory
 from src.base.playthrough_manager import PlaythroughManager
 from src.base.tools import capture_traceback
-from src.filesystem.file_operations import read_json_file
+from src.filesystem.file_operations import create_directories
 from src.filesystem.filesystem_manager import FilesystemManager
+from src.filesystem.path_manager import PathManager
+from src.maps.templates_repository import TemplatesRepository
 from src.prompting.composers.produce_tool_response_strategy_factory_composer import (
     ProduceToolResponseStrategyFactoryComposer,
 )
@@ -27,17 +28,23 @@ class IndexView(MethodView):
 
     @staticmethod
     def get():
-        filesystem_manager = FilesystemManager()
-        playthrough_names = filesystem_manager.get_playthrough_names()
+        # First ensure that the playthroughs dir exists.
+        create_directories(PathManager().get_playthroughs_path())
 
-        story_universes = read_json_file(Path(STORY_UNIVERSES_TEMPLATE_FILE))
+        playthrough_names = FilesystemManager().get_playthrough_names()
+
+        story_universes = TemplatesRepository().load_templates(
+            TemplateType.STORY_UNIVERSE
+        )
+
         return render_template(
             "index.html",
             playthrough_names=playthrough_names,
             story_universes=story_universes,
         )
 
-    def post(self):
+    @staticmethod
+    def post():
         action = request.form.get("submit_action")
         if action == "create_playthrough":
             playthrough_name = request.form["playthrough_name"]
@@ -55,7 +62,9 @@ class IndexView(MethodView):
                 capture_traceback()
                 # Delete the partially created playthrough folder
                 try:
-                    FilesystemManager().delete_playthrough_folder(playthrough_name)
+                    PlaythroughManager(playthrough_name).delete_playthrough_folder(
+                        playthrough_name
+                    )
                 except Exception as delete_error:
                     # Log the error but continue to return the original error message
                     logger.error(f"Error deleting playthrough folder: {delete_error}")

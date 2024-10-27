@@ -1,6 +1,7 @@
 import sys
+from pathlib import Path
 
-from src.filesystem.filesystem_manager import FilesystemManager
+from src.filesystem.file_operations import write_binary_file
 from src.images.factories.openai_generated_image_factory import (
     OpenAIGeneratedImageFactory,
 )
@@ -32,9 +33,8 @@ def main():
     image_name = interface_manager.prompt_for_input(
         "What should be the name of the image?: "
     )
-    FilesystemManager().write_binary_file(
-        f"data/images/{image_name}.png", url_content_product.get()
-    )
+
+    write_binary_file(Path(f"data/images/{image_name}.png"), url_content_product.get())
 
 
 if __name__ == "__main__":

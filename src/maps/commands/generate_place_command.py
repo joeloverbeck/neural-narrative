@@ -1,11 +1,10 @@
 import logging
-from pathlib import Path
+from typing import Optional
 
 from src.base.abstracts.command import Command
-from src.base.constants import TEMPLATE_FILES, PARENT_TEMPLATE_TYPE
+from src.base.constants import PARENT_TEMPLATE_TYPE
 from src.base.enums import TemplateType
 from src.base.validators import validate_non_empty_string
-from src.filesystem.file_operations import read_json_file
 from src.maps.factories.store_generated_place_command_factory import (
     StoreGeneratedPlaceCommandFactory,
 )
@@ -14,6 +13,7 @@ from src.maps.models.location import get_custom_location_class
 from src.maps.models.region import Region
 from src.maps.models.world import World
 from src.maps.place_data import PlaceData
+from src.maps.templates_repository import TemplatesRepository
 from src.prompting.providers.place_generation_tool_response_provider import (
     PlaceGenerationToolResponseProvider,
 )
@@ -33,6 +33,7 @@ class GeneratePlaceCommand(Command):
         father_place_name: str,
         place_generation_tool_response_provider: PlaceGenerationToolResponseProvider,
         store_generated_place_command_factory: StoreGeneratedPlaceCommandFactory,
+        templates_repository: Optional[TemplatesRepository] = None,
     ):
         """
         Initialize the GeneratePlaceCommand.
@@ -54,6 +55,9 @@ class GeneratePlaceCommand(Command):
         self._store_generated_place_command_factory = (
             store_generated_place_command_factory
         )
+
+        self._templates_repository = templates_repository or TemplatesRepository()
+
         expected_parent = PARENT_TEMPLATE_TYPE.get(self._place_template_type)
         if expected_parent is None:
             raise ValueError(
@@ -68,14 +72,9 @@ class GeneratePlaceCommand(Command):
         """
         Execute the command to generate and store the new place.
         """
-        father_template_file = TEMPLATE_FILES.get(self._father_place_template_type)
-
-        if not father_template_file:
-            raise ValueError(
-                f"Unrecognized father_place_template_type '{self._father_place_template_type}'."
-            )
-
-        father_place_templates = read_json_file(Path(father_template_file))
+        father_place_templates = self._templates_repository.load_templates(
+            self._father_place_template_type
+        )
 
         if self._father_place_name not in father_place_templates:
             raise ValueError(

@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from pathlib import Path
 from typing import List
 
 
@@ -8,7 +9,7 @@ class VoicePartProviderConfig:
     xtts_endpoint: str
     timestamp: str
     index: int
-    temp_dir: str
+    temp_dir: Path
     temp_file_paths: List[str]
 
     def __post_init__(self):
@@ -19,4 +20,4 @@ class VoicePartProviderConfig:
         if not self.timestamp:
             raise ValueError("timestamp can't be empty.")
         if self.index < 0:
-            raise ValueError(f'Invalid index: {self.index}.')
+            raise ValueError(f"Invalid index: {self.index}.")

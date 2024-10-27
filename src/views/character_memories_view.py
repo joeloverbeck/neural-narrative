@@ -24,7 +24,8 @@ from src.voices.factories.direct_voice_line_generation_algorithm_factory import 
 
 class CharacterMemoriesView(MethodView):
 
-    def get(self):
+    @staticmethod
+    def get():
         playthrough_name = session.get("playthrough_name")
         if not playthrough_name:
             return redirect(url_for("index"))
@@ -60,7 +61,8 @@ class CharacterMemoriesView(MethodView):
             self_reflection_voice_line_url=self_reflection_voice_line_url,
         )
 
-    def post(self):
+    @staticmethod
+    def post():
         playthrough_name = session.get("playthrough_name")
         if not playthrough_name:
             return redirect(url_for("index"))

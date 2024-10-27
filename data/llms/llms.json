@@ -40,6 +40,6 @@
   "dialogue_summary": "hermes_405b_free",
   "self-reflection": "hermes_405b_free",
   "action_resolution": "hermes_405b_free",
-  "secrets": "lumimaid_70b",
+  "secrets": "hermes_405b_free",
   "character_generation_guidelines": "hermes_405b_free"
 }

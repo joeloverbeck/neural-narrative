@@ -1,36 +1,35 @@
-from typing import cast
-
 from src.base.abstracts.command import Command
+from src.base.validators import validate_non_empty_string
+from src.dialogues.abstracts.strategies import NarrationForDialogueStrategy
 from src.dialogues.commands.store_temporary_dialogue_command import (
     StoreTemporaryDialogueCommand,
-)
-from src.dialogues.factories.ambient_narration_provider_factory import (
-    AmbientNarrationProviderFactory,
 )
 from src.dialogues.factories.handle_possible_existence_of_ongoing_conversation_command_factory import (
     HandlePossibleExistenceOfOngoingConversationCommandFactory,
 )
-from src.dialogues.models.ambient_narration import AmbientNarration
-from src.dialogues.observers.web_ambient_narration_observer import (
-    WebAmbientNarrationObserver,
+from src.dialogues.observers.web_narration_observer import (
+    WebNarrationObserver,
 )
-from src.dialogues.products.ambient_narration_product import AmbientNarrationProduct
 from src.dialogues.transcription import Transcription
 
 
-class ProduceAmbientNarrationCommand(Command):
+class ProduceNarrationForDialogueCommand(Command):
 
     def __init__(
         self,
+        message_type: str,
         transcription: Transcription,
-        web_ambient_narration_observer: WebAmbientNarrationObserver,
-        ambient_narration_provider_factory: AmbientNarrationProviderFactory,
+        web_ambient_narration_observer: WebNarrationObserver,
+        narration_for_dialogue_strategy: NarrationForDialogueStrategy,
         handle_possible_existence_of_ongoing_conversation_command_factory: HandlePossibleExistenceOfOngoingConversationCommandFactory,
         store_temporary_dialogue_command: StoreTemporaryDialogueCommand,
     ):
+        validate_non_empty_string(message_type, "message_type")
+
+        self._message_type = message_type
         self._transcription = transcription
         self._web_ambient_narration_observer = web_ambient_narration_observer
-        self._ambient_narration_provider_factory = ambient_narration_provider_factory
+        self._narration_for_dialogue_strategy = narration_for_dialogue_strategy
         (self._handle_possible_existence_of_ongoing_conversation_command_factory) = (
             handle_possible_existence_of_ongoing_conversation_command_factory
         )
@@ -41,20 +40,16 @@ class ProduceAmbientNarrationCommand(Command):
             self._transcription
         ).execute()
 
-        product = cast(
-            AmbientNarrationProduct,
-            self._ambient_narration_provider_factory.create_provider(
-                self._transcription
-            ).generate_product(AmbientNarration),
-        )
-
-        if not product.is_valid():
-            raise ValueError(
-                f"Was unable to generate ambient narration. Error: {product.get_error()}"
-            )
+        narration = self._narration_for_dialogue_strategy.produce_narration()
 
         self._web_ambient_narration_observer.update(
-            {"alignment": "center", "message_text": product.get()}
+            {
+                "alignment": "center",
+                "message_text": narration,
+                "message_type": self._message_type,
+            }
         )
-        self._transcription.add_line(product.get())
+
+        self._transcription.add_line(narration)
+
         self._store_temporary_dialogue_command.execute()

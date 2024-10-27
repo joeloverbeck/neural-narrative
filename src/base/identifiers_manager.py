@@ -1,9 +1,9 @@
 import logging.config
-from pathlib import Path
+from typing import Optional
 
 from src.base.enums import IdentifierType
 from src.filesystem.file_operations import read_json_file
-from src.filesystem.filesystem_manager import FilesystemManager
+from src.filesystem.path_manager import PathManager
 
 logger = logging.getLogger(__name__)
 
@@ -11,10 +11,11 @@ logger = logging.getLogger(__name__)
 class IdentifiersManager:
 
     def __init__(
-        self, playthrough_name: str, filesystem_manager: FilesystemManager = None
+        self, playthrough_name: str, path_manager: Optional[PathManager] = None
     ):
         self._playthrough_name = playthrough_name
-        self._filesystem_manager = filesystem_manager or FilesystemManager()
+
+        self._path_manager = path_manager or PathManager()
 
     @staticmethod
     def get_highest_identifier(data: dict) -> str:
@@ -24,12 +25,9 @@ class IdentifiersManager:
 
     def determine_next_identifier(self, identifier_type: IdentifierType) -> int:
         playthrough_metadata = read_json_file(
-            Path(
-                self._filesystem_manager.get_file_path_to_playthrough_metadata(
-                    self._playthrough_name
-                )
-            )
+            self._path_manager.get_playthrough_metadata_path(self._playthrough_name)
         )
+
         try:
             current_value = int(
                 playthrough_metadata["last_identifiers"][identifier_type.value]
@@ -37,4 +35,5 @@ class IdentifiersManager:
         except KeyError as error:
             logger.error(f"Key error when determining next identifier: {error}")
             raise
+
         return current_value + 1

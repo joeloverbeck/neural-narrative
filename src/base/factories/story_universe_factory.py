@@ -1,14 +1,13 @@
-from pathlib import Path
 from typing import Optional
 
 from src.base.constants import (
     STORY_UNIVERSE_GENERATION_PROMPT_FILE,
-    STORY_UNIVERSES_TEMPLATE_FILE,
 )
+from src.base.enums import TemplateType
 from src.base.models.story_universe import StoryUniverse
 from src.base.products.story_universe_product import StoryUniverseProduct
-from src.filesystem.file_operations import read_json_file
 from src.filesystem.filesystem_manager import FilesystemManager
+from src.maps.templates_repository import TemplatesRepository
 from src.prompting.abstracts.abstract_factories import (
     ProduceToolResponseStrategyFactory,
 )
@@ -22,9 +21,12 @@ class StoryUniverseFactory(BaseToolResponseProvider):
         story_universe_notion: str,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         filesystem_manager: Optional[FilesystemManager] = None,
+        templates_repository: Optional[TemplatesRepository] = None,
     ):
         super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
         self._story_universe_notion = story_universe_notion
+
+        self._templates_repository = templates_repository or TemplatesRepository()
 
     def get_user_content(self) -> str:
         return f"Come up with a universe for a narrative based on the user's notion: {self._story_universe_notion}"
@@ -42,7 +44,10 @@ class StoryUniverseFactory(BaseToolResponseProvider):
         return STORY_UNIVERSE_GENERATION_PROMPT_FILE
 
     def get_prompt_kwargs(self) -> dict:
-        story_universes_file = read_json_file(Path(STORY_UNIVERSES_TEMPLATE_FILE))
+        story_universes_file = self._templates_repository.load_templates(
+            TemplateType.STORY_UNIVERSE
+        )
+
         return {
             "story_universe_names": [key for key, value in story_universes_file.items()]
         }

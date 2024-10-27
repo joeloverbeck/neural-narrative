@@ -8,22 +8,18 @@ from src.base.constants import (
     AREA_GENERATION_PROMPT_FILE,
     REGION_GENERATION_PROMPT_FILE,
     LOCATION_GENERATION_PROMPT_FILE,
-    WORLDS_TEMPLATES_FILE,
-    LOCATIONS_TEMPLATES_FILE,
-    AREAS_TEMPLATES_FILE,
-    REGIONS_TEMPLATES_FILE,
     WORLD_GENERATION_PROMPT_FILE,
-    STORY_UNIVERSES_TEMPLATE_FILE,
+    PARENT_TEMPLATE_TYPE,
 )
 from src.base.enums import TemplateType
 from src.base.validators import validate_non_empty_string
-from src.filesystem.file_operations import read_json_file
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.models.area import Area
 from src.maps.models.location import get_custom_location_class
 from src.maps.models.region import Region
 from src.maps.models.world import World
 from src.maps.template_type_data import TemplateTypeData
+from src.maps.templates_repository import TemplatesRepository
 from src.prompting.abstracts.abstract_factories import (
     ToolResponseProvider,
     ProduceToolResponseStrategyFactory,
@@ -46,6 +42,7 @@ class PlaceGenerationToolResponseProvider(
         template_type: TemplateType,
         notion: str,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
+        templates_repository: Optional[TemplatesRepository] = None,
         filesystem_manager: Optional[FilesystemManager] = None,
     ):
         super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
@@ -56,37 +53,31 @@ class PlaceGenerationToolResponseProvider(
         self._template_type = template_type
         self._notion = notion
 
+        self._templates_repository = templates_repository or TemplatesRepository()
+
     def _get_template_type_data(self) -> Optional[TemplateTypeData]:
         data_mapping: Dict[TemplateType, TemplateTypeData] = {
             TemplateType.WORLD: TemplateTypeData(
                 prompt_file=WORLD_GENERATION_PROMPT_FILE,
-                father_templates_file_path=STORY_UNIVERSES_TEMPLATE_FILE,
-                current_place_templates_file_path=WORLDS_TEMPLATES_FILE,
                 response_model=World,
             ),
             TemplateType.REGION: TemplateTypeData(
                 prompt_file=REGION_GENERATION_PROMPT_FILE,
-                father_templates_file_path=WORLDS_TEMPLATES_FILE,
-                current_place_templates_file_path=REGIONS_TEMPLATES_FILE,
                 response_model=Region,
             ),
             TemplateType.AREA: TemplateTypeData(
                 prompt_file=AREA_GENERATION_PROMPT_FILE,
-                father_templates_file_path=REGIONS_TEMPLATES_FILE,
-                current_place_templates_file_path=AREAS_TEMPLATES_FILE,
                 response_model=Area,
             ),
             TemplateType.LOCATION: TemplateTypeData(
                 prompt_file=LOCATION_GENERATION_PROMPT_FILE,
-                father_templates_file_path=AREAS_TEMPLATES_FILE,
-                current_place_templates_file_path=LOCATIONS_TEMPLATES_FILE,
                 response_model=get_custom_location_class(),
             ),
         }
 
         return data_mapping.get(self._template_type)
 
-    def get_prompt_file(self) -> str:
+    def get_prompt_file(self) -> Path:
         template_data = self._get_template_type_data()
         if not template_data:
             raise ValueError(
@@ -95,14 +86,16 @@ class PlaceGenerationToolResponseProvider(
         return template_data.prompt_file
 
     def get_prompt_kwargs(self) -> dict:
-        template_data = self._get_template_type_data()
-        father_templates_file = read_json_file(
-            Path(template_data.father_templates_file_path)
+        parent_templates_file = self._templates_repository.load_templates(
+            PARENT_TEMPLATE_TYPE.get(self._template_type)
         )
-        place_template = father_templates_file[self._father_place_identifier]
-        current_place_type_templates = read_json_file(
-            Path(template_data.current_place_templates_file_path)
+
+        place_template = parent_templates_file[self._father_place_identifier]
+
+        current_place_type_templates = self._templates_repository.load_templates(
+            self._template_type
         )
+
         return {
             "father_place_name": self._father_place_identifier,
             "father_place_description": place_template["description"],

@@ -1,11 +1,10 @@
 import logging
-from pathlib import Path
+from typing import Optional
 
 from src.base.abstracts.command import Command
-from src.base.constants import TEMPLATE_FILES
 from src.base.enums import TemplateType
-from src.filesystem.file_operations import read_json_file, write_json_file
 from src.maps.place_data import PlaceData
+from src.maps.templates_repository import TemplatesRepository
 
 logger = logging.getLogger(__name__)
 
@@ -16,9 +15,12 @@ class StoreGeneratedPlaceCommand(Command):
         self,
         place_data: PlaceData,
         template_type: TemplateType,
+        templates_repository: Optional[TemplatesRepository] = None,
     ):
         self._place_data = place_data
         self._template_type = template_type
+
+        self._templates_repository = templates_repository or TemplatesRepository()
 
     def _add_place_data_to_templates_file(self, current_places_template_file):
         current_places_template_file.update(
@@ -43,16 +45,16 @@ class StoreGeneratedPlaceCommand(Command):
             ] = self._place_data.type
 
     def execute(self) -> None:
-        current_places_template_file = read_json_file(
-            Path(TEMPLATE_FILES.get(self._template_type))
+        current_places_template_file = self._templates_repository.load_templates(
+            self._template_type
         )
 
         self._add_place_data_to_templates_file(current_places_template_file)
 
         self._handle_location_type(current_places_template_file)
 
-        write_json_file(
-            Path(TEMPLATE_FILES.get(self._template_type)), current_places_template_file
+        self._templates_repository.save_templates(
+            self._template_type, current_places_template_file
         )
 
         logger.info(f"Saved {self._template_type} template '{self._place_data.name}'.")

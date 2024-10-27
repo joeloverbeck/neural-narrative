@@ -1,22 +1,19 @@
 from enum import Enum
-from pathlib import Path
 from typing import Type
 
 from pydantic import BaseModel, Field
 
-from src.filesystem.file_operations import read_file_lines, read_json_file
+from src.filesystem.file_operations import read_file_lines
+from src.filesystem.path_manager import PathManager
 
 
 def get_custom_location_class() -> Type[BaseModel]:
-    location_types = read_json_file(Path("data\paths\paths.json"))
+    location_types = read_file_lines(PathManager.get_location_types_path())
 
     # Dynamically create the Enum for Location types
     location_type_enum = Enum(
         "LocationTypeEnum",
-        {
-            name.replace(" ", "_"): name
-            for name in read_file_lines(Path(location_types["location_types"]))
-        },
+        {name.replace(" ", "_"): name for name in location_types},
     )
 
     class Location(BaseModel):

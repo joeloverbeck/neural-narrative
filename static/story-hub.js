@@ -219,25 +219,25 @@ function generatePlotBlueprintsSuccess(data, context) {
     });
 }
 
-function generateInterestingSituationsSuccess(data, context) {
+function generateScenariosSuccess(data, context) {
     generateItemsSuccess(data, context, {
         defaultSuccessMessage: 'Scenarios generated successfully.',
-        itemsKey: 'interesting_situations',
-        listSelector: '.interesting-situations-list',
-        listClass: 'interesting-situations-list',
-        itemSelector: '.interesting-situations-list .item-form',
-        createItemElement: createItemForm.bind(null, 'delete_situation'),
+        itemsKey: 'scenarios',
+        listSelector: '.scenarios-list',
+        listClass: 'scenarios-list',
+        itemSelector: '.scenarios-list .item-form',
+        createItemElement: createItemForm.bind(null, 'delete_scenario'),
         initItemForms: initItemForms
     });
 }
 
-function generateInterestingDilemmasSuccess(data, context) {
+function generateDilemmasSuccess(data, context) {
     generateItemsSuccess(data, context, {
-        defaultSuccessMessage: 'Interesting dilemmas generated successfully.',
-        itemsKey: 'interesting_dilemmas',
-        listSelector: '.interesting-dilemmas-list',
-        listClass: 'interesting-dilemmas-list',
-        itemSelector: '.interesting-dilemmas-list .item-form',
+        defaultSuccessMessage: 'Dilemmas generated successfully.',
+        itemsKey: 'dilemmas',
+        listSelector: '.dilemmas-list',
+        listClass: 'dilemmas-list',
+        itemSelector: '.dilemmas-list .item-form',
         createItemElement: createItemForm.bind(null, 'delete_dilemma'),
         initItemForms: initItemForms
     });

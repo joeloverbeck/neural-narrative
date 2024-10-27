@@ -1,4 +1,3 @@
-from pathlib import Path
 from typing import Optional, Type
 
 from pydantic import BaseModel
@@ -10,6 +9,7 @@ from src.characters.factories.player_and_followers_information_factory import (
 )
 from src.filesystem.file_operations import read_file
 from src.filesystem.filesystem_manager import FilesystemManager
+from src.filesystem.path_manager import PathManager
 from src.maps.providers.places_descriptions_provider import PlacesDescriptionsProvider
 from src.prompting.abstracts.abstract_factories import (
     ProduceToolResponseStrategyFactory,
@@ -31,6 +31,7 @@ class ActionResolutionFactory(BaseToolResponseProvider):
         prompt_file: str,
         filesystem_manager: Optional[FilesystemManager] = None,
         time_manager: Optional[TimeManager] = None,
+            path_manager: Optional[PathManager] = None,
     ):
         validate_non_empty_string(action_name, "action_name")
         validate_non_empty_string(action_goal, "action_goal")
@@ -47,6 +48,7 @@ class ActionResolutionFactory(BaseToolResponseProvider):
         self._prompt_file = prompt_file
 
         self._time_manager = time_manager or TimeManager(self._playthrough_name)
+        self._path_manager = path_manager or PathManager()
 
     def get_prompt_file(self) -> str:
         return self._prompt_file
@@ -56,11 +58,7 @@ class ActionResolutionFactory(BaseToolResponseProvider):
             "hour": self._time_manager.get_hour(),
             "time_of_day": self._time_manager.get_time_of_the_day(),
             "facts_known": read_file(
-                Path(
-                    self._filesystem_manager.get_file_path_to_facts(
-                        self._playthrough_name
-                    )
-                )
+                self._path_manager.get_facts_path(self._playthrough_name)
             ),
         }
         prompt_data.update(

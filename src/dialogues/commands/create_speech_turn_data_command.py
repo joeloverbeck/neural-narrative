@@ -88,7 +88,7 @@ class CreateSpeechTurnDataCommand(Command, Subject):
             narration_text = speech_data_product.get()["narration_text"]
 
             # The narration is optional now, so only add it if it exists.
-            if narration_text:
+            if narration_text and narration_text.lower() != "none":
                 # Add the speech turn to the transcription.
                 self._transcription.add_speech_turn(
                     name,

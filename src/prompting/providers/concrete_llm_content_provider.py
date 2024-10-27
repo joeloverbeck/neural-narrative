@@ -5,7 +5,12 @@ from pydantic import BaseModel
 
 from src.base.enums import AiCompletionErrorType
 from src.dialogues.messages_to_llm import MessagesToLlm
-from src.filesystem.filesystem_manager import FilesystemManager
+from src.filesystem.file_operations import (
+    create_empty_file_if_not_exists,
+    write_json_file,
+    create_directories,
+)
+from src.filesystem.path_manager import PathManager
 from src.prompting.abstracts.abstract_factories import (
     LlmContentProvider,
     LlmClientFactory,
@@ -31,7 +36,7 @@ class ConcreteLlmContentProvider(LlmContentProvider):
         llm_client_factory: LlmClientFactory,
         temperature=1.0,
         top_p=1.0,
-        filesystem_manager: Optional[FilesystemManager] = None,
+        path_manager: Optional[PathManager] = None,
     ):
         self._llm = llm
         self._messages_to_llm = messages_to_llm
@@ -39,7 +44,7 @@ class ConcreteLlmContentProvider(LlmContentProvider):
         self._temperature = temperature
         self._top_p = top_p
 
-        self._filesystem_manager = filesystem_manager or FilesystemManager()
+        self._path_manager = path_manager or PathManager()
 
     def generate_content(self, response_model: Type[BaseModel]) -> LlmContentProduct:
         ai_completion_product = self._llm_client_factory.create_llm_client(
@@ -74,15 +79,19 @@ class ConcreteLlmContentProvider(LlmContentProvider):
             logger.warning(f"The completion returned by the AI was malformed.")
         elif ai_completion_product.get_error() == AiCompletionErrorType.EMPTY_CONTENT:
             logger.warning(f"Attempt failed due to empty content returned by LLM.")
+
+            # Ensure the errors folder exists to begin with
+            create_directories(self._path_manager.get_errors_path())
+
             empty_content_context_file_path = (
-                self._filesystem_manager.get_file_path_to_empty_content_context_file()
+                self._path_manager.get_empty_content_context_path()
             )
-            self._filesystem_manager.create_empty_file_if_not_exists(
-                empty_content_context_file_path
+            create_empty_file_if_not_exists(empty_content_context_file_path)
+
+            write_json_file(
+                empty_content_context_file_path, self._messages_to_llm.get()
             )
-            self._filesystem_manager.save_json_file(
-                self._messages_to_llm.get(), empty_content_context_file_path
-            )
+
             logger.warning(
                 "The LLM returned empty content. That may mean that the context is too long."
             )

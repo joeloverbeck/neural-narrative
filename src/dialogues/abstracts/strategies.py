@@ -39,3 +39,9 @@ class ChooseParticipantsStrategy(Protocol):
 
     def choose_participants(self) -> List[str]:
         pass
+
+
+class NarrationForDialogueStrategy(Protocol):
+
+    def produce_narration(self) -> str:
+        pass

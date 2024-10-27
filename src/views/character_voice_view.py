@@ -15,7 +15,8 @@ from src.voices.voice_manager import VoiceManager
 
 class CharacterVoiceView(MethodView):
 
-    def get(self):
+    @staticmethod
+    def get():
         playthrough_name = session.get("playthrough_name")
         if not playthrough_name:
             return redirect(url_for("index"))
@@ -55,7 +56,8 @@ class CharacterVoiceView(MethodView):
             categories_tags=voice_categories_tags,
         )
 
-    def post(self):
+    @staticmethod
+    def post():
         playthrough_name = session.get("playthrough_name")
         if not playthrough_name:
             return redirect(url_for("index"))
@@ -66,7 +68,7 @@ class CharacterVoiceView(MethodView):
                 return redirect(url_for("character-voice"))
             try:
                 character = Character(playthrough_name, character_identifier)
-                matched_voice_model = MatchVoiceDataToVoiceModelAlgorithm.match(
+                matched_voice_model = MatchVoiceDataToVoiceModelAlgorithm().match(
                     VoiceAttributes(
                         character.voice_gender,
                         character.voice_age,

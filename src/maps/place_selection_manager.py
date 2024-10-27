@@ -11,10 +11,11 @@ class PlaceSelectionManager:
     def __init__(
         self,
         place_manager_factory: PlaceManagerFactory,
-        template_repository: TemplatesRepository,
+        template_repository: Optional[TemplatesRepository] = None,
     ):
         self._place_manager_factory = place_manager_factory
-        self._template_repository = template_repository
+
+        self._template_repository = template_repository or TemplatesRepository()
 
     def get_available_location_types(self, current_area_template: str) -> List[str]:
         place_categories = (
@@ -22,7 +23,7 @@ class PlaceSelectionManager:
                 current_area_template, TemplateType.AREA
             )
         )
-        location_templates = self._template_repository.load_template(
+        location_templates = self._template_repository.load_templates(
             TemplateType.LOCATION
         )
         filtered_places = self.filter_places_by_categories(

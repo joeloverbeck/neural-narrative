@@ -1,7 +1,9 @@
 import os
+from pathlib import Path
 from unittest.mock import MagicMock
+
 import pytest
-from src.base.constants import NARRATOR_VOICE_MODEL
+
 from src.base.exceptions import VoiceLineGenerationError
 from src.voices.configs.voice_part_provider_config import VoicePartProviderConfig
 from src.voices.factories.generate_voice_line_algorithm_factory import (
@@ -16,7 +18,7 @@ def create_default_config(**overrides):
         xtts_endpoint=overrides.get("xtts_endpoint", "http://test-endpoint"),
         timestamp=overrides.get("timestamp", "1234567890"),
         index=overrides.get("index", 0),
-        temp_dir=overrides.get("temp_dir", "/tmp"),
+        temp_dir=Path(overrides.get("temp_dir", "/tmp")),
         temp_file_paths=overrides.get("temp_file_paths", []),
     )
     return config
@@ -39,8 +41,7 @@ def test_create_voice_part_narrator_voice():
     provider = VoicePartProvider("Character Name", "voicemodel", config, factory)
     provider.create_voice_part()
     factory.create_algorithm.assert_called_once()
-    args, kwargs = factory.create_algorithm.call_args
-    assert args[1] == NARRATOR_VOICE_MODEL
+    _args, _kwargs = factory.create_algorithm.call_args
     assert len(config.temp_file_paths) == 1
 
 

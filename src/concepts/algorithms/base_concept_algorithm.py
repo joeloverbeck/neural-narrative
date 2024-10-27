@@ -10,6 +10,7 @@ from src.concepts.models.plot_twists import PlotTwists
 from src.concepts.models.scenarios import Scenarios
 from src.filesystem.file_operations import append_to_file
 from src.filesystem.filesystem_manager import FilesystemManager
+from src.filesystem.path_manager import PathManager
 
 logger = logging.getLogger(__name__)
 TProduct = TypeVar("TProduct")
@@ -24,6 +25,7 @@ class BaseConceptAlgorithm(Generic[TProduct, TFactory]):
         action_name: str,
         concept_factory: TFactory,
         filesystem_manager: Optional[FilesystemManager] = None,
+        path_manager: Optional[PathManager] = None,
     ):
         validate_non_empty_string(playthrough_name, "playthrough_name")
         validate_non_empty_string(action_name, "action_name")
@@ -31,12 +33,14 @@ class BaseConceptAlgorithm(Generic[TProduct, TFactory]):
         self._playthrough_name = playthrough_name
         self._action_name = action_name
         self._concept_factory = concept_factory
+
         self._filesystem_manager = filesystem_manager or FilesystemManager()
+        self._path_manager = path_manager
 
     def do_algorithm(self) -> List[str]:
         if self._action_name.lower() == "plot_blueprints":
             product = self._concept_factory.generate_product(PlotBlueprint)
-        elif self._action_name.lower() == "situations":
+        elif self._action_name.lower() == "scenarios":
             product = self._concept_factory.generate_product(Scenarios)
         elif self._action_name.lower() == "dilemmas":
             product = self._concept_factory.generate_product(Dilemmas)
@@ -76,9 +80,12 @@ class BaseConceptAlgorithm(Generic[TProduct, TFactory]):
                     f"Received a list with at least an invalid item: {items}"
                 )
             curated_items.append(item)
+
         content = "\n".join(filter(None, [item for item in curated_items]))
-        append_to_file(Path(file_path), content)
+
+        append_to_file(file_path, content)
+
         logger.info(f"Saved generated items to '{file_path}'.")
 
-    def get_save_file_path(self) -> str:
+    def get_save_file_path(self) -> Path:
         raise NotImplementedError("Subclasses must implement get_save_file_path.")

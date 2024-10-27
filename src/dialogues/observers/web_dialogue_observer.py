@@ -1,5 +1,7 @@
 from typing import List
+
 from flask import session
+
 from src.base.abstracts.observer import Observer
 from src.characters.characters_manager import CharactersManager
 from src.services.web_service import WebService
@@ -18,9 +20,12 @@ class WebDialogueObserver(Observer):
         file_name = DirectVoiceLineGenerationAlgorithmFactory.create_algorithm(
             message["sender_name"], message["message_text"], message["voice_model"]
         ).direct_voice_line_generation()
+
         file_url = None
+
         if file_name:
             file_url = WebService.get_file_url("voice_lines", file_name)
+
         self._messages.append(
             {
                 "alignment": message["alignment"],

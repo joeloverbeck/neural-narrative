@@ -1,12 +1,11 @@
 import logging
-from pathlib import Path
 from typing import Optional
 
 from src.base.abstracts.command import Command
 from src.base.playthrough_manager import PlaythroughManager
 from src.base.validators import validate_non_empty_string
-from src.filesystem.file_operations import read_json_file
-from src.filesystem.filesystem_manager import FilesystemManager
+from src.filesystem.file_operations import read_json_file, write_json_file
+from src.filesystem.path_manager import PathManager
 from src.movements.exceptions import PlaceCharacterAtPlaceError
 
 logger = logging.getLogger(__name__)
@@ -19,7 +18,7 @@ class PlaceCharacterAtPlaceCommand(Command):
         character_identifier: str,
         place_identifier: str,
         playthrough_manager: Optional[PlaythroughManager] = None,
-        filesystem_manager: Optional[FilesystemManager] = None,
+        path_manager: Optional[PathManager] = None,
     ):
         validate_non_empty_string(playthrough_name, "playthrough_name")
         validate_non_empty_string(character_identifier, "character_identifier")
@@ -32,7 +31,7 @@ class PlaceCharacterAtPlaceCommand(Command):
         self._playthrough_manager = playthrough_manager or PlaythroughManager(
             self._playthrough_name
         )
-        self._filesystem_manager = filesystem_manager or FilesystemManager()
+        self._path_manager = path_manager or PathManager()
 
     def execute(self) -> None:
         # First ensure that the character doesn't exist in the list of followers.
@@ -43,7 +42,7 @@ class PlaceCharacterAtPlaceCommand(Command):
             )
 
         map_file = read_json_file(
-            Path(self._filesystem_manager.get_file_path_to_map(self._playthrough_name))
+            self._path_manager.get_map_path(self._playthrough_name)
         )
 
         place = map_file.get(self._place_identifier)
@@ -71,9 +70,9 @@ class PlaceCharacterAtPlaceCommand(Command):
         characters_list.append(self._character_identifier)
 
         # Save new list of characters.
-        self._filesystem_manager.save_json_file(
+        write_json_file(
+            self._path_manager.get_map_path(self._playthrough_name),
             map_file,
-            self._filesystem_manager.get_file_path_to_map(self._playthrough_name),
         )
 
         logger.info(

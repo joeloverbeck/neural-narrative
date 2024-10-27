@@ -1,12 +1,15 @@
-from pathlib import Path
 from typing import List, Dict, Optional
 
 from src.base.identifiers_manager import IdentifiersManager
 from src.base.playthrough_manager import PlaythroughManager
 from src.base.validators import validate_non_empty_string
 from src.characters.character import Character
-from src.filesystem.file_operations import read_json_file
-from src.filesystem.filesystem_manager import FilesystemManager
+from src.filesystem.file_operations import (
+    read_json_file,
+    create_directories,
+    create_empty_json_file_if_not_exists,
+)
+from src.filesystem.path_manager import PathManager
 
 
 class CharactersManager:
@@ -14,37 +17,42 @@ class CharactersManager:
     def __init__(
         self,
         playthrough_name: str,
-        filesystem_manager: Optional[FilesystemManager] = None,
         identifiers_manager: Optional[IdentifiersManager] = None,
         playthrough_manager: Optional[PlaythroughManager] = None,
+        path_manager: Optional[PathManager] = None,
     ):
         validate_non_empty_string(playthrough_name, "playthrough_manager")
 
         self._playthrough_name = playthrough_name
-        self._filesystem_manager = filesystem_manager or FilesystemManager()
+
         self._identifiers_manager = identifiers_manager or IdentifiersManager(
             playthrough_name
         )
         self._playthrough_manager = playthrough_manager or PlaythroughManager(
             self._playthrough_name
         )
+        self._path_manager = path_manager or PathManager()
 
     def _load_characters_file(self) -> Dict[str, Dict]:
-        return read_json_file(
-            Path(
-                self._filesystem_manager.get_file_path_to_characters_file(
-                    self._playthrough_name
-                )
-            )
+        # It could be that the characters directory doesn't yet exist.
+        characters_path = self._path_manager.get_characters_path(self._playthrough_name)
+        create_directories(characters_path)
+
+        # It could be that the characters file doesn't yet exist.
+        characters_file_path = self._path_manager.get_characters_file_path(
+            self._playthrough_name
         )
 
+        create_empty_json_file_if_not_exists(characters_file_path)
+
+        return read_json_file(characters_file_path)
+
     def _load_map_file(self) -> Dict[str, Dict]:
-        return read_json_file(
-            Path(self._filesystem_manager.get_file_path_to_map(self._playthrough_name))
-        )
+        return read_json_file(self._path_manager.get_map_path(self._playthrough_name))
 
     def get_latest_character_identifier(self) -> str:
         characters_file = self._load_characters_file()
+
         return self._identifiers_manager.get_highest_identifier(characters_file)
 
     def get_characters(self, character_identifiers: List[str]) -> List[Character]:
@@ -59,8 +67,10 @@ class CharactersManager:
     def get_characters_at_current_place(self) -> List[Character]:
         current_place = self._playthrough_manager.get_current_place_identifier()
         map_file = self._load_map_file()
+
         current_place_data = map_file.get(current_place, {})
         character_ids = current_place_data.get("characters", [])
+
         return self.get_characters(character_ids)
 
     def get_characters_at_current_place_plus_followers(self) -> List[Character]:

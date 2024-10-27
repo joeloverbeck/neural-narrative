@@ -1,7 +1,9 @@
 import logging
 import os
-from src.base.constants import NARRATOR_VOICE_MODEL
+from typing import Optional
+
 from src.base.exceptions import VoiceLineGenerationError
+from src.filesystem.config_loader import ConfigLoader
 from src.voices.configs.voice_part_provider_config import VoicePartProviderConfig
 from src.voices.factories.generate_voice_line_algorithm_factory import (
     GenerateVoiceLineAlgorithmFactory,
@@ -18,6 +20,7 @@ class VoicePartProvider:
         voice_model: str,
         voice_part_provider_config: VoicePartProviderConfig,
         generate_voice_line_algorithm_factory: GenerateVoiceLineAlgorithmFactory,
+        config_loader: Optional[ConfigLoader] = None,
     ):
         self._character_name = character_name
         self._voice_model = voice_model
@@ -26,12 +29,14 @@ class VoicePartProvider:
             generate_voice_line_algorithm_factory
         )
 
+        self._config_loader = config_loader or ConfigLoader()
+
     def create_voice_part(self) -> None:
         clean_text = self._voice_part_provider_config.part.strip()
         if not clean_text:
             return
         if clean_text.startswith("*") and clean_text.endswith("*"):
-            voice_to_use = NARRATOR_VOICE_MODEL
+            voice_to_use = self._config_loader.get_narrator_voice_model()
             clean_text = clean_text.strip("*").strip()
         else:
             voice_to_use = self._voice_model

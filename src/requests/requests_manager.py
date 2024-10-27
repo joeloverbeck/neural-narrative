@@ -1,14 +1,13 @@
 import logging
 import time
-from pathlib import Path
 from typing import Optional, Any
 
 import requests
 import runpod
 
-from src.base.constants import XTTS_CONFIG_FILE
+from src.filesystem.config_loader import ConfigLoader
 from src.filesystem.file_operations import read_json_file
-from src.filesystem.filesystem_manager import FilesystemManager
+from src.filesystem.path_manager import PathManager
 
 logger = logging.getLogger(__name__)
 
@@ -17,17 +16,21 @@ class RequestsManager:
 
     def __init__(
         self,
-        filesystem_manager: Optional[FilesystemManager] = None,
         max_retries: int = 5,
         retry_delay: float = 2.0,
+        config_loader: Optional[ConfigLoader] = None,
+        path_manager: Optional[PathManager] = None,
     ):
-        self._filesystem_manager = filesystem_manager or FilesystemManager()
         self.max_retries = max_retries
         self.retry_delay = retry_delay
-        self._xtts_data = read_json_file(Path(XTTS_CONFIG_FILE))
+
+        self._config_loader = config_loader or ConfigLoader()
+        self._path_manager = path_manager or PathManager()
+
+        self._xtts_data = read_json_file(self._path_manager.get_xtts_config_path())
 
     def _get_pod_url(self) -> Optional[str]:
-        runpod.api_key = self._filesystem_manager.load_runpod_secret_key()
+        runpod.api_key = self._config_loader.load_runpod_secret_key()
         try:
             pods = runpod.get_pods()
         except Exception as e:

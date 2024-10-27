@@ -3,11 +3,11 @@ import logging
 from flask import session, redirect, url_for, render_template, request, jsonify, flash
 from flask.views import MethodView
 
-from src.base.constants import TIME_ADVANCED_DUE_TO_SEARCHING_FOR_LOCATION
 from src.base.enums import TemplateType
 from src.base.playthrough_manager import PlaythroughManager
 from src.base.tools import capture_traceback
 from src.characters.characters_manager import CharactersManager
+from src.filesystem.config_loader import ConfigLoader
 from src.maps.composers.place_selection_manager_composer import (
     PlaceSelectionManagerComposer,
 )
@@ -46,7 +46,8 @@ logger = logging.getLogger(__name__)
 
 class LocationHubView(MethodView):
 
-    def get(self):
+    @staticmethod
+    def get():
         playthrough_name = session.get("playthrough_name")
         if not playthrough_name:
             return redirect(url_for("index"))
@@ -240,6 +241,11 @@ class LocationHubView(MethodView):
         return redirect(url_for("location-hub"))
 
     @staticmethod
+    def handle_advance_time_ten_hours(playthrough_name):
+        TimeManager(playthrough_name).advance_time(10)
+        return redirect(url_for("location-hub"))
+
+    @staticmethod
     def handle_explore_cardinal_direction(playthrough_name):
         cardinal_direction = CardinalDirection(request.form.get("cardinal_direction"))
 
@@ -319,8 +325,10 @@ class LocationHubView(MethodView):
                 )
                 place_manager.add_location(new_id)
 
+                config_loader = ConfigLoader()
+
                 TimeManager(playthrough_name).advance_time(
-                    TIME_ADVANCED_DUE_TO_SEARCHING_FOR_LOCATION
+                    config_loader.get_time_advanced_due_to_searching_for_location()
                 )
         except Exception as e:
             capture_traceback()

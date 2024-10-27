@@ -1,15 +1,13 @@
 import logging.config
-from pathlib import Path
 from typing import Optional
 
 from src.base.abstracts.command import Command
 from src.base.algorithms.produce_and_update_next_identifier_algorithm import (
     ProduceAndUpdateNextIdentifierAlgorithm,
 )
-from src.base.identifiers_manager import IdentifiersManager
 from src.characters.character_data import CharacterDataForStorage
 from src.filesystem.file_operations import read_json_file, write_json_file
-from src.filesystem.filesystem_manager import FilesystemManager
+from src.filesystem.path_manager import PathManager
 from src.voices.algorithms.match_voice_data_to_voice_model_algorithm import (
     MatchVoiceDataToVoiceModelAlgorithm,
 )
@@ -26,8 +24,7 @@ class StoreGeneratedCharacterCommand(Command):
         character_data: dict,
         match_voice_data_to_voice_model_algorithm: MatchVoiceDataToVoiceModelAlgorithm,
         produce_and_update_next_identifier_algorithm: ProduceAndUpdateNextIdentifierAlgorithm,
-        filesystem_manager: Optional[FilesystemManager] = None,
-        identifiers_manager: Optional[IdentifiersManager] = None,
+        path_manager: Optional[PathManager] = None,
     ):
         if not character_data:
             raise ValueError("character_data can't be empty.")
@@ -41,10 +38,9 @@ class StoreGeneratedCharacterCommand(Command):
         self._produce_and_update_next_identifier_algorithm = (
             produce_and_update_next_identifier_algorithm
         )
-        self._filesystem_manager = filesystem_manager or FilesystemManager()
-        self._identifiers_manager = identifiers_manager or IdentifiersManager(
-            self._playthrough_name
-        )
+
+        self._path_manager = path_manager or PathManager()
+
         try:
             self._character_data = CharacterDataForStorage(
                 character_data["name"],
@@ -72,8 +68,10 @@ class StoreGeneratedCharacterCommand(Command):
             raise ValueError(f"Invalid character_data: {e}")
 
     def execute(self) -> None:
-        characters_file = read_json_file(Path(self._playthrough_name))
-        characters = read_json_file(Path(characters_file))
+        characters_file = read_json_file(
+            self._path_manager.get_characters_file_path(self._playthrough_name)
+        )
+
         modified_character_data = {
             "name": self._character_data.name,
             "description": self._character_data.description,
@@ -110,10 +108,16 @@ class StoreGeneratedCharacterCommand(Command):
                 )
             ),
         }
-        characters[
+
+        characters_file[
             self._produce_and_update_next_identifier_algorithm.do_algorithm()
         ] = modified_character_data
-        write_json_file(Path(characters_file), characters)
+
+        write_json_file(
+            self._path_manager.get_characters_file_path(self._playthrough_name),
+            characters_file,
+        )
+
         logger.info(
             f"Saved character '{self._character_data.name}' at '{characters_file}'."
         )

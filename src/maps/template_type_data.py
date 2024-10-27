@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Type
 
 from pydantic import BaseModel
@@ -6,7 +7,5 @@ from pydantic import BaseModel
 
 @dataclass
 class TemplateTypeData:
-    prompt_file: str
-    father_templates_file_path: str
-    current_place_templates_file_path: str
+    prompt_file: Path
     response_model: Type[BaseModel]

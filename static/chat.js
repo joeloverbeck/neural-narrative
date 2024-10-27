@@ -1,69 +1,47 @@
 // static/chat.js
 
-function createMessageElement(message) {
-    // Create DOM elements to represent the message
-    // Based on the existing HTML structure
-    const messageDiv = document.createElement('div');
-
-    // For ambient messages
-    if (message.alignment === 'center') {
-        messageDiv.className = 'ambient-message';
-        messageDiv.setAttribute('data-file-url', message.file_url);
-
-        const messageTextDiv = document.createElement('div');
-        messageTextDiv.className = 'ambient-message-text message-text';
-        messageTextDiv.innerHTML = message.message_text; // Use innerHTML to allow HTML formatting
-
-        const playIcon = document.createElement('i');
-        playIcon.className = 'fas fa-play play-icon';
-
-        messageDiv.appendChild(messageTextDiv);
-        messageDiv.appendChild(playIcon);
-        messageDiv.appendChild(createWaveformDiv());
-
-    } else {
-        // For chat bubbles
-        messageDiv.className = 'chat-bubble ' + message.alignment;
-        messageDiv.setAttribute('data-file-url', message.file_url);
-
-        const avatarImg = document.createElement('img');
-        avatarImg.alt = message.sender_name;
-        avatarImg.className = 'avatar';
-        avatarImg.src = message.sender_photo_url;
-
-        const messageContentDiv = document.createElement('div');
-        messageContentDiv.className = 'message-content';
-
-        const senderLabelDiv = document.createElement('div');
-        senderLabelDiv.className = 'sender-label';
-        senderLabelDiv.innerText = message.sender_name;
-
-        const messageTextDiv = document.createElement('div');
-        messageTextDiv.className = 'message-text';
-        messageTextDiv.innerHTML = message.message_text; // Use innerHTML
-
-        messageContentDiv.appendChild(senderLabelDiv);
-        messageContentDiv.appendChild(messageTextDiv);
-
-        const playIcon = document.createElement('i');
-        playIcon.className = 'fas fa-play play-icon';
-
-        // Create waveform
-        const waveformDiv = document.createElement('div');
-        waveformDiv.className = 'waveform';
-
-        for (let i = 0; i < 5; i++) {
-            const barDiv = document.createElement('div');
-            waveformDiv.appendChild(barDiv);
+// Function to append messages to the chat window
+function appendMessages(messages) {
+    messages.forEach(function(message) {
+        let messageHtml = '';
+        if (message.alignment === 'center') {
+            if (message.message_type === 'ambient') {
+                messageHtml = `
+                <div class="ambient-message" data-file-url="${message.file_url}">
+                    <div class="ambient-message-text">${message.message_text}</div>
+                    <i class="fas fa-play play-icon"></i>
+                    <div class="waveform">
+                        <div></div><div></div><div></div><div></div><div></div>
+                    </div>
+                </div>`;
+            } else if (message.message_type === 'event') {
+                messageHtml = `
+                <div class="event-message" data-file-url="${message.file_url}">
+                    <div class="event-message-text">${message.message_text}</div>
+                    <i class="fas fa-play play-icon"></i>
+                    <div class="waveform">
+                        <div></div><div></div><div></div><div></div><div></div>
+                    </div>
+                </div>`;
+            }
+        } else {
+            messageHtml = `
+            <div class="chat-bubble ${message.alignment}" data-file-url="${message.file_url}">
+                <img alt="${message.sender_name}" class="avatar" src="${message.sender_photo_url}">
+                <div class="message-content">
+                    <div class="sender-label">${message.sender_name}</div>
+                    <div class="message-text">${message.message_text}</div>
+                </div>
+                <i class="fas fa-play play-icon"></i>
+                <div class="waveform">
+                    <div></div><div></div><div></div><div></div><div></div>
+                </div>
+            </div>`;
         }
+        $('#chat-window').append(messageHtml);
+    });
 
-        messageDiv.appendChild(avatarImg);
-        messageDiv.appendChild(messageContentDiv);
-        messageDiv.appendChild(playIcon);
-        messageDiv.appendChild(createWaveformDiv());
-    }
-
-    return messageDiv;
+    formatMessageTexts();
 }
 
 function formatMessageTexts() {
@@ -80,45 +58,29 @@ function formatMessageTexts() {
     });
 }
 
-function chatSuccessHandler(data, context){
-    const { submitter } = context;
-
-    if (data.success) {
-        // Handle goodbye (if the chat has ended)
-        if (data.goodbye) {
-            window.location.href = '/story-hub'; // Redirect to another page
-            return;
-        }
-
-        // Update the chat window with the new messages
-        const chatWindow = document.getElementById('chat-window');
-        data.messages.forEach(function (message) {
-            const messageElement = createMessageElement(message);
-            chatWindow.appendChild(messageElement);
-        });
-
-        // Re-initialize event listeners for audio playback and text formatting
-        initAudioPlayback();
-        formatMessageTexts();
-
-        // Scroll to bottom
-        scrollToBottom();
-
-        // Clear the input field if action was Send
-        if (submitter && submitter.value === 'Send') {
-            document.getElementById('user-input').value = '';
-        }
-
+// Function to handle AJAX success for both chat and event forms
+function chatSuccessHandler(response) {
+    if (response.success) {
+        // Update the chat window with new messages
+        appendMessages(response.messages);
+        // Clear the input fields
+        $('#user-input').val('');
+        $('#event-input').val('');
+        // Scroll to the bottom
+        $('#chat-window').scrollTop($('#chat-window')[0].scrollHeight);
+    } else if (response.goodbye) {
+        // Handle goodbye scenario
+        window.location.href = '/story-hub';
     } else {
-        // Handle error
-        showToast('Error: ' + data.error, 'error');
+        showToast(response.error || 'error',  'error');
     }
 }
 
-function chatErrorHandler(error){
-    console.error('Error:', error);
-    showToast('An unexpected error occurred. Error: ' + error, 'error');
+// Function to handle AJAX errors
+function chatErrorHandler(xhr, status, error) {
+    showToast(xhr || error, 'error');
 }
+
 
 // Function to scroll the chat window to the bottom
 function scrollToBottom() {

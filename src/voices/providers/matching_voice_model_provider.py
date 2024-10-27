@@ -1,11 +1,9 @@
 import logging
 import random
-from pathlib import Path
 from typing import Optional
 
-from src.base.constants import VOICE_MODELS_FILE
 from src.filesystem.file_operations import read_json_file
-from src.filesystem.filesystem_manager import FilesystemManager
+from src.filesystem.path_manager import PathManager
 from src.voices.products.matching_voice_model_product import MatchingVoiceModelProduct
 from src.voices.voice_attributes import VoiceAttributes
 
@@ -17,10 +15,11 @@ class MatchingVoiceModelProvider:
     def __init__(
         self,
         voice_attributes: VoiceAttributes,
-        filesystem_manager: Optional[FilesystemManager] = None,
+        path_manager: Optional[PathManager] = None,
     ):
         self._voice_attributes = voice_attributes
-        self._filesystem_manager = filesystem_manager or FilesystemManager()
+
+        self._path_manager = path_manager or PathManager()
 
     def match_speaker(self) -> MatchingVoiceModelProduct:
         """
@@ -55,7 +54,10 @@ class MatchingVoiceModelProvider:
                 return MatchingVoiceModelProduct(
                     None, is_valid=False, error=f"Invalid {attr_name}."
                 )
-        possible_voice_models = read_json_file(Path(VOICE_MODELS_FILE))
+        possible_voice_models = read_json_file(
+            self._path_manager.get_voice_models_path()
+        )
+
         attributes_in_order = [
             ("voice_gender", voice_gender, True),
             ("voice_age", voice_age, True),
@@ -68,6 +70,7 @@ class MatchingVoiceModelProvider:
             ("voice_personality", voice_personality, True),
             ("voice_special_effects", voice_special_effects, True),
         ]
+
         for attribute_name, attribute_value, is_required in attributes_in_order:
             previous_possible_voice_models = possible_voice_models.copy()
             if attribute_value is None:
@@ -87,6 +90,7 @@ class MatchingVoiceModelProvider:
                     break
                 else:
                     continue
+
         if not possible_voice_models:
             return MatchingVoiceModelProduct(
                 None, is_valid=False, error="No matching voice models found."

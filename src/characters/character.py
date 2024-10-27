@@ -1,9 +1,9 @@
 import logging
-from pathlib import Path
 from typing import Dict, Optional
 
-from src.filesystem.file_operations import read_json_file
+from src.filesystem.file_operations import read_json_file, write_json_file
 from src.filesystem.filesystem_manager import FilesystemManager
+from src.filesystem.path_manager import PathManager
 
 logger = logging.getLogger(__name__)
 
@@ -41,20 +41,20 @@ class Character:
         playthrough_name: str,
         identifier: str,
         filesystem_manager: Optional[FilesystemManager] = None,
+        path_manager: Optional[PathManager] = None,
     ):
-        self.playthrough_name = playthrough_name
+        self._playthrough_name = playthrough_name
         self._identifier = identifier
+
         self._filesystem_manager = filesystem_manager or FilesystemManager()
+        self._path_manager = path_manager or PathManager()
+
         self._data = self._load_character_data()
         self._validate_required_attributes()
 
     def _load_character_data(self) -> Dict[str, str]:
         characters_file = read_json_file(
-            Path(
-                self._filesystem_manager.get_file_path_to_characters_file(
-                    self.playthrough_name
-                )
-            )
+            self._path_manager.get_characters_file_path(self._playthrough_name)
         )
 
         if self._identifier not in characters_file:
@@ -73,18 +73,14 @@ class Character:
 
     def save(self):
         characters_file = read_json_file(
-            Path(
-                self._filesystem_manager.get_file_path_to_characters_file(
-                    self.playthrough_name
-                )
-            )
+            self._path_manager.get_characters_file_path(self._playthrough_name)
         )
+
         characters_file[self._identifier] = self._data
-        self._filesystem_manager.save_json_file(
+
+        write_json_file(
+            self._path_manager.get_characters_file_path(self._playthrough_name),
             characters_file,
-            self._filesystem_manager.get_file_path_to_characters_file(
-                self.playthrough_name
-            ),
         )
 
     def update_data(self, updated_data: Dict[str, str]):
@@ -107,7 +103,7 @@ class Character:
     @property
     def image_url(self) -> str:
         return self._filesystem_manager.get_file_path_to_character_image_for_web(
-            self.playthrough_name, self._identifier
+            self._playthrough_name, self._identifier
         )
 
     @property

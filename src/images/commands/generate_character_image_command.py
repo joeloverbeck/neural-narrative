@@ -3,12 +3,17 @@ from pathlib import Path
 from typing import Optional
 
 from src.base.abstracts.command import Command
-from src.base.constants import DEFAULT_IMAGE_FILE, IMAGE_GENERATION_PROMPT_FILE
+from src.base.constants import IMAGE_GENERATION_PROMPT_FILE
 from src.characters.models.character_description_for_portrait import (
     CharacterDescriptionForPortrait,
 )
-from src.filesystem.file_operations import read_file
-from src.filesystem.filesystem_manager import FilesystemManager
+from src.filesystem.file_operations import (
+    read_file,
+    write_binary_file,
+    copy_file,
+    create_directories,
+)
+from src.filesystem.path_manager import PathManager
 from src.images.configs.generate_character_image_command_config import (
     GenerateCharacterImageCommandConfig,
 )
@@ -28,11 +33,12 @@ class GenerateCharacterImageCommand(Command):
         self,
         config: GenerateCharacterImageCommandConfig,
         factories_config: GenerateCharacterImageCommandFactoriesConfig,
-        filesystem_manager: Optional[FilesystemManager] = None,
+        path_manager: Optional[PathManager] = None,
     ):
         self._config = config
         self._factories_config = factories_config
-        self._filesystem_manager = filesystem_manager or FilesystemManager()
+
+        self._path_manager = path_manager or PathManager()
 
     def _get_character(self):
         """
@@ -68,11 +74,18 @@ class GenerateCharacterImageCommand(Command):
             character_description=character.description_for_portrait
         )
 
-    def _get_target_image_path(self):
+    def _get_target_image_path(self) -> Path:
         """
         Determines the target path for the character image.
         """
-        return self._filesystem_manager.get_file_path_to_character_image(
+        # Ensure the images directory exists.
+        create_directories(
+            self._path_manager.get_playthrough_images_path(
+                self._config.playthrough_name
+            )
+        )
+
+        return self._path_manager.get_character_image_path(
             self._config.playthrough_name, self._config.character_identifier
         )
 
@@ -83,7 +96,7 @@ class GenerateCharacterImageCommand(Command):
         return self._factories_config.generated_image_factory.generate_image(prompt)
 
     def _handle_image_generation_failure(
-        self, target_image_path, image_product
+        self, target_image_path: Path, image_product
     ) -> None:
         """
         Handles the scenario where image generation fails.
@@ -93,19 +106,19 @@ class GenerateCharacterImageCommand(Command):
         logger.warning(
             f"Failed to generate image for character '{self._config.character_identifier}': {error_message}"
         )
-        self._filesystem_manager.copy_file(DEFAULT_IMAGE_FILE, target_image_path)
+
+        copy_file(self._path_manager.get_default_image_path(), target_image_path)
+
         logger.info(f"Default image applied at '{target_image_path}'.")
 
-    def _download_and_save_image(self, image_product, target_image_path) -> None:
+    def _download_and_save_image(self, image_product, target_image_path: Path) -> None:
         """
         Downloads the generated image and saves it to the target path.
         """
         image_url = image_product.get()
         content_product = self._factories_config.url_content_factory.get_url(image_url)
         if content_product.is_valid():
-            self._filesystem_manager.write_binary_file(
-                target_image_path, content_product.get()
-            )
+            write_binary_file(target_image_path, content_product.get())
             logger.info(f"Image saved at '{target_image_path}'.")
         else:
             error_message = content_product.get_error()

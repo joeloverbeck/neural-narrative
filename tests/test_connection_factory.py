@@ -2,6 +2,7 @@ from typing import cast
 from unittest.mock import MagicMock, patch
 
 from src.base.constants import CONNECTION_GENERATION_PROMPT_FILE
+
 # Import the classes from your code
 from src.characters.factories.connection_factory import ConnectionFactory
 from src.characters.models.connection import Connection

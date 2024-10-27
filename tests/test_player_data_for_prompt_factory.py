@@ -1,4 +1,5 @@
 from unittest.mock import Mock
+
 from src.base.playthrough_manager import PlaythroughManager
 from src.characters.character_memories import CharacterMemories
 from src.characters.factories.character_factory import CharacterFactory
@@ -41,7 +42,6 @@ def test_player_data_for_prompt_factory_create_player_data_for_prompt():
     player.health = 100
     player.equipment = "Sword and shield"
     character_factory.create_character.return_value = player
-    memories = Mock()
     memories = "Memory1\nMemory2\n"
     character_memories.load_memories.return_value = memories
     factory = PlayerDataForPromptFactory(
@@ -132,7 +132,6 @@ def test_player_data_for_prompt_factory_create_player_data_for_prompt_with_white
     player.health = 100
     player.equipment = "Sword and shield"
     character_factory.create_character.return_value = player
-    memories = Mock()
     memories = "Memory1\n\n  \nMemory2  \n\n"
     character_memories.load_memories.return_value = memories
     factory = PlayerDataForPromptFactory(
@@ -164,7 +163,6 @@ def test_player_data_for_prompt_factory_create_player_data_for_prompt_empty_memo
     player.health = 100
     player.equipment = "Sword and shield"
     character_factory.create_character.return_value = player
-    memories = Mock()
     memories = ""
     character_memories.load_memories.return_value = memories
     factory = PlayerDataForPromptFactory(

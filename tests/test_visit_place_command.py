@@ -1,84 +1,19 @@
 from unittest.mock import Mock
+
+from src.base.playthrough_manager import PlaythroughManager
+from src.characters.algorithms.generate_character_generation_guidelines_algorithm import (
+    GenerateCharacterGenerationGuidelinesAlgorithm,
+)
+from src.characters.character_guidelines_manager import CharacterGuidelinesManager
+from src.characters.factories.generate_character_generation_guidelines_algorithm_factory import (
+    GenerateCharacterGenerationGuidelinesAlgorithmFactory,
+)
+from src.maps.factories.hierarchy_manager_factory import HierarchyManagerFactory
+from src.maps.factories.place_manager_factory import PlaceManagerFactory
+from src.maps.hierarchy_manager import HierarchyManager
+from src.maps.place_manager import PlaceManager
 from src.movements.commands.visit_place_command import VisitPlaceCommand
-
-TIME_ADVANCED_DUE_TO_EXITING_LOCATION = 10
-
-
-class Command:
-    pass
-
-
-class PlaythroughManager:
-
-    def __init__(self, playthrough_name):
-        pass
-
-    def update_current_place(self, place_identifier: str):
-        pass
-
-    def get_story_universe_template(self) -> str:
-        pass
-
-
-class TimeManager:
-
-    def __init__(self, playthrough_name):
-        pass
-
-    def advance_time(self, time_unit: int):
-        pass
-
-
-class CharacterGuidelinesManager:
-
-    def guidelines_exist(
-        self,
-        story_universe_name: str,
-        world_template: str,
-        region_template: str,
-        area_template: str,
-        location_template: str,
-    ) -> bool:
-        pass
-
-
-class GenerateCharacterGenerationGuidelinesAlgorithm:
-
-    def do_algorithm(self):
-        pass
-
-
-class GenerateCharacterGenerationGuidelinesAlgorithmFactory:
-
-    def create_algorithm(self) -> GenerateCharacterGenerationGuidelinesAlgorithm:
-        pass
-
-
-class HierarchyManager:
-
-    def fill_places_templates_parameter(self, place_identifier):
-        pass
-
-
-class HierarchyManagerFactory:
-
-    def create_hierarchy_manager(self) -> HierarchyManager:
-        pass
-
-
-class PlaceManager:
-
-    def is_visited(self, place_identifier) -> bool:
-        pass
-
-    def set_as_visited(self, place_identifier):
-        pass
-
-
-class PlaceManagerFactory:
-
-    def create_place_manager(self) -> PlaceManager:
-        pass
+from src.time.time_manager import TimeManager
 
 
 def test_execute_updates_current_place():

@@ -1,13 +1,11 @@
 import logging
-from pathlib import Path
 
 from flask import redirect, session, render_template, url_for, flash, request, jsonify
 from flask.views import MethodView
 
-from src.base.constants import MAX_DIALOGUE_ENTRIES_FOR_WEB
 from src.base.playthrough_manager import PlaythroughManager
 from src.filesystem.file_operations import read_json_file
-from src.filesystem.filesystem_manager import FilesystemManager
+from src.filesystem.path_manager import PathManager
 from src.maps.factories.map_manager_factory import MapManagerFactory
 from src.services.dialogue_service import DialogueService
 from src.time.time_manager import TimeManager
@@ -17,7 +15,8 @@ logger = logging.getLogger(__name__)
 
 class ChatView(MethodView):
 
-    def get(self):
+    @staticmethod
+    def get():
         playthrough_name = session.get("playthrough_name")
         dialogue_participants = session.get("participants")
         purpose = session.get("purpose")
@@ -31,23 +30,32 @@ class ChatView(MethodView):
             logger.info("There were no dialogue participants, and no ongoing dialogue.")
             return redirect(url_for("participants"))
 
-        filesystem_manager = FilesystemManager()
-        ongoing_dialogue_file = read_json_file(
-            Path(filesystem_manager.get_file_path_to_ongoing_dialogue(playthrough_name))
-        )
+        # At this point we have participants in the session, and maybe an ongoing dialogue.
+        if not dialogue_participants and playthrough_manager.has_ongoing_dialogue(
+            playthrough_name
+        ):
+            ongoing_dialogue_file = read_json_file(
+                PathManager.get_ongoing_dialogue_path(playthrough_name)
+            )
 
-        if not dialogue_participants:
             session["participants"] = ongoing_dialogue_file["participants"]
         if not purpose and playthrough_manager.has_ongoing_dialogue(playthrough_name):
+            ongoing_dialogue_file = read_json_file(
+                PathManager.get_ongoing_dialogue_path(playthrough_name)
+            )
+
             session["purpose"] = ongoing_dialogue_file.get("purpose", None)
 
         dialogue = session.get("dialogue", [])
+
         time_manager = TimeManager(playthrough_name)
+
         current_place_template = (
             MapManagerFactory(playthrough_name)
             .create_map_manager()
             .get_current_place_template()
         )
+
         return render_template(
             "chat.html",
             dialogue=dialogue,
@@ -55,7 +63,8 @@ class ChatView(MethodView):
             current_place_template=current_place_template,
         )
 
-    def post(self):
+    @staticmethod
+    def post():
         playthrough_name = session.get("playthrough_name")
         dialogue_participants = session.get("participants")
         if not playthrough_name or not dialogue_participants:
@@ -74,6 +83,10 @@ class ChatView(MethodView):
         dialogue = session.get("dialogue", [])
         action = request.form.get("submit_action")
         user_input = request.form.get("user_input")
+        event_input = request.form.get("event_input")
+
+        logger.info("Action: %s", action)
+
         if action == "Send":
             if not user_input:
                 if request.headers.get("X-Requested-With") == "XMLHttpRequest":
@@ -95,9 +108,9 @@ class ChatView(MethodView):
                 else:
                     return redirect(url_for("story-hub"))
             dialogue.extend(messages)
-            if len(dialogue) > MAX_DIALOGUE_ENTRIES_FOR_WEB:
-                dialogue = dialogue[-MAX_DIALOGUE_ENTRIES_FOR_WEB:]
-            session["dialogue"] = dialogue
+
+            dialogue_service.control_size_of_messages_in_session(dialogue)
+
             if request.headers.get("X-Requested-With") == "XMLHttpRequest":
                 messages_data = []
                 for msg in messages:
@@ -114,24 +127,59 @@ class ChatView(MethodView):
             else:
                 return redirect(url_for("chat"))
         elif action == "Ambient narration":
-            ambient_message = DialogueService().process_ambient_message()
+            dialogue_service = DialogueService()
+            ambient_message = dialogue_service.process_ambient_message()
             dialogue.append(ambient_message)
-            if len(dialogue) > MAX_DIALOGUE_ENTRIES_FOR_WEB:
-                dialogue = dialogue[-MAX_DIALOGUE_ENTRIES_FOR_WEB:]
-            session["dialogue"] = dialogue
+
+            dialogue_service.control_size_of_messages_in_session(dialogue)
+
             if request.headers.get("X-Requested-With") == "XMLHttpRequest":
                 messages_data = [
                     {
                         "alignment": ambient_message["alignment"],
                         "message_text": ambient_message["message_text"],
                         "file_url": ambient_message["file_url"] or "",
+                        "message_type": ambient_message["message_type"],
+                    }
+                ]
+                return jsonify({"success": True, "messages": messages_data}), 200
+            else:
+                return redirect(url_for("chat"))
+        elif action == "Event":
+            if not event_input:
+                if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                    return (
+                        jsonify({"success": False, "error": "Please enter an event."}),
+                        400,
+                    )
+                else:
+                    flash("Please enter an event.")
+                    return redirect(url_for("chat"))
+            dialogue_service = DialogueService()
+
+            event_message = dialogue_service.process_event_message(event_input)
+
+            dialogue.append(event_message)
+
+            dialogue_service.control_size_of_messages_in_session(dialogue)
+
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                messages_data = [
+                    {
+                        "alignment": event_message["alignment"],
+                        "message_text": event_message["message_text"],
+                        "file_url": event_message["file_url"] or "",
+                        "message_type": event_message["message_type"],
                     }
                 ]
                 return jsonify({"success": True, "messages": messages_data}), 200
             else:
                 return redirect(url_for("chat"))
         elif request.headers.get("X-Requested-With") == "XMLHttpRequest":
-            return jsonify({"success": False, "error": "Unknown action."}), 400
+            return (
+                jsonify({"success": False, "error": f"Unknown action: {action}."}),
+                400,
+            )
         else:
             flash("Unknown action.")
             return redirect(url_for("chat"))

@@ -1,9 +1,14 @@
-from pathlib import Path
 from typing import Optional
 
+from src.base.validators import validate_non_empty_string
 from src.characters.character import Character
-from src.filesystem.file_operations import read_file, write_file
-from src.filesystem.filesystem_manager import FilesystemManager
+from src.filesystem.file_operations import (
+    read_file,
+    write_file,
+    create_empty_file_if_not_exists,
+    create_directories,
+)
+from src.filesystem.path_manager import PathManager
 
 
 class CharacterMemories:
@@ -11,23 +16,33 @@ class CharacterMemories:
     def __init__(
         self,
         playthrough_name: str,
-        filesystem_manager: Optional[FilesystemManager] = None,
+        path_manager: Optional[PathManager] = None,
     ):
+        validate_non_empty_string(playthrough_name, "playthrough_name")
+
         self._playthrough_name = playthrough_name
-        self._filesystem_manager = filesystem_manager or FilesystemManager()
+
+        self._path_manager = path_manager or PathManager()
 
     def load_memories(self, character: Character) -> Optional[str]:
-        file_path = self._filesystem_manager.get_file_path_to_character_memories(
+        # Ensure that the character folder exists.
+        create_directories(
+            self._path_manager.get_character_path(
+                self._playthrough_name, character.identifier, character.name
+            )
+        )
+
+        file_path = self._path_manager.get_memories_path(
             self._playthrough_name, character.identifier, character.name
         )
 
-        self._filesystem_manager.create_empty_file_if_not_exists(file_path)
+        create_empty_file_if_not_exists(file_path)
 
-        return read_file(Path(file_path))
+        return read_file(file_path)
 
     def save_memories(self, character: Character, memories: str):
-        file_path = self._filesystem_manager.get_file_path_to_character_memories(
+        file_path = self._path_manager.get_memories_path(
             self._playthrough_name, character.identifier, character.name
         )
 
-        write_file(Path(file_path), memories)
+        write_file(file_path, memories)

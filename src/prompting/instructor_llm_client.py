@@ -1,5 +1,5 @@
 import logging
-from typing import Type
+from typing import Type, Optional
 
 from instructor import Instructor
 from openai.types.chat import (
@@ -8,8 +8,8 @@ from openai.types.chat import (
 )
 from pydantic import BaseModel
 
-from src.base.constants import MAX_RETRIES
 from src.dialogues.messages_to_llm import MessagesToLlm
+from src.filesystem.config_loader import ConfigLoader
 from src.prompting.abstracts.ai_completion_product import AiCompletionProduct
 from src.prompting.abstracts.llm_client import LlmClient
 from src.prompting.products.instructor_ai_completion_product import (
@@ -20,7 +20,12 @@ logger = logging.getLogger(__name__)
 
 
 class InstructorLlmClient(LlmClient):
-    def __init__(self, client: Instructor, response_model: Type[BaseModel]):
+    def __init__(
+        self,
+        client: Instructor,
+        response_model: Type[BaseModel],
+        config_loader: Optional[ConfigLoader] = None,
+    ):
         if not client:
             raise ValueError("client must not be empty.")
 
@@ -29,6 +34,8 @@ class InstructorLlmClient(LlmClient):
 
         self._client = client
         self._response_model = response_model
+
+        self._config_loader = config_loader or ConfigLoader()
 
     def generate_completion(
         self, model: str, messages_to_llm: MessagesToLlm, temperature=1.0, top_p=1.0
@@ -45,7 +52,7 @@ class InstructorLlmClient(LlmClient):
 
         model_result = self._client.chat.completions.create(
             model=model,
-            max_retries=MAX_RETRIES,
+            max_retries=self._config_loader.get_max_retries(),
             messages=messages,
             response_model=self._response_model,
         )

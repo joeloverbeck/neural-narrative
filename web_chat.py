@@ -7,7 +7,8 @@ from src.base.constants import (
     INVESTIGATE_RESOLUTION_GENERATION_PROMPT_FILE,
     GATHER_SUPPLIES_RESOLUTION_GENERATION_PROMPT_FILE,
 )
-from src.filesystem.filesystem_manager import FilesystemManager
+from src.filesystem.file_operations import read_json_file
+from src.filesystem.path_manager import PathManager
 from src.views.action_view import action_view
 from src.views.actions_view import ActionsView
 from src.views.character_edit_view import CharacterEditView
@@ -25,7 +26,8 @@ from src.views.places_view import PlacesView
 from src.views.story_hub_view import StoryHubView
 from src.views.travel_view import TravelView
 
-logging.config.dictConfig(FilesystemManager().get_logging_config_file())
+logging.config.dictConfig(read_json_file(PathManager().get_logging_config()))
+
 app = Flask(__name__)
 app.secret_key = b"neural-narrative"
 logger = logging.getLogger(__name__)

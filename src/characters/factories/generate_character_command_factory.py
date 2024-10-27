@@ -26,7 +26,6 @@ from src.characters.factories.store_generated_character_command_factory import (
 from src.images.factories.generate_character_image_command_factory import (
     GenerateCharacterImageCommandFactory,
 )
-from src.maps.places_templates_parameter import PlacesTemplatesParameter
 from src.movements.factories.place_character_at_place_command_factory import (
     PlaceCharacterAtPlaceCommandFactory,
 )
@@ -72,7 +71,6 @@ class GenerateCharacterCommandFactory:
 
     def create_generate_character_command(
         self,
-        places_templates_parameter: PlacesTemplatesParameter,
         place_character_at_current_place: bool,
         user_content: str,
     ):
@@ -92,7 +90,7 @@ class GenerateCharacterCommandFactory:
                         self._produce_tool_response_strategy_factory,
                         AutomaticUserContentForCharacterGenerationFactory(),
                         self._character_generation_instructions_formatter_factory,
-                    ).create_response_provider(places_templates_parameter),
+                    ).create_response_provider(),
                     self._speech_patterns_provider_factory,
                     self._store_generate_character_command_factory,
                     self._generate_character_image_command_factory,
@@ -112,7 +110,7 @@ class GenerateCharacterCommandFactory:
                             user_content
                         ),
                         self._character_generation_instructions_formatter_factory,
-                    ).create_response_provider(places_templates_parameter),
+                    ).create_response_provider(),
                     self._speech_patterns_provider_factory,
                     self._store_generate_character_command_factory,
                     self._generate_character_image_command_factory,

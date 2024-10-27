@@ -1,12 +1,12 @@
 from typing import Optional
 
 from src.base.abstracts.command import Command
-from src.base.constants import TIME_ADVANCED_DUE_TO_EXITING_LOCATION
 from src.base.playthrough_manager import PlaythroughManager
 from src.characters.character_guidelines_manager import CharacterGuidelinesManager
 from src.characters.factories.generate_character_generation_guidelines_algorithm_factory import (
     GenerateCharacterGenerationGuidelinesAlgorithmFactory,
 )
+from src.filesystem.config_loader import ConfigLoader
 from src.maps.factories.hierarchy_manager_factory import HierarchyManagerFactory
 from src.maps.factories.place_manager_factory import PlaceManagerFactory
 from src.time.time_manager import TimeManager
@@ -24,6 +24,7 @@ class VisitPlaceCommand(Command):
         playthrough_manager: Optional[PlaythroughManager] = None,
         time_manager: Optional[TimeManager] = None,
         character_guidelines_manager: Optional[CharacterGuidelinesManager] = None,
+            config_loader: Optional[ConfigLoader] = None,
     ):
         self._place_identifier = place_identifier
         (self._generate_character_generation_guidelines_algorithm_factory) = (
@@ -38,6 +39,7 @@ class VisitPlaceCommand(Command):
         self._character_guidelines_manager = (
             character_guidelines_manager or CharacterGuidelinesManager()
         )
+        self._config_loader = config_loader or ConfigLoader()
 
     def _handle_place_is_not_visited(self):
         story_universe_name = self._playthrough_manager.get_story_universe_template()
@@ -65,4 +67,6 @@ class VisitPlaceCommand(Command):
             self._place_identifier
         ):
             self._handle_place_is_not_visited()
-        self._time_manager.advance_time(TIME_ADVANCED_DUE_TO_EXITING_LOCATION)
+        self._time_manager.advance_time(
+            self._config_loader.get_time_advanced_due_to_exiting_location()
+        )

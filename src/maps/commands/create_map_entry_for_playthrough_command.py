@@ -1,5 +1,4 @@
 import logging.config
-from pathlib import Path
 from typing import Optional, Dict, Any
 
 from src.base.abstracts.command import Command
@@ -9,8 +8,8 @@ from src.base.algorithms.produce_and_update_next_identifier_algorithm import (
 from src.base.constants import PARENT_KEYS
 from src.base.enums import TemplateType
 from src.base.identifiers_manager import IdentifiersManager
-from src.filesystem.file_operations import read_json_file
-from src.filesystem.filesystem_manager import FilesystemManager
+from src.filesystem.file_operations import read_json_file, write_json_file
+from src.filesystem.path_manager import PathManager
 
 logger = logging.getLogger(__name__)
 
@@ -24,8 +23,8 @@ class CreateMapEntryForPlaythroughCommand(Command):
         place_type: TemplateType,
         place_template: str,
         produce_and_update_next_identifier: ProduceAndUpdateNextIdentifierAlgorithm,
-        filesystem_manager: Optional[FilesystemManager] = None,
         identifiers_manager: Optional[IdentifiersManager] = None,
+        path_manager: Optional[PathManager] = None,
     ):
         self._playthrough_name = playthrough_name
         self._father_identifier = father_identifier
@@ -33,10 +32,10 @@ class CreateMapEntryForPlaythroughCommand(Command):
         self._place_template = place_template
         self._produce_and_update_next_identifier = produce_and_update_next_identifier
 
-        self._filesystem_manager = filesystem_manager or FilesystemManager()
         self._identifiers_manager = identifiers_manager or IdentifiersManager(
             self._playthrough_name
         )
+        self._path_manager = path_manager or PathManager()
 
     def _get_parent_key(self) -> Optional[str]:
         """Get the parent key based on the place type."""
@@ -61,7 +60,7 @@ class CreateMapEntryForPlaythroughCommand(Command):
     def execute(self) -> None:
         """Create a map entry for the playthrough using the selected place."""
         map_file = read_json_file(
-            Path(self._filesystem_manager.get_file_path_to_map(self._playthrough_name))
+            self._path_manager.get_map_path(self._playthrough_name)
         )
         new_id = self._produce_and_update_next_identifier.do_algorithm()
 
@@ -83,9 +82,9 @@ class CreateMapEntryForPlaythroughCommand(Command):
         map_entry.update(additional_fields)
         map_file[str(new_id)] = map_entry
 
-        self._filesystem_manager.save_json_file(
+        write_json_file(
+            self._path_manager.get_map_path(self._playthrough_name),
             map_file,
-            self._filesystem_manager.get_file_path_to_map(self._playthrough_name),
         )
 
         logger.info(

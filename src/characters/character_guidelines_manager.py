@@ -1,23 +1,26 @@
-from pathlib import Path
 from typing import Optional, Dict, List
 
-from src.base.constants import CHARACTER_GENERATION_GUIDELINES_FILE
 from src.base.validators import validate_non_empty_string
 from src.filesystem.file_operations import read_json_file, write_json_file
+from src.filesystem.path_manager import PathManager
 
 
 class CharacterGuidelinesManager:
 
-    def __init__(self):
+    def __init__(self, path_manager: Optional[PathManager] = None):
         self._guidelines_file = self._load_guidelines_file()
 
-    @staticmethod
-    def _load_guidelines_file() -> Dict[str, List[str]]:
-        return read_json_file(Path(CHARACTER_GENERATION_GUIDELINES_FILE))
+        self._path_manager = path_manager or PathManager()
+
+    def _load_guidelines_file(self) -> Dict[str, List[str]]:
+        return read_json_file(
+            self._path_manager.get_character_generation_guidelines_path()
+        )
 
     def _save_guidelines_file(self):
         write_json_file(
-            Path(CHARACTER_GENERATION_GUIDELINES_FILE), self._guidelines_file
+            self._path_manager.get_character_generation_guidelines_path(),
+            self._guidelines_file,
         )
 
     @staticmethod

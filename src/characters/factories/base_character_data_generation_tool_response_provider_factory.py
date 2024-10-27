@@ -1,7 +1,6 @@
 from src.characters.providers.base_character_data_generation_tool_response_provider import (
     BaseCharacterDataGenerationToolResponseProvider,
 )
-from src.maps.places_templates_parameter import PlacesTemplatesParameter
 from src.prompting.abstracts.abstract_factories import (
     UserContentForCharacterGenerationFactory,
     ProduceToolResponseStrategyFactory,
@@ -31,12 +30,9 @@ class BaseCharacterDataGenerationToolResponseProviderFactory:
             character_generation_instructions_formatter_factory
         )
 
-    def create_response_provider(
-        self, places_templates_parameter: PlacesTemplatesParameter
-    ):
+    def create_response_provider(self):
         return BaseCharacterDataGenerationToolResponseProvider(
             self._playthrough_name,
-            places_templates_parameter,
             self._produce_tool_response_strategy_factory,
             self._user_content_for_character_generation_factory,
             self._character_generation_instructions_formatter_factory,

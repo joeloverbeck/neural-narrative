@@ -17,11 +17,11 @@ class MapManager:
 
     def __init__(
         self,
-            playthrough_name: str,
-            place_manager: PlaceManager,
-            map_repository: MapRepository,
-            template_repository: TemplatesRepository,
-            hierarchy_manager: Optional[HierarchyManager] = None,
+        playthrough_name: str,
+        place_manager: PlaceManager,
+        map_repository: MapRepository,
+        template_repository: Optional[TemplatesRepository] = None,
+        hierarchy_manager: Optional[HierarchyManager] = None,
         identifiers_manager: Optional[IdentifiersManager] = None,
         playthrough_manager: Optional[PlaythroughManager] = None,
     ):
@@ -29,7 +29,7 @@ class MapManager:
 
         self._place_manager = place_manager
         self._map_repository = map_repository
-        self._template_repository = template_repository
+        self._template_repository = template_repository or TemplatesRepository()
         self._hierarchy_manager = hierarchy_manager or HierarchyManager(
             self._place_manager
         )
@@ -42,7 +42,7 @@ class MapManager:
 
     def get_story_universe_description(self) -> str:
         current_story_universe = self._playthrough_manager.get_story_universe_template()
-        story_universe_templates_file = self._template_repository.load_template(
+        story_universe_templates_file = self._template_repository.load_templates(
             TemplateType.STORY_UNIVERSE
         )
         if not current_story_universe in story_universe_templates_file:
@@ -99,7 +99,7 @@ class MapManager:
         return max_id_str, place_template
 
     def get_place_full_data(
-            self, place_identifier: str
+        self, place_identifier: str
     ) -> Dict[str, Optional[Dict[str, str]]]:
         hierarchy = self._hierarchy_manager.get_place_hierarchy(place_identifier)
         result = {
@@ -112,7 +112,7 @@ class MapManager:
             place = hierarchy.get(place_type)
             if place:
                 template_name = self._place_manager.get_place_template(place)
-                templates = self._template_repository.load_template(
+                templates = self._template_repository.load_templates(
                     TemplateType(place_type)
                 )
                 template_data = templates.get(template_name)

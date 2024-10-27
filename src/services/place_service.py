@@ -1,4 +1,3 @@
-from pathlib import Path
 from typing import Optional
 
 from src.base.constants import PARENT_TEMPLATE_TYPE
@@ -9,7 +8,7 @@ from src.characters.factories.character_information_provider import (
     CharacterInformationProvider,
 )
 from src.filesystem.file_operations import read_json_file
-from src.filesystem.filesystem_manager import FilesystemManager
+from src.filesystem.path_manager import PathManager
 from src.maps.commands.generate_place_command import GeneratePlaceCommand
 from src.maps.composers.visit_place_command_factory_composer import (
     VisitPlaceCommandFactoryComposer,
@@ -126,7 +125,6 @@ class PlaceService:
     @staticmethod
     def exit_location(playthrough_name: str):
         playthrough_manager = PlaythroughManager(playthrough_name)
-        filesystem_manager = FilesystemManager()
 
         if (
             not PlaceManagerFactory(playthrough_name)
@@ -138,14 +136,14 @@ class PlaceService:
                 "Somehow tried to exit a location when the current place wasn't a location."
             )
 
-        map_file = read_json_file(
-            Path(filesystem_manager.get_file_path_to_map(playthrough_name))
-        )
+        map_file = read_json_file(PathManager().get_map_path(playthrough_name))
         current_place_identifier = playthrough_manager.get_current_place_identifier()
         destination_area = map_file[current_place_identifier]["area"]
+
         visit_command_factory = VisitPlaceCommandFactoryComposer(
             playthrough_name
         ).compose_factory()
+
         visit_command_factory.create_visit_place_command(destination_area).execute()
 
     @staticmethod

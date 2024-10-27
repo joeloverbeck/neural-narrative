@@ -1,6 +1,4 @@
 import logging
-import os
-from pathlib import Path
 
 from flask import session, redirect, url_for, render_template, request, jsonify, flash
 from flask.views import MethodView
@@ -16,19 +14,20 @@ from src.characters.factories.player_and_followers_information_factory import (
 from src.characters.factories.player_data_for_prompt_factory import (
     PlayerDataForPromptFactory,
 )
+from src.concepts.algorithms.generate_dilemmas_algorithm import (
+    GenerateDilemmasAlgorithm,
+)
 from src.concepts.algorithms.generate_goals_algorithm import GenerateGoalsAlgorithm
-from src.concepts.algorithms.generate_interesting_dilemmas_algorithm import (
-    GenerateInterestingDilemmasAlgorithm,
-)
-from src.concepts.algorithms.generate_interesting_situations_algorithm import (
-    GenerateInterestingSituationsAlgorithm,
-)
 from src.concepts.algorithms.generate_plot_blueprints_algorithm import (
     GeneratePlotBlueprintsAlgorithm,
 )
 from src.concepts.algorithms.generate_plot_twists_algorithm import (
     GeneratePlotTwistsAlgorithm,
 )
+from src.concepts.algorithms.generate_scenarios_algorithm import (
+    GenerateScenariosAlgorithm,
+)
+from src.concepts.enums import ConceptType
 from src.concepts.factories.dilemmas_factory import (
     DilemmasFactory,
 )
@@ -38,8 +37,15 @@ from src.concepts.factories.plot_twists_factory import PlotTwistsFactory
 from src.concepts.factories.scenarios_factory import (
     ScenariosFactory,
 )
-from src.filesystem.file_operations import read_file_lines, read_file, write_file
+from src.filesystem.file_operations import (
+    read_file_lines,
+    read_file,
+    write_file,
+    create_directories,
+    create_empty_file_if_not_exists,
+)
 from src.filesystem.filesystem_manager import FilesystemManager
+from src.filesystem.path_manager import PathManager
 from src.interfaces.web_interface_manager import WebInterfaceManager
 from src.maps.composers.places_descriptions_provider_composer import (
     PlacesDescriptionsProviderComposer,
@@ -54,36 +60,74 @@ logger = logging.getLogger(__name__)
 
 class StoryHubView(MethodView):
 
-    def get(self):
+    @staticmethod
+    def get():
         playthrough_name = session.get("playthrough_name")
         if not playthrough_name:
             return redirect(url_for("index"))
-        filesystem_manager = FilesystemManager()
+
         playthrough_name_obj = playthrough_name
+
+        path_manager = PathManager()
+
+        concepts_path = path_manager.get_concepts_path(playthrough_name_obj)
+        create_directories(concepts_path)
+
+        plot_blueprints_path = path_manager.get_concept_file_path(
+            playthrough_name_obj, ConceptType.PLOT_BLUEPRINTS
+        )
+
+        create_empty_file_if_not_exists(plot_blueprints_path)
+
+        scenarios_path = path_manager.get_concept_file_path(
+            playthrough_name_obj, ConceptType.SCENARIOS
+        )
+
+        create_empty_file_if_not_exists(scenarios_path)
+
+        dilemmas_path = path_manager.get_concept_file_path(
+            playthrough_name_obj, ConceptType.DILEMMAS
+        )
+
+        create_empty_file_if_not_exists(dilemmas_path)
+
+        goals_path = path_manager.get_concept_file_path(
+            playthrough_name_obj, ConceptType.GOALS
+        )
+
+        create_empty_file_if_not_exists(goals_path)
+
+        plot_twists_path = path_manager.get_concept_file_path(
+            playthrough_name_obj, ConceptType.PLOT_TWISTS
+        )
+
+        create_empty_file_if_not_exists(plot_twists_path)
+
         items_to_load = [
-            ("plot_blueprints", filesystem_manager.get_file_path_to_plot_blueprints),
+            ("plot_blueprints", plot_blueprints_path),
             (
-                "interesting_situations",
-                filesystem_manager.get_file_path_to_interesting_situations,
+                "scenarios",
+                scenarios_path,
             ),
             (
-                "interesting_dilemmas",
-                filesystem_manager.get_file_path_to_interesting_dilemmas,
+                "dilemmas",
+                dilemmas_path,
             ),
-            ("goals", filesystem_manager.get_file_path_to_goals),
-            ("plot_twists", filesystem_manager.get_file_path_to_plot_twists),
+            ("goals", goals_path),
+            ("plot_twists", plot_twists_path),
         ]
         data = {}
-        for var_name, file_path_method in items_to_load:
-            file_path = file_path_method(playthrough_name_obj)
-            data[var_name] = [line for line in read_file_lines(Path(file_path))]
-        facts_file_path = filesystem_manager.get_file_path_to_facts(playthrough_name)
+        for var_name, file_path in items_to_load:
+            data[var_name] = [line for line in read_file_lines(file_path)]
 
-        if not os.path.exists(facts_file_path):
-            write_file(Path(facts_file_path), "")
+        facts_file_path = path_manager.get_facts_path(playthrough_name_obj)
 
-        facts = read_file(Path(facts_file_path))
+        create_empty_file_if_not_exists(facts_file_path)
+
+        facts = read_file(facts_file_path)
+
         data["facts"] = facts if facts else ""
+
         return render_template("story-hub.html", **data)
 
     @staticmethod
@@ -115,6 +159,9 @@ class StoryHubView(MethodView):
         places_descriptions_provider = PlacesDescriptionsProviderComposer(
             playthrough_name
         ).compose_provider()
+
+        path_manager = PathManager()
+
         if action.startswith("generate_"):
             action_name = action[len("generate_") :]
             generate_action_mapping = {
@@ -129,10 +176,10 @@ class StoryHubView(MethodView):
                         player_and_followers_information_factory,
                     ],
                 },
-                "situations": {
+                "scenarios": {
                     "factory_class": ScenariosFactory,
-                    "algorithm_class": GenerateInterestingSituationsAlgorithm,
-                    "response_key": "interesting_situations",
+                    "algorithm_class": GenerateScenariosAlgorithm,
+                    "response_key": "scenarios",
                     "factory_args": [
                         playthrough_name_obj,
                         produce_tool_response_strategy_factory,
@@ -142,8 +189,8 @@ class StoryHubView(MethodView):
                 },
                 "dilemmas": {
                     "factory_class": DilemmasFactory,
-                    "algorithm_class": GenerateInterestingDilemmasAlgorithm,
-                    "response_key": "interesting_dilemmas",
+                    "algorithm_class": GenerateDilemmasAlgorithm,
+                    "response_key": "dilemmas",
                     "factory_args": [
                         playthrough_name_obj,
                         produce_tool_response_strategy_factory,
@@ -202,18 +249,20 @@ class StoryHubView(MethodView):
             action_name = action[len("delete_") :]
             index = int(request.form.get("item_index"))
             delete_action_mapping = {
-                "plot_blueprint": filesystem_manager.get_file_path_to_plot_blueprints(
-                    playthrough_name_obj
+                "plot_blueprint": path_manager.get_concept_file_path(
+                    playthrough_name_obj, ConceptType.PLOT_BLUEPRINTS
                 ),
-                "situation": filesystem_manager.get_file_path_to_interesting_situations(
-                    playthrough_name_obj
+                "scenario": path_manager.get_concept_file_path(
+                    playthrough_name_obj, ConceptType.SCENARIOS
                 ),
-                "dilemma": filesystem_manager.get_file_path_to_interesting_dilemmas(
-                    playthrough_name_obj
+                "dilemma": path_manager.get_concept_file_path(
+                    playthrough_name_obj, ConceptType.DILEMMAS
                 ),
-                "goal": filesystem_manager.get_file_path_to_goals(playthrough_name_obj),
-                "plot_twist": filesystem_manager.get_file_path_to_plot_twists(
-                    playthrough_name_obj
+                "goal": path_manager.get_concept_file_path(
+                    playthrough_name_obj, ConceptType.GOALS
+                ),
+                "plot_twist": path_manager.get_concept_file_path(
+                    playthrough_name_obj, ConceptType.PLOT_TWISTS
                 ),
             }
             if action_name in delete_action_mapping:
@@ -223,9 +272,7 @@ class StoryHubView(MethodView):
         elif action == "save_facts":
             facts = request.form.get("facts", "")
             facts = WebInterfaceManager.remove_excessive_newline_characters(facts)
-            write_file(
-                Path(filesystem_manager.get_file_path_to_facts(playthrough_name)), facts
-            )
+            write_file(path_manager.get_facts_path(playthrough_name_obj), facts)
             flash("Facts saved.", "success")
             return redirect(url_for("story-hub"))
         else:

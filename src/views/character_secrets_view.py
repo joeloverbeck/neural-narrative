@@ -18,7 +18,8 @@ from src.prompting.llms import Llms
 
 class CharacterSecretsView(MethodView):
 
-    def get(self):
+    @staticmethod
+    def get():
         playthrough_name = session.get("playthrough_name")
         if not playthrough_name:
             return redirect(url_for("index"))
@@ -45,7 +46,8 @@ class CharacterSecretsView(MethodView):
             secrets_generated_message=secrets_generated_message,
         )
 
-    def post(self):
+    @staticmethod
+    def post():
         playthrough_name = session.get("playthrough_name")
         if not playthrough_name:
             return redirect(url_for("index"))

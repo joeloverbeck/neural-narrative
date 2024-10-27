@@ -1,45 +1,55 @@
-import os
-from typing import List
+from typing import List, Optional
 
-from flask import session, url_for
+from flask import session
 
 from src.base.abstracts.observer import Observer
-from src.base.constants import NARRATOR_VOICE_MODEL
 from src.characters.characters_manager import CharactersManager
+from src.filesystem.config_loader import ConfigLoader
+from src.services.web_service import WebService
 from src.voices.factories.direct_voice_line_generation_algorithm_factory import (
     DirectVoiceLineGenerationAlgorithmFactory,
 )
 
 
-class WebAmbientNarrationObserver(Observer):
+class WebNarrationObserver(Observer):
 
-    def __init__(self):
+    def __init__(self, config_loader: Optional[ConfigLoader] = None):
         self._messages = []
         self._characters_manager = CharactersManager(session.get("playthrough_name"))
 
+        self._config_loader = config_loader or ConfigLoader()
+
     def update(self, message: dict) -> None:
         if not "alignment" in message:
-            raise ValueError(
-                f"Expected 'alignment' to be in message, but was: {message}"
-            )
+            raise KeyError(f"Expected 'alignment' to be in message, but was: {message}")
+
         if not "message_text" in message:
-            raise ValueError(
+            raise KeyError(
                 f"Expected 'message_text' to be in message, but was: {message}"
             )
+
+        if not "message_type" in message:
+            raise KeyError(
+                f"Expected 'message_type' to be in message, but was: {message}"
+            )
+
         file_name = DirectVoiceLineGenerationAlgorithmFactory.create_algorithm(
-            "narrator", message["message_text"], NARRATOR_VOICE_MODEL
+            "narrator",
+            message["message_text"],
+            self._config_loader.get_narrator_voice_model(),
         ).direct_voice_line_generation()
 
-        if not file_name:
-            file_name = "NONE"
+        file_url = None
+
+        if file_name:
+            file_url = WebService.get_file_url("voice_lines", file_name)
 
         self._messages.append(
             {
                 "alignment": message["alignment"],
                 "message_text": message["message_text"],
-                "file_url": url_for(
-                    "static", filename="voice_lines/" + os.path.basename(file_name)
-                ),
+                "message_type": message["message_type"],
+                "file_url": file_url,
             }
         )
 

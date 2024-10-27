@@ -29,11 +29,7 @@ class GeneratePlayerCharacterCommand(Command):
         )
 
     def execute(self) -> None:
-        places_parameter = self._hierarchy_manager_factory.create_hierarchy_manager().fill_places_templates_parameter(
-            self._playthrough_manager.get_current_place_identifier()
-        )
         self._generate_character_command_factory.create_generate_character_command(
-            places_parameter,
             place_character_at_current_place=False,
             user_content=self._user_content,
         ).execute()

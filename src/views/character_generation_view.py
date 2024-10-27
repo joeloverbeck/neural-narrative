@@ -1,10 +1,8 @@
 import logging
-from pathlib import Path
 
 from flask import session, redirect, url_for, render_template, request, jsonify, flash
 from flask.views import MethodView
 
-from src.base.constants import CHARACTER_GENERATION_GUIDELINES_FILE
 from src.base.exceptions import CharacterGenerationError
 from src.base.playthrough_manager import PlaythroughManager
 from src.base.tools import capture_traceback
@@ -18,6 +16,7 @@ from src.characters.composers.character_generation_guidelines_provider_factory_c
     CharacterGenerationGuidelinesProviderFactoryComposer,
 )
 from src.filesystem.file_operations import read_json_file
+from src.filesystem.path_manager import PathManager
 from src.maps.factories.hierarchy_manager_factory import HierarchyManagerFactory
 from src.services.character_service import CharacterService
 from src.services.web_service import WebService
@@ -46,7 +45,7 @@ class CharacterGenerationView(MethodView):
         area_template = places_templates_parameter.get_area_template()
         location_template = places_templates_parameter.get_location_template()
         character_generation_guidelines = read_json_file(
-            Path(CHARACTER_GENERATION_GUIDELINES_FILE)
+            PathManager().get_character_generation_guidelines_path()
         )
 
         if (

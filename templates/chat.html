@@ -25,6 +25,8 @@
     <div class="chat-window" id="chat-window">
         {% for message in dialogue %}
         {% if message.alignment == 'center' %}
+        {% if message.message_type == 'ambient' %}
+        <!-- Ambient Message -->
         <div class="ambient-message" data-file-url="{{ message.file_url }}">
             <div class="ambient-message-text">{{ message.message_text }}</div>
             <i class="fas fa-play play-icon"></i>
@@ -36,7 +38,22 @@
                 <div></div>
             </div>
         </div>
+        {% elif message.message_type == 'event' %}
+        <!-- Event Message -->
+        <div class="event-message" data-file-url="{{ message.file_url }}">
+            <div class="event-message-text">{{ message.message_text }}</div>
+            <i class="fas fa-play play-icon"></i>
+            <div class="waveform">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+        </div>
+        {% endif %}
         {% else %}
+        <!-- Chat Bubble -->
         <div class="chat-bubble {{ message.alignment }}" data-file-url="{{ message.file_url }}">
             <img alt="{{ message.sender_name }}" class="avatar" src="{{ message.sender_photo_url }}">
             <div class="message-content">
@@ -71,8 +88,18 @@
             </button>
         </div>
     </form>
-    <div id="send-text-message" class="message ajax-message"
-         style="display: none;"></div>
+
+    <!-- Event Form -->
+    <form method="post" class="event-form ajax-form" action="{{ url_for('chat') }}"
+          data-success-handler="chatSuccessHandler" data-error-handler="chatErrorHandler">
+        <input id="event-input" name="event_input" placeholder="Describe an event..." type="text">
+        <div class="form-buttons">
+            <button type="submit" name="submit_action" value="Event" class="action-button"
+                    id="event-button">
+                <i class="fas fa-calendar-alt"></i> Event
+            </button>
+        </div>
+    </form>
 
     <!-- Navigation Buttons -->
     <div class="buttons">
@@ -99,6 +126,7 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="{{ url_for('static', filename='jquery-3.7.1.min.js') }}"></script>
 <script src="{{ url_for('static', filename='main.js') }}"></script>
 <script src="{{ url_for('static', filename='chat.js') }}"></script>
 {% endblock %}

@@ -1,13 +1,12 @@
-import shutil
 from typing import Optional
 
 from src.base.abstracts.command import Command
-from src.base.constants import DEFAULT_IMAGE_FILE
 from src.characters.factories.character_description_provider_factory import (
     CharacterDescriptionProviderFactory,
 )
 from src.characters.factories.character_factory import CharacterFactory
-from src.filesystem.filesystem_manager import FilesystemManager
+from src.filesystem.file_operations import copy_file, create_directories
+from src.filesystem.path_manager import PathManager
 from src.images.abstracts.abstract_factories import GeneratedImageFactory
 from src.images.commands.generate_character_image_command import (
     GenerateCharacterImageCommand,
@@ -44,6 +43,7 @@ class GenerateCharacterImageCommandFactory:
     def create_command(self, character_identifier: str) -> Command:
         if not character_identifier:
             raise ValueError("character_identifier can't be empty.")
+
         if not self._testing:
             return GenerateCharacterImageCommand(
                 GenerateCharacterImageCommandConfig(
@@ -63,21 +63,30 @@ class GenerateCharacterImageCommandFactory:
                 self,
                 playthrough_name: str,
                 character_identifier_for_fake_command: str,
-                filesystem_manager: Optional[FilesystemManager] = None,
+                path_manager: Optional[PathManager] = None,
             ):
                 self._playthrough_name = playthrough_name
                 self._character_identifier_for_fake_command = (
                     character_identifier_for_fake_command
                 )
-                self._filesystem_manager = filesystem_manager or FilesystemManager()
+
+                self._path_manager = path_manager or PathManager()
 
             def execute(self) -> None:
-                target_image_path = (
-                    self._filesystem_manager.get_file_path_to_character_image(
-                        self._playthrough_name,
-                        self._character_identifier_for_fake_command,
+                # Ensure the images directory exists.
+                create_directories(
+                    self._path_manager.get_playthrough_images_path(
+                        self._playthrough_name
                     )
                 )
-                shutil.copy(DEFAULT_IMAGE_FILE, target_image_path)
+
+                target_image_path = self._path_manager.get_character_image_path(
+                    self._playthrough_name,
+                    self._character_identifier_for_fake_command,
+                )
+
+                copy_file(
+                    self._path_manager.get_default_image_path(), target_image_path
+                )
 
         return FakeCommand(self._playthrough_name, character_identifier)

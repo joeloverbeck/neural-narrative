@@ -1,5 +1,7 @@
 from unittest.mock import Mock
+
 import pytest
+
 from src.maps.factories.place_descriptions_for_prompt_factory import (
     PlaceDescriptionsForPromptFactory,
 )
@@ -7,7 +9,7 @@ from src.maps.factories.place_descriptions_for_prompt_factory import (
 
 class PlaythroughManager:
 
-    def __init__(self, playthrough_name):
+    def __init__(self, _playthrough_name):
         pass
 
     def get_current_place_identifier(self):
@@ -16,7 +18,7 @@ class PlaythroughManager:
 
 class WeathersManager:
 
-    def __init__(self, playthrough_name):
+    def __init__(self, _playthrough_name):
         pass
 
     def get_current_weather_identifier(self):

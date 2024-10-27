@@ -27,7 +27,7 @@ def get_custom_speech_turn_class(speaker_name: str) -> Type[BaseModel]:
         speech: Speech = Field(
             ...,
             description=(
-                f"{speaker_name}'s speech. Base {speaker_name}'s speech pattern on the bio above. Pay attention to the provided speech patterns to mimic them."
+                f"{speaker_name}'s speech. Pay attention to {speaker_name}'s speech patterns to determine the character's unique voice. Important: do not repeat {speaker_name}'s previous utterances in the dialogue."
             ),
         )
 

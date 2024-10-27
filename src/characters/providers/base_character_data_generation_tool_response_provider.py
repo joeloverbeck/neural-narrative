@@ -6,17 +6,14 @@ from pydantic import BaseModel
 
 from src.base.constants import (
     CHARACTER_GENERATION_INSTRUCTIONS_FILE,
-    WORLDS_TEMPLATES_FILE,
-    LOCATIONS_TEMPLATES_FILE,
-    AREAS_TEMPLATES_FILE,
-    REGIONS_TEMPLATES_FILE,
 )
+from src.base.enums import TemplateType
 from src.base.tools import capture_traceback
-from src.characters.characters_manager import CharactersManager
 from src.characters.models.base_character_data import BaseCharacterData
 from src.filesystem.file_operations import read_file, read_json_file
 from src.filesystem.filesystem_manager import FilesystemManager
-from src.maps.places_templates_parameter import PlacesTemplatesParameter
+from src.filesystem.path_manager import PathManager
+from src.maps.templates_repository import TemplatesRepository
 from src.prompting.abstracts.abstract_factories import (
     ToolResponseProvider,
     UserContentForCharacterGenerationFactory,
@@ -41,29 +38,29 @@ class BaseCharacterDataGenerationToolResponseProvider(
     def __init__(
         self,
         playthrough_name: str,
-        places_parameter: PlacesTemplatesParameter,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         user_content_for_character_generation_factory: UserContentForCharacterGenerationFactory,
         character_generation_instructions_formatter_factory: CharacterGenerationInstructionsFormatterFactory,
         filesystem_manager: Optional[FilesystemManager] = None,
-        characters_manager: Optional[CharactersManager] = None,
+        templates_repository: Optional[TemplatesRepository] = None,
+        path_manager: Optional[PathManager] = None,
     ):
         super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
 
         self._playthrough_name = playthrough_name
-        self._places_parameter = places_parameter
         self._user_content_for_character_generation_factory = (
             user_content_for_character_generation_factory
         )
         self._character_generation_instructions_formatter_factory = (
             character_generation_instructions_formatter_factory
         )
-        self._characters_manager = characters_manager or CharactersManager(
-            self._playthrough_name
-        )
+
+        self._templates_repository = templates_repository or TemplatesRepository()
+        self._path_manager = path_manager or PathManager()
 
     def get_formatted_prompt(self) -> str:
         templates = self._load_templates()
+
         instructions = (
             self._character_generation_instructions_formatter_factory.create_formatter(
                 templates
@@ -119,16 +116,16 @@ class BaseCharacterDataGenerationToolResponseProvider(
     def _load_templates(self) -> dict:
         """Loads all necessary templates and metadata from the filesystem."""
         playthrough_metadata = read_json_file(
-            Path(
-                self._filesystem_manager.get_file_path_to_playthrough_metadata(
-                    self._playthrough_name
-                )
-            )
+            self._path_manager.get_playthrough_metadata_path(self._playthrough_name)
         )
-        worlds_templates = read_json_file(Path(WORLDS_TEMPLATES_FILE))
-        regions_templates = read_json_file(Path(REGIONS_TEMPLATES_FILE))
-        areas_templates = read_json_file(Path(AREAS_TEMPLATES_FILE))
-        locations_templates = read_json_file(Path(LOCATIONS_TEMPLATES_FILE))
+        worlds_templates = self._templates_repository.load_templates(TemplateType.WORLD)
+        regions_templates = self._templates_repository.load_templates(
+            TemplateType.REGION
+        )
+        areas_templates = self._templates_repository.load_templates(TemplateType.AREA)
+        locations_templates = self._templates_repository.load_templates(
+            TemplateType.LOCATION
+        )
 
         character_generation_instructions = read_file(
             Path(CHARACTER_GENERATION_INSTRUCTIONS_FILE)
@@ -141,12 +138,3 @@ class BaseCharacterDataGenerationToolResponseProvider(
             "locations_templates": locations_templates,
             "character_generation_instructions": character_generation_instructions,
         }
-
-    def _get_location_details(self, locations_templates: dict) -> tuple:
-        """Retrieves the location name and description if a location template is provided."""
-        location_template = self._places_parameter.get_location_template()
-        if location_template:
-            location_name = f"Location: {location_template}:\n"
-            location_description = locations_templates[location_template]["description"]
-            return location_name, location_description
-        return "", ""
