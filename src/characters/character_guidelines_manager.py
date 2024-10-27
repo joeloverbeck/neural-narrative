@@ -8,9 +8,9 @@ from src.filesystem.path_manager import PathManager
 class CharacterGuidelinesManager:
 
     def __init__(self, path_manager: Optional[PathManager] = None):
-        self._guidelines_file = self._load_guidelines_file()
-
         self._path_manager = path_manager or PathManager()
+
+        self._guidelines_file = self._load_guidelines_file()
 
     def _load_guidelines_file(self) -> Dict[str, List[str]]:
         return read_json_file(
