@@ -11,9 +11,9 @@ from src.dialogues.transcription import Transcription
 
 class AmbientNarrationForDialogueStrategy(NarrationForDialogueStrategy):
     def __init__(
-            self,
-            transcription: Transcription,
-            ambient_narration_provider_factory: AmbientNarrationProviderFactory,
+        self,
+        transcription: Transcription,
+        ambient_narration_provider_factory: AmbientNarrationProviderFactory,
     ):
         self._transcription = transcription
         self._ambient_narration_provider_factory = ambient_narration_provider_factory

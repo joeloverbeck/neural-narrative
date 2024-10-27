@@ -24,7 +24,7 @@ class VisitPlaceCommand(Command):
         playthrough_manager: Optional[PlaythroughManager] = None,
         time_manager: Optional[TimeManager] = None,
         character_guidelines_manager: Optional[CharacterGuidelinesManager] = None,
-            config_loader: Optional[ConfigLoader] = None,
+        config_loader: Optional[ConfigLoader] = None,
     ):
         self._place_identifier = place_identifier
         (self._generate_character_generation_guidelines_algorithm_factory) = (

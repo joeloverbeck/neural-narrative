@@ -35,7 +35,7 @@ class BaseConceptAlgorithm(Generic[TProduct, TFactory]):
         self._concept_factory = concept_factory
 
         self._filesystem_manager = filesystem_manager or FilesystemManager()
-        self._path_manager = path_manager
+        self._path_manager = path_manager or PathManager()
 
     def do_algorithm(self) -> List[str]:
         if self._action_name.lower() == "plot_blueprints":

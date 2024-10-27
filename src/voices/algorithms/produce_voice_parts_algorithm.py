@@ -25,7 +25,7 @@ class ProduceVoicePartsAlgorithm:
         self._voice_part_provider_factory = voice_part_provider_factory
 
         self._requests_manager = requests_manager or RequestsManager()
-        self._path_manager = path_manager
+        self._path_manager = path_manager or PathManager()
 
     def do_algorithm(self) -> List[Path]:
         xtts_endpoint = self._requests_manager.get_xtts_endpoint()
