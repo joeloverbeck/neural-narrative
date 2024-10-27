@@ -62,7 +62,7 @@ class PlaythroughManager:
         playthrough_metadata_file = read_json_file(
             self._path_manager.get_playthrough_metadata_path(self._playthrough_name)
         )
-        logger.warning(playthrough_metadata_file)
+
         return playthrough_metadata_file["story_universe_template"]
 
     def get_hour(self) -> int:

@@ -16,23 +16,12 @@ class HandleDialogueStateAlgorithm:
     def __init__(
         self,
         playthrough_name: str,
-        dialogue_participant_identifiers: List[str],
+        dialogue_participant_identifiers: Optional[List[str]],
         purpose: Optional[str],
         playthrough_manager: Optional[PlaythroughManager] = None,
         path_manager: Optional[PathManager] = None,
     ):
         validate_non_empty_string(playthrough_name, "playthrough_name")
-
-        if not isinstance(dialogue_participant_identifiers, list):
-            raise TypeError(
-                f"'dialogue_participant_identifiers' must be of type List[str], but was '{type(dialogue_participant_identifiers)}'."
-            )
-        elif not all(
-            isinstance(item, str) for item in dialogue_participant_identifiers
-        ):
-            raise TypeError(
-                "'dialogue_participant_identifiers' must be a list of strings."
-            )
 
         self._playthrough_name = playthrough_name
         self._dialogue_participant_identifiers = dialogue_participant_identifiers

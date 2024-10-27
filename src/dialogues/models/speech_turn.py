@@ -21,7 +21,7 @@ def get_custom_speech_turn_class(speaker_name: str) -> Type[BaseModel]:
             ),
         )
         narration_text: Optional[str] = Field(
-            description=f"Narration text describing the character's thoughts and/or actions during {speaker_name}'s speech. Here is an example: {speaker_name} sits up and faces the interlocutor.",
+            description=f"Narration text describing the character's thoughts and/or actions during {speaker_name}'s speech. Here is an example: {speaker_name} sits up and faces the interlocutor. Avoid repeating previous narration text belonging to {speaker_name}. If you consider that adding narration text to this speech turn for {speaker_name}, don't produce narration text.",
             default=None,
         )
         speech: Speech = Field(

@@ -12,6 +12,7 @@ from src.dialogues.factories.llm_speech_data_provider_factory import (
 )
 from src.dialogues.models.speech_turn import get_custom_speech_turn_class
 from src.dialogues.transcription import Transcription
+from src.dialogues.utils import format_speech
 from src.prompting.abstracts.factory_products import LlmToolResponseProduct
 
 logger = logging.getLogger(__name__)
@@ -87,17 +88,11 @@ class CreateSpeechTurnDataCommand(Command, Subject):
 
             narration_text = speech_data_product.get()["narration_text"]
 
-            # The narration is optional now, so only add it if it exists.
-            if narration_text and narration_text.lower() != "none":
-                # Add the speech turn to the transcription.
-                self._transcription.add_speech_turn(
-                    name,
-                    f"*{narration_text}* {speech_data_product.get()['speech']}",
-                )
-            else:
-                self._transcription.add_speech_turn(
-                    name, f"{speech_data_product.get()['speech']}"
-                )
+            speech_text = format_speech(
+                narration_text, speech_data_product.get()["speech"]
+            )
+
+            self._transcription.add_speech_turn(name, speech_text)
 
             self.notify(
                 self._message_data_producer_for_speech_turn_strategy.produce_message_data(

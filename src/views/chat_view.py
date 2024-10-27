@@ -27,7 +27,7 @@ class ChatView(MethodView):
             playthrough_name, dialogue_participants, purpose
         ).do_algorithm()
 
-        if not product.get_data():
+        if not product.get_data() and not dialogue_participants:
             return redirect(url_for("participants"))
 
         session.update(product.get_data())

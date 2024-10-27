@@ -1,5 +1,6 @@
 from src.dialogues.abstracts.factory_products import SpeechDataProduct
 from src.dialogues.abstracts.strategies import MessageDataProducerForSpeechTurnStrategy
+from src.dialogues.utils import format_speech
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.prompting.abstracts.factory_products import LlmToolResponseProduct
 
@@ -45,6 +46,8 @@ class WebMessageDataProducerForSpeechTurnStrategy(
             "alignment": alignment,
             "sender_name": name,
             "sender_photo_url": image_url,
-            "message_text": f"*{narration_text}* {speech_data_product.get()['speech']} ",
+            "message_text": format_speech(
+                narration_text, speech_turn_choice_response.get()["speech"]
+            ),
             "voice_model": voice_model,
         }
