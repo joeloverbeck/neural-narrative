@@ -14,6 +14,8 @@ class Llms:
     ):
         self._filesystem_manager = filesystem_manager or FilesystemManager()
 
+        path_manager = path_manager or PathManager()
+
         self._llms_file = read_json_file(path_manager.get_llms_path())
 
         self._models = self._llms_file["models"]
