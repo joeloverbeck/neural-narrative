@@ -79,6 +79,6 @@ class SpeechTurnChoiceToolResponseProvider(BaseToolResponseProvider):
 
         return {
             "all_participants": all_participants,
-            "dialogue": self._transcription.get(),
+            "dialogue": self._transcription.get_prettified_transcription(),
             "participants_without_player": participants_without_player,
         }

@@ -3,6 +3,12 @@ from typing import List, Dict
 from flask import session, url_for
 
 from src.base.playthrough_manager import PlaythroughManager
+from src.characters.composers.local_information_factory_composer import (
+    LocalInformationFactoryComposer,
+)
+from src.characters.composers.player_and_followers_information_factory_composer import (
+    PlayerAndFollowersInformationFactoryComposer,
+)
 from src.dialogues.commands.setup_dialogue_command import SetupDialogueCommand
 from src.dialogues.composers.handle_possible_existence_of_ongoing_conversation_command_factory_composer import (
     HandlePossibleExistenceOfOngoingConversationCommandFactoryComposer,
@@ -13,6 +19,9 @@ from src.dialogues.composers.produce_narration_for_dialogue_command_composer imp
 from src.dialogues.dialogue_manager import DialogueManager
 from src.dialogues.factories.ambient_narration_provider_factory import (
     AmbientNarrationProviderFactory,
+)
+from src.dialogues.factories.narrative_beat_provider_factory import (
+    NarrativeBeatProviderFactory,
 )
 from src.dialogues.factories.web_player_input_factory import WebPlayerInputFactory
 from src.dialogues.observers.web_dialogue_observer import WebDialogueObserver
@@ -26,6 +35,9 @@ from src.dialogues.strategies.ambient_narration_for_dialogue_strategy import (
 from src.dialogues.strategies.event_narration_for_dialogue_strategy import (
     EventNarrationForDialogueStrategy,
 )
+from src.dialogues.strategies.narrative_beat_for_dialogue_strategy import (
+    NarrativeBeatForDialogueStrategy,
+)
 from src.dialogues.strategies.web_message_data_producer_for_introduce_player_input_into_dialogue_strategy import (
     WebMessageDataProducerForIntroducePlayerInputIntoDialogueStrategy,
 )
@@ -33,11 +45,6 @@ from src.dialogues.strategies.web_message_data_producer_for_speech_turn_strategy
     WebMessageDataProducerForSpeechTurnStrategy,
 )
 from src.filesystem.config_loader import ConfigLoader
-from src.maps.factories.map_manager_factory import MapManagerFactory
-from src.maps.factories.place_manager_factory import PlaceManagerFactory
-from src.maps.place_description_manager import PlaceDescriptionManager
-from src.maps.templates_repository import TemplatesRepository
-from src.maps.weathers_manager import WeathersManager
 from src.prompting.composers.produce_tool_response_strategy_factory_composer import (
     ProduceToolResponseStrategyFactoryComposer,
 )
@@ -56,23 +63,14 @@ class DialogueService:
             ).compose_factory()
         )
 
-        map_manager_factory = MapManagerFactory(self._playthrough_name)
-
-        weathers_manager = WeathersManager(map_manager_factory)
-
-        place_manager_factory = PlaceManagerFactory(self._playthrough_name)
-
-        template_repository = TemplatesRepository()
-
-        place_description_manager = PlaceDescriptionManager(
-            place_manager_factory, template_repository
-        )
+        local_information_factory = LocalInformationFactoryComposer(
+            self._playthrough_name
+        ).compose_factory()
 
         ambient_narration_provider_factory = AmbientNarrationProviderFactory(
             self._playthrough_name,
             produce_tool_response_strategy_factory,
-            weathers_manager,
-            place_description_manager,
+            local_information_factory,
         )
 
         narration_for_dialogue_strategy = AmbientNarrationForDialogueStrategy(
@@ -86,6 +84,46 @@ class DialogueService:
             self._playthrough_name,
             session.get("purpose", ""),
             "ambient",
+            web_ambient_narration_observer,
+            narration_for_dialogue_strategy,
+        ).compose_command().execute()
+
+        return web_ambient_narration_observer.get_messages()[0]
+
+    def process_narrative_beat(self) -> dict:
+        produce_tool_response_strategy_factory = (
+            ProduceToolResponseStrategyFactoryComposer(
+                Llms().for_narrative_beat(),
+            ).compose_factory()
+        )
+
+        local_information_factory = LocalInformationFactoryComposer(
+            self._playthrough_name
+        ).compose_factory()
+
+        player_and_followers_information_factory = (
+            PlayerAndFollowersInformationFactoryComposer(
+                self._playthrough_name
+            ).compose_factory()
+        )
+
+        narrative_beat_provider_factory = NarrativeBeatProviderFactory(
+            produce_tool_response_strategy_factory,
+            local_information_factory,
+            player_and_followers_information_factory,
+        )
+
+        narration_for_dialogue_strategy = NarrativeBeatForDialogueStrategy(
+            DialogueManager(self._playthrough_name).load_transcription(),
+            narrative_beat_provider_factory,
+        )
+
+        web_ambient_narration_observer = WebNarrationObserver()
+
+        ProduceNarrationForDialogueCommandComposer(
+            self._playthrough_name,
+            session.get("purpose", ""),
+            "event",
             web_ambient_narration_observer,
             narration_for_dialogue_strategy,
         ).compose_command().execute()

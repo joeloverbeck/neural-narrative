@@ -44,6 +44,9 @@ class Llms:
     def for_ambient_narration(self) -> Llm:
         return Llm(self._models[self._llms_file["ambient_narration"]])
 
+    def for_narrative_beat(self) -> Llm:
+        return Llm(self._models[self._llms_file["narrative_beat"]])
+
     def for_character_description(self) -> Llm:
         return Llm(self._models[self._llms_file["character_description"]])
 

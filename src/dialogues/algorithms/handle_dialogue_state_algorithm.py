@@ -3,7 +3,7 @@ from typing import List, Optional
 
 from src.base.playthrough_manager import PlaythroughManager
 from src.base.validators import validate_non_empty_string
-from src.dialogues.products.HandleDialogueStateAlgorithmProduct import (
+from src.dialogues.products.handle_dialogue_state_algorithm_product import (
     HandleDialogueStateAlgorithmProduct,
 )
 from src.filesystem.file_operations import read_json_file

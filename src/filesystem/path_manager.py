@@ -29,6 +29,9 @@ class PathManager:
     GUIDELINES_DIR = DATA_DIR / "guidelines"
     WEATHERS_DIR = DATA_DIR / "weathers"
     LLMS_DIR = DATA_DIR / "llms"
+    PROMPTING_DIR = DATA_DIR / "prompting"
+    BLOCKS_DIR = PROMPTING_DIR / "blocks"
+    DIALOGUES_DIR = PROMPTING_DIR / "dialogues"
     VOICE_LINES_DIR = STATIC_DIR / "voice_lines"
 
     @classmethod
@@ -90,6 +93,14 @@ class PathManager:
     @classmethod
     def get_location_types_path(cls) -> Path:
         return cls.PLACES_DIR / "location_types.txt"
+
+    @classmethod
+    def get_local_information_path(cls) -> Path:
+        return cls.BLOCKS_DIR / "local_information.txt"
+
+    @classmethod
+    def get_narrative_beat_generation_prompt_path(cls) -> Path:
+        return cls.DIALOGUES_DIR / "narrative_beat_generation_prompt.txt"
 
     @classmethod
     def get_templates_paths(cls, place_type: TemplateType):

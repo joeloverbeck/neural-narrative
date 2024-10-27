@@ -1,0 +1,10 @@
+Based on the information provided, write three or four sentences that naturally progress the actions of the characters, in the present tense, without including any dialogue.
+Your narration should build upon the ongoing dialogue and provided information to advance the narrative meaningfully, showing the characters taking actions, making decisions, or reacting to developments that logically follow from the conversation.
+Ensure the actions are engaging and contribute to the development of the story, revealing character traits, emotions, or conflicts, while maintaining the rhythm of the scene without compressing time.
+Incorporate elements of the surroundings and character personalities as appropriate to enrich the scene and add depth.
+Avoid repeating elements of the setting description, previous narration, or dialogue verbatim; use them as inspiration to create something original.
+{local_information}
+{player_and_followers_information}
+Ongoing Dialogue:
+{transcription}
+Important: you are prohibited from including any dialogue in your response.

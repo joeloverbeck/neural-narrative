@@ -121,6 +121,14 @@ function showToast(message, type) {
     }, 10000);
 }
 
+// Variable to store the value of the clicked submit button
+var submitActionValue = null;
+
+// Capture the click event on submit buttons
+$('form.ajax-form button[type=submit]').click(function() {
+  submitActionValue = $(this).val();
+});
+
 // Main function to handle AJAX form submissions
 function handleAjaxFormSubmit(form, options = {}) {
     const submitButtons = form.querySelectorAll('button[type="submit"], input[type="submit"]');
@@ -144,7 +152,15 @@ function handleAjaxFormSubmit(form, options = {}) {
         submitButtons.forEach((button, index) => {
             originalButtonHTMLs[index] = button.innerHTML;
             button.disabled = true;
-            button.innerHTML = '<i class="fa-solid fa-arrows-rotate fa-spin"></i> Processing...';
+
+            // Check if the button has the 'icon-button' class
+            if (button.classList.contains('icon-button')) {
+                // For icon buttons, show only the spinner icon
+                button.innerHTML = '<i class="fa-solid fa-arrows-rotate fa-spin"></i>';
+            } else {
+                // For other buttons, show the spinner icon with "Processing..." text
+                button.innerHTML = '<i class="fa-solid fa-arrows-rotate fa-spin"></i> Processing...';
+            }
         });
 
         const formData = new FormData(form);
@@ -152,6 +168,11 @@ function handleAjaxFormSubmit(form, options = {}) {
         if (clickedButton && clickedButton.name) {
             formData.append(clickedButton.name, clickedButton.value);
         }
+
+          // Include the submit_action parameter
+          if (submitActionValue !== null) {
+            formData.append('submit_action', submitActionValue);
+          }
 
         fetch(form.action, {
             method: 'POST',

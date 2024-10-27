@@ -41,9 +41,13 @@ SPEECH_PATTERNS_GENERATION_PROMPT_FILE: str = (
 TOOL_INSTRUCTIONS_FOR_INSTRUCTOR_FILE: str = (
     "data/prompting/tool_instructions_for_instructor.txt"
 )
-DIALOGUE_PROMPT_FILE: str = "data/prompting/dialogue_prompt.txt"
-CHOOSING_SPEECH_TURN_PROMPT_FILE: str = "data/prompting/choosing_speech_turn_prompt.txt"
-SUMMARIZE_DIALOGUE_PROMPT_FILE: str = "data/prompting/summarize_dialogue_prompt.txt"
+DIALOGUE_PROMPT_FILE: str = "data/prompting/dialogues/dialogue_prompt.txt"
+CHOOSING_SPEECH_TURN_PROMPT_FILE: str = (
+    "data/prompting/dialogues/choosing_speech_turn_prompt.txt"
+)
+SUMMARIZE_DIALOGUE_PROMPT_FILE: str = (
+    "data/prompting/dialogues/summarize_dialogue_prompt.txt"
+)
 STORY_UNIVERSE_GENERATION_PROMPT_FILE: str = (
     "data/prompting/base/story_universe_generation_prompt.txt"
 )
@@ -80,7 +84,7 @@ PLOT_BLUEPRINTS_GENERATION_PROMPT_FILE: str = (
     "data/prompting/concepts/plot_blueprints_generation_prompt.txt"
 )
 AMBIENT_NARRATION_GENERATION_PROMPT_FILE: str = (
-    "data/prompting/ambient_narration_generation_prompt.txt"
+    "data/prompting/dialogues/ambient_narration_generation_prompt.txt"
 )
 SELF_REFLECTION_GENERATION_PROMPT_FILE: str = (
     "data/prompting/characters/self_reflection_generation_prompt.txt"

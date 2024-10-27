@@ -5,7 +5,7 @@ import pytest
 from src.dialogues.algorithms.handle_dialogue_state_algorithm import (
     HandleDialogueStateAlgorithm,
 )
-from src.dialogues.products.HandleDialogueStateAlgorithmProduct import (
+from src.dialogues.products.handle_dialogue_state_algorithm_product import (
     HandleDialogueStateAlgorithmProduct,
 )
 

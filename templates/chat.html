@@ -78,13 +78,17 @@
           data-success-handler="chatSuccessHandler" data-error-handler="chatErrorHandler">
         <input id="user-input" name="user_input" placeholder="Type your message here..." type="text">
         <div class="form-buttons">
-            <button type="submit" name="submit_action" value="Send" class="action-button"
-                    id="send-message-button">
-                <i class="fas fa-paper-plane"></i> Send
+            <button type="submit" name="submit_action" value="Send" class="icon-button" id="send-message-button"
+                    title="Send Message">
+                <i class="fas fa-paper-plane"></i>
             </button>
-            <button type="submit" name="submit_action" value="Ambient narration" class="action-button"
-                    id="ambient-narration-button">
-                <i class="fas fa-magic"></i> Ambient Narration
+            <button type="submit" name="submit_action" value="Ambient narration" class="icon-button"
+                    id="ambient-narration-button" title="Ambient Narration">
+                <i class="fas fa-magic"></i>
+            </button>
+            <button type="submit" name="submit_action" value="Narrative beat" class="icon-button"
+                    id="narrative-beat-button" title="Narrative Beat">
+                <i class="fas fa-book"></i>
             </button>
         </div>
     </form>
@@ -94,9 +98,9 @@
           data-success-handler="chatSuccessHandler" data-error-handler="chatErrorHandler">
         <input id="event-input" name="event_input" placeholder="Describe an event..." type="text">
         <div class="form-buttons">
-            <button type="submit" name="submit_action" value="Event" class="action-button"
-                    id="event-button">
-                <i class="fas fa-calendar-alt"></i> Event
+            <button type="submit" name="submit_action" value="Event" class="icon-button"
+                    id="event-button" title="Event">
+                <i class="fas fa-calendar-alt"></i>
             </button>
         </div>
     </form>

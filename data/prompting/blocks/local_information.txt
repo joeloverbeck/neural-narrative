@@ -1,0 +1,3 @@
+Setting Description: {setting_description}
+Time of Day: {hour} {time_of_day}
+Weather: {weather}

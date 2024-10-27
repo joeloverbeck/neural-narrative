@@ -72,6 +72,8 @@ class ChatView(MethodView):
         user_input = request.form.get("user_input")
         event_input = request.form.get("event_input")
 
+        logger.info(request.form)
+
         if action == "Send":
             if not user_input:
                 if request.headers.get("X-Requested-With") == "XMLHttpRequest":
@@ -164,6 +166,27 @@ class ChatView(MethodView):
                         "message_text": event_message["message_text"],
                         "file_url": event_message["file_url"] or "",
                         "message_type": event_message["message_type"],
+                    }
+                ]
+                return jsonify({"success": True, "messages": messages_data}), 200
+            else:
+                return redirect(url_for("chat"))
+        elif action == "Narrative beat":
+            dialogue_service = DialogueService()
+
+            narrative_beat_message = dialogue_service.process_narrative_beat()
+
+            dialogue.append(narrative_beat_message)
+
+            dialogue_service.control_size_of_messages_in_session(dialogue)
+
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                messages_data = [
+                    {
+                        "alignment": narrative_beat_message["alignment"],
+                        "message_text": narrative_beat_message["message_text"],
+                        "file_url": narrative_beat_message["file_url"] or "",
+                        "message_type": narrative_beat_message["message_type"],
                     }
                 ]
                 return jsonify({"success": True, "messages": messages_data}), 200
