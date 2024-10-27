@@ -3,9 +3,9 @@ import logging
 from flask import redirect, session, render_template, url_for, flash, request, jsonify
 from flask.views import MethodView
 
-from src.base.playthrough_manager import PlaythroughManager
-from src.filesystem.file_operations import read_json_file
-from src.filesystem.path_manager import PathManager
+from src.dialogues.algorithms.handle_dialogue_state_algorithm import (
+    HandleDialogueStateAlgorithm,
+)
 from src.maps.factories.map_manager_factory import MapManagerFactory
 from src.services.dialogue_service import DialogueService
 from src.time.time_manager import TimeManager
@@ -22,29 +22,15 @@ class ChatView(MethodView):
         purpose = session.get("purpose")
         if not playthrough_name:
             return redirect(url_for("index"))
-        playthrough_manager = PlaythroughManager(playthrough_name)
 
-        if not dialogue_participants and not playthrough_manager.has_ongoing_dialogue(
-            playthrough_name
-        ):
-            logger.info("There were no dialogue participants, and no ongoing dialogue.")
+        product = HandleDialogueStateAlgorithm(
+            playthrough_name, dialogue_participants, purpose
+        ).do_algorithm()
+
+        if not product.get_data():
             return redirect(url_for("participants"))
 
-        # At this point we have participants in the session, and maybe an ongoing dialogue.
-        if not dialogue_participants and playthrough_manager.has_ongoing_dialogue(
-            playthrough_name
-        ):
-            ongoing_dialogue_file = read_json_file(
-                PathManager.get_ongoing_dialogue_path(playthrough_name)
-            )
-
-            session["participants"] = ongoing_dialogue_file["participants"]
-        if not purpose and playthrough_manager.has_ongoing_dialogue(playthrough_name):
-            ongoing_dialogue_file = read_json_file(
-                PathManager.get_ongoing_dialogue_path(playthrough_name)
-            )
-
-            session["purpose"] = ongoing_dialogue_file.get("purpose", None)
+        session.update(product.get_data())
 
         dialogue = session.get("dialogue", [])
 

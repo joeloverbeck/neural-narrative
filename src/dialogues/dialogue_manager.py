@@ -66,7 +66,7 @@ class DialogueManager:
             for speech_turn in ongoing_dialogue_file["transcription"]:
                 transcription.add_line(speech_turn)
 
-            return transcription
+        return transcription
 
     def remove_ongoing_dialogue(self, playthrough_name: str):
         validate_non_empty_string(playthrough_name, "playthrough_name")

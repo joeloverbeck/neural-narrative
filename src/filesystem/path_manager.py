@@ -213,7 +213,7 @@ class PathManager:
 
     @classmethod
     def get_ongoing_dialogue_path(cls, playthrough_name: str) -> Path:
-        return cls.get_playthrough_path(playthrough_name) / "ongoing_dialogue.txt"
+        return cls.get_playthrough_path(playthrough_name) / "ongoing_dialogue.json"
 
     @classmethod
     def get_voice_line_path(cls, character_name: str, voice_model: str) -> Path:
