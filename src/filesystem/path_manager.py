@@ -7,7 +7,6 @@ from src.concepts.enums import ConceptType
 
 
 class PathManager:
-    SECRET_TEMPLATE_PREFIX = "secret_"
     TEMPLATE_FILES = {
         TemplateType.LOCATION: "locations.json",
         TemplateType.AREA: "areas.json",
@@ -93,18 +92,15 @@ class PathManager:
         return cls.PLACES_DIR / "location_types.txt"
 
     @classmethod
-    def get_templates_paths(cls, place_type: TemplateType, secret: bool = False):
+    def get_templates_paths(cls, place_type: TemplateType):
         """
         Returns the path to the template file for the given type.
-        If 'secret' is True, returns the path to the secret template.
         """
         filename = cls.TEMPLATE_FILES.get(place_type)
 
         if not filename:
             raise ValueError(f"Unknown template type: {place_type}")
 
-        if secret:
-            filename = cls.SECRET_TEMPLATE_PREFIX + filename
         return cls.TEMPLATES_DIR / filename
 
     @classmethod
