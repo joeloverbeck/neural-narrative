@@ -14,7 +14,7 @@ from src.dialogues.strategies.web_choose_participants_strategy import (
 )
 
 
-class HandlePossibleExistenceOfOngoingConversationCommandFactoryComposer:
+class LoadOngoingConversationDataCommandFactoryComposer:
     def __init__(
         self,
         playthrough_name: str,

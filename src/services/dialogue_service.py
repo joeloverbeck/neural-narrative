@@ -11,9 +11,10 @@ from src.characters.composers.local_information_factory_composer import (
 from src.characters.composers.player_and_followers_information_factory_composer import (
     PlayerAndFollowersInformationFactoryComposer,
 )
+from src.dialogues.abstracts.strategies import NarrationForDialogueStrategy
 from src.dialogues.commands.setup_dialogue_command import SetupDialogueCommand
 from src.dialogues.composers.handle_possible_existence_of_ongoing_conversation_command_factory_composer import (
-    HandlePossibleExistenceOfOngoingConversationCommandFactoryComposer,
+    LoadOngoingConversationDataCommandFactoryComposer,
 )
 from src.dialogues.composers.produce_narration_for_dialogue_command_composer import (
     ProduceNarrationForDialogueCommandComposer,
@@ -60,6 +61,22 @@ class DialogueService:
     def __init__(self):
         self._playthrough_name = session.get("playthrough_name")
 
+    def _process_narration(
+        self,
+        narration_type: str,
+        narration_strategy: NarrationForDialogueStrategy,
+        observer: WebNarrationObserver,
+    ) -> dict:
+        ProduceNarrationForDialogueCommandComposer(
+            self._playthrough_name,
+            session.get("purpose", ""),
+            narration_type,
+            observer,
+            narration_strategy,
+        ).compose_command().execute()
+
+        return observer.get_messages()[0]
+
     def process_ambient_message(self) -> dict:
         produce_tool_response_strategy_factory = (
             ProduceToolResponseStrategyFactoryComposer(
@@ -84,15 +101,9 @@ class DialogueService:
 
         web_ambient_narration_observer = WebNarrationObserver()
 
-        ProduceNarrationForDialogueCommandComposer(
-            self._playthrough_name,
-            session.get("purpose", ""),
-            "ambient",
-            web_ambient_narration_observer,
-            narration_for_dialogue_strategy,
-        ).compose_command().execute()
-
-        return web_ambient_narration_observer.get_messages()[0]
+        return self._process_narration(
+            "ambient", narration_for_dialogue_strategy, web_ambient_narration_observer
+        )
 
     def process_narrative_beat(self, participants_identifiers: List[str]) -> dict:
         if not isinstance(participants_identifiers, list):
@@ -138,36 +149,24 @@ class DialogueService:
 
         web_ambient_narration_observer = WebNarrationObserver()
 
-        ProduceNarrationForDialogueCommandComposer(
-            self._playthrough_name,
-            session.get("purpose", ""),
-            "event",
-            web_ambient_narration_observer,
-            narration_for_dialogue_strategy,
-        ).compose_command().execute()
-
-        return web_ambient_narration_observer.get_messages()[0]
+        return self._process_narration(
+            "event", narration_for_dialogue_strategy, web_ambient_narration_observer
+        )
 
     def process_event_message(self, event_text) -> dict:
         web_narration_observer = WebNarrationObserver()
 
         narration_for_dialogue_strategy = EventNarrationForDialogueStrategy(event_text)
 
-        ProduceNarrationForDialogueCommandComposer(
-            self._playthrough_name,
-            session.get("purpose", ""),
-            "event",
-            web_narration_observer,
-            narration_for_dialogue_strategy,
-        ).compose_command().execute()
-
-        return web_narration_observer.get_messages()[0]
+        return self._process_narration(
+            "event", narration_for_dialogue_strategy, web_narration_observer
+        )
 
     def process_user_input(self, user_input) -> (List[Dict], bool):
         participants = Participants()
 
-        handle_possible_existence_of_ongoing_conversation_command_factory = (
-            HandlePossibleExistenceOfOngoingConversationCommandFactoryComposer(
+        load_ongoing_conversation_data_command_factory = (
+            LoadOngoingConversationDataCommandFactoryComposer(
                 self._playthrough_name, participants
             ).composer_factory()
         )
@@ -195,7 +194,7 @@ class DialogueService:
             session.get("purpose", ""),
             web_dialogue_observer,
             web_player_input_factory,
-            handle_possible_existence_of_ongoing_conversation_command_factory,
+            load_ongoing_conversation_data_command_factory,
             WebMessageDataProducerForIntroducePlayerInputIntoDialogueStrategy(),
             WebMessageDataProducerForSpeechTurnStrategy(
                 self._playthrough_name,
@@ -208,6 +207,7 @@ class DialogueService:
         setup_command.execute()
 
         is_goodbye = player_input_product.is_goodbye()
+
         messages = self.prepare_messages(web_dialogue_observer)
 
         return messages, is_goodbye

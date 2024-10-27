@@ -9,7 +9,7 @@ from src.dialogues.commands.store_temporary_dialogue_command import (
     StoreTemporaryDialogueCommand,
 )
 from src.dialogues.composers.handle_possible_existence_of_ongoing_conversation_command_factory_composer import (
-    HandlePossibleExistenceOfOngoingConversationCommandFactoryComposer,
+    LoadOngoingConversationDataCommandFactoryComposer,
 )
 from src.dialogues.observers.web_narration_observer import WebNarrationObserver
 from src.dialogues.participants import Participants
@@ -39,7 +39,7 @@ class ProduceNarrationForDialogueCommandComposer:
         participants = Participants()
 
         handle_possible_existence_of_ongoing_conversation_command_factory = (
-            HandlePossibleExistenceOfOngoingConversationCommandFactoryComposer(
+            LoadOngoingConversationDataCommandFactoryComposer(
                 self._playthrough_name, participants
             ).composer_factory()
         )

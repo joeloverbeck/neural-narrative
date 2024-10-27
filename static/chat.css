@@ -10,6 +10,7 @@
     background-color: #f5f5f5;
     margin: 0 auto; /* Center the chat window horizontally */
     border-radius: 10px;
+    margin-bottom: 15px;
 }
 
 /* Scrollbar Styles */
