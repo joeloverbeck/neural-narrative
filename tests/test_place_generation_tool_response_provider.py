@@ -84,8 +84,8 @@ def test_init_valid_arguments():
     assert provider._template_type == template_type
     assert provider._notion == notion
     assert (
-            provider._produce_tool_response_strategy_factory
-            == produce_tool_response_strategy_factory
+        provider._produce_tool_response_strategy_factory
+        == produce_tool_response_strategy_factory
     )
     assert provider._templates_repository == templates_repository
     assert provider._filesystem_manager == filesystem_manager
@@ -363,14 +363,14 @@ def test_generate_product():
 
     # Mock BaseToolResponseProvider methods
     with patch.object(
-            PlaceGenerationToolResponseProvider,
-            "_read_prompt_file",
-            return_value="Prompt template",
+        PlaceGenerationToolResponseProvider,
+        "_read_prompt_file",
+        return_value="Prompt template",
     ):
         with patch.object(
-                PlaceGenerationToolResponseProvider,
-                "_read_tool_instructions",
-                return_value="Tool instructions",
+            PlaceGenerationToolResponseProvider,
+            "_read_tool_instructions",
+            return_value="Tool instructions",
         ):
             provider = PlaceGenerationToolResponseProvider(
                 father_place_identifier,
@@ -420,6 +420,6 @@ def test_get_prompt_file_template_data_none():
     with pytest.raises(ValueError) as exc_info:
         provider.get_prompt_file()
     assert (
-            f"Failed to produce template data for father place identifier '{father_place_identifier}' and template type {template_type}."
-            in str(exc_info)
+        f"Failed to produce template data for father place identifier '{father_place_identifier}' and template type {template_type}."
+        in str(exc_info)
     )

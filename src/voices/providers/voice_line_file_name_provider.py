@@ -18,10 +18,10 @@ class VoiceLineFileNameProvider:
         self,
         character_name: str,
         voice_model: str,
-            temp_dir: Path,
-            temp_file_paths: List[Path],
-            process_temporary_voice_lines_algorithm_factory: ProcessTemporaryVoiceLinesAlgorithmFactory,
-            path_manager: Optional[PathManager] = None,
+        temp_dir: Path,
+        temp_file_paths: List[Path],
+        process_temporary_voice_lines_algorithm_factory: ProcessTemporaryVoiceLinesAlgorithmFactory,
+        path_manager: Optional[PathManager] = None,
     ):
         validate_non_empty_string(character_name, "character_name")
         validate_non_empty_string(voice_model, "voice_model")

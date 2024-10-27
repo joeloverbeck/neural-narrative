@@ -31,7 +31,7 @@ class ActionResolutionFactory(BaseToolResponseProvider):
         prompt_file: str,
         filesystem_manager: Optional[FilesystemManager] = None,
         time_manager: Optional[TimeManager] = None,
-            path_manager: Optional[PathManager] = None,
+        path_manager: Optional[PathManager] = None,
     ):
         validate_non_empty_string(action_name, "action_name")
         validate_non_empty_string(action_goal, "action_goal")
