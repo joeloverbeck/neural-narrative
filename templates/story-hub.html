@@ -68,7 +68,7 @@ Story Hub
         </button>
         <div class="content">
             {% if scenarios %}
-            <div class="interesting-scenarios-list">
+            <div class="scenarios-list">
                 {% for scenario in scenarios %}
                 <form action="{{ url_for('story-hub') }}" method="post" class="item-form">
                     <input type="hidden" name="submit_action" value="delete_scenario">
@@ -86,7 +86,7 @@ Story Hub
             <form method="post" class="ajax-form" action="{{ url_for('story-hub') }}"
                   data-success-handler="generateScenariosSuccess">
                 <input type="hidden" name="submit_action" value="generate_scenarios">
-                <button type="submit" class="action-button" id="generate-interesting-scenarios-button">
+                <button type="submit" class="action-button" id="generate-scenarios-button">
                     <i class="fas fa-exclamation-circle"></i> Generate Scenarios
                 </button>
             </form>
