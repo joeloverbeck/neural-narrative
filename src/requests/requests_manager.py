@@ -105,7 +105,6 @@ class RequestsManager:
                 logger.error("Pod is not ready to handle TTS requests.")
                 return None
             tts_endpoint = f"{self._get_pod_url()}/tts_to_audio/"
-            logger.info(f"TTS endpoint is ready: {tts_endpoint}")
             return tts_endpoint
         except Exception as e:
             logger.error(f"Unexpected error in get_xtts_endpoint: {e}")

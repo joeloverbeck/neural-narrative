@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List
 
 
 @dataclass
@@ -10,7 +9,6 @@ class VoicePartProviderConfig:
     timestamp: str
     index: int
     temp_dir: Path
-    temp_file_paths: List[str]
 
     def __post_init__(self):
         if not self.part:

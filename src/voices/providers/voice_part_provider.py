@@ -1,5 +1,6 @@
 import logging
 import os
+from pathlib import Path
 from typing import Optional
 
 from src.base.exceptions import VoiceLineGenerationError
@@ -31,17 +32,17 @@ class VoicePartProvider:
 
         self._config_loader = config_loader or ConfigLoader()
 
-    def create_voice_part(self) -> None:
+    def create_voice_part(self) -> Optional[Path]:
         clean_text = self._voice_part_provider_config.part.strip()
         if not clean_text:
-            return
+            return None
         if clean_text.startswith("*") and clean_text.endswith("*"):
             voice_to_use = self._config_loader.get_narrator_voice_model()
             clean_text = clean_text.strip("*").strip()
         else:
             voice_to_use = self._voice_model
         if not clean_text:
-            return
+            return None
         temp_file_name = f"{self._voice_part_provider_config.timestamp}_{self._character_name}_{voice_to_use}_{self._voice_part_provider_config.index}.wav"
         temp_file_path = os.path.join(
             self._voice_part_provider_config.temp_dir, temp_file_name
@@ -54,7 +55,7 @@ class VoicePartProvider:
         )
         try:
             algorithm.generate_voice_line()
-            self._voice_part_provider_config.temp_file_paths.append(temp_file_path)
+            return Path(temp_file_path)
         except Exception as e:
             raise VoiceLineGenerationError(
                 f"Error generating voice line for part {self._voice_part_provider_config.index}: {e}"

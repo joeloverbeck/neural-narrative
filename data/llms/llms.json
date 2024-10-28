@@ -30,7 +30,7 @@
   "story_universe_generation": "hermes_405b_free",
   "place_generation": "hermes_405b_free",
   "place_description": "hermes_405b_free",
-  "travel_narration": "hermes_405b_free",
+  "travel_narration": "magnum_72b",
   "character_generation_guidelines": "hermes_405b_free",
   "base_character_data_generation": "magnum_72b",
   "speech_patterns_generation": "magnum_72b",

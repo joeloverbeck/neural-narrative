@@ -1,6 +1,6 @@
 A conversation is ongoing, that features the following characters:
 {all_participants}
-Here's the dialogue so far:
+Ongoing Dialogue:
 {dialogue}
 You are tasked with determining, according to the natural flow of dialogue, who will say the next line of dialogue, among the allowed participants:
 {participants_without_player}

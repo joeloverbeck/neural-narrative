@@ -1,109 +1,255 @@
-import os
+# test_voice_part_provider.py
+
 from pathlib import Path
-from unittest.mock import MagicMock
+from unittest.mock import Mock, patch
 
 import pytest
 
 from src.base.exceptions import VoiceLineGenerationError
-from src.voices.configs.voice_part_provider_config import VoicePartProviderConfig
+from src.filesystem.config_loader import ConfigLoader
 from src.voices.factories.generate_voice_line_algorithm_factory import (
     GenerateVoiceLineAlgorithmFactory,
 )
-from src.voices.providers.voice_part_provider import VoicePartProvider
+from src.voices.providers.voice_part_provider import (
+    VoicePartProvider,
+    VoicePartProviderConfig,
+)
 
 
-def create_default_config(**overrides):
-    config = VoicePartProviderConfig(
-        part=overrides.get("part", "Hello, world!"),
-        xtts_endpoint=overrides.get("xtts_endpoint", "http://test-endpoint"),
-        timestamp=overrides.get("timestamp", "1234567890"),
-        index=overrides.get("index", 0),
-        temp_dir=Path(overrides.get("temp_dir", "/tmp")),
-        temp_file_paths=overrides.get("temp_file_paths", []),
+# Sample configuration for VoicePartProviderConfig
+@pytest.fixture
+def voice_part_provider_config():
+    return VoicePartProviderConfig(
+        part="Hello, World!",
+        xtts_endpoint="http://example.com/xtts",
+        timestamp="20231028T123000",
+        index=1,
+        temp_dir=Path("/tmp"),
     )
-    return config
 
 
-def test_create_voice_part_empty_part():
-    config = create_default_config(part="   ")
-    factory = MagicMock(spec=GenerateVoiceLineAlgorithmFactory)
-    provider = VoicePartProvider("Character Name", "voicemodel", config, factory)
-    provider.create_voice_part()
+# Mock ConfigLoader
+@pytest.fixture
+def mock_config_loader():
+    mock = Mock(spec=ConfigLoader)
+    mock.get_narrator_voice_model.return_value = "narrator_voice_model"
+    return mock
+
+
+# Mock GenerateVoiceLineAlgorithmFactory
+@pytest.fixture
+def mock_algorithm_factory():
+    factory = Mock(spec=GenerateVoiceLineAlgorithmFactory)
+    mock_algorithm = Mock()
+    factory.create_algorithm.return_value = mock_algorithm
+    return factory, mock_algorithm
+
+
+# Test when part is empty
+def test_create_voice_part_empty_part(
+    voice_part_provider_config, mock_config_loader, mock_algorithm_factory
+):
+    voice_part_provider_config.part = "   "  # Only whitespace
+    factory, mock_algorithm = mock_algorithm_factory
+
+    provider = VoicePartProvider(
+        character_name="Character",
+        voice_model="default_voice",
+        voice_part_provider_config=voice_part_provider_config,
+        generate_voice_line_algorithm_factory=factory,
+        config_loader=mock_config_loader,
+    )
+
+    result = provider.create_voice_part()
+    assert result is None
     factory.create_algorithm.assert_not_called()
-    assert config.temp_file_paths == []
+    mock_algorithm.generate_voice_line.assert_not_called()
 
 
-def test_create_voice_part_narrator_voice():
-    config = create_default_config(part="*This is narrator text*")
-    factory = MagicMock(spec=GenerateVoiceLineAlgorithmFactory)
-    algorithm_mock = MagicMock()
-    factory.create_algorithm.return_value = algorithm_mock
-    provider = VoicePartProvider("Character Name", "voicemodel", config, factory)
-    provider.create_voice_part()
-    factory.create_algorithm.assert_called_once()
-    _args, _kwargs = factory.create_algorithm.call_args
-    assert len(config.temp_file_paths) == 1
+# Test when part starts and ends with *
+def test_create_voice_part_narrator_voice(
+    voice_part_provider_config, mock_config_loader, mock_algorithm_factory
+):
+    voice_part_provider_config.part = "*This is a narrator line.*"
+    factory, mock_algorithm = mock_algorithm_factory
+
+    provider = VoicePartProvider(
+        character_name="Narrator",
+        voice_model="default_voice",
+        voice_part_provider_config=voice_part_provider_config,
+        generate_voice_line_algorithm_factory=factory,
+        config_loader=mock_config_loader,
+    )
+
+    result = provider.create_voice_part()
+    assert result == Path("/tmp/20231028T123000_Narrator_narrator_voice_model_1.wav")
+    factory.create_algorithm.assert_called_once_with(
+        "This is a narrator line.",
+        "narrator_voice_model",
+        "http://example.com/xtts",
+        "\\tmp\\20231028T123000_Narrator_narrator_voice_model_1.wav",
+    )
+    mock_algorithm.generate_voice_line.assert_called_once()
 
 
-def test_create_voice_part_normal_text():
-    config = create_default_config(part="This is normal text")
-    factory = MagicMock(spec=GenerateVoiceLineAlgorithmFactory)
-    algorithm_mock = MagicMock()
-    factory.create_algorithm.return_value = algorithm_mock
-    voice_model = "voicemodel"
-    provider = VoicePartProvider("Character Name", voice_model, config, factory)
-    provider.create_voice_part()
-    factory.create_algorithm.assert_called_once()
-    args, kwargs = factory.create_algorithm.call_args
-    assert args[1] == voice_model
-    assert len(config.temp_file_paths) == 1
+# Test when part does not start and end with *
+def test_create_voice_part_default_voice(
+    voice_part_provider_config, mock_config_loader, mock_algorithm_factory
+):
+    voice_part_provider_config.part = "Hello, this is a character."
+    factory, mock_algorithm = mock_algorithm_factory
+
+    provider = VoicePartProvider(
+        character_name="Character",
+        voice_model="default_voice",
+        voice_part_provider_config=voice_part_provider_config,
+        generate_voice_line_algorithm_factory=factory,
+        config_loader=mock_config_loader,
+    )
+
+    result = provider.create_voice_part()
+    assert result == Path("/tmp/20231028T123000_Character_default_voice_1.wav")
+    factory.create_algorithm.assert_called_once_with(
+        "Hello, this is a character.",
+        "default_voice",
+        "http://example.com/xtts",
+        "\\tmp\\20231028T123000_Character_default_voice_1.wav",
+    )
+    mock_algorithm.generate_voice_line.assert_called_once()
 
 
-def test_create_voice_part_empty_after_stripping():
-    config = create_default_config(part="*   *")
-    factory = MagicMock(spec=GenerateVoiceLineAlgorithmFactory)
-    provider = VoicePartProvider("Character Name", "voicemodel", config, factory)
-    provider.create_voice_part()
+# Test when part is only * with no text
+def test_create_voice_part_only_asterisks(
+    voice_part_provider_config, mock_config_loader, mock_algorithm_factory
+):
+    voice_part_provider_config.part = "**"
+    factory, mock_algorithm = mock_algorithm_factory
+
+    provider = VoicePartProvider(
+        character_name="Character",
+        voice_model="default_voice",
+        voice_part_provider_config=voice_part_provider_config,
+        generate_voice_line_algorithm_factory=factory,
+        config_loader=mock_config_loader,
+    )
+
+    result = provider.create_voice_part()
+    assert result is None
     factory.create_algorithm.assert_not_called()
-    assert config.temp_file_paths == []
+    mock_algorithm.generate_voice_line.assert_not_called()
 
 
-def test_create_voice_part_generation_exception():
-    config = create_default_config()
-    factory = MagicMock(spec=GenerateVoiceLineAlgorithmFactory)
-    algorithm_mock = MagicMock()
-    algorithm_mock.generate_voice_line.side_effect = Exception("Generation failed")
-    factory.create_algorithm.return_value = algorithm_mock
-    provider = VoicePartProvider("Character Name", "voicemodel", config, factory)
+# Test temp_file_path construction
+def test_create_voice_part_temp_file_path(
+    voice_part_provider_config, mock_config_loader, mock_algorithm_factory
+):
+    voice_part_provider_config.part = "Sample dialogue."
+    factory, mock_algorithm = mock_algorithm_factory
+
+    provider = VoicePartProvider(
+        character_name="Hero",
+        voice_model="hero_voice",
+        voice_part_provider_config=voice_part_provider_config,
+        generate_voice_line_algorithm_factory=factory,
+        config_loader=mock_config_loader,
+    )
+
+    result = provider.create_voice_part()
+    expected_path = Path("/tmp/20231028T123000_Hero_hero_voice_1.wav")
+    assert result == expected_path
+    factory.create_algorithm.assert_called_once_with(
+        "Sample dialogue.",
+        "hero_voice",
+        "http://example.com/xtts",
+        "\\tmp\\20231028T123000_Hero_hero_voice_1.wav",
+    )
+
+
+# Test exception handling during voice line generation
+def test_create_voice_part_algorithm_exception(
+    voice_part_provider_config, mock_config_loader, mock_algorithm_factory
+):
+    voice_part_provider_config.part = "Error generating voice."
+    factory, mock_algorithm = mock_algorithm_factory
+    mock_algorithm.generate_voice_line.side_effect = Exception("Generation failed")
+
+    provider = VoicePartProvider(
+        character_name="Character",
+        voice_model="default_voice",
+        voice_part_provider_config=voice_part_provider_config,
+        generate_voice_line_algorithm_factory=factory,
+        config_loader=mock_config_loader,
+    )
+
     with pytest.raises(VoiceLineGenerationError) as exc_info:
         provider.create_voice_part()
-    assert str(config.index) in str(exc_info)
-    assert config.temp_file_paths == []
 
-
-def test_create_voice_part_appends_temp_file_path():
-    config = create_default_config()
-    factory = MagicMock(spec=GenerateVoiceLineAlgorithmFactory)
-    algorithm_mock = MagicMock()
-    factory.create_algorithm.return_value = algorithm_mock
-    character_name = "Character Name"
-    voice_model = "voicemodel"
-    provider = VoicePartProvider(character_name, voice_model, config, factory)
-    provider.create_voice_part()
-    assert len(config.temp_file_paths) == 1
-    expected_temp_file_name = (
-        f"{config.timestamp}_{character_name}_{voice_model}_{config.index}.wav"
+    assert "Error generating voice line for part 1: Generation failed" in str(
+        exc_info.value
     )
-    expected_temp_file_path = os.path.join(config.temp_dir, expected_temp_file_name)
-    assert config.temp_file_paths[0] == expected_temp_file_path
+    factory.create_algorithm.assert_called_once()
+    mock_algorithm.generate_voice_line.assert_called_once()
 
 
-def test_voice_part_provider_config_validation():
-    with pytest.raises(ValueError, match="xtts_endpoint can't be empty."):
-        create_default_config(xtts_endpoint="")
-    with pytest.raises(ValueError, match="timestamp can't be empty."):
-        create_default_config(timestamp="")
-    with pytest.raises(ValueError, match="Invalid index: -1."):
-        create_default_config(index=-1)
-    config = create_default_config()
-    assert config.part == "Hello, world!"
+# Test successful voice line generation
+def test_create_voice_part_success(
+    voice_part_provider_config, mock_config_loader, mock_algorithm_factory
+):
+    voice_part_provider_config.part = "Successful generation."
+    factory, mock_algorithm = mock_algorithm_factory
+    # No exception is raised, simulating successful generation
+
+    provider = VoicePartProvider(
+        character_name="Protagonist",
+        voice_model="protagonist_voice",
+        voice_part_provider_config=voice_part_provider_config,
+        generate_voice_line_algorithm_factory=factory,
+        config_loader=mock_config_loader,
+    )
+
+    result = provider.create_voice_part()
+    expected_path = Path("/tmp/20231028T123000_Protagonist_protagonist_voice_1.wav")
+    assert result == expected_path
+    factory.create_algorithm.assert_called_once_with(
+        "Successful generation.",
+        "protagonist_voice",
+        "http://example.com/xtts",
+        "\\tmp\\20231028T123000_Protagonist_protagonist_voice_1.wav",
+    )
+    mock_algorithm.generate_voice_line.assert_called_once()
+
+
+# Test when ConfigLoader is not provided (uses default)
+def test_create_voice_part_default_config_loader(
+    voice_part_provider_config, mock_algorithm_factory
+):
+    with patch(
+        "src.voices.providers.voice_part_provider.ConfigLoader"
+    ) as MockConfigLoader:
+        mock_config_loader_instance = MockConfigLoader.return_value
+        mock_config_loader_instance.get_narrator_voice_model.return_value = (
+            "narrator_default"
+        )
+        voice_part_provider_config.part = "*Narrator speaks.*"
+
+        factory, mock_algorithm = mock_algorithm_factory
+
+        provider = VoicePartProvider(
+            character_name="Narrator",
+            voice_model="default_voice",
+            voice_part_provider_config=voice_part_provider_config,
+            generate_voice_line_algorithm_factory=factory,
+            config_loader=None,  # Not provided, should use default
+        )
+
+        result = provider.create_voice_part()
+        assert result == Path("/tmp/20231028T123000_Narrator_narrator_default_1.wav")
+        MockConfigLoader.assert_called_once()
+        mock_config_loader_instance.get_narrator_voice_model.assert_called_once()
+        factory.create_algorithm.assert_called_once_with(
+            "Narrator speaks.",
+            "narrator_default",
+            "http://example.com/xtts",
+            "\\tmp\\20231028T123000_Narrator_narrator_default_1.wav",
+        )
+        mock_algorithm.generate_voice_line.assert_called_once()

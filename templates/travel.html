@@ -29,6 +29,30 @@
     <!-- Container to display travel narration -->
     <div id="travel-narration-container"></div>
 </div>
+<!-- Navigation Buttons -->
+<div class="buttons">
+    <a href="{{ url_for('index') }}" class="button">
+        <i class="fa-solid fa-dungeon"></i> Home
+    </a>
+    <a href="{{ url_for('places') }}" class="button">
+        <i class="fas fa-map"></i> Places
+    </a>
+    <a href="{{ url_for('story-hub') }}" class="button">
+        <i class="fas fa-feather-alt"></i> Story Hub
+    </a>
+    <a href="{{ url_for('characters-hub') }}" class="button">
+        <i class="fas fa-users"></i> Characters Hub
+    </a>
+    <a href="{{ url_for('location-hub') }}" class="button">
+        <i class="fas fa-map-marker-alt"></i> Location Hub
+    </a>
+    <a href="{{ url_for('chat') }}" class="button">
+        <i class="fas fa-comments"></i> Chat
+    </a>
+    <a href="{{ url_for('actions') }}" class="button">
+        <i class="fas fa-bolt"></i> Actions
+    </a>
+</div>
 {% endblock %}
 
 {% block scripts %}

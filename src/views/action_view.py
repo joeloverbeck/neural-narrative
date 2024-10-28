@@ -94,7 +94,9 @@ def action_view(action_name, action_icon, action_endpoint, prompt_file):
 
             players_and_followers_information_factory = (
                 PlayerAndFollowersInformationFactoryComposer(
-                    playthrough_name, "Follower", FollowersIdentifiersStrategy()
+                    playthrough_name,
+                    "Follower",
+                    FollowersIdentifiersStrategy(playthrough_name),
                 ).compose_factory()
             )
 
