@@ -11,13 +11,6 @@
 <div class="character-memories-container">
     <h1 class="page-title"><i class="fas fa-brain"></i> Character Memories</h1>
 
-    <!-- Display success message if memories were saved -->
-    {% if session.get('memories_saved_message') %}
-    <div class="message">
-        {{ session.pop('memories_saved_message') }}
-    </div>
-    {% endif %}
-
     <!-- Select Character Section -->
     <div class="collapsible-section">
         <button class="collapsible active">
@@ -47,7 +40,7 @@
         <div class="content">
             <form method="post" class="edit-memories-form">
                 <input name="character_identifier" type="hidden" value="{{ selected_character.identifier }}">
-                <input name="action" type="hidden" value="save_memories">
+                <input name="submit_action" type="hidden" value="save_memories">
                 <label for="character_memories">Memories:</label>
                 <textarea id="character_memories" name="character_memories"
                           rows="20">{{ character_memories }}</textarea>
@@ -64,16 +57,29 @@
             <i class="fas fa-user-circle"></i> Self-Reflection
         </button>
         <div class="content">
-            <!-- Display the self-reflection if it exists -->
-            {% if self_reflection_text %}
-            <div class="self-reflection-container" data-file-url="{{ self_reflection_voice_line_url }}">
+            <!-- Always include the self-reflection-container -->
+            <div class="self-reflection-container" id="self-reflection-container"
+                 {% if self_reflection_voice_line_url %}data-file-url="{{ self_reflection_voice_line_url }}" {% endif
+                 %}>
+                {% if self_reflection_text %}
                 <p>{{ self_reflection_text }}</p>
-                <i class="fas play-icon"></i>
+                <i class="fas fa-play play-icon"></i>
+                <div class="waveform">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+                {% else %}
+                <!-- Placeholder content if no self-reflection yet -->
+                <p>No self-reflection available yet.</p>
+                {% endif %}
             </div>
-            {% endif %}
-            <form method="post" class="self-reflection-form">
+            <form action="{{ url_for('character-memories') }}" method="post" class="ajax-form"
+                  data-success-handler="resolveSelfReflectionSuccess">
                 <input name="character_identifier" type="hidden" value="{{ selected_character.identifier }}">
-                <input name="action" type="hidden" value="produce_self_reflection">
+                <input name="submit_action" type="hidden" value="produce_self_reflection">
                 <button type="submit" class="action-button">
                     <i class="fas fa-sync-alt"></i> Produce Self-Reflection
                 </button>
@@ -112,4 +118,5 @@
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/jquery-3.7.1.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script src="{{ url_for('static', filename='js/character-memories.js') }}"></script>
 {% endblock %}

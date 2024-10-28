@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from flask import session, redirect, url_for, render_template, request
+from flask import session, redirect, url_for, render_template, request, jsonify
 from flask.views import MethodView
 
 from src.characters.algorithms.produce_self_reflection_algorithm import (
@@ -68,7 +68,7 @@ class CharacterMemoriesView(MethodView):
         playthrough_name = session.get("playthrough_name")
         if not playthrough_name:
             return redirect(url_for("index"))
-        action = request.form.get("action")
+        action = request.form.get("submit_action")
         character_identifier = request.form.get("character_identifier")
         if action == "save_memories" and character_identifier:
             new_memories = request.form.get("character_memories", "")
@@ -103,13 +103,23 @@ class CharacterMemoriesView(MethodView):
             session["self_reflection_text"] = (
                 produce_self_reflection_product.get_self_reflection()
             )
-            session["self_reflection_voice_line_url"] = WebService.get_file_url(
+
+            self_reflection_voice_line_url = WebService.get_file_url(
                 Path("voice_lines"),
                 produce_self_reflection_product.get_voice_line_file_name(),
             )
-            session["memories_saved_message"] = (
-                "Self-reflection produced and added to memories."
-            )
+
+            session["self_reflection_voice_line_url"] = self_reflection_voice_line_url
+
+            response = {
+                "success": True,
+                "message": "Self-reflection produced and added to memories.",
+                "self_reflection_text": produce_self_reflection_product.get_self_reflection(),
+                "self_reflection_voice_line_url": self_reflection_voice_line_url,
+            }
+
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return jsonify(response)
         return redirect(
             url_for("character-memories", character_identifier=character_identifier)
         )

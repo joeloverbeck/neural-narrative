@@ -1,8 +1,10 @@
 import logging
+from typing import List, Optional
 
 from flask import redirect, session, render_template, url_for, flash, request, jsonify
 from flask.views import MethodView
 
+from src.base.playthrough_manager import PlaythroughManager
 from src.base.tools import capture_traceback
 from src.dialogues.algorithms.handle_dialogue_state_algorithm import (
     HandleDialogueStateAlgorithm,
@@ -31,7 +33,31 @@ class ChatView(MethodView):
         if not product.get_data() and not dialogue_participants:
             return redirect(url_for("participants"))
 
-        session.update(product.get_data())
+        # Note: here it seems to be the sole place where the full participant data gets loaded
+        # through product.get_data() into session["participants"]
+        dialogue_participants: List[str] = []
+        purpose: Optional[str] = None
+
+        if not session.get("participants") and product.get_data():
+            player_identifier = PlaythroughManager(
+                playthrough_name
+            ).get_player_identifier()
+
+            for key in product.get_data().get("participants").keys():
+                if key != player_identifier:
+                    dialogue_participants.append(key)
+
+            purpose = product.get_data().get("purpose")
+        else:
+            dialogue_participants = session.get("participants")
+            purpose = session.get("purpose")
+
+        session.update(
+            {
+                "purpose": purpose,
+                "participants": dialogue_participants,
+            }
+        )
 
         dialogue = session.get("dialogue", [])
 
