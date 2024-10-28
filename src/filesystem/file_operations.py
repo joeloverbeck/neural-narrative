@@ -29,6 +29,14 @@ def copy_file(origin_file_path: Path, destination_file_path: Path) -> None:
     shutil.copy(origin_file_path, destination_file_path)
 
 
+def remove_file(file_path: Path) -> None:
+    try:
+        os.remove(file_path)
+    except Exception as e:
+        logger.error("Failed to delete file at '%s': %S", file_path, str(e))
+        raise
+
+
 def remove_folder(folder_path: Path) -> None:
     if os.path.exists(folder_path):
         try:

@@ -113,6 +113,10 @@ class IndexView(MethodView):
             filesystem_manager = FilesystemManager()
             playthrough_name = request.form["playthrough_name"]
             if filesystem_manager.playthrough_exists(playthrough_name):
+                # Pop the dialogue and the participants in session, given that we may have come from another playthrough
+                session.pop("dialogue", None)
+                session.pop("participants", None)
+
                 session["playthrough_name"] = playthrough_name
                 playthrough_manager = PlaythroughManager(playthrough_name)
                 if playthrough_manager.has_ongoing_dialogue(playthrough_name):

@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Optional
 
 from src.services.web_service import WebService
@@ -39,10 +40,10 @@ class ActionResolutionProduct:
 
     def get_narrative_voice_line_url(self):
         return WebService.get_file_url(
-            "voice_lines", self._narrative_voice_line_file_name
+            Path("voice_lines"), self._narrative_voice_line_file_name
         )
 
     def get_outcome_voice_line_url(self):
         return WebService.get_file_url(
-            "voice_lines", self._outcome_voice_line_file_name
+            Path("voice_lines"), self._outcome_voice_line_file_name
         )

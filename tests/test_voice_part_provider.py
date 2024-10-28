@@ -87,7 +87,7 @@ def test_create_voice_part_narrator_voice(
         "This is a narrator line.",
         "narrator_voice_model",
         "http://example.com/xtts",
-        "\\tmp\\20231028T123000_Narrator_narrator_voice_model_1.wav",
+        result,
     )
     mock_algorithm.generate_voice_line.assert_called_once()
 
@@ -113,7 +113,7 @@ def test_create_voice_part_default_voice(
         "Hello, this is a character.",
         "default_voice",
         "http://example.com/xtts",
-        "\\tmp\\20231028T123000_Character_default_voice_1.wav",
+        result,
     )
     mock_algorithm.generate_voice_line.assert_called_once()
 
@@ -161,7 +161,7 @@ def test_create_voice_part_temp_file_path(
         "Sample dialogue.",
         "hero_voice",
         "http://example.com/xtts",
-        "\\tmp\\20231028T123000_Hero_hero_voice_1.wav",
+        expected_path,
     )
 
 
@@ -214,7 +214,7 @@ def test_create_voice_part_success(
         "Successful generation.",
         "protagonist_voice",
         "http://example.com/xtts",
-        "\\tmp\\20231028T123000_Protagonist_protagonist_voice_1.wav",
+        result,
     )
     mock_algorithm.generate_voice_line.assert_called_once()
 
@@ -250,6 +250,6 @@ def test_create_voice_part_default_config_loader(
             "Narrator speaks.",
             "narrator_default",
             "http://example.com/xtts",
-            "\\tmp\\20231028T123000_Narrator_narrator_default_1.wav",
+            result,
         )
         mock_algorithm.generate_voice_line.assert_called_once()

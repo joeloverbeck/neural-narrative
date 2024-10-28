@@ -1,6 +1,9 @@
 import os
+from pathlib import Path
 from typing import List, Optional
+
 from flask import url_for
+
 from src.characters.character import Character
 
 
@@ -14,7 +17,7 @@ class WebService:
             )
 
     @staticmethod
-    def get_file_url(folder: str, file_name: Optional[str]):
+    def get_file_url(folder: Path, file_name: Optional[Path]):
         if not file_name:
             file_name = "NONE"
         return url_for("static", filename=f"{folder}/" + os.path.basename(file_name))

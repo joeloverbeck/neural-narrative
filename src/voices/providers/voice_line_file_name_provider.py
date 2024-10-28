@@ -1,9 +1,9 @@
 import logging
-import os
 from pathlib import Path
 from typing import Optional, List
 
 from src.base.validators import validate_non_empty_string
+from src.filesystem.file_operations import remove_folder, remove_file
 from src.filesystem.path_manager import PathManager
 from src.voices.factories.process_temporary_voice_lines_algorithm_factory import (
     ProcessTemporaryVoiceLinesAlgorithmFactory,
@@ -52,12 +52,12 @@ class VoiceLineFileNameProvider:
 
         for temp_file in self._temp_file_paths:
             try:
-                os.remove(temp_file)
+                remove_file(temp_file)
             except Exception as e:
                 logger.warning(f"Error removing temporary file {temp_file}: {e}")
 
         try:
-            os.rmdir(self._temp_dir)
+            remove_folder(self._temp_dir)
         except OSError as e:
             logger.warning(f"Error removing temporary directory {self._temp_dir}: {e}")
 

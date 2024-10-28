@@ -1,9 +1,10 @@
-import threading
+from pathlib import Path
 
 from flask import redirect, url_for, session, render_template, request, jsonify
 from flask.views import MethodView
 
 from src.base.playthrough_manager import PlaythroughManager
+from src.characters.character import Character
 from src.characters.composers.player_and_followers_information_factory_composer import (
     PlayerAndFollowersInformationFactoryComposer,
 )
@@ -26,6 +27,7 @@ from src.prompting.composers.produce_tool_response_strategy_factory_composer imp
 )
 from src.prompting.llms import Llms
 from src.services.place_service import PlaceService
+from src.services.web_service import WebService
 from src.time.time_manager import TimeManager
 from src.voices.factories.direct_voice_line_generation_algorithm_factory import (
     DirectVoiceLineGenerationAlgorithmFactory,
@@ -141,9 +143,9 @@ class TravelView(MethodView):
         narrative = product.get_narrative()
         outcome = product.get_outcome()
 
-        PlaythroughManager(playthrough_name).add_to_adventure(
-            narrative + "\n" + outcome
-        )
+        playthrough_manager = PlaythroughManager(playthrough_name)
+
+        playthrough_manager.add_to_adventure(narrative + "\n" + outcome)
 
         destination_place_data = (
             MapManagerFactory(playthrough_name)
@@ -158,50 +160,50 @@ class TravelView(MethodView):
             DirectVoiceLineGenerationAlgorithmFactory
         )
 
-        result_dict = {}
+        player_character = Character(
+            playthrough_name, playthrough_manager.get_player_identifier()
+        )
 
-        config_loader = ConfigLoader()
-
-        def generate_narrative_voice_line():
-            result_dict["narrative_voice_line_url"] = (
+        result_dict = {
+            "narrative_voice_line_url": (
                 direct_voice_line_generation_algorithm_factory.create_algorithm(
-                    "narrator",
+                    player_character.name,
                     product.get_narrative(),
-                    config_loader.get_narrator_voice_model(),
+                    player_character.voice_model,
                 ).direct_voice_line_generation()
-            )
-
-        def generate_outcome_voice_line():
-            result_dict["outcome_voice_line_url"] = (
+            ),
+            "outcome_voice_line_url": (
                 direct_voice_line_generation_algorithm_factory.create_algorithm(
-                    "narrator",
+                    player_character.name,
                     product.get_outcome(),
-                    config_loader.get_narrator_voice_model(),
+                    player_character.voice_model,
                 ).direct_voice_line_generation()
-            )
-
-        threads = []
-
-        t1 = threading.Thread(target=generate_narrative_voice_line)
-        t2 = threading.Thread(target=generate_outcome_voice_line)
-        threads.append(t1)
-        threads.append(t2)
-        t1.start()
-        t2.start()
-
-        for t in threads:
-            t.join()
+            ),
+        }
 
         narrative_voice_line_url = result_dict.get("narrative_voice_line_url")
         outcome_voice_line_url = result_dict.get("outcome_voice_line_url")
+
+        if not isinstance(narrative_voice_line_url, Path):
+            raise TypeError(
+                f"Expected 'narrative_voice_line' to be a Path, but was '{type(narrative_voice_line_url)}'."
+            )
+        if not isinstance(outcome_voice_line_url, Path):
+            raise TypeError(
+                f"Expected 'outcome_voice_line_url' to be a Path, but was '{type(outcome_voice_line_url)}'."
+            )
 
         return jsonify(
             {
                 "success": True,
                 "narrative": narrative,
                 "outcome": outcome,
-                "narrative_voice_line_url": narrative_voice_line_url,
-                "outcome_voice_line_url": outcome_voice_line_url,
+                "narrative_voice_line_url": WebService.get_file_url(
+                    Path("voice_lines"), narrative_voice_line_url
+                ),
+                "outcome_voice_line_url": WebService.get_file_url(
+                    Path("voice_lines"), outcome_voice_line_url
+                ),
                 "destination_name": destination_area_name,
                 "destination_identifier": destination_identifier,
                 "enter_area_url": url_for(

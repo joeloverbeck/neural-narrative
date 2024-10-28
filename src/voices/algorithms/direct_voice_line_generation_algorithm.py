@@ -1,6 +1,7 @@
 import logging
 import re
 import time
+from pathlib import Path
 from typing import Optional
 
 from src.base.validators import validate_non_empty_string
@@ -43,7 +44,7 @@ class DirectVoiceLineGenerationAlgorithm:
         self._config_loader = config_loader or ConfigLoader()
         self._path_manager = path_manager or PathManager()
 
-    def direct_voice_line_generation(self) -> Optional[str]:
+    def direct_voice_line_generation(self) -> Optional[Path]:
         if not self._config_loader.get_produce_voice_lines():
             return None
 
@@ -74,5 +75,7 @@ class DirectVoiceLineGenerationAlgorithm:
                 temp_dir, temp_file_paths
             ).provide_file_name()
         else:
-            logger.warning("No voice lines were generated.")
+            logger.warning(
+                "Some error occurred during file name determination, and no temporary paths were provided."
+            )
             return None

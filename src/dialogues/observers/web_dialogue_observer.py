@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import List
 
 from flask import session
@@ -24,7 +25,7 @@ class WebDialogueObserver(Observer):
         file_url = None
 
         if file_name:
-            file_url = WebService.get_file_url("voice_lines", file_name)
+            file_url = WebService.get_file_url(Path("voice_lines"), file_name)
 
         self._messages.append(
             {

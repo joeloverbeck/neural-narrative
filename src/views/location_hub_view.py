@@ -1,4 +1,5 @@
 import logging
+from pathlib import Path
 
 from flask import session, redirect, url_for, render_template, request, jsonify, flash
 from flask.views import MethodView
@@ -192,7 +193,7 @@ class LocationHubView(MethodView):
                 playthrough_name
             )
             voice_line_url = WebService.get_file_url(
-                "voice_lines", voice_line_file_name
+                Path("voice_lines"), voice_line_file_name
             )
             PlaythroughManager(playthrough_name).add_to_adventure("\n" + description)
             session["place_description"] = description

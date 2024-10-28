@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from flask import session, redirect, url_for, render_template, request
 from flask.views import MethodView
 
@@ -102,7 +104,7 @@ class CharacterMemoriesView(MethodView):
                 produce_self_reflection_product.get_self_reflection()
             )
             session["self_reflection_voice_line_url"] = WebService.get_file_url(
-                "voice_lines",
+                Path("voice_lines"),
                 produce_self_reflection_product.get_voice_line_file_name(),
             )
             session["memories_saved_message"] = (

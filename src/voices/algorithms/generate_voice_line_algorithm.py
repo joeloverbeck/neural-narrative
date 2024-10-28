@@ -1,4 +1,5 @@
 from io import BytesIO
+from pathlib import Path
 
 import numpy as np
 import soundfile as sf
@@ -8,14 +9,14 @@ from src.voices.factories.voice_line_factory import VoiceLineFactory
 
 class GenerateVoiceLineAlgorithm:
 
-    def __init__(self, file_path: str, voice_line_factory: VoiceLineFactory):
+    def __init__(self, file_path: Path, voice_line_factory: VoiceLineFactory):
         if not file_path:
             raise ValueError("file_path can't be empty.")
         self._file_path = file_path
         self._voice_line_factory = voice_line_factory
 
     @staticmethod
-    def _convert_to_16bit(input_file: BytesIO, output_file=None):
+    def _convert_to_16bit(input_file: BytesIO, output_file: Path = None):
         if output_file is None:
             output_file = input_file
         data, samplerate = sf.read(input_file)
