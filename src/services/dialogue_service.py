@@ -163,7 +163,7 @@ class DialogueService:
         return self._process_narration(
             other_characters_identifiers,
             purpose,
-            "event",
+            "narrative_beat",
             narration_for_dialogue_strategy,
             web_ambient_narration_observer,
         )

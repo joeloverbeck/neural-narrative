@@ -14,6 +14,16 @@ function appendMessages(messages) {
                         <div></div><div></div><div></div><div></div><div></div>
                     </div>
                 </div>`;
+            }
+            else if (message.message_type === 'narrative_beat'){
+                messageHtml = `
+                <div class="narrative-beat-message" data-file-url="${message.file_url}">
+                    <div class="narrative-beat-message-text">${message.message_text}</div>
+                    <i class="fas fa-play play-icon"></i>
+                    <div class="waveform">
+                        <div></div><div></div><div></div><div></div><div></div>
+                    </div>
+                </div>`;
             } else if (message.message_type === 'event') {
                 messageHtml = `
                 <div class="event-message" data-file-url="${message.file_url}">

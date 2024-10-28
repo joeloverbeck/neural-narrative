@@ -18,7 +18,7 @@ class LoadOngoingConversationDataCommandFactoryComposer:
     def __init__(
         self,
         playthrough_name: str,
-            other_characters_identifiers: List[str],
+        other_characters_identifiers: List[str],
         participants: Participants,
         playthrough_manager: Optional[PlaythroughManager] = None,
     ):

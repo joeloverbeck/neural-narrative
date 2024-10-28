@@ -3,7 +3,6 @@ import logging
 from flask import redirect, session, render_template, url_for, flash, request, jsonify
 from flask.views import MethodView
 
-from src.base.playthrough_manager import PlaythroughManager
 from src.base.tools import capture_traceback
 from src.dialogues.algorithms.handle_dialogue_state_algorithm import (
     HandleDialogueStateAlgorithm,
@@ -180,19 +179,8 @@ class ChatView(MethodView):
         elif action == "Narrative beat":
             dialogue_service = DialogueService()
 
-            # Have to gather the identifiers from the participants, as long as they aren't the player's.
-            player_identifier = PlaythroughManager(
-                playthrough_name
-            ).get_player_identifier()
-
-            other_characters_identifiers = [
-                key
-                for key in session.get("participants").keys()
-                if key != player_identifier
-            ]
-
             narrative_beat_message = dialogue_service.process_narrative_beat(
-                other_characters_identifiers, session.get("purpose", "")
+                session.get("participants"), session.get("purpose", "")
             )
 
             dialogue.append(narrative_beat_message)

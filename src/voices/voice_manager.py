@@ -60,7 +60,8 @@ class VoiceManager:
         params = None
         silence_frames = None
         for wav_path in file_paths:
-            with wave.open(wav_path.as_posix(), "rb") as w:
+            path = wav_path.as_posix() if isinstance(wav_path, Path) else wav_path
+            with wave.open(path, "rb") as w:
                 current_params = w.getparams()
                 if params is None:
                     params = current_params
@@ -82,7 +83,10 @@ class VoiceManager:
                 frames = w.readframes(w.getnframes())
                 data.append(frames)
                 data.append(silence_frames)
-        with wave.open(output_file.as_posix(), "wb") as out_wav:
+
+        path = output_file.as_posix() if isinstance(output_file, Path) else output_file
+
+        with wave.open(path, "wb") as out_wav:
             out_wav.setparams(params)
             for frames in data:
                 out_wav.writeframes(frames)

@@ -38,6 +38,19 @@
                 <div></div>
             </div>
         </div>
+        {% elif message.message_type == 'narrative_beat' %}
+        <!-- Narrative Beat Message -->
+        <div class="narrative-beat-message" data-file-url="{{ message.file_url }}">
+            <div class="narrative-beat-message-text">{{ message.message_text }}</div>
+            <i class="fas fa-play play-icon"></i>
+            <div class="waveform">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+        </div>
         {% elif message.message_type == 'event' %}
         <!-- Event Message -->
         <div class="event-message" data-file-url="{{ message.file_url }}">

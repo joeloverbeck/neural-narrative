@@ -258,6 +258,21 @@ input[type="text"] {
     font-style: normal;
 }
 
+/* Narrative Beat Message Styles */
+.narrative-beat-message {
+    text-align: center;
+    margin: 20px 0;
+    position: relative;
+}
+
+.narrative-beat-message-text {
+    display: inline-block;
+    background: linear-gradient(to bottom right, #C8E6C9, #A5D6A7); /* Light Mint to Medium Mint */
+    color: #1B5E20; /* Dark Green Text */
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-style: normal;
+}
 
 /* Chat Form */
 .chat-form {
