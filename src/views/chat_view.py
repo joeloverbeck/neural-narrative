@@ -73,8 +73,6 @@ class ChatView(MethodView):
         user_input = request.form.get("user_input")
         event_input = request.form.get("event_input")
 
-        logger.info(request.form)
-
         if action == "Send":
             if not user_input:
                 if request.headers.get("X-Requested-With") == "XMLHttpRequest":
@@ -88,7 +86,9 @@ class ChatView(MethodView):
             dialogue_service = DialogueService()
 
             try:
-                messages, is_goodbye = dialogue_service.process_user_input(user_input)
+                messages, is_goodbye = dialogue_service.process_user_input(
+                    user_input, dialogue_participants
+                )
             except Exception as e:
                 capture_traceback()
                 if request.headers.get("X-Requested-With") == "XMLHttpRequest":
@@ -124,8 +124,11 @@ class ChatView(MethodView):
             else:
                 return redirect(url_for("chat"))
         elif action == "Ambient narration":
+            # At this point, dialogue_participants should only contain the identifiers of the participants other than the player.
             dialogue_service = DialogueService()
-            ambient_message = dialogue_service.process_ambient_message()
+            ambient_message = dialogue_service.process_ambient_message(
+                dialogue_participants, session.get("purpose", "")
+            )
             dialogue.append(ambient_message)
 
             dialogue_service.control_size_of_messages_in_session(dialogue)
@@ -154,7 +157,9 @@ class ChatView(MethodView):
                     return redirect(url_for("chat"))
             dialogue_service = DialogueService()
 
-            event_message = dialogue_service.process_event_message(event_input)
+            event_message = dialogue_service.process_event_message(
+                dialogue_participants, session.get("purpose", ""), event_input
+            )
 
             dialogue.append(event_message)
 
@@ -187,7 +192,7 @@ class ChatView(MethodView):
             ]
 
             narrative_beat_message = dialogue_service.process_narrative_beat(
-                other_characters_identifiers
+                other_characters_identifiers, session.get("purpose", "")
             )
 
             dialogue.append(narrative_beat_message)

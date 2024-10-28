@@ -8,8 +8,8 @@ from src.dialogues.abstracts.strategies import (
     MessageDataProducerForSpeechTurnStrategy,
 )
 from src.dialogues.commands.launch_dialogue_command import LaunchDialogueCommand
-from src.dialogues.factories.handle_possible_existence_of_ongoing_conversation_command_factory import (
-    HandlePossibleExistenceOfOngoingConversationCommandFactory,
+from src.dialogues.factories.load_ongoing_conversation_data_command_factory import (
+    LoadOngoingConversationDataCommandFactory,
 )
 from src.dialogues.participants import Participants
 from src.dialogues.transcription import Transcription
@@ -25,7 +25,7 @@ class SetupDialogueCommand(Command):
         purpose: Optional[str],
         dialogue_observer: Observer,
         player_input_factory: PlayerInputFactory,
-        handle_possible_existence_of_ongoing_conversation_command_factory: HandlePossibleExistenceOfOngoingConversationCommandFactory,
+        handle_possible_existence_of_ongoing_conversation_command_factory: LoadOngoingConversationDataCommandFactory,
         message_data_producer_for_introduce_player_input_into_dialogue_strategy: MessageDataProducerForIntroducePlayerInputIntoDialogueStrategy,
         message_data_producer_for_speech_turn_strategy: MessageDataProducerForSpeechTurnStrategy,
     ):

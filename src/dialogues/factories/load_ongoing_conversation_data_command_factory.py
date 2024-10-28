@@ -10,7 +10,7 @@ from src.dialogues.participants import Participants
 from src.dialogues.transcription import Transcription
 
 
-class HandlePossibleExistenceOfOngoingConversationCommandFactory:
+class LoadOngoingConversationDataCommandFactory:
 
     def __init__(
         self,

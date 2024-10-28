@@ -1,5 +1,5 @@
 import logging
-from typing import List, Dict
+from typing import List, Dict, Optional
 
 from flask import session, url_for
 
@@ -13,7 +13,7 @@ from src.characters.composers.player_and_followers_information_factory_composer 
 )
 from src.dialogues.abstracts.strategies import NarrationForDialogueStrategy
 from src.dialogues.commands.setup_dialogue_command import SetupDialogueCommand
-from src.dialogues.composers.handle_possible_existence_of_ongoing_conversation_command_factory_composer import (
+from src.dialogues.composers.load_ongoing_conversation_data_command_factory_composer import (
     LoadOngoingConversationDataCommandFactoryComposer,
 )
 from src.dialogues.composers.produce_narration_for_dialogue_command_composer import (
@@ -63,13 +63,16 @@ class DialogueService:
 
     def _process_narration(
         self,
+        other_characters_identifiers: List[str],
+        purpose: Optional[str],
         narration_type: str,
         narration_strategy: NarrationForDialogueStrategy,
         observer: WebNarrationObserver,
     ) -> dict:
         ProduceNarrationForDialogueCommandComposer(
             self._playthrough_name,
-            session.get("purpose", ""),
+            other_characters_identifiers,
+            purpose,
             narration_type,
             observer,
             narration_strategy,
@@ -77,7 +80,9 @@ class DialogueService:
 
         return observer.get_messages()[0]
 
-    def process_ambient_message(self) -> dict:
+    def process_ambient_message(
+        self, other_characters_identifiers: List[str], purpose: Optional[str]
+    ) -> dict:
         produce_tool_response_strategy_factory = (
             ProduceToolResponseStrategyFactoryComposer(
                 Llms().for_ambient_narration(),
@@ -102,13 +107,19 @@ class DialogueService:
         web_ambient_narration_observer = WebNarrationObserver()
 
         return self._process_narration(
-            "ambient", narration_for_dialogue_strategy, web_ambient_narration_observer
+            other_characters_identifiers,
+            purpose,
+            "ambient",
+            narration_for_dialogue_strategy,
+            web_ambient_narration_observer,
         )
 
-    def process_narrative_beat(self, participants_identifiers: List[str]) -> dict:
-        if not isinstance(participants_identifiers, list):
+    def process_narrative_beat(
+        self, other_characters_identifiers: List[str], purpose: Optional[str]
+    ) -> dict:
+        if not isinstance(other_characters_identifiers, list):
             raise TypeError(
-                f"Expected participants_identifiers to be a list, but was '{type(participants_identifiers)}'."
+                f"Expected participants_identifiers to be a list, but was '{type(other_characters_identifiers)}'."
             )
 
         produce_tool_response_strategy_factory = (
@@ -132,7 +143,7 @@ class DialogueService:
             PlayerAndFollowersInformationFactoryComposer(
                 self._playthrough_name,
                 "Participant",
-                ParticipantsIdentifiersStrategy(participants_identifiers),
+                ParticipantsIdentifiersStrategy(other_characters_identifiers),
             ).compose_factory()
         )
 
@@ -150,24 +161,39 @@ class DialogueService:
         web_ambient_narration_observer = WebNarrationObserver()
 
         return self._process_narration(
-            "event", narration_for_dialogue_strategy, web_ambient_narration_observer
+            other_characters_identifiers,
+            purpose,
+            "event",
+            narration_for_dialogue_strategy,
+            web_ambient_narration_observer,
         )
 
-    def process_event_message(self, event_text) -> dict:
+    def process_event_message(
+        self,
+        other_characters_identifiers: List[str],
+        purpose: Optional[str],
+        event_text: str,
+    ) -> dict:
         web_narration_observer = WebNarrationObserver()
 
         narration_for_dialogue_strategy = EventNarrationForDialogueStrategy(event_text)
 
         return self._process_narration(
-            "event", narration_for_dialogue_strategy, web_narration_observer
+            other_characters_identifiers,
+            purpose,
+            "event",
+            narration_for_dialogue_strategy,
+            web_narration_observer,
         )
 
-    def process_user_input(self, user_input) -> (List[Dict], bool):
+    def process_user_input(
+        self, user_input, other_characters_identifiers: List[str]
+    ) -> (List[Dict], bool):
         participants = Participants()
 
         load_ongoing_conversation_data_command_factory = (
             LoadOngoingConversationDataCommandFactoryComposer(
-                self._playthrough_name, participants
+                self._playthrough_name, other_characters_identifiers, participants
             ).composer_factory()
         )
 

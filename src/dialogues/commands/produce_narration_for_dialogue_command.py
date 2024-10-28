@@ -4,8 +4,8 @@ from src.dialogues.abstracts.strategies import NarrationForDialogueStrategy
 from src.dialogues.commands.store_temporary_dialogue_command import (
     StoreTemporaryDialogueCommand,
 )
-from src.dialogues.factories.handle_possible_existence_of_ongoing_conversation_command_factory import (
-    HandlePossibleExistenceOfOngoingConversationCommandFactory,
+from src.dialogues.factories.load_ongoing_conversation_data_command_factory import (
+    LoadOngoingConversationDataCommandFactory,
 )
 from src.dialogues.observers.web_narration_observer import (
     WebNarrationObserver,
@@ -21,7 +21,7 @@ class ProduceNarrationForDialogueCommand(Command):
         transcription: Transcription,
         web_ambient_narration_observer: WebNarrationObserver,
         narration_for_dialogue_strategy: NarrationForDialogueStrategy,
-        handle_possible_existence_of_ongoing_conversation_command_factory: HandlePossibleExistenceOfOngoingConversationCommandFactory,
+        handle_possible_existence_of_ongoing_conversation_command_factory: LoadOngoingConversationDataCommandFactory,
         store_temporary_dialogue_command: StoreTemporaryDialogueCommand,
     ):
         validate_non_empty_string(message_type, "message_type")
