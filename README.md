@@ -18,6 +18,7 @@ Create immersive story universes powered by AI
     - [RunPod API Key (Optional)](#runpod-api-key-optional)
 - [Contributing](#contributing)
 - [License](#license)
+- [Contact](#contact)
 
 ## Introduction
 
@@ -204,6 +205,8 @@ request](https://github.com/joeloverbeck/neural-narrative/pulls).
 This project is licensed under
 the [GPL-3.0 license](https://github.com/joeloverbeck/neural-narrative?tab=GPL-3.0-1-ov-file#readme).
 
+## Contact
 
-
+If often post about this app and my playthroughs on [my site](https://jonurenawriter.com/). You can contact me through
+it if you want.
 
