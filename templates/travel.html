@@ -5,7 +5,7 @@
 
 {% block styles %}
 {{ super() }}
-<link href="{{ url_for('static', filename='travel.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ url_for('static', filename='css/travel.css') }}" rel="stylesheet" type="text/css">
 {% endblock %}
 
 {% block content %}
@@ -33,8 +33,8 @@
 
 {% block scripts %}
 {{ super() }}
-<script src="{{ url_for('static', filename='jquery-3.7.1.min.js') }}"></script>
-<script src="{{ url_for('static', filename='main.js') }}"></script>
-<script src="{{ url_for('static', filename='actions.js') }}"></script>
-<script src="{{ url_for('static', filename='travel.js') }}"></script>
+<script src="{{ url_for('static', filename='js/jquery-3.7.1.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script src="{{ url_for('static', filename='js/actions.js') }}"></script>
+<script src="{{ url_for('static', filename='js/travel.js') }}"></script>
 {% endblock %}

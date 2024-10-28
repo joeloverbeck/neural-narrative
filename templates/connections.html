@@ -4,7 +4,7 @@
 
 {% block styles %}
 {{ super() }}
-<link href="{{ url_for('static', filename='connections.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ url_for('static', filename='css/connections.css') }}" rel="stylesheet" type="text/css">
 {% endblock %}
 
 {% block content %}
@@ -72,7 +72,7 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="{{ url_for('static', filename='jquery-3.7.1.min.js') }}"></script>
-<script src="{{ url_for('static', filename='main.js') }}"></script>
-<script src="{{ url_for('static', filename='connections.js') }}"></script>
+<script src="{{ url_for('static', filename='js/jquery-3.7.1.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script src="{{ url_for('static', filename='js/connections.js') }}"></script>
 {% endblock %}

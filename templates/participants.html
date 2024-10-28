@@ -2,7 +2,7 @@
 
 {% block styles %}
 {{ super() }}
-<link href="{{ url_for('static', filename='participants.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ url_for('static', filename='css/participants.css') }}" rel="stylesheet" type="text/css">
 {% endblock %}
 
 {% block title %}Chat Participants{% endblock %}
@@ -77,6 +77,6 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="{{ url_for('static', filename='jquery-3.7.1.min.js') }}"></script>
-<script src="{{ url_for('static', filename='main.js') }}"></script>
+<script src="{{ url_for('static', filename='js/jquery-3.7.1.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 {% endblock %}

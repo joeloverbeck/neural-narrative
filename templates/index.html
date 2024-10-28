@@ -2,8 +2,8 @@
 
 {% block styles %}
 {{ super() }}
-<link href="{{ url_for('static', filename='common.css') }}" rel="stylesheet" type="text/css">
-<link href="{{ url_for('static', filename='index.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ url_for('static', filename='css/common.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ url_for('static', filename='css/index.css') }}" rel="stylesheet" type="text/css">
 {% endblock %}
 
 {% block title %}
@@ -116,7 +116,7 @@ Neural Narrative
 {% endblock %}
 
 {% block scripts %}
-<script src="{{ url_for('static', filename='jquery-3.7.1.min.js') }}"></script>
-<script src="{{ url_for('static', filename='main.js') }}"></script>
-<script src="{{ url_for('static', filename='index.js') }}"></script>
+<script src="{{ url_for('static', filename='js/jquery-3.7.1.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script src="{{ url_for('static', filename='js/index.js') }}"></script>
 {% endblock %}

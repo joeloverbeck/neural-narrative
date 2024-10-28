@@ -4,7 +4,7 @@
 
 {% block styles %}
 {{ super() }}
-<link href="{{ url_for('static', filename='location-hub.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ url_for('static', filename='css/location-hub.css') }}" rel="stylesheet" type="text/css">
 {% endblock %}
 
 {% block content %}
@@ -311,7 +311,7 @@
     </div>
 </div> {% endblock %}
 {% block scripts %}
-<script src="{{ url_for('static', filename='jquery-3.7.1.min.js') }}"></script>
-<script src="{{ url_for('static', filename='main.js') }}"></script>
-<script src="{{ url_for('static', filename='location-hub.js') }}"></script>
+<script src="{{ url_for('static', filename='js/jquery-3.7.1.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script src="{{ url_for('static', filename='js/location-hub.js') }}"></script>
 {% endblock %}
