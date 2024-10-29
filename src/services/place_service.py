@@ -147,8 +147,8 @@ class PlaceService:
         visit_command_factory.create_visit_place_command(destination_area).execute()
 
     @staticmethod
-    def visit_location(playthrough_name: str, location_identifier: str):
+    def visit_place(playthrough_name: str, place_identifier: str):
         visit_command_factory = VisitPlaceCommandFactoryComposer(
             playthrough_name
         ).compose_factory()
-        visit_command_factory.create_visit_place_command(location_identifier).execute()
+        visit_command_factory.create_visit_place_command(place_identifier).execute()

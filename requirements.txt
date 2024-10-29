@@ -8,4 +8,6 @@ numpy~=2.1.1
 runpod~=1.7.2
 instructor~=1.6.3
 pydantic~=2.8.2
-tenacity~=9.0.0
+swarm~=0.1.0
+markupsafe~=2.1.3
+waitress~=3.0.1

@@ -22,8 +22,28 @@ class Llm:
                 f"supports_tools of model_data should have been bool, but was '{type(self._supports_tools)}'."
             )
 
+        self._temperature = model_data["temperature"]
+
+        if not isinstance(self._temperature, float):
+            raise TypeError(
+                f"temperature of model_data should have been float, but was '{type(self._temperature)}'."
+            )
+
+        self._top_p = model_data["top_p"]
+
+        if not isinstance(self._top_p, float):
+            raise TypeError(
+                f"top_p of model_data should have been float, but was '{type(self._top_p)}'."
+            )
+
     def get_name(self) -> str:
         return self._name
+
+    def get_temperature(self) -> float:
+        return self._temperature
+
+    def get_top_p(self) -> float:
+        return self._top_p
 
     def supports_tools(self) -> bool:
         return self._supports_tools

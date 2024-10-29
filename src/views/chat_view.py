@@ -1,5 +1,5 @@
 import logging
-from typing import List, Optional
+from typing import List
 
 from flask import redirect, session, render_template, url_for, flash, request, jsonify
 from flask.views import MethodView
@@ -36,7 +36,6 @@ class ChatView(MethodView):
         # Note: here it seems to be the sole place where the full participant data gets loaded
         # through product.get_data() into session["participants"]
         dialogue_participants: List[str] = []
-        purpose: Optional[str] = None
 
         if not session.get("participants") and product.get_data():
             player_identifier = PlaythroughManager(

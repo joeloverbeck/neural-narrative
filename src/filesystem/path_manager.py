@@ -165,6 +165,18 @@ class PathManager:
         return cls.get_playthrough_path(playthrough_name) / "playthrough_metadata.json"
 
     @classmethod
+    def get_writers_room_path(cls, playthrough_name: str):
+        return cls.get_playthrough_path(playthrough_name) / "writers_room"
+
+    @classmethod
+    def get_writers_room_context_path(cls, playthrough_name: str):
+        return cls.get_writers_room_path(playthrough_name) / "context.txt"
+
+    @classmethod
+    def get_writers_room_session(cls, playthrough_name: str):
+        return cls.get_writers_room_path(playthrough_name) / "session.json"
+
+    @classmethod
     def get_characters_file_path(cls, playthrough_name: str) -> Path:
         return cls.get_characters_path(playthrough_name) / "characters.json"
 

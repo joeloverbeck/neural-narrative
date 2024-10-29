@@ -2,28 +2,40 @@
   "models": {
     "hermes_70b": {
       "name": "nousresearch/hermes-3-llama-3.1-70b",
+      "temperature": 0.70,
+      "top_p": 1.0,
       "supports_tools": false
     },
     "hermes_405b": {
       "name": "nousresearch/hermes-3-llama-3.1-405b",
+      "temperature": 0.8,
+      "top_p": 1.0,
       "supports_tools": false
     },
     "hermes_405b_free": {
       "name": "nousresearch/hermes-3-llama-3.1-405b:free",
+      "temperature": 0.9,
+      "top_p": 1.0,
       "supports_tools": false
     },
     "lumimaid_70b": {
       "name": "neversleep/llama-3.1-lumimaid-70b",
+      "temperature": 0.8,
+      "top_p": 1.0,
       "supports_tools": false
     },
     "magnum_72b": {
       "name": "anthracite-org/magnum-v4-72b",
       "description": "Seems pretty good. Good summary.",
+      "temperature": 0.95,
+      "top_p": 1.0,
       "context": 32768,
       "supports_tools": false
     },
     "nemotron_70b": {
       "name": "nvidia/llama-3.1-nemotron-70b-instruct",
+      "temperature": 0.7,
+      "top_p": 1.0,
       "supports_tools": true
     }
   },
@@ -44,5 +56,6 @@
   "speech_turn_choice": "hermes_405b_free",
   "speech_turn": "magnum_72b",
   "dialogue_summary": "magnum_72b",
-  "action_resolution": "hermes_405b_free"
+  "action_resolution": "hermes_405b_free",
+  "writers_room": "nemotron_70b"
 }

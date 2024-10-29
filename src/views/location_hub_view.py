@@ -58,21 +58,28 @@ class LocationHubView(MethodView):
         map_manager = MapManager(
             playthrough_name, place_manager, map_repository, template_repository
         )
+
         current_place = map_manager.get_current_place_template()
         current_place_type = place_manager.get_current_place_type()
         characters_manager = CharactersManager(playthrough_name)
         characters_at_current_place = (
             characters_manager.get_characters_at_current_place()
         )
+
         web_service = WebService()
         web_service.format_image_urls_of_characters(characters_at_current_place)
         followers = characters_manager.get_followers()
         web_service.format_image_urls_of_characters(followers)
 
+        # Get all areas and the current area identifier
+        areas = map_manager.get_all_areas()
+        current_area_identifier = map_manager.get_current_area_identifier()
+
         locations_present = None
         cardinal_connections = None
         can_search_for_location = False
         available_location_types = []
+
         if current_place_type == TemplateType.AREA:
             playthrough_manager = PlaythroughManager(playthrough_name)
             locations_present = map_manager.get_locations_in_area(
@@ -93,6 +100,7 @@ class LocationHubView(MethodView):
             )
             if available_location_types:
                 can_search_for_location = True
+
         time_manager = TimeManager(playthrough_name)
         current_hour = time_manager.get_hour()
         current_time_of_day = time_manager.get_time_of_the_day()
@@ -137,6 +145,8 @@ class LocationHubView(MethodView):
             current_weather_description=current_weather_description,
             all_weathers=weathers_manager.get_all_weather_identifiers(),
             weather_icon_class=weather_icon_class,
+            areas=areas,  # Pass areas to the template
+            current_area_identifier=current_area_identifier,  # Pass current area ID
         )
 
     def post(self):
@@ -227,7 +237,7 @@ class LocationHubView(MethodView):
     @staticmethod
     def handle_visit_location(playthrough_name):
         location_identifier = request.form.get("location_identifier")
-        PlaceService().visit_location(playthrough_name, location_identifier)
+        PlaceService().visit_place(playthrough_name, location_identifier)
         session.pop("place_description", None)
         return redirect(url_for("location-hub"))
 
@@ -335,4 +345,11 @@ class LocationHubView(MethodView):
             capture_traceback()
             flash(f"Couldn't attach location. Error: {str(e)}", "error")
 
+        return redirect(url_for("location-hub"))
+
+    @staticmethod
+    def handle_teleport_to_area(playthrough_name: str):
+        area_identifier = request.form.get("area_identifier")
+        PlaceService().visit_place(playthrough_name, area_identifier)
+        session.pop("place_description", None)
         return redirect(url_for("location-hub"))

@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block title %}Writers' Room{% endblock %}
+
+{% block styles %}
+{{ super() }}
+<link href="{{ url_for('static', filename='css/writers-room.css') }}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block content %}
+<div class="writers-room-container">
+    <h1 class="page-title"><i class="fas fa-users-cog"></i> Writers' Room</h1>
+
+    <!-- Messages Container -->
+    <div class="messages-container">
+        {% for message in messages %}
+        <div class="message {{ message.message_type.lower().replace(' ', '_') }}">
+            <div class="message-header">
+                    <span class="message-sender">
+                        {{ message.sender }}
+                    </span>
+                <span class="message-time">
+                        {% if message.timestamp %}
+                            {{ message.timestamp }}
+                        {% else %}
+                    <!-- You can display the current time or leave it empty -->
+                        {% endif %}
+                    </span>
+            </div>
+            <div class="message-content">
+                {{ message.message_text | replace('\n', '<br>') | bold_text | safe }}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Message Input Form -->
+    <form id="writers-room-form" method="post" class="ajax-form" action="{{ url_for('writers-room') }}"
+          data-success-handler="writersRoomSuccess">
+        <!-- Removed the hidden submit_action input -->
+        <div class="input-group">
+            <input type="text" id="message-input" name="message" placeholder="Enter your message...">
+            <button type="submit" class="send-button" name="submit_action" value="send">
+                <i class="fas fa-paper-plane"></i> Send
+            </button>
+            <button type="submit" class="end-session-button" name="submit_action" value="end_session">
+                <i class="fas fa-times-circle"></i> End Session
+            </button>
+        </div>
+    </form>
+
+    <!-- Navigation Buttons -->
+    <div class="buttons">
+        <a href="{{ url_for('story-hub') }}" class="button">
+            <i class="fas fa-feather-alt"></i> Story Hub
+        </a>
+        <a href="{{ url_for('index') }}" class="button">
+            <i class="fa-solid fa-dungeon"></i> Home
+        </a>
+        <a href="{{ url_for('places') }}" class="button">
+            <i class="fas fa-map"></i> Places
+        </a>
+        <a href="{{ url_for('characters-hub') }}" class="button">
+            <i class="fas fa-users"></i> Characters Hub
+        </a>
+        <a href="{{ url_for('location-hub') }}" class="button">
+            <i class="fas fa-map-marker-alt"></i> Location Hub
+        </a>
+        <a href="{{ url_for('chat') }}" class="button">
+            <i class="fas fa-comments"></i> Chat
+        </a>
+        <a href="{{ url_for('actions') }}" class="button">
+            <i class="fas fa-bolt"></i> Actions
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="{{ url_for('static', filename='js/jquery-3.7.1.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script src="{{ url_for('static', filename='js/writers-room.js') }}"></script>
+{% endblock %}

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Protocol, Type
+from typing import Protocol, Type, Optional
 
 from pydantic import BaseModel
 
@@ -31,7 +31,9 @@ class LlmContentProvider(ABC):
 class LlmClientFactory(ABC):
 
     @abstractmethod
-    def create_llm_client(self, llm: Llm, response_model: Type[BaseModel]) -> LlmClient:
+    def create_llm_client(
+        self, llm: Llm, response_model: Optional[Type[BaseModel]]
+    ) -> LlmClient:
         pass
 
 

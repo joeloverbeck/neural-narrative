@@ -2,6 +2,7 @@ import logging
 from typing import Type, Optional
 
 from instructor import Instructor
+from instructor.exceptions import InstructorRetryException
 from openai.types.chat import (
     ChatCompletionUserMessageParam,
     ChatCompletionSystemMessageParam,
@@ -12,6 +13,7 @@ from src.dialogues.messages_to_llm import MessagesToLlm
 from src.filesystem.config_loader import ConfigLoader
 from src.prompting.abstracts.ai_completion_product import AiCompletionProduct
 from src.prompting.abstracts.llm_client import LlmClient
+from src.prompting.llm import Llm
 from src.prompting.products.instructor_ai_completion_product import (
     InstructorAiCompletionProduct,
 )
@@ -37,8 +39,11 @@ class InstructorLlmClient(LlmClient):
 
         self._config_loader = config_loader or ConfigLoader()
 
+    def get_client(self) -> Instructor:
+        return self._client
+
     def generate_completion(
-        self, model: str, messages_to_llm: MessagesToLlm, temperature=1.0, top_p=1.0
+        self, model: Llm, messages_to_llm: MessagesToLlm
     ) -> AiCompletionProduct:
         # Convert messages_to_llm.get() to the expected message types
         messages = [
@@ -50,12 +55,24 @@ class InstructorLlmClient(LlmClient):
             for message in messages_to_llm.get()
         ]
 
-        model_result = self._client.chat.completions.create(
-            model=model,
-            max_retries=self._config_loader.get_max_retries(),
-            messages=messages,
-            response_model=self._response_model,
-        )
+        model_result = None
+
+        try:
+            model_result = self._client.chat.completions.create(
+                model=model.get_name(),
+                max_retries=self._config_loader.get_max_retries(),
+                messages=messages,
+                response_model=self._response_model,
+                temperature=model.get_temperature(),
+                top_p=model.get_top_p(),
+            )
+        except InstructorRetryException as e:
+            logger.error(
+                "Attempts: %s",
+                e.n_attempts,
+            )
+            logger.error("Error:\n%s", e.messages[-1]["content"])
+            logger.error("Last completion:\n%s", e.last_completion)
 
         return InstructorAiCompletionProduct(model_result)
 

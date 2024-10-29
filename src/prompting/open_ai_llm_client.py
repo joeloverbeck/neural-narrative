@@ -6,6 +6,7 @@ from openai import OpenAI
 from src.dialogues.messages_to_llm import MessagesToLlm
 from src.prompting.abstracts.ai_completion_product import AiCompletionProduct
 from src.prompting.abstracts.llm_client import LlmClient
+from src.prompting.llm import Llm
 from src.prompting.products.concrete_ai_completion_product import (
     ConcreteAiCompletionProduct,
 )
@@ -24,14 +25,14 @@ class OpenAiLlmClient(LlmClient):
         self._client = client
 
     def generate_completion(
-        self, model: str, messages_to_llm: MessagesToLlm, temperature=1.0, top_p=1.0
+        self, model: Llm, messages_to_llm: MessagesToLlm
     ) -> AiCompletionProduct:
         try:
             completion = self._client.chat.completions.create(
-                model=model,
+                model=model.get_name(),
                 messages=messages_to_llm.get(),
-                temperature=temperature,
-                top_p=top_p,
+                temperature=model.get_temperature(),
+                top_p=model.get_top_p(),
             )
             return ConcreteAiCompletionProduct(completion)
         except JSONDecodeError as error:

@@ -1,4 +1,4 @@
-// static/main.js
+// static/js/main.js
 
 let currentAudio = null; // Global variable to keep track of the current playing audio
 

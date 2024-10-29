@@ -263,6 +263,33 @@
     animation: rotateSun 20s linear infinite;
 }
 
+/* Add styles for the teleport-form */
+.teleport-form {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.teleport-form label {
+    font-size: 18px;
+    color: #333;
+}
+
+.teleport-form select {
+    margin: 10px auto;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.teleport-form .action-button {
+    background-color: #9c27b0; /* Purple color */
+    color: #fff;
+}
+
+.teleport-form .action-button:hover {
+    background-color: #7b1fa2;
+}
+
 /* Responsive Adjustments */
 @media (max-width: 600px) {
     .place-description {

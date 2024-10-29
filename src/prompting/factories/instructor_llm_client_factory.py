@@ -20,7 +20,9 @@ class InstructorLlmClientFactory(LlmClientFactory):
     def __init__(self, config_loader: Optional[ConfigLoader] = None):
         self._config_loader = config_loader or ConfigLoader()
 
-    def create_llm_client(self, llm: Llm, response_model: Type[BaseModel]) -> LlmClient:
+    def create_llm_client(
+        self, llm: Llm, response_model: Optional[Type[BaseModel]]
+    ) -> LlmClient:
         # Note: Mode.TOOLS doesn't work for some reason: it raises a NoneType exception.
         # The structure is done if in the future I want to delve into why this isn't working.
         mode = Mode.JSON if llm.supports_tools() else Mode.JSON

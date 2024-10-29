@@ -73,3 +73,6 @@ class Llms:
 
     def for_character_generation_guidelines(self) -> Llm:
         return Llm(self._models[self._llms_file["character_generation_guidelines"]])
+
+    def for_writers_room(self) -> Llm:
+        return Llm(self._models[self._llms_file["writers_room"]])

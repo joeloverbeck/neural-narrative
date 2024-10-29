@@ -288,6 +288,29 @@
     <p class="no-followers">You have no followers.</p>
     {% endif %}
 
+    <!-- Teleport to Area Section -->
+    <div class="collapsible-section">
+        <button class="collapsible">
+            <i class="fas fa-rocket"></i> Teleport to Area
+        </button>
+        <div class="content">
+            <form method="post" class="teleport-form">
+                <input type="hidden" name="submit_action" value="Teleport to Area">
+                <label for="area_identifier">Choose an area to teleport to:</label>
+                <select name="area_identifier" id="area_identifier">
+                    {% for area in areas %}
+                    {% if area.identifier != current_area_identifier %}
+                    <option value="{{ area.identifier }}">{{ area.place_template }}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+                <button type="submit" class="action-button">
+                    <i class="fas fa-magic"></i> Teleport
+                </button>
+            </form>
+        </div>
+    </div>
+
     <!-- Navigation Buttons -->
     <div class="buttons">
         <a href="{{ url_for('index') }}" class="button">

@@ -150,3 +150,38 @@ class MapManager:
         if not locations:
             logger.warning(f"No locations found in area '{area_identifier}'.")
         return locations
+
+    def get_all_areas(self) -> List[Dict[str, str]]:
+        """
+        Retrieve all areas present in the map.
+
+        Returns:
+            List[Dict[str, str]]: A list of dictionaries with 'identifier' and 'place_template' keys.
+        """
+        map_data = self._map_repository.load_map_data()
+        areas = []
+        for identifier, data in map_data.items():
+            if data.get("type") == "area":
+                area_info = {
+                    "identifier": identifier,
+                    "place_template": data.get("place_template"),
+                }
+                areas.append(area_info)
+        return areas
+
+    def get_current_area_identifier(self) -> str:
+        """
+        Get the identifier of the current area.
+
+        Returns:
+            str: The identifier of the current area.
+        """
+        if self._place_manager.get_current_place_type() == TemplateType.AREA:
+            return self._playthrough_manager.get_current_place_identifier()
+        elif self._place_manager.get_current_place_type() == TemplateType.LOCATION:
+            map_data = self._map_repository.load_map_data()
+            current_place_id = self._playthrough_manager.get_current_place_identifier()
+            current_area_identifier = map_data[current_place_id]["area"]
+            return current_area_identifier
+        else:
+            raise ValueError("Current place is not an area or a location.")

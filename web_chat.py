@@ -1,6 +1,9 @@
 import logging.config
+import re
 
 from flask import Flask
+from markupsafe import Markup
+from waitress import serve
 
 from src.base.constants import (
     RESEARCH_RESOLUTION_GENERATION_PROMPT_FILE,
@@ -25,15 +28,34 @@ from src.views.participants_view import ParticipantsView
 from src.views.places_view import PlacesView
 from src.views.story_hub_view import StoryHubView
 from src.views.travel_view import TravelView
+from src.views.writers_room_view import WritersRoomView
 
 logging.config.dictConfig(read_json_file(PathManager().get_logging_config()))
 
 app = Flask(__name__)
 app.secret_key = b"neural-narrative"
+
+
+def bold_text(text):
+    """
+    Convert **text** to <strong>text</strong> for bold formatting.
+    """
+    # Regular expression to find **text**
+    pattern = r"\*\*(.*?)\*\*"
+    # Replace with <strong>text</strong>
+    replaced_text = re.sub(pattern, r"<strong>\1</strong>", text)
+    return Markup(replaced_text)
+
+
+# Register the custom filter
+app.jinja_env.filters["bold_text"] = bold_text
+
 logger = logging.getLogger(__name__)
+
 app.add_url_rule("/", view_func=IndexView.as_view("index"))
 app.add_url_rule("/places", view_func=PlacesView.as_view("places"))
 app.add_url_rule("/story-hub", view_func=StoryHubView.as_view("story-hub"))
+app.add_url_rule("/writers-room", view_func=WritersRoomView.as_view("writers-room"))
 app.add_url_rule(
     "/characters-hub", view_func=CharactersHubView.as_view("characters-hub")
 )
@@ -94,4 +116,4 @@ def gather_supplies():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    serve(app, host="0.0.0.0", port=8080)

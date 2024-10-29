@@ -34,15 +34,11 @@ class ConcreteLlmContentProvider(LlmContentProvider):
         llm: Llm,
         messages_to_llm: MessagesToLlm,
         llm_client_factory: LlmClientFactory,
-        temperature=1.0,
-        top_p=1.0,
         path_manager: Optional[PathManager] = None,
     ):
         self._llm = llm
         self._messages_to_llm = messages_to_llm
         self._llm_client_factory = llm_client_factory
-        self._temperature = temperature
-        self._top_p = top_p
 
         self._path_manager = path_manager or PathManager()
 
@@ -50,10 +46,8 @@ class ConcreteLlmContentProvider(LlmContentProvider):
         ai_completion_product = self._llm_client_factory.create_llm_client(
             self._llm, response_model
         ).generate_completion(
-            model=self._llm.get_name(),
+            model=self._llm,
             messages_to_llm=self._messages_to_llm,
-            temperature=self._temperature,
-            top_p=self._top_p,
         )
 
         if ai_completion_product.is_valid():

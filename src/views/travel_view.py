@@ -216,6 +216,6 @@ class TravelView(MethodView):
     def handle_enter_area(playthrough_name):
         destination_identifier = request.form.get("destination_identifier")
 
-        PlaceService().visit_location(playthrough_name, destination_identifier)
+        PlaceService().visit_place(playthrough_name, destination_identifier)
 
         return redirect(url_for("location-hub"))
