@@ -1,4 +1,4 @@
-from flask import session, redirect, url_for, render_template, request
+from flask import session, redirect, url_for, render_template, request, jsonify, flash
 from flask.views import MethodView
 
 from src.base.tools import capture_traceback
@@ -52,9 +52,10 @@ class CharacterSecretsView(MethodView):
         playthrough_name = session.get("playthrough_name")
         if not playthrough_name:
             return redirect(url_for("index"))
-        action = request.form.get("action")
+        action = request.form.get("submit_action")
         character_identifier = request.form.get("character_identifier")
         if action == "generate_secrets" and character_identifier:
+            response = {}
             try:
                 produce_tool_response_strategy_factory = (
                     ProduceToolResponseStrategyFactoryComposer(
@@ -77,6 +78,11 @@ class CharacterSecretsView(MethodView):
                     session["secrets_generated_message"] = (
                         "Secrets generated successfully."
                     )
+
+                    response = {
+                        "success": True,
+                        "message": "Secret generated and added to character bio.",
+                    }
                 except Exception as exception:
                     session["secrets_generated_message"] = (
                         f"Failed to generate secrets. Error: {exception}"
@@ -84,9 +90,17 @@ class CharacterSecretsView(MethodView):
                     raise
             except Exception as e:
                 capture_traceback()
-                session["secrets_generated_message"] = f"An error occurred: {str(e)}"
-            return redirect(
-                url_for("character-secrets", character_identifier=character_identifier)
-            )
+
+                error_message = f"Failed to create secret. Error: {str(e)}."
+                response = {
+                    "success": False,
+                    "error": error_message,
+                }
+                if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                    return jsonify(response)
+                else:
+                    flash(error_message, "error")
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return jsonify(response)
         else:
             return redirect(url_for("character-secrets"))

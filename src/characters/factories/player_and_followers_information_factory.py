@@ -12,7 +12,7 @@ class PlayerAndFollowersInformationFactory:
     def __init__(
         self,
         party_data_for_prompt_factory: PartyDataForPromptFactory,
-            path_manager: Optional[PathManager] = None,
+        path_manager: Optional[PathManager] = None,
     ):
         self._party_data_for_prompt_factory = party_data_for_prompt_factory
 

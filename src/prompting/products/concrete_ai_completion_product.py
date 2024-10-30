@@ -60,8 +60,8 @@ class ConcreteAiCompletionProduct(AiCompletionProduct):
             self._error = AiCompletionErrorType.INVALID_SSL_CERTIFICATE
             self._error_details = completion.error["message"]
         elif (
-                hasattr(completion, "error")
-                and completion.error["code"] == MAXIMUM_CONTENT_LENGTH_REACHED
+            hasattr(completion, "error")
+            and completion.error["code"] == MAXIMUM_CONTENT_LENGTH_REACHED
         ):
             self._is_valid = False
             self._error = AiCompletionErrorType.MAXIMUM_CONTENT_LENGTH_REACHED

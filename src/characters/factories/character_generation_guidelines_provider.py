@@ -29,7 +29,7 @@ class CharacterGenerationGuidelinesProvider(BaseToolResponseProvider):
         place_manager_factory: PlaceManagerFactory,
         map_manager_factory: MapManagerFactory,
         filesystem_manager: Optional[FilesystemManager] = None,
-            path_manager: Optional[PathManager] = None,
+        path_manager: Optional[PathManager] = None,
     ):
         super().__init__(
             produce_tool_response_strategy_factory, filesystem_manager, path_manager

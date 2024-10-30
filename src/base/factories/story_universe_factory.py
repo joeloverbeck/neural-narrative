@@ -19,7 +19,7 @@ class StoryUniverseFactory(BaseToolResponseProvider):
         story_universe_notion: str,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         filesystem_manager: Optional[FilesystemManager] = None,
-            path_manager: Optional[PathManager] = None,
+        path_manager: Optional[PathManager] = None,
         templates_repository: Optional[TemplatesRepository] = None,
     ):
         super().__init__(

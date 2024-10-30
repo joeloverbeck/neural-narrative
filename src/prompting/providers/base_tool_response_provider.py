@@ -23,8 +23,8 @@ class BaseToolResponseProvider:
     def __init__(
         self,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
-            filesystem_manager: Optional[FilesystemManager] = None,
-            path_manager: Optional[PathManager] = None,
+        filesystem_manager: Optional[FilesystemManager] = None,
+        path_manager: Optional[PathManager] = None,
     ):
         self._produce_tool_response_strategy_factory = (
             produce_tool_response_strategy_factory
