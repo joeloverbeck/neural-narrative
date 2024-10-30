@@ -2,14 +2,12 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-from src.base.constants import (
-    AMBIENT_NARRATION_GENERATION_PROMPT_FILE,
-)
 from src.base.playthrough_manager import PlaythroughManager
 from src.characters.character import Character
 from src.dialogues.products.ambient_narration_product import AmbientNarrationProduct
 from src.dialogues.transcription import Transcription
 from src.filesystem.filesystem_manager import FilesystemManager
+from src.filesystem.path_manager import PathManager
 from src.maps.factories.local_information_factory import LocalInformationFactory
 from src.prompting.abstracts.abstract_factories import (
     ProduceToolResponseStrategyFactory,
@@ -26,9 +24,12 @@ class AmbientNarrationProvider(BaseToolResponseProvider):
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         local_information_factory: LocalInformationFactory,
         filesystem_manager: Optional[FilesystemManager] = None,
+        path_manager: Optional[PathManager] = None,
         playthrough_manager: Optional[PlaythroughManager] = None,
     ):
-        super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
+        super().__init__(
+            produce_tool_response_strategy_factory, filesystem_manager, path_manager
+        )
 
         self._playthrough_name = playthrough_name
         self._transcription = transcription
@@ -38,7 +39,7 @@ class AmbientNarrationProvider(BaseToolResponseProvider):
         )
 
     def get_prompt_file(self) -> str:
-        return AMBIENT_NARRATION_GENERATION_PROMPT_FILE
+        return self._path_manager.get_ambient_narration_generation_prompt_path()
 
     def get_user_content(self) -> str:
         return "Write two or three sentences of ambient narration, as per the provided instructions."

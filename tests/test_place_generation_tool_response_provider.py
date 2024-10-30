@@ -4,14 +4,9 @@ from unittest.mock import Mock, patch
 import pytest
 from pydantic import BaseModel
 
-from src.base.constants import (
-    REGION_GENERATION_PROMPT_FILE,
-    WORLD_GENERATION_PROMPT_FILE,
-    AREA_GENERATION_PROMPT_FILE,
-    LOCATION_GENERATION_PROMPT_FILE,
-)
 from src.base.enums import TemplateType
 from src.filesystem.filesystem_manager import FilesystemManager
+from src.filesystem.path_manager import PathManager
 from src.maps.models.area import Area
 from src.maps.models.region import Region
 from src.maps.models.world import World
@@ -140,17 +135,31 @@ def test_get_template_type_data():
         )
         template_data = provider._get_template_type_data()
 
+        path_manager = PathManager()
+
         if template_type == TemplateType.WORLD:
-            assert template_data.prompt_file == WORLD_GENERATION_PROMPT_FILE
+            assert (
+                template_data.prompt_file
+                == path_manager.get_world_generation_prompt_path()
+            )
             assert template_data.response_model == World
         elif template_type == TemplateType.REGION:
-            assert template_data.prompt_file == REGION_GENERATION_PROMPT_FILE
+            assert (
+                template_data.prompt_file
+                == path_manager.get_region_generation_prompt_path()
+            )
             assert template_data.response_model == Region
         elif template_type == TemplateType.AREA:
-            assert template_data.prompt_file == AREA_GENERATION_PROMPT_FILE
+            assert (
+                template_data.prompt_file
+                == path_manager.get_area_generation_prompt_path()
+            )
             assert template_data.response_model == Area
         elif template_type == TemplateType.LOCATION:
-            assert template_data.prompt_file == LOCATION_GENERATION_PROMPT_FILE
+            assert (
+                template_data.prompt_file
+                == path_manager.get_location_generation_prompt_path()
+            )
         else:
             assert template_data is None
 
@@ -177,7 +186,9 @@ def test_get_prompt_file_valid():
     )
 
     prompt_file = provider.get_prompt_file()
-    assert prompt_file == WORLD_GENERATION_PROMPT_FILE
+
+    path_manager = PathManager()
+    assert prompt_file == path_manager.get_world_generation_prompt_path()
 
 
 def test_get_prompt_kwargs():

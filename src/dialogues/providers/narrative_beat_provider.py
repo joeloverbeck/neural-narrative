@@ -27,15 +27,15 @@ class NarrativeBeatProvider(BaseToolResponseProvider):
         filesystem_manager: Optional[FilesystemManager] = None,
         path_manager: Optional[PathManager] = None,
     ):
-        super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
+        super().__init__(
+            produce_tool_response_strategy_factory, filesystem_manager, path_manager
+        )
 
         self._transcription = transcription
         self._local_information_factory = local_information_factory
         self._player_and_followers_information_factory = (
             player_and_followers_information_factory
         )
-
-        self._path_manager = path_manager or PathManager()
 
     def get_prompt_file(self) -> Path:
         return self._path_manager.get_narrative_beat_generation_prompt_path()

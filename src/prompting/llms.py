@@ -65,6 +65,9 @@ class Llms:
     def for_self_reflection(self) -> Llm:
         return Llm(self._models[self._llms_file["self-reflection"]])
 
+    def for_worldview(self) -> Llm:
+        return Llm(self._models[self._llms_file["worldview"]])
+
     def for_action_resolution(self) -> Llm:
         return Llm(self._models[self._llms_file["action_resolution"]])
 

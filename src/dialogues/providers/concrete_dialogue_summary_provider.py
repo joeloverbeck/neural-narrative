@@ -2,12 +2,10 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-from src.base.constants import (
-    SUMMARIZE_DIALOGUE_PROMPT_FILE,
-)
 from src.dialogues.products.concrete_summary_product import ConcreteSummaryProduct
 from src.dialogues.transcription import Transcription
 from src.filesystem.filesystem_manager import FilesystemManager
+from src.filesystem.path_manager import PathManager
 from src.prompting.abstracts.abstract_factories import (
     ProduceToolResponseStrategyFactory,
 )
@@ -20,13 +18,16 @@ class ConcreteDialogueSummaryProvider(BaseToolResponseProvider):
         transcription: Transcription,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         filesystem_manager: Optional[FilesystemManager] = None,
+            path_manager: Optional[PathManager] = None,
     ):
-        super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
+        super().__init__(
+            produce_tool_response_strategy_factory, filesystem_manager, path_manager
+        )
 
         self._transcription = transcription
 
     def get_prompt_file(self) -> str:
-        return SUMMARIZE_DIALOGUE_PROMPT_FILE
+        return self._path_manager.get_summarize_dialogue_prompt_path()
 
     def get_user_content(self) -> str:
         return "Summarize the provided dialogue. Do not write any preamble, just do it as instructed."

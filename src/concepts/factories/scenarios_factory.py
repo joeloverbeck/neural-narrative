@@ -2,9 +2,6 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-from src.base.constants import (
-    SCENARIOS_GENERATION_PROMPT_FILE,
-)
 from src.characters.factories.player_and_followers_information_factory import (
     PlayerAndFollowersInformationFactory,
 )
@@ -34,7 +31,7 @@ class ScenariosFactory(BaseConceptFactory):
             produce_tool_response_strategy_factory,
             places_descriptions_factory,
             player_and_followers_information_factory,
-            prompt_file=SCENARIOS_GENERATION_PROMPT_FILE,
+            prompt_file=self._path_manager.get_scenarios_generation_prompt_path(),
             user_content="Write three very interesting and intriguing scenarios that could stem from the information provided, as per the above instructions.",
             filesystem_manager=filesystem_manager,
         )

@@ -3,9 +3,6 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-from src.base.constants import (
-    PLOT_BLUEPRINTS_GENERATION_PROMPT_FILE,
-)
 from src.characters.factories.player_and_followers_information_factory import (
     PlayerAndFollowersInformationFactory,
 )
@@ -35,7 +32,7 @@ class PlotBlueprintsFactory(BaseConceptFactory):
             produce_tool_response_strategy_factory,
             places_descriptions_factory,
             player_and_followers_information_factory,
-            prompt_file=PLOT_BLUEPRINTS_GENERATION_PROMPT_FILE,
+            prompt_file=self._path_manager.get_plot_blueprints_generation_prompt_path(),
             user_content="Generate a magnificent plot blueprint for a full story. Follow the provided instructions.",
             filesystem_manager=filesystem_manager,
         )

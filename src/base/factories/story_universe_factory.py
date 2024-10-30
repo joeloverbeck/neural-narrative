@@ -1,12 +1,10 @@
 from typing import Optional
 
-from src.base.constants import (
-    STORY_UNIVERSE_GENERATION_PROMPT_FILE,
-)
 from src.base.enums import TemplateType
 from src.base.models.story_universe import StoryUniverse
 from src.base.products.story_universe_product import StoryUniverseProduct
 from src.filesystem.filesystem_manager import FilesystemManager
+from src.filesystem.path_manager import PathManager
 from src.maps.templates_repository import TemplatesRepository
 from src.prompting.abstracts.abstract_factories import (
     ProduceToolResponseStrategyFactory,
@@ -21,9 +19,12 @@ class StoryUniverseFactory(BaseToolResponseProvider):
         story_universe_notion: str,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         filesystem_manager: Optional[FilesystemManager] = None,
+            path_manager: Optional[PathManager] = None,
         templates_repository: Optional[TemplatesRepository] = None,
     ):
-        super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
+        super().__init__(
+            produce_tool_response_strategy_factory, filesystem_manager, path_manager
+        )
         self._story_universe_notion = story_universe_notion
 
         self._templates_repository = templates_repository or TemplatesRepository()
@@ -41,7 +42,7 @@ class StoryUniverseFactory(BaseToolResponseProvider):
         )
 
     def get_prompt_file(self) -> Optional[str]:
-        return STORY_UNIVERSE_GENERATION_PROMPT_FILE
+        return self._path_manager.get_story_universe_generation_prompt_path()
 
     def get_prompt_kwargs(self) -> dict:
         story_universes_file = self._templates_repository.load_templates(

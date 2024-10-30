@@ -1,18 +1,14 @@
 import logging
-from pathlib import Path
 from typing import Optional
 
 from pydantic import BaseModel
 
-from src.base.constants import (
-    CHARACTER_GENERATION_GUIDELINES_PROMPT_FILE,
-    TOOL_INSTRUCTIONS_FOR_INSTRUCTOR_FILE,
-)
 from src.characters.products.character_generation_guidelines_product import (
     CharacterGenerationGuidelinesProduct,
 )
 from src.filesystem.file_operations import read_file
 from src.filesystem.filesystem_manager import FilesystemManager
+from src.filesystem.path_manager import PathManager
 from src.maps.factories.map_manager_factory import MapManagerFactory
 from src.maps.factories.place_manager_factory import PlaceManagerFactory
 from src.maps.providers.places_descriptions_provider import PlacesDescriptionsProvider
@@ -33,14 +29,17 @@ class CharacterGenerationGuidelinesProvider(BaseToolResponseProvider):
         place_manager_factory: PlaceManagerFactory,
         map_manager_factory: MapManagerFactory,
         filesystem_manager: Optional[FilesystemManager] = None,
+            path_manager: Optional[PathManager] = None,
     ):
-        super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
+        super().__init__(
+            produce_tool_response_strategy_factory, filesystem_manager, path_manager
+        )
         self._places_descriptions_factory = places_descriptions_factory
         self._place_manager_factory = place_manager_factory
         self._map_manager_factory = map_manager_factory
 
     def get_prompt_file(self) -> str:
-        return CHARACTER_GENERATION_GUIDELINES_PROMPT_FILE
+        return self._path_manager.get_character_generation_guidelines_prompt_path()
 
     def get_prompt_kwargs(self) -> dict:
         prompt_data = {
@@ -57,7 +56,7 @@ class CharacterGenerationGuidelinesProvider(BaseToolResponseProvider):
 
     def _read_tool_instructions(self) -> str:
         """Reads the tool instructions from the filesystem."""
-        return read_file(Path(TOOL_INSTRUCTIONS_FOR_INSTRUCTOR_FILE))
+        return read_file(self._path_manager.get_tool_instructions_for_instructor_path())
 
     def get_user_content(self) -> str:
         return "Write three entries that are guidelines for creating interesting characters based on the above combination of places. Follow the provided instructions."

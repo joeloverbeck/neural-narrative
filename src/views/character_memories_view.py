@@ -6,6 +6,9 @@ from flask.views import MethodView
 from src.characters.algorithms.produce_self_reflection_algorithm import (
     ProduceSelfReflectionAlgorithm,
 )
+from src.characters.algorithms.produce_worldview_algorithm import (
+    ProduceWorldviewAlgorithm,
+)
 from src.characters.character import Character
 from src.characters.character_memories import CharacterMemories
 from src.characters.characters_manager import CharactersManager
@@ -13,6 +16,7 @@ from src.characters.factories.character_information_provider import (
     CharacterInformationProvider,
 )
 from src.characters.factories.self_reflection_factory import SelfReflectionFactory
+from src.characters.factories.worldview_factory import WorldviewFactory
 from src.interfaces.web_interface_manager import WebInterfaceManager
 from src.prompting.composers.produce_tool_response_strategy_factory_composer import (
     ProduceToolResponseStrategyFactoryComposer,
@@ -54,6 +58,7 @@ class CharacterMemoriesView(MethodView):
         self_reflection_voice_line_url = session.pop(
             "self_reflection_voice_line_url", None
         )
+        worldview_text = session.pop("worldview_text", None)
         return render_template(
             "character-memories.html",
             all_characters=all_characters,
@@ -61,6 +66,7 @@ class CharacterMemoriesView(MethodView):
             character_memories=character_memories,
             self_reflection_text=self_reflection_text,
             self_reflection_voice_line_url=self_reflection_voice_line_url,
+            worldview_text=worldview_text,
         )
 
     @staticmethod
@@ -79,6 +85,40 @@ class CharacterMemoriesView(MethodView):
                 Character(playthrough_name, character_identifier), new_memories
             )
             session["memories_saved_message"] = "Memories saved successfully."
+        elif action == "produce_worldview" and character_identifier:
+            produce_tool_response_strategy_factory = (
+                ProduceToolResponseStrategyFactoryComposer(
+                    Llms().for_worldview(),
+                ).compose_factory()
+            )
+
+            character_information_factory = CharacterInformationProvider(
+                playthrough_name, character_identifier
+            )
+
+            worldview_factory = WorldviewFactory(
+                playthrough_name,
+                character_identifier,
+                produce_tool_response_strategy_factory,
+                character_information_factory,
+            )
+
+            algorithm = ProduceWorldviewAlgorithm(
+                playthrough_name, character_identifier, worldview_factory
+            )
+
+            product = algorithm.do_algorithm()
+
+            session["worldview_text"] = product.get()
+
+            response = {
+                "success": True,
+                "message": "Worldview produced and added to memories.",
+                "worldview_text": product.get(),
+            }
+
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return jsonify(response)
         elif action == "produce_self_reflection" and character_identifier:
             produce_tool_response_strategy_factory = (
                 ProduceToolResponseStrategyFactoryComposer(
@@ -100,9 +140,7 @@ class CharacterMemoriesView(MethodView):
                 DirectVoiceLineGenerationAlgorithmFactory(),
             )
             produce_self_reflection_product = algorithm.do_algorithm()
-            session["self_reflection_text"] = (
-                produce_self_reflection_product.get_self_reflection()
-            )
+            session["self_reflection_text"] = produce_self_reflection_product.get_text()
 
             self_reflection_voice_line_url = WebService.get_file_url(
                 Path("voice_lines"),
@@ -114,7 +152,7 @@ class CharacterMemoriesView(MethodView):
             response = {
                 "success": True,
                 "message": "Self-reflection produced and added to memories.",
-                "self_reflection_text": produce_self_reflection_product.get_self_reflection(),
+                "self_reflection_text": produce_self_reflection_product.get_text(),
                 "self_reflection_voice_line_url": self_reflection_voice_line_url,
             }
 

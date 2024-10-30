@@ -17,16 +17,15 @@ from src.prompting.abstracts.abstract_factories import (
 from src.prompting.providers.base_tool_response_provider import BaseToolResponseProvider
 
 
-class SelfReflectionFactory(BaseToolResponseProvider):
-
+class WorldviewFactory(BaseToolResponseProvider):
     def __init__(
-        self,
-        playthrough_name: str,
-        character_identifier: str,
-        produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
-        character_information_factory: CharacterInformationProvider,
-        filesystem_manager: Optional[FilesystemManager] = None,
-        path_manager: Optional[PathManager] = None,
+            self,
+            playthrough_name: str,
+            character_identifier: str,
+            produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
+            character_information_factory: CharacterInformationProvider,
+            filesystem_manager: Optional[FilesystemManager] = None,
+            path_manager: Optional[PathManager] = None,
     ):
         super().__init__(
             produce_tool_response_strategy_factory, filesystem_manager, path_manager
@@ -36,25 +35,24 @@ class SelfReflectionFactory(BaseToolResponseProvider):
         validate_non_empty_string(character_identifier, "character_identifier")
 
         self._playthrough_name = playthrough_name
-        self._character_identifier = character_identifier
         self._character_information_factory = character_information_factory
 
+        self._character = Character(self._playthrough_name, character_identifier)
+
     def get_prompt_file(self) -> Optional[Path]:
-        return self._path_manager.get_self_reflection_generation_prompt_path()
+        return self._path_manager.get_worldview_generation_prompt_path()
 
     def get_user_content(self) -> str:
-        return "Write a meaningful and compelling self-reflection from the first-person perspective of the character regarding their memories. Follow the provided instructions."
+        return f"Write a third-person text that articulates {self._character.name}'s worldview, including their philosophical beliefs and moral standings. Follow the provided instructions."
 
     def create_product_from_base_model(self, response_model: BaseModel):
-        # have in mind that the self-reflection can come with multiple paragraphs.
-        self_reflection = str(response_model.self_reflection)
+        # have in mind that the text can come with multiple paragraphs.
+        worldview = str(response_model.worldview)
 
-        return TextProduct(self_reflection.replace("\n\n", "\n"), is_valid=True)
+        return TextProduct(worldview.replace("\n\n", "\n"), is_valid=True)
 
     def get_prompt_kwargs(self) -> dict:
-        character = Character(self._playthrough_name, self._character_identifier)
-
         return {
-            "name": character.name,
+            "name": self._character.name,
             "character_information": self._character_information_factory.get_information(),
         }

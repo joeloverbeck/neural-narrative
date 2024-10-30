@@ -58,6 +58,10 @@ class ChatView(MethodView):
             }
         )
 
+        # Pop other weighty texts stored in session.
+        session.pop("self_reflection_text", None)
+        session.pop("worldview_text", None)
+
         dialogue = session.get("dialogue", [])
 
         time_manager = TimeManager(playthrough_name)

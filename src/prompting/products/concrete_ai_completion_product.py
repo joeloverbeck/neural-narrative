@@ -8,6 +8,7 @@ from src.base.constants import (
     UNAUTHORIZED_ERROR_NUMBER,
     PAYMENT_REQUIRED,
     INVALID_SSL_CERTIFICATE,
+    MAXIMUM_CONTENT_LENGTH_REACHED,
 )
 from src.base.enums import AiCompletionErrorType
 from src.prompting.abstracts.ai_completion_product import AiCompletionProduct
@@ -57,6 +58,13 @@ class ConcreteAiCompletionProduct(AiCompletionProduct):
         ):
             self._is_valid = False
             self._error = AiCompletionErrorType.INVALID_SSL_CERTIFICATE
+            self._error_details = completion.error["message"]
+        elif (
+                hasattr(completion, "error")
+                and completion.error["code"] == MAXIMUM_CONTENT_LENGTH_REACHED
+        ):
+            self._is_valid = False
+            self._error = AiCompletionErrorType.MAXIMUM_CONTENT_LENGTH_REACHED
             self._error_details = completion.error["message"]
         elif not completion.choices:
             self._is_valid = False

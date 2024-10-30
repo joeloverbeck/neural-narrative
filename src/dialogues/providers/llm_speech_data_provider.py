@@ -1,11 +1,9 @@
 import logging
+from pathlib import Path
 from typing import Optional
 
 from pydantic import BaseModel
 
-from src.base.constants import (
-    DIALOGUE_PROMPT_FILE,
-)
 from src.base.validators import validate_non_empty_string
 from src.dialogues.configs.llm_speech_data_provider_config import (
     LlmSpeechDataProviderConfig,
@@ -17,6 +15,7 @@ from src.dialogues.products.concrete_speech_data_product import (
     ConcreteSpeechDataProduct,
 )
 from src.filesystem.filesystem_manager import FilesystemManager
+from src.filesystem.path_manager import PathManager
 from src.prompting.providers.base_tool_response_provider import BaseToolResponseProvider
 from src.time.time_manager import TimeManager
 
@@ -30,9 +29,12 @@ class LlmSpeechDataProvider(BaseToolResponseProvider):
         factories_config: LlmSpeechDataProviderFactoriesConfig,
         time_manager: Optional[TimeManager] = None,
         filesystem_manager: Optional[FilesystemManager] = None,
+            path_manager: Optional[PathManager] = None,
     ):
         super().__init__(
-            factories_config.produce_tool_response_strategy_factory, filesystem_manager
+            factories_config.produce_tool_response_strategy_factory,
+            filesystem_manager,
+            path_manager,
         )
 
         validate_non_empty_string(config.playthrough_name, "playthrough_name")
@@ -58,8 +60,8 @@ class LlmSpeechDataProvider(BaseToolResponseProvider):
             return f"The purpose of this dialogue is: {self._config.purpose}"
         return ""
 
-    def get_prompt_file(self) -> str:
-        return DIALOGUE_PROMPT_FILE
+    def get_prompt_file(self) -> Path:
+        return self._path_manager.get_speech_turn_prompt_path()
 
     def get_user_content(self) -> str:
         return f"Write {self._config.speaker_name}'s speech."

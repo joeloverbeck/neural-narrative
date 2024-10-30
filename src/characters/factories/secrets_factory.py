@@ -2,13 +2,11 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-from src.base.constants import (
-    SECRETS_GENERATION_PROMPT_FILE,
-)
 from src.characters.character import Character
 from src.characters.character_memories import CharacterMemories
 from src.characters.products.secrets_product import SecretsProduct
 from src.filesystem.filesystem_manager import FilesystemManager
+from src.filesystem.path_manager import PathManager
 from src.maps.providers.places_descriptions_provider import PlacesDescriptionsProvider
 from src.prompting.abstracts.abstract_factories import (
     ProduceToolResponseStrategyFactory,
@@ -25,9 +23,12 @@ class SecretsFactory(BaseToolResponseProvider):
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         places_descriptions_factory: PlacesDescriptionsProvider,
         filesystem_manager: Optional[FilesystemManager] = None,
+        path_manager: Optional[PathManager] = None,
         character_memories: Optional[CharacterMemories] = None,
     ):
-        super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
+        super().__init__(
+            produce_tool_response_strategy_factory, filesystem_manager, path_manager
+        )
 
         self._playthrough_name = playthrough_name
         self._character_identifier = character_identifier
@@ -43,7 +44,7 @@ class SecretsFactory(BaseToolResponseProvider):
         return SecretsProduct(response_model.secrets, is_valid=True)
 
     def get_prompt_file(self) -> Optional[str]:
-        return SECRETS_GENERATION_PROMPT_FILE
+        return self._path_manager.get_secrets_generation_prompt_path()
 
     def get_prompt_kwargs(self) -> dict:
         prompt_data = {

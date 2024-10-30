@@ -5,11 +5,6 @@ from flask import Flask
 from markupsafe import Markup
 from waitress import serve
 
-from src.base.constants import (
-    RESEARCH_RESOLUTION_GENERATION_PROMPT_FILE,
-    INVESTIGATE_RESOLUTION_GENERATION_PROMPT_FILE,
-    GATHER_SUPPLIES_RESOLUTION_GENERATION_PROMPT_FILE,
-)
 from src.filesystem.file_operations import read_json_file
 from src.filesystem.path_manager import PathManager
 from src.views.action_view import action_view
@@ -87,31 +82,37 @@ app.add_url_rule("/connections", view_func=ConnectionsView.as_view("connections"
 
 @app.route("/research", methods=["GET", "POST"])
 def research():
+    path_manager = PathManager()
+
     return action_view(
         action_name="Research",
         action_icon="fa-book",
         action_endpoint="research",
-        prompt_file=RESEARCH_RESOLUTION_GENERATION_PROMPT_FILE,
+        prompt_file=path_manager.get_research_resolution_generation_prompt_path(),
     )
 
 
 @app.route("/investigate", methods=["GET", "POST"])
 def investigate():
+    path_manager = PathManager()
+
     return action_view(
         action_name="Investigate",
         action_icon="fa-search",
         action_endpoint="investigate",
-        prompt_file=INVESTIGATE_RESOLUTION_GENERATION_PROMPT_FILE,
+        prompt_file=path_manager.get_investigate_resolution_generation_prompt_path(),
     )
 
 
 @app.route("/gather_supplies", methods=["GET", "POST"])
 def gather_supplies():
+    path_manager = PathManager()
+
     return action_view(
         action_name="Gather Supplies",
         action_icon="fa-clipboard-list",
         action_endpoint="gather_supplies",
-        prompt_file=GATHER_SUPPLIES_RESOLUTION_GENERATION_PROMPT_FILE,
+        prompt_file=path_manager.get_gather_supplies_resolution_generation_prompt_path(),
     )
 
 

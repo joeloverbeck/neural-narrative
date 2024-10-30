@@ -2,15 +2,13 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-from src.base.constants import (
-    CONNECTION_GENERATION_PROMPT_FILE,
-)
 from src.characters.factories.character_factory import CharacterFactory
 from src.characters.factories.character_information_provider_factory import (
     CharacterInformationProviderFactory,
 )
 from src.characters.products.connection_product import ConnectionProduct
 from src.filesystem.filesystem_manager import FilesystemManager
+from src.filesystem.path_manager import PathManager
 from src.prompting.abstracts.abstract_factories import (
     ProduceToolResponseStrategyFactory,
 )
@@ -27,8 +25,11 @@ class ConnectionFactory(BaseToolResponseProvider):
         character_information_provider_factory: CharacterInformationProviderFactory,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         filesystem_manager: Optional[FilesystemManager] = None,
+        path_manager: Optional[PathManager] = None,
     ):
-        super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
+        super().__init__(
+            produce_tool_response_strategy_factory, filesystem_manager, path_manager
+        )
 
         self._character_a_identifier = character_a_identifier
         self._character_b_identifier = character_b_identifier
@@ -44,7 +45,7 @@ class ConnectionFactory(BaseToolResponseProvider):
         return ConnectionProduct(response_model.connection, is_valid=True)
 
     def get_prompt_file(self) -> Optional[str]:
-        return CONNECTION_GENERATION_PROMPT_FILE
+        return self._path_manager.get_connection_generation_prompt_path()
 
     def get_prompt_kwargs(self) -> dict:
         character_a_information = (

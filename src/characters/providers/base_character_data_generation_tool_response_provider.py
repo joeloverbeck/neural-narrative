@@ -1,12 +1,8 @@
 import logging
-from pathlib import Path
 from typing import Optional
 
 from pydantic import BaseModel
 
-from src.base.constants import (
-    CHARACTER_GENERATION_INSTRUCTIONS_FILE,
-)
 from src.base.enums import TemplateType
 from src.base.tools import capture_traceback
 from src.characters.models.base_character_data import BaseCharacterData
@@ -45,7 +41,9 @@ class BaseCharacterDataGenerationToolResponseProvider(
         templates_repository: Optional[TemplatesRepository] = None,
         path_manager: Optional[PathManager] = None,
     ):
-        super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
+        super().__init__(
+            produce_tool_response_strategy_factory, filesystem_manager, path_manager
+        )
 
         self._playthrough_name = playthrough_name
         self._user_content_for_character_generation_factory = (
@@ -56,7 +54,6 @@ class BaseCharacterDataGenerationToolResponseProvider(
         )
 
         self._templates_repository = templates_repository or TemplatesRepository()
-        self._path_manager = path_manager or PathManager()
 
     def get_formatted_prompt(self) -> str:
         templates = self._load_templates()
@@ -128,7 +125,7 @@ class BaseCharacterDataGenerationToolResponseProvider(
         )
 
         character_generation_instructions = read_file(
-            Path(CHARACTER_GENERATION_INSTRUCTIONS_FILE)
+            self._path_manager.get_base_character_data_generation_prompt_path()
         )
         return {
             "playthrough_metadata": playthrough_metadata,

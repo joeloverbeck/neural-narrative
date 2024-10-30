@@ -41,7 +41,7 @@ def main():
         "20241025140017-Elias Blackwood-molagbal",
         "20241025140059-Gideon Harrow-dbspectrallachance.wav",
         "Elias Blackwood",
-        "*The trio gathers under umbrellas in the streets of Providence.* I have some interesting developments to share. I know you want me to be direct, Gideon, so I'll go ahead: reading that accursed ancient tome, the 'Liber Obscuritas', made me think that your daughter Elizabeth may have tried a dark ritual or some way of opening a rift into another world, and as a result she may have been abducted by otherworldly entities. I sought our troublesome scholar Elara Thorn to see if she could assist us on locating the rift that your daughter may have approached, and to my surprise, Elara is cooperative.",
+        "Why did you lure Elizabeth here, or ",
         "molagbal",
     )
 

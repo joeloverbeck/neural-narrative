@@ -3,7 +3,6 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-from src.base.constants import GOALS_GENERATION_PROMPT_FILE
 from src.characters.factories.player_and_followers_information_factory import (
     PlayerAndFollowersInformationFactory,
 )
@@ -33,7 +32,7 @@ class GoalsFactory(BaseConceptFactory):
             produce_tool_response_strategy_factory,
             places_descriptions_factory,
             player_and_followers_information_factory,
-            prompt_file=GOALS_GENERATION_PROMPT_FILE,
+            prompt_file=self._path_manager.get_goals_generation_prompt_path(),
             user_content="Generate three intriguing and engaging short-term goals for the player to pursue. Follow the provided instructions.",
             filesystem_manager=filesystem_manager,
         )

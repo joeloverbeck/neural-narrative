@@ -1,15 +1,12 @@
 import logging
 from typing import cast, Optional
 
+from src.base.products.text_and_voice_line_url_product import TextAndVoiceLineUrlProduct
+from src.base.products.text_product import TextProduct
 from src.characters.character import Character
 from src.characters.factories.self_reflection_factory import SelfReflectionFactory
 from src.characters.models.self_reflection import SelfReflection
-from src.characters.products.produce_self_reflection_product import (
-    ProduceSelfReflectionProduct,
-)
-from src.characters.products.self_reflection_product import SelfReflectionProduct
 from src.filesystem.file_operations import append_to_file
-from src.filesystem.filesystem_manager import FilesystemManager
 from src.filesystem.path_manager import PathManager
 from src.voices.factories.direct_voice_line_generation_algorithm_factory import (
     DirectVoiceLineGenerationAlgorithmFactory,
@@ -26,7 +23,6 @@ class ProduceSelfReflectionAlgorithm:
         character_identifier: str,
         self_reflection_factory: SelfReflectionFactory,
         direct_voice_line_generation_algorithm_factory: DirectVoiceLineGenerationAlgorithmFactory,
-        filesystem_manager: Optional[FilesystemManager] = None,
         path_manager: Optional[PathManager] = None,
     ):
         self._playthrough_name = playthrough_name
@@ -36,12 +32,11 @@ class ProduceSelfReflectionAlgorithm:
             direct_voice_line_generation_algorithm_factory
         )
 
-        self._filesystem_manager = filesystem_manager or FilesystemManager()
         self._path_manager = path_manager or PathManager()
 
-    def do_algorithm(self) -> ProduceSelfReflectionProduct:
+    def do_algorithm(self) -> TextAndVoiceLineUrlProduct:
         product = cast(
-            SelfReflectionProduct,
+            TextProduct,
             self._self_reflection_factory.generate_product(SelfReflection),
         )
 
@@ -67,4 +62,4 @@ class ProduceSelfReflectionAlgorithm:
 
         logger.info("Generated the self-reflection.")
 
-        return ProduceSelfReflectionProduct(product.get(), voice_line_file_name)
+        return TextAndVoiceLineUrlProduct(product.get(), voice_line_file_name)

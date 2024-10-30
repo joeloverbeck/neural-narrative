@@ -36,7 +36,9 @@ class ActionResolutionFactory(BaseToolResponseProvider):
         validate_non_empty_string(action_name, "action_name")
         validate_non_empty_string(action_goal, "action_goal")
 
-        super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
+        super().__init__(
+            produce_tool_response_strategy_factory, filesystem_manager, path_manager
+        )
 
         self._playthrough_name = playthrough_name
         self._action_name = action_name
@@ -48,7 +50,6 @@ class ActionResolutionFactory(BaseToolResponseProvider):
         self._prompt_file = prompt_file
 
         self._time_manager = time_manager or TimeManager(self._playthrough_name)
-        self._path_manager = path_manager or PathManager()
 
     def get_prompt_file(self) -> str:
         return self._prompt_file

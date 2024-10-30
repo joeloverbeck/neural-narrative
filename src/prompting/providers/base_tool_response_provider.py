@@ -5,9 +5,9 @@ from typing import Optional, Type
 
 from pydantic import BaseModel
 
-from src.base.constants import TOOL_INSTRUCTIONS_FOR_INSTRUCTOR_FILE
 from src.filesystem.file_operations import read_file
 from src.filesystem.filesystem_manager import FilesystemManager
+from src.filesystem.path_manager import PathManager
 from src.prompting.abstracts.abstract_factories import (
     ProduceToolResponseStrategyFactory,
 )
@@ -23,21 +23,24 @@ class BaseToolResponseProvider:
     def __init__(
         self,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
-        filesystem_manager: FilesystemManager = None,
+            filesystem_manager: Optional[FilesystemManager] = None,
+            path_manager: Optional[PathManager] = None,
     ):
         self._produce_tool_response_strategy_factory = (
             produce_tool_response_strategy_factory
         )
+
         self._filesystem_manager = filesystem_manager or FilesystemManager()
+        self._path_manager = path_manager or PathManager()
 
     @staticmethod
-    def _read_prompt_file(prompt_file: str) -> str:
+    def _read_prompt_file(prompt_file: Path) -> str:
         """Reads a prompt file from the filesystem."""
-        return read_file(Path(prompt_file))
+        return read_file(prompt_file)
 
     def _read_tool_instructions(self) -> str:
         """Reads the tool instructions from the filesystem."""
-        return read_file(Path(TOOL_INSTRUCTIONS_FOR_INSTRUCTOR_FILE))
+        return read_file(self._path_manager.get_tool_instructions_for_instructor_path())
 
     @staticmethod
     def _format_prompt(prompt_template: str, **kwargs) -> str:
@@ -104,7 +107,7 @@ class BaseToolResponseProvider:
             "Detected that the tool response was a BaseModel, so this should be implemented."
         )
 
-    def get_prompt_file(self) -> Optional[str]:
+    def get_prompt_file(self) -> Optional[Path]:
         raise NotImplemented("Should be implemented.")
 
     def get_prompt_kwargs(self) -> dict:

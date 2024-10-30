@@ -3,7 +3,6 @@ from pathlib import Path
 from typing import Optional
 
 from src.base.abstracts.command import Command
-from src.base.constants import IMAGE_GENERATION_PROMPT_FILE
 from src.characters.models.character_description_for_portrait import (
     CharacterDescriptionForPortrait,
 )
@@ -64,12 +63,13 @@ class GenerateCharacterImageCommand(Command):
         character.update_data({"description_for_portrait": description_product.get()})
         character.save()
 
-    @staticmethod
-    def _generate_prompt(character) -> str:
+    def _generate_prompt(self, character) -> str:
         """
         Generates the image generation prompt using the character's description.
         """
-        prompt_template = read_file(Path(IMAGE_GENERATION_PROMPT_FILE))
+        prompt_template = read_file(
+            self._path_manager.get_image_generation_prompt_path()
+        )
         return prompt_template.format(
             character_description=character.description_for_portrait
         )

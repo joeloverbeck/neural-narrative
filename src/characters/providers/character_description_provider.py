@@ -1,15 +1,14 @@
+from pathlib import Path
 from typing import Optional
 
 from pydantic import BaseModel
 
-from src.base.constants import (
-    CHARACTER_DESCRIPTION_GENERATION_PROMPT_FILE,
-)
 from src.characters.character import Character
 from src.characters.products.character_description_product import (
     CharacterDescriptionProduct,
 )
 from src.filesystem.filesystem_manager import FilesystemManager
+from src.filesystem.path_manager import PathManager
 from src.prompting.abstracts.abstract_factories import (
     ProduceToolResponseStrategyFactory,
 )
@@ -23,13 +22,16 @@ class CharacterDescriptionProvider(BaseToolResponseProvider):
         character: Character,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         filesystem_manager: Optional[FilesystemManager] = None,
+        path_manager: Optional[PathManager] = None,
     ):
-        super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
+        super().__init__(
+            produce_tool_response_strategy_factory, filesystem_manager, path_manager
+        )
 
         self._character = character
 
-    def get_prompt_file(self) -> Optional[str]:
-        return CHARACTER_DESCRIPTION_GENERATION_PROMPT_FILE
+    def get_prompt_file(self) -> Optional[Path]:
+        return self._path_manager.get_character_description_generation_prompt_path()
 
     def get_user_content(self) -> str:
         return "Craft a detailed and vivid description of the character's appearance suitable for an image-generating AI, as per the above instructions."

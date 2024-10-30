@@ -1,6 +1,7 @@
 from flask import session, redirect, url_for, render_template, request
 from flask.views import MethodView
 
+from src.base.tools import capture_traceback
 from src.characters.character import Character
 from src.characters.characters_manager import CharactersManager
 from src.characters.commands.generate_character_secrets_command import (
@@ -80,7 +81,9 @@ class CharacterSecretsView(MethodView):
                     session["secrets_generated_message"] = (
                         f"Failed to generate secrets. Error: {exception}"
                     )
+                    raise
             except Exception as e:
+                capture_traceback()
                 session["secrets_generated_message"] = f"An error occurred: {str(e)}"
             return redirect(
                 url_for("character-secrets", character_identifier=character_identifier)

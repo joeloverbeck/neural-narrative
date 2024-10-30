@@ -5,15 +5,12 @@ from typing import Optional, Dict
 from pydantic import BaseModel
 
 from src.base.constants import (
-    AREA_GENERATION_PROMPT_FILE,
-    REGION_GENERATION_PROMPT_FILE,
-    LOCATION_GENERATION_PROMPT_FILE,
-    WORLD_GENERATION_PROMPT_FILE,
     PARENT_TEMPLATE_TYPE,
 )
 from src.base.enums import TemplateType
 from src.base.validators import validate_non_empty_string
 from src.filesystem.filesystem_manager import FilesystemManager
+from src.filesystem.path_manager import PathManager
 from src.maps.models.area import Area
 from src.maps.models.location import get_custom_location_class
 from src.maps.models.region import Region
@@ -44,8 +41,11 @@ class PlaceGenerationToolResponseProvider(
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         templates_repository: Optional[TemplatesRepository] = None,
         filesystem_manager: Optional[FilesystemManager] = None,
+        path_manager: Optional[PathManager] = None,
     ):
-        super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
+        super().__init__(
+            produce_tool_response_strategy_factory, filesystem_manager, path_manager
+        )
 
         validate_non_empty_string(father_place_identifier, "father_place_identifier")
 
@@ -58,19 +58,19 @@ class PlaceGenerationToolResponseProvider(
     def _get_template_type_data(self) -> Optional[TemplateTypeData]:
         data_mapping: Dict[TemplateType, TemplateTypeData] = {
             TemplateType.WORLD: TemplateTypeData(
-                prompt_file=WORLD_GENERATION_PROMPT_FILE,
+                prompt_file=self._path_manager.get_world_generation_prompt_path(),
                 response_model=World,
             ),
             TemplateType.REGION: TemplateTypeData(
-                prompt_file=REGION_GENERATION_PROMPT_FILE,
+                prompt_file=self._path_manager.get_region_generation_prompt_path(),
                 response_model=Region,
             ),
             TemplateType.AREA: TemplateTypeData(
-                prompt_file=AREA_GENERATION_PROMPT_FILE,
+                prompt_file=self._path_manager.get_area_generation_prompt_path(),
                 response_model=Area,
             ),
             TemplateType.LOCATION: TemplateTypeData(
-                prompt_file=LOCATION_GENERATION_PROMPT_FILE,
+                prompt_file=self._path_manager.get_location_generation_prompt_path(),
                 response_model=get_custom_location_class(),
             ),
         }

@@ -21,4 +21,5 @@ class AiCompletionErrorType(Enum):
     MALFORMED_COMPLETION = "malformed_completion"
     PAYMENT_REQUIRED = "payment_required"
     INVALID_SSL_CERTIFICATE = "invalid_ssl_certificate"
+    MAXIMUM_CONTENT_LENGTH_REACHED = "maximum_content_length_reached"
     UNHANDLED = "unhandled"

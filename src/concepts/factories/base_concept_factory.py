@@ -5,6 +5,7 @@ from src.characters.factories.player_and_followers_information_factory import (
 )
 from src.concepts.concepts_manager import ConceptsManager
 from src.filesystem.filesystem_manager import FilesystemManager
+from src.filesystem.path_manager import PathManager
 from src.maps.providers.places_descriptions_provider import PlacesDescriptionsProvider
 from src.prompting.abstracts.abstract_factories import (
     ProduceToolResponseStrategyFactory,
@@ -23,8 +24,12 @@ class BaseConceptFactory(BaseToolResponseProvider):
         prompt_file: str,
         user_content: str,
         filesystem_manager: Optional[FilesystemManager] = None,
+        path_manager: Optional[PathManager] = None,
     ):
-        super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
+        super().__init__(
+            produce_tool_response_strategy_factory, filesystem_manager, path_manager
+        )
+
         self._playthrough_name = playthrough_name
         self._places_descriptions_factory = places_descriptions_factory
         self._player_and_followers_information_factory = (

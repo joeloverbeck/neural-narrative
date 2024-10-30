@@ -86,6 +86,32 @@
             </form>
         </div>
     </div>
+
+    <!-- Produce Worldview Section -->
+    <div class="collapsible-section">
+        <button class="collapsible">
+            <i class="fa-solid fa-compass-drafting"></i> Worldview
+        </button>
+        <div class="content">
+            <!-- Always include the worldview-container -->
+            <div class="worldview-container" id="worldview-container">
+                {% if worldview_text %}
+                <p>{{ worldview_text }}</p>
+                {% else %}
+                <!-- Placeholder content if no worldview yet -->
+                <p>No worldview available yet.</p>
+                {% endif %}
+            </div>
+            <form action="{{ url_for('character-memories') }}" method="post" class="ajax-form"
+                  data-success-handler="resolveWorldviewSuccess">
+                <input name="character_identifier" type="hidden" value="{{ selected_character.identifier }}">
+                <input name="submit_action" type="hidden" value="produce_worldview">
+                <button type="submit" class="action-button">
+                    <i class="fas fa-sync-alt"></i> Produce Worldview
+                </button>
+            </form>
+        </div>
+    </div>
     {% endif %}
 
     <!-- Navigation Buttons -->

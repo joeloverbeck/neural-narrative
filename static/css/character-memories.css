@@ -29,7 +29,8 @@ input[type="submit"] {
 }
 
 /* Self-Reflection Container Styles */
-.self-reflection-container {
+.self-reflection-container,
+.worldview-container {
     background-color: #f9f9f9;
     padding: 20px;
     margin: 20px auto;
@@ -44,18 +45,7 @@ input[type="submit"] {
     position: relative;
 }
 
-.self-reflection-container:hover {
+.self-reflection-container:hover,
+.worldview-container:hover {
     background-color: #f0f0f0;
-}
-
-.self-reflection-container .play-icon {
-    font-size: 24px;
-    color: #555;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-}
-
-.self-reflection-container:hover .play-icon {
-    color: #000;
 }

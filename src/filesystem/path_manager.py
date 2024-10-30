@@ -19,9 +19,7 @@ class PathManager:
     DATA_DIR = BASE_DIR / "data"
     PLAYTHROUGHS_DIR = BASE_DIR / "playthroughs"
     ERRORS_DIR = BASE_DIR / "errors"
-    STATIC_DIR = BASE_DIR / "static"
-    STATIC_PLAYTHROUGHS_DIR = STATIC_DIR / "playthroughs"
-    IMAGES_DIR = STATIC_DIR / "images"
+
     TEMPLATES_DIR = DATA_DIR / "templates"
     PLACES_DIR = DATA_DIR / "places"
     LOGGING_DIR = DATA_DIR / "logging"
@@ -29,10 +27,21 @@ class PathManager:
     GUIDELINES_DIR = DATA_DIR / "guidelines"
     WEATHERS_DIR = DATA_DIR / "weathers"
     LLMS_DIR = DATA_DIR / "llms"
+
     PROMPTING_DIR = DATA_DIR / "prompting"
+    PROMPTING_IMAGES_DIR = PROMPTING_DIR / "images"
+    PROMPTING_BASE_DIR = PROMPTING_DIR / "base"
+    ACTIONS_DIR = PROMPTING_DIR / "actions"
     BLOCKS_DIR = PROMPTING_DIR / "blocks"
+    PROMPTING_PLACES_DIR = PROMPTING_DIR / "places"
     DIALOGUES_DIR = PROMPTING_DIR / "dialogues"
+    PROMPTING_CHARACTERS_DIR = PROMPTING_DIR / "characters"
+    CONCEPTS_DIR = PROMPTING_DIR / "concepts"
+
+    STATIC_DIR = BASE_DIR / "static"
+    IMAGES_DIR = STATIC_DIR / "images"
     VOICE_LINES_DIR = STATIC_DIR / "voice_lines"
+    STATIC_PLAYTHROUGHS_DIR = STATIC_DIR / "playthroughs"
 
     @classmethod
     def get_openai_project_key_path(cls) -> Path:
@@ -95,12 +104,146 @@ class PathManager:
         return cls.PLACES_DIR / "location_types.txt"
 
     @classmethod
+    def get_tool_instructions_for_instructor_path(cls) -> Path:
+        return cls.PROMPTING_DIR / "tool_instructions_for_instructor.txt"
+
+    @classmethod
     def get_local_information_path(cls) -> Path:
         return cls.BLOCKS_DIR / "local_information.txt"
 
     @classmethod
+    def get_character_information_path(cls) -> Path:
+        return cls.BLOCKS_DIR / "character_information.txt"
+
+    @classmethod
+    def get_places_descriptions_path(cls) -> Path:
+        return cls.BLOCKS_DIR / "places_descriptions.txt"
+
+    @classmethod
+    def get_players_and_followers_information_path(cls) -> Path:
+        return cls.BLOCKS_DIR / "player_and_followers_information.txt"
+
+    @classmethod
+    def get_choosing_speech_turn_prompt_path(cls) -> Path:
+        return cls.DIALOGUES_DIR / "choosing_speech_turn_prompt.txt"
+
+    @classmethod
     def get_narrative_beat_generation_prompt_path(cls) -> Path:
         return cls.DIALOGUES_DIR / "narrative_beat_generation_prompt.txt"
+
+    @classmethod
+    def get_speech_turn_prompt_path(cls) -> Path:
+        return cls.DIALOGUES_DIR / "speech_turn_prompt.txt"
+
+    @classmethod
+    def get_summarize_dialogue_prompt_path(cls) -> Path:
+        return cls.DIALOGUES_DIR / "summarize_dialogue_prompt.txt"
+
+    @classmethod
+    def get_ambient_narration_generation_prompt_path(cls) -> Path:
+        return cls.DIALOGUES_DIR / "ambient_narration_generation_prompt.txt"
+
+    @classmethod
+    def get_story_universe_generation_prompt_path(cls) -> Path:
+        return cls.PROMPTING_BASE_DIR / "story_universe_generation_prompt.txt"
+
+    @classmethod
+    def get_base_character_data_generation_prompt_path(cls) -> Path:
+        return (
+                cls.PROMPTING_CHARACTERS_DIR / "base_character_data_generation_prompt.txt"
+        )
+
+    @classmethod
+    def get_speech_patterns_generation_prompt_path(cls) -> Path:
+        return cls.PROMPTING_CHARACTERS_DIR / "speech_patterns_generation_prompt.txt"
+
+    @classmethod
+    def get_self_reflection_generation_prompt_path(cls) -> Path:
+        return cls.PROMPTING_CHARACTERS_DIR / "self_reflection_generation_prompt.txt"
+
+    @classmethod
+    def get_worldview_generation_prompt_path(cls) -> Path:
+        return cls.PROMPTING_CHARACTERS_DIR / "worldview_generation_prompt.txt"
+
+    @classmethod
+    def get_character_generation_guidelines_prompt_path(cls) -> Path:
+        return (
+                cls.PROMPTING_CHARACTERS_DIR / "character_generation_guidelines_prompt.txt"
+        )
+
+    @classmethod
+    def get_character_description_generation_prompt_path(cls) -> Path:
+        return (
+                cls.PROMPTING_CHARACTERS_DIR / "character_description_generation_prompt.txt"
+        )
+
+    @classmethod
+    def get_secrets_generation_prompt_path(cls) -> Path:
+        return cls.PROMPTING_CHARACTERS_DIR / "secrets_generation_prompt.txt"
+
+    @classmethod
+    def get_connection_generation_prompt_path(cls) -> Path:
+        return cls.PROMPTING_CHARACTERS_DIR / "connection_generation_prompt.txt"
+
+    @classmethod
+    def get_scenarios_generation_prompt_path(cls) -> Path:
+        return cls.CONCEPTS_DIR / "scenarios_generation_prompt.txt"
+
+    @classmethod
+    def get_dilemmas_generation_prompt_path(cls) -> Path:
+        return cls.CONCEPTS_DIR / "dilemmas_generation_prompt.txt"
+
+    @classmethod
+    def get_plot_blueprints_generation_prompt_path(cls) -> Path:
+        return cls.CONCEPTS_DIR / "plot_blueprints_generation_prompt.txt"
+
+    @classmethod
+    def get_goals_generation_prompt_path(cls) -> Path:
+        return cls.CONCEPTS_DIR / "goals_generation_prompt.txt"
+
+    @classmethod
+    def get_plot_twists_generation_prompt_path(cls) -> Path:
+        return cls.CONCEPTS_DIR / "plot_twists_generation_prompt.txt"
+
+    @classmethod
+    def get_world_generation_prompt_path(cls) -> Path:
+        return cls.PROMPTING_PLACES_DIR / "world_generation_prompt.txt"
+
+    @classmethod
+    def get_region_generation_prompt_path(cls) -> Path:
+        return cls.PROMPTING_PLACES_DIR / "region_generation_prompt.txt"
+
+    @classmethod
+    def get_area_generation_prompt_path(cls) -> Path:
+        return cls.PROMPTING_PLACES_DIR / "area_generation_prompt.txt"
+
+    @classmethod
+    def get_location_generation_prompt_path(cls) -> Path:
+        return cls.PROMPTING_PLACES_DIR / "location_generation_prompt.txt"
+
+    @classmethod
+    def get_place_description_prompt_path(cls) -> Path:
+        return cls.PROMPTING_PLACES_DIR / "place_description_prompt.txt"
+
+    @classmethod
+    def get_travel_narration_prompt_path(cls) -> Path:
+        return cls.PROMPTING_PLACES_DIR / "travel_narration_prompt.txt"
+
+    @classmethod
+    def get_image_generation_prompt_path(cls) -> Path:
+        return cls.PROMPTING_IMAGES_DIR / "image_generation_prompt.txt"
+
+    @classmethod
+    def get_research_resolution_generation_prompt_path(cls) -> Path:
+        return cls.ACTIONS_DIR / "research_resolution_generation_prompt.txt"
+
+    @classmethod
+    def get_investigate_resolution_generation_prompt_path(cls) -> Path:
+        return cls.ACTIONS_DIR / "investigate_resolution_generation_prompt.txt"
+
+    @classmethod
+    def get_gather_supplies_resolution_generation_prompt_path(cls) -> Path:
+        return cls.ACTIONS_DIR / "gather_supplies_resolution_generation_prompt.txt"
 
     @classmethod
     def get_templates_paths(cls, place_type: TemplateType):

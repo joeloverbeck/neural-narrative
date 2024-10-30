@@ -62,7 +62,6 @@ class WritersRoomView(MethodView):
         if request.headers.get("X-Requested-With") == "XMLHttpRequest":
             # Handle AJAX request
             action = request.form.get("submit_action")
-            logger.warning("Action: %s", action)
             if action == "send":
                 return self.handle_send(playthrough_name)
             elif action == "end_session":

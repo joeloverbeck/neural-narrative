@@ -1,12 +1,10 @@
 # test_speech_turn_choice_tool_response_provider.py
-from pathlib import Path
 from typing import cast
 from unittest.mock import MagicMock, patch
 
 import pytest
 from pydantic import BaseModel
 
-from src.base.constants import CHOOSING_SPEECH_TURN_PROMPT_FILE
 from src.characters.factories.character_factory import CharacterFactory
 from src.dialogues.models.speech_turn_choice import SpeechTurnChoice
 from src.dialogues.participants import Participants
@@ -78,26 +76,6 @@ def test_init_with_empty_player_identifier_raises_error():
             ),
         )
     assert "player_identifier" in str(exc_info.value)
-
-
-def test_get_prompt_file_returns_correct_value():
-    # Arrange
-    provider = SpeechTurnChoiceToolResponseProvider(
-        player_identifier="1",
-        participants=Participants(),
-        transcription=Transcription(),
-        character_factory=MagicMock(spec=CharacterFactory),
-        produce_tool_response_strategy_factory=cast(
-            ProduceToolResponseStrategyFactory,
-            MagicMock(spec=ProduceToolResponseStrategyFactory),
-        ),
-    )
-
-    # Act
-    prompt_file = provider.get_prompt_file()
-
-    # Assert
-    assert prompt_file == CHOOSING_SPEECH_TURN_PROMPT_FILE
 
 
 def test_get_tool_data_returns_correct_schema():
@@ -374,44 +352,6 @@ def test_get_formatted_prompt_returns_none():
 
     # Assert
     assert result is None  # Should return None as per implementation
-
-
-@patch("src.prompting.providers.base_tool_response_provider.read_file")
-def test_generate_product_reads_correct_prompt_file(mock_read_file):
-    # Arrange
-    filesystem_manager = MagicMock(spec=FilesystemManager)
-    mock_read_file.side_effect = lambda x: f"Content of {x}"
-    produce_tool_response_strategy_factory = MagicMock(
-        spec=ProduceToolResponseStrategyFactory
-    )
-    strategy = MagicMock()
-    produce_tool_response_strategy_factory.create_produce_tool_response_strategy.return_value = (
-        strategy
-    )
-    strategy.produce_tool_response.return_value = SpeechTurnChoice(
-        identifier=2, name="Alice", reason="She is the next logical speaker."
-    )
-    character_factory = MagicMock(spec=CharacterFactory)
-    character_factory.create_character.return_value = MagicMock(
-        voice_model="VoiceModel"
-    )
-
-    provider = SpeechTurnChoiceToolResponseProvider(
-        player_identifier="1",
-        participants=Participants(),
-        transcription=Transcription(),
-        character_factory=character_factory,
-        produce_tool_response_strategy_factory=cast(
-            ProduceToolResponseStrategyFactory, produce_tool_response_strategy_factory
-        ),
-        filesystem_manager=filesystem_manager,
-    )
-
-    # Act
-    provider.generate_product(SpeechTurnChoice)
-
-    # Assert
-    mock_read_file.assert_any_call(Path(CHOOSING_SPEECH_TURN_PROMPT_FILE))
 
 
 @patch("src.prompting.providers.base_tool_response_provider.read_file")

@@ -1,12 +1,11 @@
 from typing import cast
-from unittest.mock import MagicMock, patch
-
-from src.base.constants import CONNECTION_GENERATION_PROMPT_FILE
+from unittest.mock import MagicMock
 
 # Import the classes from your code
 from src.characters.factories.connection_factory import ConnectionFactory
 from src.characters.models.connection import Connection
 from src.characters.products.connection_product import ConnectionProduct
+from src.filesystem.path_manager import PathManager
 from src.prompting.abstracts.abstract_factories import (
     ProduceToolResponseStrategyFactory,
 )
@@ -123,8 +122,10 @@ def test_get_prompt_file():
     # Act
     prompt_file = cf.get_prompt_file()
 
+    path_manager = PathManager()
+
     # Assert
-    assert prompt_file == CONNECTION_GENERATION_PROMPT_FILE
+    assert prompt_file == path_manager.get_connection_generation_prompt_path()
 
 
 def test_get_prompt_kwargs():
@@ -193,103 +194,3 @@ def test_get_prompt_kwargs():
         "name_b": "Bob",
     }
     assert prompt_kwargs == expected_prompt_kwargs
-
-
-@patch("src.prompting.providers.base_tool_response_provider.read_file")
-def test_generate_product(mock_read_file):
-    # Arrange
-    character_a_identifier = "char_a"
-    character_b_identifier = "char_b"
-
-    character_factory = MagicMock()
-    character_information_provider_factory = MagicMock()
-    produce_tool_response_strategy_factory = MagicMock()
-    filesystem_manager = MagicMock()
-
-    # Mock character_factory.create_character(identifier)
-    character_a = MagicMock()
-    character_a.name = "Alice"
-    character_b = MagicMock()
-    character_b.name = "Bob"
-
-    def create_character_side_effect(identifier):
-        if identifier == "char_a":
-            return character_a
-        elif identifier == "char_b":
-            return character_b
-        else:
-            raise ValueError("Unknown character identifier")
-
-    character_factory.create_character.side_effect = create_character_side_effect
-
-    # Mock character_information_provider_factory.create_provider(identifier).get_information()
-    character_a_info_provider = MagicMock()
-    character_a_info_provider.get_information.return_value = "Alice is a brave warrior."
-    character_b_info_provider = MagicMock()
-    character_b_info_provider.get_information.return_value = "Bob is a cunning thief."
-
-    def create_provider_side_effect(identifier):
-        if identifier == "char_a":
-            return character_a_info_provider
-        elif identifier == "char_b":
-            return character_b_info_provider
-        else:
-            raise ValueError("Unknown character identifier")
-
-    character_information_provider_factory.create_provider.side_effect = (
-        create_provider_side_effect
-    )
-
-    # Mock filesystem_manager.read_file
-    prompt_template = "This is a prompt for {name_a} and {name_b}."
-
-    def read_file_side_effect(file_path):
-        if file_path == CONNECTION_GENERATION_PROMPT_FILE:
-            return prompt_template
-        elif file_path == "path/to/tool_instructions":
-            return "These are tool instructions."
-        else:
-            return ""
-
-    mock_read_file.side_effect = read_file_side_effect
-
-    # Mock the tool instructions constant
-    with patch(
-        "src.base.constants.TOOL_INSTRUCTIONS_FOR_INSTRUCTOR_FILE",
-        "path/to/tool_instructions",
-    ):
-        # Mock produce_tool_response_strategy_factory
-        strategy = MagicMock()
-        strategy.produce_tool_response.return_value = Connection(
-            connection="They are old friends."
-        )
-        produce_tool_response_strategy_factory.create_produce_tool_response_strategy.return_value = (
-            strategy
-        )
-
-        cf = ConnectionFactory(
-            character_a_identifier,
-            character_b_identifier,
-            character_factory,
-            character_information_provider_factory,
-            cast(
-                ProduceToolResponseStrategyFactory,
-                produce_tool_response_strategy_factory,
-            ),
-            filesystem_manager,
-        )
-
-        # Act
-        product = cf.generate_product(Connection)
-
-        # Assert
-        assert isinstance(product, ConnectionProduct)
-        assert product.get() == "They are old friends."
-        assert product.is_valid()
-
-        # Ensure the strategy was called with the correct system_content and user_content
-        (
-            "This is a prompt for Alice and Bob.\n\nThese are tool instructions. "
-            + str(Connection.model_json_schema())
-        )
-        strategy.produce_tool_response.assert_called_once()

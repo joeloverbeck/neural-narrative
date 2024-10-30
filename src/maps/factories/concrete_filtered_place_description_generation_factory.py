@@ -2,10 +2,8 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-from src.base.constants import (
-    PLACE_DESCRIPTION_PROMPT_FILE,
-)
 from src.filesystem.filesystem_manager import FilesystemManager
+from src.filesystem.path_manager import PathManager
 from src.maps.configs.filtered_place_description_generation_factory_config import (
     FilteredPlaceDescriptionGenerationFactoryConfig,
 )
@@ -26,17 +24,20 @@ class ConcreteFilteredPlaceDescriptionGenerationFactory(BaseToolResponseProvider
         config: FilteredPlaceDescriptionGenerationFactoryConfig,
         factories_config: FilteredPlaceDescriptionGenerationFactoryFactoriesConfig,
         filesystem_manager: Optional[FilesystemManager] = None,
+        path_manager: Optional[PathManager] = None,
         time_manager: Optional[TimeManager] = None,
     ):
         super().__init__(
-            factories_config.produce_tool_response_strategy_factory, filesystem_manager
+            factories_config.produce_tool_response_strategy_factory,
+            filesystem_manager,
+            path_manager,
         )
         self._config = config
         self._factories_config = factories_config
         self._time_manager = time_manager or TimeManager(self._config.playthrough_name)
 
     def get_prompt_file(self) -> Optional[str]:
-        return PLACE_DESCRIPTION_PROMPT_FILE
+        return self._path_manager.get_place_description_prompt_path()
 
     def get_user_content(self) -> str:
         return "Write the description of the indicated place, filtered through the perspective of the character whose data has been provided, as per the above instructions."

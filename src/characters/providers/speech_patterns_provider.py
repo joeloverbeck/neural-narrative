@@ -1,12 +1,11 @@
+from pathlib import Path
 from typing import Optional, Dict
 
 from pydantic import BaseModel
 
-from src.base.constants import (
-    SPEECH_PATTERNS_GENERATION_PROMPT_FILE,
-)
 from src.characters.products.speech_patterns_product import SpeechPatternsProduct
 from src.filesystem.filesystem_manager import FilesystemManager
+from src.filesystem.path_manager import PathManager
 from src.prompting.abstracts.abstract_factories import (
     ProduceToolResponseStrategyFactory,
 )
@@ -20,8 +19,11 @@ class SpeechPatternsProvider(BaseToolResponseProvider):
         base_character_data: Dict[str, str],
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         filesystem_manager: Optional[FilesystemManager] = None,
+            path_manager: Optional[PathManager] = None,
     ):
-        super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
+        super().__init__(
+            produce_tool_response_strategy_factory, filesystem_manager, path_manager
+        )
 
         self._base_character_data = base_character_data
 
@@ -34,8 +36,8 @@ class SpeechPatternsProvider(BaseToolResponseProvider):
             is_valid=True,
         )
 
-    def get_prompt_file(self) -> Optional[str]:
-        return SPEECH_PATTERNS_GENERATION_PROMPT_FILE
+    def get_prompt_file(self) -> Optional[Path]:
+        return self._path_manager.get_speech_patterns_generation_prompt_path()
 
     def get_prompt_kwargs(self) -> dict:
         return self._base_character_data

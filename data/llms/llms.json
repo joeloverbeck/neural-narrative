@@ -26,7 +26,7 @@
     },
     "magnum_72b": {
       "name": "anthracite-org/magnum-v4-72b",
-      "description": "Seems pretty good. Good summary.",
+      "description": "Best dialogue. Good summary. Very short context",
       "temperature": 0.95,
       "top_p": 1.0,
       "context": 32768,
@@ -48,6 +48,7 @@
   "speech_patterns_generation": "magnum_72b",
   "character_description": "hermes_405b_free",
   "self-reflection": "hermes_405b_free",
+  "worldview": "magnum_72b",
   "character_connection": "hermes_405b_free",
   "secrets": "hermes_405b_free",
   "concept_generation": "hermes_405b_free",

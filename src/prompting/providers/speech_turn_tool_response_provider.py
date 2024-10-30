@@ -1,14 +1,15 @@
 import logging
+from pathlib import Path
 from typing import Optional
 
 from pydantic import BaseModel
 
-from src.base.constants import CHOOSING_SPEECH_TURN_PROMPT_FILE
 from src.base.validators import validate_non_empty_string
 from src.characters.factories.character_factory import CharacterFactory
 from src.dialogues.participants import Participants
 from src.dialogues.transcription import Transcription
 from src.filesystem.filesystem_manager import FilesystemManager
+from src.filesystem.path_manager import PathManager
 from src.prompting.abstracts.abstract_factories import (
     ProduceToolResponseStrategyFactory,
 )
@@ -29,8 +30,11 @@ class SpeechTurnChoiceToolResponseProvider(BaseToolResponseProvider):
         character_factory: CharacterFactory,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         filesystem_manager: Optional[FilesystemManager] = None,
+        path_manager: Optional[PathManager] = None,
     ):
-        super().__init__(produce_tool_response_strategy_factory, filesystem_manager)
+        super().__init__(
+            produce_tool_response_strategy_factory, filesystem_manager, path_manager
+        )
 
         validate_non_empty_string(player_identifier, "player_identifier")
 
@@ -39,8 +43,8 @@ class SpeechTurnChoiceToolResponseProvider(BaseToolResponseProvider):
         self._transcription = transcription
         self._character_factory = character_factory
 
-    def get_prompt_file(self) -> str:
-        return CHOOSING_SPEECH_TURN_PROMPT_FILE
+    def get_prompt_file(self) -> Path:
+        return self._path_manager.get_choosing_speech_turn_prompt_path()
 
     def get_user_content(self) -> str:
         return "Choose who will speak next in this dialogue. Choose only among the allowed participants."
