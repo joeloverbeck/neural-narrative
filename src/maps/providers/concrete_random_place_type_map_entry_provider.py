@@ -58,7 +58,7 @@ class ConcreteRandomTemplateTypeMapEntryProvider(RandomTemplateTypeMapEntryProvi
             available_templates = (
                 self._filter_out_used_templates_algorithm_factory.create_factory(
                     self._config.place_type
-                ).do_algorithm()
+                ).direct()
             )
 
             if not available_templates:

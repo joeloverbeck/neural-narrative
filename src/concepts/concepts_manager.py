@@ -1,7 +1,7 @@
 from typing import Dict, Optional
 
-from src.characters.factories.player_and_followers_information_factory import (
-    PlayerAndFollowersInformationFactory,
+from src.characters.factories.relevant_characters_information_factory import (
+    RelevantCharactersInformationFactory,
 )
 from src.filesystem.file_operations import read_file
 from src.filesystem.path_manager import PathManager
@@ -20,7 +20,7 @@ class ConceptsManager:
     def get_prompt_data(
         self,
         places_descriptions_factory: PlacesDescriptionsProvider,
-        player_and_followers_information_factory: PlayerAndFollowersInformationFactory,
+        player_and_followers_information_factory: RelevantCharactersInformationFactory,
     ) -> Dict[str, str]:
         prompt_data = {
             "places_descriptions": places_descriptions_factory.get_information()

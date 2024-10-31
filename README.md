@@ -117,8 +117,7 @@ Modify the **config.json** file to adjust application settings such as enabling 
 
 ```json
 {
-  "produce_voice_lines": "true",
-  ...
+  "produce_voice_lines": "true"
 }
 ```
 

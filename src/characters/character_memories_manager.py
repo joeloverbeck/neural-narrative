@@ -11,7 +11,7 @@ from src.filesystem.file_operations import (
 from src.filesystem.path_manager import PathManager
 
 
-class CharacterMemories:
+class CharacterMemoriesManager:
 
     def __init__(
         self,

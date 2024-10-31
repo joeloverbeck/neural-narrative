@@ -19,13 +19,13 @@ from src.prompting.providers.base_tool_response_provider import BaseToolResponse
 
 class WorldviewFactory(BaseToolResponseProvider):
     def __init__(
-            self,
-            playthrough_name: str,
-            character_identifier: str,
-            produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
-            character_information_factory: CharacterInformationProvider,
-            filesystem_manager: Optional[FilesystemManager] = None,
-            path_manager: Optional[PathManager] = None,
+        self,
+        playthrough_name: str,
+        character_identifier: str,
+        produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
+        character_information_factory: CharacterInformationProvider,
+        filesystem_manager: Optional[FilesystemManager] = None,
+        path_manager: Optional[PathManager] = None,
     ):
         super().__init__(
             produce_tool_response_strategy_factory, filesystem_manager, path_manager

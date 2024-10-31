@@ -18,8 +18,8 @@ from src.actions.models.research import Research
 from src.base.playthrough_manager import PlaythroughManager
 from src.characters.character import Character
 from src.characters.characters_manager import CharactersManager
-from src.characters.composers.player_and_followers_information_factory_composer import (
-    PlayerAndFollowersInformationFactoryComposer,
+from src.characters.composers.relevant_characters_information_factory_composer import (
+    RelevantCharactersInformationFactoryComposer,
 )
 from src.characters.factories.store_character_memory_command_factory import (
     StoreCharacterMemoryCommandFactory,
@@ -93,7 +93,7 @@ def action_view(action_name, action_icon, action_endpoint, prompt_file):
             )
 
             players_and_followers_information_factory = (
-                PlayerAndFollowersInformationFactoryComposer(
+                RelevantCharactersInformationFactoryComposer(
                     playthrough_name,
                     "Follower",
                     FollowersIdentifiersStrategy(playthrough_name),

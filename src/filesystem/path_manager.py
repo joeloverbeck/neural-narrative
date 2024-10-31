@@ -132,6 +132,10 @@ class PathManager:
         return cls.DIALOGUES_DIR / "narrative_beat_generation_prompt.txt"
 
     @classmethod
+    def get_grow_event_prompt_path(cls) -> Path:
+        return cls.DIALOGUES_DIR / "grow_event_prompt.txt"
+
+    @classmethod
     def get_speech_turn_prompt_path(cls) -> Path:
         return cls.DIALOGUES_DIR / "speech_turn_prompt.txt"
 
@@ -150,7 +154,7 @@ class PathManager:
     @classmethod
     def get_base_character_data_generation_prompt_path(cls) -> Path:
         return (
-                cls.PROMPTING_CHARACTERS_DIR / "base_character_data_generation_prompt.txt"
+            cls.PROMPTING_CHARACTERS_DIR / "base_character_data_generation_prompt.txt"
         )
 
     @classmethod
@@ -168,13 +172,13 @@ class PathManager:
     @classmethod
     def get_character_generation_guidelines_prompt_path(cls) -> Path:
         return (
-                cls.PROMPTING_CHARACTERS_DIR / "character_generation_guidelines_prompt.txt"
+            cls.PROMPTING_CHARACTERS_DIR / "character_generation_guidelines_prompt.txt"
         )
 
     @classmethod
     def get_character_description_generation_prompt_path(cls) -> Path:
         return (
-                cls.PROMPTING_CHARACTERS_DIR / "character_description_generation_prompt.txt"
+            cls.PROMPTING_CHARACTERS_DIR / "character_description_generation_prompt.txt"
         )
 
     @classmethod

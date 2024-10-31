@@ -71,6 +71,13 @@ class LlmSpeechDataProvider(BaseToolResponseProvider):
         if response_model.result is not None:
             speech_data_response = response_model.result
 
+            # Log the reasoning.
+            logger.info(
+                "%s reasoning: %s",
+                speech_data_response.name,
+                speech_data_response.speech.chain_of_thought,
+            )
+
             speech_data = {
                 "name": speech_data_response.name,
                 "narration_text": speech_data_response.narration_text,

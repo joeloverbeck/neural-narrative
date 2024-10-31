@@ -4,12 +4,11 @@ from typing import List, Dict, Optional
 from flask import session, url_for
 
 from src.base.playthrough_manager import PlaythroughManager
-from src.characters.abstracts.strategies import OtherCharactersIdentifiersStrategy
 from src.characters.composers.local_information_factory_composer import (
     LocalInformationFactoryComposer,
 )
-from src.characters.composers.player_and_followers_information_factory_composer import (
-    PlayerAndFollowersInformationFactoryComposer,
+from src.characters.composers.relevant_characters_information_factory_composer import (
+    RelevantCharactersInformationFactoryComposer,
 )
 from src.dialogues.abstracts.strategies import NarrationForDialogueStrategy
 from src.dialogues.commands.setup_dialogue_command import SetupDialogueCommand
@@ -23,6 +22,7 @@ from src.dialogues.dialogue_manager import DialogueManager
 from src.dialogues.factories.ambient_narration_provider_factory import (
     AmbientNarrationProviderFactory,
 )
+from src.dialogues.factories.grow_event_provider_factory import GrowEventProviderFactory
 from src.dialogues.factories.narrative_beat_provider_factory import (
     NarrativeBeatProviderFactory,
 )
@@ -38,8 +38,14 @@ from src.dialogues.strategies.ambient_narration_for_dialogue_strategy import (
 from src.dialogues.strategies.event_narration_for_dialogue_strategy import (
     EventNarrationForDialogueStrategy,
 )
+from src.dialogues.strategies.grow_event_narration_for_dialogue_strategy import (
+    GrowEventNarrationForDialogueStrategy,
+)
 from src.dialogues.strategies.narrative_beat_for_dialogue_strategy import (
     NarrativeBeatForDialogueStrategy,
+)
+from src.dialogues.strategies.participants_identifiers_strategy import (
+    ParticipantsIdentifiersStrategy,
 )
 from src.dialogues.strategies.web_message_data_producer_for_introduce_player_input_into_dialogue_strategy import (
     WebMessageDataProducerForIntroducePlayerInputIntoDialogueStrategy,
@@ -132,15 +138,8 @@ class DialogueService:
             self._playthrough_name
         ).compose_factory()
 
-        class ParticipantsIdentifiersStrategy(OtherCharactersIdentifiersStrategy):
-            def __init__(self, inner_participants_identifiers: List[str]):
-                self._inner_participants_identifiers = inner_participants_identifiers
-
-            def get_data(self) -> List[str]:
-                return self._inner_participants_identifiers
-
         player_and_followers_information_factory = (
-            PlayerAndFollowersInformationFactoryComposer(
+            RelevantCharactersInformationFactoryComposer(
                 self._playthrough_name,
                 "Participant",
                 ParticipantsIdentifiersStrategy(other_characters_identifiers),
@@ -183,6 +182,54 @@ class DialogueService:
             purpose,
             "event",
             narration_for_dialogue_strategy,
+            web_narration_observer,
+        )
+
+    def process_grow_event_message(
+        self,
+        other_characters_identifiers: List[str],
+        purpose: Optional[str],
+        event_text: str,
+    ):
+        web_narration_observer = WebNarrationObserver()
+
+        produce_tool_response_strategy_factory = (
+            ProduceToolResponseStrategyFactoryComposer(
+                Llms().for_grow_event(),
+            ).compose_factory()
+        )
+
+        local_information_factory = LocalInformationFactoryComposer(
+            self._playthrough_name
+        ).compose_factory()
+
+        relevant_characters_information_factory = (
+            RelevantCharactersInformationFactoryComposer(
+                self._playthrough_name,
+                "Participant",
+                ParticipantsIdentifiersStrategy(other_characters_identifiers),
+            ).compose_factory()
+        )
+
+        grow_event_provider_factory = GrowEventProviderFactory(
+            event_text,
+            produce_tool_response_strategy_factory,
+            local_information_factory,
+            relevant_characters_information_factory,
+        )
+
+        grow_event_narration_for_dialogue_strategy = (
+            GrowEventNarrationForDialogueStrategy(
+                DialogueManager(self._playthrough_name).load_transcription(),
+                grow_event_provider_factory,
+            )
+        )
+
+        return self._process_narration(
+            other_characters_identifiers,
+            purpose,
+            "event",
+            grow_event_narration_for_dialogue_strategy,
             web_narration_observer,
         )
 

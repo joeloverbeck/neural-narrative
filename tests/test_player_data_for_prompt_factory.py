@@ -1,7 +1,7 @@
 from unittest.mock import Mock
 
 from src.base.playthrough_manager import PlaythroughManager
-from src.characters.character_memories import CharacterMemories
+from src.characters.character_memories_manager import CharacterMemoriesManager
 from src.characters.factories.character_factory import CharacterFactory
 from src.characters.factories.player_data_for_prompt_factory import (
     PlayerDataForPromptFactory,
@@ -12,7 +12,7 @@ def test_player_data_for_prompt_factory_initialization_with_provided_arguments()
     playthrough_name = "TestPlaythrough"
     character_factory = Mock(spec=CharacterFactory)
     playthrough_manager = Mock(spec=PlaythroughManager)
-    character_memories = Mock(spec=CharacterMemories)
+    character_memories = Mock(spec=CharacterMemoriesManager)
     factory = PlayerDataForPromptFactory(
         playthrough_name,
         character_factory,
@@ -27,7 +27,7 @@ def test_player_data_for_prompt_factory_create_player_data_for_prompt():
     playthrough_name = "TestPlaythrough"
     character_factory = Mock(spec=CharacterFactory)
     playthrough_manager = Mock(spec=PlaythroughManager)
-    character_memories = Mock(spec=CharacterMemories)
+    character_memories = Mock(spec=CharacterMemoriesManager)
     player_identifier = "Player1"
     playthrough_manager.get_player_identifier.return_value = player_identifier
     player = Mock()
@@ -74,7 +74,7 @@ def test_player_data_for_prompt_factory_create_player_data_for_prompt_no_memorie
     playthrough_name = "TestPlaythrough"
     character_factory = Mock(spec=CharacterFactory)
     playthrough_manager = Mock(spec=PlaythroughManager)
-    character_memories = Mock(spec=CharacterMemories)
+    character_memories = Mock(spec=CharacterMemoriesManager)
     player_identifier = "Player1"
     playthrough_manager.get_player_identifier.return_value = player_identifier
     player = Mock()
@@ -117,7 +117,7 @@ def test_player_data_for_prompt_factory_create_player_data_for_prompt_with_white
     playthrough_name = "TestPlaythrough"
     character_factory = Mock(spec=CharacterFactory)
     playthrough_manager = Mock(spec=PlaythroughManager)
-    character_memories = Mock(spec=CharacterMemories)
+    character_memories = Mock(spec=CharacterMemoriesManager)
     player_identifier = "Player1"
     playthrough_manager.get_player_identifier.return_value = player_identifier
     player = Mock()
@@ -148,7 +148,7 @@ def test_player_data_for_prompt_factory_create_player_data_for_prompt_empty_memo
     playthrough_name = "TestPlaythrough"
     character_factory = Mock(spec=CharacterFactory)
     playthrough_manager = Mock(spec=PlaythroughManager)
-    character_memories = Mock(spec=CharacterMemories)
+    character_memories = Mock(spec=CharacterMemoriesManager)
     player_identifier = "Player1"
     playthrough_manager.get_player_identifier.return_value = player_identifier
     player = Mock()
@@ -179,7 +179,7 @@ def test_player_data_for_prompt_factory_create_player_data_for_prompt_with_missi
     playthrough_name = "TestPlaythrough"
     character_factory = Mock(spec=CharacterFactory)
     playthrough_manager = Mock(spec=PlaythroughManager)
-    character_memories = Mock(spec=CharacterMemories)
+    character_memories = Mock(spec=CharacterMemoriesManager)
     player_identifier = "Player1"
     playthrough_manager.get_player_identifier.return_value = player_identifier
     player = Mock()

@@ -1,7 +1,7 @@
 from typing import Optional
 
-from src.characters.factories.player_and_followers_information_factory import (
-    PlayerAndFollowersInformationFactory,
+from src.characters.factories.relevant_characters_information_factory import (
+    RelevantCharactersInformationFactory,
 )
 from src.concepts.concepts_manager import ConceptsManager
 from src.filesystem.filesystem_manager import FilesystemManager
@@ -20,7 +20,7 @@ class BaseConceptFactory(BaseToolResponseProvider):
         playthrough_name: str,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         places_descriptions_factory: PlacesDescriptionsProvider,
-        player_and_followers_information_factory: PlayerAndFollowersInformationFactory,
+        player_and_followers_information_factory: RelevantCharactersInformationFactory,
         prompt_file: str,
         user_content: str,
         filesystem_manager: Optional[FilesystemManager] = None,

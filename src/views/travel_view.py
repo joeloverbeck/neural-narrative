@@ -5,8 +5,8 @@ from flask.views import MethodView
 
 from src.base.playthrough_manager import PlaythroughManager
 from src.characters.character import Character
-from src.characters.composers.player_and_followers_information_factory_composer import (
-    PlayerAndFollowersInformationFactoryComposer,
+from src.characters.composers.relevant_characters_information_factory_composer import (
+    RelevantCharactersInformationFactoryComposer,
 )
 from src.characters.factories.character_factory import CharacterFactory
 from src.characters.strategies.followers_identifiers_strategy import (
@@ -112,7 +112,7 @@ class TravelView(MethodView):
         )
 
         player_and_followers_information_factory = (
-            PlayerAndFollowersInformationFactoryComposer(
+            RelevantCharactersInformationFactoryComposer(
                 playthrough_name,
                 "Follower",
                 FollowersIdentifiersStrategy(playthrough_name),

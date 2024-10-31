@@ -40,9 +40,9 @@ def main():
     generate_voice_line(
         "20241025140017-Elias Blackwood-molagbal",
         "20241025140059-Gideon Harrow-dbspectrallachance.wav",
-        "Elias Blackwood",
-        "Why did you lure Elizabeth here, or ",
-        "molagbal",
+        "narrator",
+        "Elias, his hands trembling, cuts a morsel of the morphing, pulsating mass of dead Emilia's cheek, the raises the morsel slowly toward his open mouth.",
+        "tulius",
     )
 
 

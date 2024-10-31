@@ -4,8 +4,8 @@ from flask import session, redirect, url_for, render_template, request, jsonify,
 from flask.views import MethodView
 
 from src.base.tools import capture_traceback
-from src.characters.composers.player_and_followers_information_factory_composer import (
-    PlayerAndFollowersInformationFactoryComposer,
+from src.characters.composers.relevant_characters_information_factory_composer import (
+    RelevantCharactersInformationFactoryComposer,
 )
 from src.characters.strategies.followers_identifiers_strategy import (
     FollowersIdentifiersStrategy,
@@ -144,7 +144,7 @@ class StoryHubView(MethodView):
         )
 
         player_and_followers_information_factory = (
-            PlayerAndFollowersInformationFactoryComposer(
+            RelevantCharactersInformationFactoryComposer(
                 playthrough_name,
                 "Follower",
                 FollowersIdentifiersStrategy(playthrough_name),
@@ -223,7 +223,7 @@ class StoryHubView(MethodView):
                     playthrough_name_obj, action_name, factory_instance
                 )
                 try:
-                    items = algorithm_instance.do_algorithm()
+                    items = algorithm_instance.direct()
                     response = {
                         "success": True,
                         "message": f"{mapping['response_key'].replace('_', ' ').capitalize()} generated successfully.",

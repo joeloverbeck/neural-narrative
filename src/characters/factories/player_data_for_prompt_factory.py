@@ -1,7 +1,7 @@
 from typing import Optional
 
 from src.base.playthrough_manager import PlaythroughManager
-from src.characters.character_memories import CharacterMemories
+from src.characters.character_memories_manager import CharacterMemoriesManager
 from src.characters.factories.character_factory import CharacterFactory
 from src.characters.products.player_data_for_prompt import PlayerDataForPrompt
 
@@ -13,13 +13,13 @@ class PlayerDataForPromptFactory:
         playthrough_name: str,
         character_factory: CharacterFactory,
         playthrough_manager: Optional[PlaythroughManager] = None,
-        character_memories: Optional[CharacterMemories] = None,
+            character_memories: Optional[CharacterMemoriesManager] = None,
     ):
         self._character_factory = character_factory
         self._playthrough_manager = playthrough_manager or PlaythroughManager(
             playthrough_name
         )
-        self._character_memories = character_memories or CharacterMemories(
+        self._character_memories = character_memories or CharacterMemoriesManager(
             playthrough_name
         )
 

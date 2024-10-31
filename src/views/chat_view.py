@@ -1,14 +1,21 @@
 import logging
-from typing import List
+from typing import List, Optional
 
 from flask import redirect, session, render_template, url_for, flash, request, jsonify
 from flask.views import MethodView
 
 from src.base.playthrough_manager import PlaythroughManager
 from src.base.tools import capture_traceback
-from src.dialogues.algorithms.handle_dialogue_state_algorithm import (
-    HandleDialogueStateAlgorithm,
+from src.dialogues.algorithms.extract_identifiers_from_participants_data_algorithm import (
+    ExtractIdentifiersFromParticipantsDataAlgorithm,
 )
+from src.dialogues.algorithms.load_data_from_ongoing_dialogue_algorithm import (
+    LoadDataFromOngoingDialogueAlgorithm,
+)
+from src.dialogues.directors.handle_dialogue_state_director import (
+    HandleDialogueStateDirector,
+)
+from src.dialogues.enums import HandleDialogueStateAlgorithmResultType
 from src.maps.factories.map_manager_factory import MapManagerFactory
 from src.services.dialogue_service import DialogueService
 from src.time.time_manager import TimeManager
@@ -19,220 +26,234 @@ logger = logging.getLogger(__name__)
 class ChatView(MethodView):
 
     @staticmethod
-    def get():
-        playthrough_name = session.get("playthrough_name")
-        dialogue_participants = session.get("participants")
-        purpose = session.get("purpose")
-        if not playthrough_name:
-            return redirect(url_for("index"))
-
-        product = HandleDialogueStateAlgorithm(
-            playthrough_name, dialogue_participants, purpose
-        ).do_algorithm()
-
-        if not product.get_data() and not dialogue_participants:
-            return redirect(url_for("participants"))
-
-        # Note: here it seems to be the sole place where the full participant data gets loaded
-        # through product.get_data() into session["participants"]
-        dialogue_participants: List[str] = []
-
-        if not session.get("participants") and product.get_data():
-            player_identifier = PlaythroughManager(
-                playthrough_name
-            ).get_player_identifier()
-
-            for key in product.get_data().get("participants").keys():
-                if key != player_identifier:
-                    dialogue_participants.append(key)
-
-            purpose = product.get_data().get("purpose")
-        else:
-            dialogue_participants = session.get("participants")
-            purpose = session.get("purpose")
-
+    def update_session_with_product_data(product):
         session.update(
             {
-                "purpose": purpose,
-                "participants": dialogue_participants,
+                "purpose": product.get_data().get("purpose"),
+                "participants": product.get_data().get("participants"),
             }
         )
-
-        # Pop other weighty texts stored in session.
         session.pop("self_reflection_text", None)
         session.pop("worldview_text", None)
 
-        dialogue = session.get("dialogue", [])
+    @staticmethod
+    def handle_session_expired():
+        if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+            return (
+                jsonify(
+                    {
+                        "success": False,
+                        "error": "Session expired.",
+                    }
+                ),
+                400,
+            )
+        return redirect(url_for("index"))
 
-        time_manager = TimeManager(playthrough_name)
-
-        current_place_template = (
-            MapManagerFactory(playthrough_name)
-            .create_map_manager()
-            .get_current_place_template()
+    @staticmethod
+    def get():
+        # Retrieve essential session information
+        playthrough_name, dialogue_participants, purpose = (
+            session.get("playthrough_name"),
+            session.get("participants"),
+            session.get("purpose"),
         )
+
+        if not playthrough_name:
+            return redirect(url_for("index"))
+
+        # Initialize dialogue components and direct dialogue state
+        load_data_algorithm = LoadDataFromOngoingDialogueAlgorithm(
+            playthrough_name,
+            dialogue_participants,
+            purpose,
+            PlaythroughManager(playthrough_name).has_ongoing_dialogue(playthrough_name),
+        )
+        extract_identifiers_algorithm = ExtractIdentifiersFromParticipantsDataAlgorithm(
+            playthrough_name, dialogue_participants
+        )
+        product = HandleDialogueStateDirector(
+            playthrough_name,
+            dialogue_participants,
+            load_data_algorithm,
+            extract_identifiers_algorithm,
+        ).direct()
+
+        # Handle redirection cases based on dialogue state
+        if (
+                product.get_result_type()
+                == HandleDialogueStateAlgorithmResultType.SHOULD_REDIRECT_TO_PARTICIPANTS
+        ):
+            return redirect(url_for("participants"))
+
+        logger.info(
+            "Handle Dialogue State product: %s\nResult type: %s",
+            product.get_data(),
+            product.get_result_type(),
+        )
+
+        ChatView.update_session_with_product_data(product)
 
         return render_template(
             "chat.html",
-            dialogue=dialogue,
-            current_time=time_manager.get_time_of_the_day(),
-            current_place_template=current_place_template,
+            dialogue=session.get("dialogue", []),
+            current_time=TimeManager(playthrough_name).get_time_of_the_day(),
+            current_place_template=MapManagerFactory(playthrough_name)
+            .create_map_manager()
+            .get_current_place_template(),
         )
 
     @staticmethod
-    def post():
-        playthrough_name = session.get("playthrough_name")
-        dialogue_participants = session.get("participants")
-        if not playthrough_name or not dialogue_participants:
-            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-                return (
-                    jsonify(
-                        {
-                            "success": False,
-                            "error": "Session expired. Please start a new chat.",
-                        }
-                    ),
-                    400,
-                )
-            else:
-                return redirect(url_for("index"))
-        dialogue = session.get("dialogue", [])
-        action = request.form.get("submit_action")
-        user_input = request.form.get("user_input")
-        event_input = request.form.get("event_input")
+    def respond_with_messages(messages, is_goodbye):
+        if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+            messages_data = [
+                {
+                    "alignment": msg["alignment"],
+                    "message_text": msg["message_text"],
+                    "message_type": msg.get("message_type", ""),
+                    "sender_name": msg.get("sender_name", ""),
+                    "sender_photo_url": msg.get("sender_photo_url", ""),
+                    "file_url": msg.get("file_url", ""),
+                }
+                for msg in messages
+            ]
 
-        if action == "Send":
-            if not user_input:
-                if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-                    return (
-                        jsonify({"success": False, "error": "Please enter a message."}),
-                        400,
-                    )
-                else:
-                    flash("Please enter a message.")
-                    return redirect(url_for("chat"))
-            dialogue_service = DialogueService()
-
-            try:
-                messages, is_goodbye = dialogue_service.process_user_input(
-                    user_input, dialogue_participants
-                )
-            except Exception as e:
-                capture_traceback()
-                if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-                    return jsonify({"success": False, "error": f"Error: {str(e)}"}), 200
-                else:
-                    return redirect(url_for("chat"))
-
+            # If it's goodbye, then we must clear out the session.
             if is_goodbye:
                 session.pop("participants", None)
-                session.pop("dialogue", None)
                 session.pop("purpose", None)
-                if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-                    return jsonify({"success": True, "goodbye": True}), 200
-                else:
-                    return redirect(url_for("story-hub"))
-            dialogue.extend(messages)
+                session.pop("dialogue", None)
 
-            dialogue_service.control_size_of_messages_in_session(dialogue)
-
-            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-                messages_data = []
-                for msg in messages:
-                    messages_data.append(
-                        {
-                            "alignment": msg["alignment"],
-                            "message_text": msg["message_text"],
-                            "sender_name": msg["sender_name"],
-                            "sender_photo_url": msg["sender_photo_url"],
-                            "file_url": msg["file_url"] or "",
-                        }
-                    )
-                return jsonify({"success": True, "messages": messages_data}), 200
-            else:
-                return redirect(url_for("chat"))
-        elif action == "Ambient narration":
-            # At this point, dialogue_participants should only contain the identifiers of the participants other than the player.
-            dialogue_service = DialogueService()
-            ambient_message = dialogue_service.process_ambient_message(
-                dialogue_participants, session.get("purpose", "")
-            )
-            dialogue.append(ambient_message)
-
-            dialogue_service.control_size_of_messages_in_session(dialogue)
-
-            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-                messages_data = [
-                    {
-                        "alignment": ambient_message["alignment"],
-                        "message_text": ambient_message["message_text"],
-                        "file_url": ambient_message["file_url"] or "",
-                        "message_type": ambient_message["message_type"],
-                    }
-                ]
-                return jsonify({"success": True, "messages": messages_data}), 200
-            else:
-                return redirect(url_for("chat"))
-        elif action == "Event":
-            if not event_input:
-                if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-                    return (
-                        jsonify({"success": False, "error": "Please enter an event."}),
-                        400,
-                    )
-                else:
-                    flash("Please enter an event.")
-                    return redirect(url_for("chat"))
-            dialogue_service = DialogueService()
-
-            event_message = dialogue_service.process_event_message(
-                dialogue_participants, session.get("purpose", ""), event_input
-            )
-
-            dialogue.append(event_message)
-
-            dialogue_service.control_size_of_messages_in_session(dialogue)
-
-            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-                messages_data = [
-                    {
-                        "alignment": event_message["alignment"],
-                        "message_text": event_message["message_text"],
-                        "file_url": event_message["file_url"] or "",
-                        "message_type": event_message["message_type"],
-                    }
-                ]
-                return jsonify({"success": True, "messages": messages_data}), 200
-            else:
-                return redirect(url_for("chat"))
-        elif action == "Narrative beat":
-            dialogue_service = DialogueService()
-
-            narrative_beat_message = dialogue_service.process_narrative_beat(
-                session.get("participants"), session.get("purpose", "")
-            )
-
-            dialogue.append(narrative_beat_message)
-
-            dialogue_service.control_size_of_messages_in_session(dialogue)
-
-            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-                messages_data = [
-                    {
-                        "alignment": narrative_beat_message["alignment"],
-                        "message_text": narrative_beat_message["message_text"],
-                        "file_url": narrative_beat_message["file_url"] or "",
-                        "message_type": narrative_beat_message["message_type"],
-                    }
-                ]
-                return jsonify({"success": True, "messages": messages_data}), 200
-            else:
-                return redirect(url_for("chat"))
-        elif request.headers.get("X-Requested-With") == "XMLHttpRequest":
             return (
-                jsonify({"success": False, "error": f"Unknown action: {action}."}),
-                400,
+                jsonify(
+                    {"success": True, "messages": messages_data, "goodbye": is_goodbye}
+                ),
+                200,
             )
         else:
-            flash("Unknown action.")
             return redirect(url_for("chat"))
+
+    @staticmethod
+    def process_action(
+            action, dialogue_participants: List[str], user_input=None, event_input=None
+    ):
+        dialogue_service = DialogueService()
+        dialogue = session.get("dialogue", [])
+
+        if action == "Send":
+            return ChatView.handle_send(
+                dialogue_service, dialogue, user_input, dialogue_participants
+            )
+        elif action == "Ambient narration":
+            return ChatView.handle_ambient_narration(
+                dialogue_service, dialogue, dialogue_participants
+            )
+        elif action == "Event":
+            return ChatView.handle_event(
+                dialogue_service, dialogue, event_input, dialogue_participants
+            )
+        elif action == "Grow event":
+            return ChatView.handle_grow_event(
+                dialogue_service, dialogue, event_input, dialogue_participants
+            )
+        elif action == "Narrative beat":
+            return ChatView.handle_narrative_beat(
+                dialogue_service, dialogue, dialogue_participants
+            )
+
+        raise ValueError(f"Unknown action: {action}")
+
+    @staticmethod
+    def handle_error(exception):
+        capture_traceback()
+        if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+            return jsonify({"success": False, "error": f"Error: {str(exception)}"}), 200
+        return redirect(url_for("chat"))
+
+    @staticmethod
+    def handle_unknown_action():
+        if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+            return jsonify({"success": False, "error": "Unknown action."}), 400
+        flash("Unknown action.")
+        return redirect(url_for("chat"))
+
+    @staticmethod
+    def handle_send(dialogue_service, dialogue, user_input, dialogue_participants):
+        if not user_input:
+            raise ValueError("Please enter a message.")
+        messages, is_goodbye = dialogue_service.process_user_input(
+            user_input, dialogue_participants
+        )
+        dialogue.extend(messages)
+        dialogue_service.control_size_of_messages_in_session(dialogue)
+        return messages, is_goodbye
+
+    @staticmethod
+    def handle_ambient_narration(dialogue_service, dialogue, dialogue_participants):
+        ambient_message = dialogue_service.process_ambient_message(
+            dialogue_participants, session.get("purpose", "")
+        )
+        dialogue.append(ambient_message)
+        dialogue_service.control_size_of_messages_in_session(dialogue)
+        return [ambient_message], False
+
+    @staticmethod
+    def handle_event(dialogue_service, dialogue, event_input, dialogue_participants):
+        if not event_input:
+            raise ValueError("Please enter an event.")
+        event_message = dialogue_service.process_event_message(
+            dialogue_participants, session.get("purpose", ""), event_input
+        )
+        dialogue.append(event_message)
+        dialogue_service.control_size_of_messages_in_session(dialogue)
+        return [event_message], False
+
+    @staticmethod
+    def handle_grow_event(
+            dialogue_service: DialogueService,
+            dialogue: list,
+            event_input: Optional[str],
+            dialogue_participants: List[str],
+    ):
+        if not event_input:
+            raise ValueError("Please enter the seed of the event.")
+
+        event_message = dialogue_service.process_grow_event_message(
+            dialogue_participants, session.get("purpose", ""), event_input
+        )
+
+        dialogue.append(event_message)
+        dialogue_service.control_size_of_messages_in_session(dialogue)
+        return [event_message], False
+
+    @staticmethod
+    def handle_narrative_beat(dialogue_service, dialogue, dialogue_participants):
+        narrative_beat_message = dialogue_service.process_narrative_beat(
+            dialogue_participants, session.get("purpose", "")
+        )
+        dialogue.append(narrative_beat_message)
+        dialogue_service.control_size_of_messages_in_session(dialogue)
+        return [narrative_beat_message], False
+
+    @staticmethod
+    def post():
+        playthrough_name, dialogue_participants = session.get(
+            "playthrough_name"
+        ), session.get("participants")
+        if not playthrough_name or not dialogue_participants:
+            return ChatView.handle_session_expired()
+
+        action = request.form.get("submit_action")
+        user_input, event_input = request.form.get("user_input"), request.form.get(
+            "event_input"
+        )
+
+        if action:
+            try:
+                messages, is_goodbye = ChatView.process_action(
+                    action, dialogue_participants, user_input, event_input
+                )
+                return ChatView.respond_with_messages(messages, is_goodbye)
+            except Exception as e:
+                return ChatView.handle_error(e)
+        return ChatView.handle_unknown_action()

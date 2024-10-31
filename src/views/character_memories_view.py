@@ -10,7 +10,7 @@ from src.characters.algorithms.produce_worldview_algorithm import (
     ProduceWorldviewAlgorithm,
 )
 from src.characters.character import Character
-from src.characters.character_memories import CharacterMemories
+from src.characters.character_memories_manager import CharacterMemoriesManager
 from src.characters.characters_manager import CharactersManager
 from src.characters.factories.character_information_provider import (
     CharacterInformationProvider,
@@ -44,9 +44,9 @@ class CharacterMemoriesView(MethodView):
             selected_character = Character(
                 playthrough_name, selected_character_identifier
             )
-            character_memories = CharacterMemories(playthrough_name).load_memories(
-                selected_character
-            )
+            character_memories = CharacterMemoriesManager(
+                playthrough_name
+            ).load_memories(selected_character)
         for character in all_characters:
             character["selected"] = False
             if (
@@ -81,7 +81,7 @@ class CharacterMemoriesView(MethodView):
             new_memories = WebInterfaceManager.remove_excessive_newline_characters(
                 new_memories
             )
-            CharacterMemories(playthrough_name).save_memories(
+            CharacterMemoriesManager(playthrough_name).save_memories(
                 Character(playthrough_name, character_identifier), new_memories
             )
             session["memories_saved_message"] = "Memories saved successfully."

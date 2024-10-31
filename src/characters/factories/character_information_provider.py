@@ -1,7 +1,7 @@
 from typing import Optional
 
 from src.characters.character import Character
-from src.characters.character_memories import CharacterMemories
+from src.characters.character_memories_manager import CharacterMemoriesManager
 from src.filesystem.file_operations import read_file
 from src.filesystem.path_manager import PathManager
 
@@ -12,13 +12,13 @@ class CharacterInformationProvider:
         self,
         playthrough_name: str,
         character_identifier: str,
-        character_memories: Optional[CharacterMemories] = None,
+            character_memories: Optional[CharacterMemoriesManager] = None,
         path_manager: Optional[PathManager] = None,
     ):
         self._playthrough_name = playthrough_name
         self._character_identifier = character_identifier
 
-        self._character_memories = character_memories or CharacterMemories(
+        self._character_memories = character_memories or CharacterMemoriesManager(
             self._playthrough_name
         )
         self._path_manager = path_manager or PathManager()

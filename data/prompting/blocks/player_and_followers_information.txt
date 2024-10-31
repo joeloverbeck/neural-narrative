@@ -1,4 +1,4 @@
-Player and Followers Information:
+Player and Participants Information:
 Player Name: {player_name}
 Description: {player_description}
 Personality: {player_personality}

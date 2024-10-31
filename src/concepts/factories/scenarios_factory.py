@@ -2,8 +2,8 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-from src.characters.factories.player_and_followers_information_factory import (
-    PlayerAndFollowersInformationFactory,
+from src.characters.factories.relevant_characters_information_factory import (
+    RelevantCharactersInformationFactory,
 )
 from src.concepts.factories.base_concept_factory import BaseConceptFactory
 from src.concepts.products.scenarios_product import (
@@ -23,7 +23,7 @@ class ScenariosFactory(BaseConceptFactory):
         playthrough_name: str,
         produce_tool_response_strategy_factory: BaseModelProduceToolResponseStrategyFactory,
         places_descriptions_factory: PlacesDescriptionsProvider,
-        player_and_followers_information_factory: PlayerAndFollowersInformationFactory,
+        player_and_followers_information_factory: RelevantCharactersInformationFactory,
         filesystem_manager: Optional[FilesystemManager] = None,
     ):
         super().__init__(

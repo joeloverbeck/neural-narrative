@@ -3,7 +3,7 @@ from typing import Optional
 from pydantic import BaseModel
 
 from src.characters.character import Character
-from src.characters.character_memories import CharacterMemories
+from src.characters.character_memories_manager import CharacterMemoriesManager
 from src.characters.products.secrets_product import SecretsProduct
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.filesystem.path_manager import PathManager
@@ -24,7 +24,7 @@ class SecretsFactory(BaseToolResponseProvider):
         places_descriptions_factory: PlacesDescriptionsProvider,
         filesystem_manager: Optional[FilesystemManager] = None,
         path_manager: Optional[PathManager] = None,
-        character_memories: Optional[CharacterMemories] = None,
+        character_memories: Optional[CharacterMemoriesManager] = None,
     ):
         super().__init__(
             produce_tool_response_strategy_factory, filesystem_manager, path_manager
@@ -33,7 +33,7 @@ class SecretsFactory(BaseToolResponseProvider):
         self._playthrough_name = playthrough_name
         self._character_identifier = character_identifier
         self._places_descriptions_factory = places_descriptions_factory
-        self._character_memories = character_memories or CharacterMemories(
+        self._character_memories = character_memories or CharacterMemoriesManager(
             self._playthrough_name
         )
 

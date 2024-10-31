@@ -30,7 +30,8 @@
 .chat-bubble {
     display: flex;
     align-items: flex-start;
-    margin-bottom: 20px; /* Increased from 10px to 20px */
+    margin-bottom: 20px;
+    border-radius: 20px;
     position: relative;
 }
 

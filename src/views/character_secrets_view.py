@@ -55,7 +55,6 @@ class CharacterSecretsView(MethodView):
         action = request.form.get("submit_action")
         character_identifier = request.form.get("character_identifier")
         if action == "generate_secrets" and character_identifier:
-            response = {}
             try:
                 produce_tool_response_strategy_factory = (
                     ProduceToolResponseStrategyFactoryComposer(
