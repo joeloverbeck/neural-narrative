@@ -47,6 +47,9 @@ class Llms:
     def for_narrative_beat(self) -> Llm:
         return Llm(self._models[self._llms_file["narrative_beat"]])
 
+    def for_confrontation_round(self) -> Llm:
+        return Llm(self._models[self._llms_file["confrontation_round"]])
+
     def for_grow_event(self) -> Llm:
         return Llm(self._models[self._llms_file["grow_event"]])
 

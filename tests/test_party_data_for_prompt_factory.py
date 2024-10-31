@@ -174,6 +174,7 @@ def test_get_party_data_for_prompt(factory_instance):
     # Arrange: Set up return values before calling the method
     factory_instance._player_data_for_prompt_factory.create_player_data_for_prompt.return_value.get_player_data_for_prompt.return_value = {
         # noqa
+        # noqa
         "player_key": "player_value"
     }
     factory_instance._other_characters_identifiers_strategy.get_data.return_value = [
@@ -262,6 +263,7 @@ def test_get_party_data_for_prompt_characters_manager_not_provided():
         )
 
         factory._player_data_for_prompt_factory.create_player_data_for_prompt.return_value.get_player_data_for_prompt.return_value = {
+            # noqa
             # noqa
             "player_key": "player_value"
         }

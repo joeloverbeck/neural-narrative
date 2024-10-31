@@ -275,6 +275,29 @@ input[type="text"] {
     font-style: normal;
 }
 
+/* Confrontation Round Message Styles */
+.confrontation-round-message {
+    text-align: center;
+    margin: 20px 0;
+    position: relative;
+}
+
+.confrontation-round-message-text {
+    display: inline-block;
+    background: linear-gradient(to bottom right, #D32F2F, #B71C1C); /* Fiery Red Gradient */
+    color: #FFFFFF; /* White Text */
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-style: normal;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Optional: Add hover effects for interactivity */
+.confrontation-round-message-text:hover {
+    background: linear-gradient(to bottom right, #B71C1C, #D32F2F); /* Reverse Gradient on Hover */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
 /* Chat Form */
 .chat-form {
     text-align: center;
@@ -282,7 +305,8 @@ input[type="text"] {
 }
 
 .chat-form input[type="text"],
-.event-form input[type="text"] {
+.event-form input[type="text"],
+.actions-form input[type="text"] {
     width: 80%;
     max-width: 600px;
     padding: 15px;
@@ -291,7 +315,9 @@ input[type="text"] {
     border: 1px solid #ccc;
 }
 
-.chat-form input[type="text"]:focus {
+.chat-form input[type="text"]:focus,
+.event-form input[type="text"]:focus,
+.actions-form input[type="text"]:focus {
     outline: none;
     border-color: #45a049;
     box-shadow: 0 0 5px rgba(69, 160, 73, 0.5);

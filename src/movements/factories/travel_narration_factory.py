@@ -28,7 +28,7 @@ class TravelNarrationFactory(BaseToolResponseProvider):
         time_manager: Optional[TimeManager] = None,
         playthrough_manager: Optional[PlaythroughManager] = None,
         filesystem_manager: Optional[FilesystemManager] = None,
-            path_manager: Optional[PathManager] = None,
+        path_manager: Optional[PathManager] = None,
     ):
         super().__init__(
             factories_config.produce_tool_response_strategy_factory,

@@ -2,7 +2,6 @@ from src.filesystem.file_operations import (
     create_directories,
     create_empty_file_if_not_exists,
     create_empty_json_file_if_not_exists,
-    read_json_file,
 )
 from src.filesystem.path_manager import PathManager
 
@@ -40,12 +39,3 @@ def prepare_messages_for_template(messages):
             }
         )
     return messages_data
-
-
-def load_session_messages(playthrough_name, path_manager):
-    """Load messages from the session file."""
-    session_file = read_json_file(
-        path_manager.get_writers_room_session(playthrough_name)
-    )
-    messages = session_file.get("messages", [])
-    return messages, session_file

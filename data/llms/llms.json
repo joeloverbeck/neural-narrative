@@ -55,6 +55,7 @@
   "ambient_narration": "hermes_405b_free",
   "narrative_beat": "magnum_72b",
   "grow_event": "hermes_405b_free",
+  "confrontation_round": "magnum_72b",
   "speech_turn_choice": "hermes_405b_free",
   "speech_turn": "magnum_72b",
   "dialogue_summary": "magnum_72b",

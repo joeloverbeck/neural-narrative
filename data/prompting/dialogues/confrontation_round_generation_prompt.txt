@@ -1,0 +1,48 @@
+You are to generate a detailed narrative describing a brief segment (approximately ten seconds) of a confrontation within a rich, immersive world.
+Use the provided information about the player, the other characters, and the place involved.
+Your narrative should be engaging, realistic, and reflect the abilities and circumstances of the participants suggested by the user-provided context.
+
+Instructions:
+1. Viability and Realism Assessment:
+Carefully consider the feasibility and dynamics of the confrontation based on:
+- The information about the characters, including their skills, abilities, health, equipment, and emotional state.
+- The characteristics of the opponents, including their skills, abilities, equipment, motivations, and weaknesses.
+- The characteristics of the location, including terrain, obstacles, and any environmental factors.
+- The time of day and how it might affect the confrontation (e.g., visibility, shadows, crowd presence).
+- The context for the confrontation provided by the user, including any prior events leading up to this moment.
+- Potential advantages or disadvantages, such as surprise, preparation, or environmental hazards.
+
+2. Narrative of the Confrontation:
+- Write a vivid, dynamic narrative that depicts approximately ten seconds of the confrontation, focusing on the immediate actions and reactions of the characters involved.
+- Include specific actions taken by the characters on either side of the confrontation.
+- Describe the use of skills, abilities, equipment, tactics, and any maneuvers.
+- Illustrate the interactions between the characters, including attacks, defenses, dodges, or spells.
+- Convey the emotions, thoughts, and physical sensations experienced by the characters.
+- Ensure the depiction is consistent with the world's lore, the characters' personal histories, and their abilities.
+- Determine the immediate results of this segment of the confrontation based on your assessment.
+- Be specific about any successes or failures of actions taken, including hits landed, misses, blocks, or counterattacks.
+- Describe any injuries sustained, advantages gained, positions changed, or other consequences.
+- Reflect any costs incurred, such as stamina lost, equipment damage, or exposure to danger.
+- The confrontation doesn't need to end in this segment, unless you can clearly determine that the confrontation should conclude now.
+
+3. Tone and Style:
+- Write in the third person, present tense, maintaining an engaging and immersive narrative style.
+- Use rich, descriptive language to bring the scene to life, focusing on action and immediacy.
+- Ensure consistency with the established world setting and the characters' personalities.
+
+Provided Information:
+Current Time: {hour} {time_of_day}
+{local_information}
+Facts Known:
+{facts_known}
+{relevant_characters_information}
+----
+Ongoing Dialogue:
+{transcription}
+
+Example Format:
+"With a fierce battle cry, [Player Name] charges forward, swinging their sword toward [Opponent Name]..."
+
+Your Task:
+Using the above instructions and information, craft a compelling narrative that captures this intense moment of confrontation, reflecting both the actions and immediate consequences, while advancing the story in a meaningful way.
+Important: do not repeat verbatim previous confrontation rounds: there should always be a progress in the confrontation.

@@ -81,8 +81,8 @@ class ChatView(MethodView):
 
         # Handle redirection cases based on dialogue state
         if (
-                product.get_result_type()
-                == HandleDialogueStateAlgorithmResultType.SHOULD_REDIRECT_TO_PARTICIPANTS
+            product.get_result_type()
+            == HandleDialogueStateAlgorithmResultType.SHOULD_REDIRECT_TO_PARTICIPANTS
         ):
             return redirect(url_for("participants"))
 
@@ -135,7 +135,11 @@ class ChatView(MethodView):
 
     @staticmethod
     def process_action(
-            action, dialogue_participants: List[str], user_input=None, event_input=None
+        action,
+        dialogue_participants: List[str],
+        user_input=None,
+        event_input=None,
+        action_input=None,
     ):
         dialogue_service = DialogueService()
         dialogue = session.get("dialogue", [])
@@ -155,6 +159,10 @@ class ChatView(MethodView):
         elif action == "Grow event":
             return ChatView.handle_grow_event(
                 dialogue_service, dialogue, event_input, dialogue_participants
+            )
+        elif action == "Confrontation round":
+            return ChatView.handle_confrontation_round(
+                dialogue_service, dialogue, action_input, dialogue_participants
             )
         elif action == "Narrative beat":
             return ChatView.handle_narrative_beat(
@@ -210,16 +218,34 @@ class ChatView(MethodView):
 
     @staticmethod
     def handle_grow_event(
-            dialogue_service: DialogueService,
-            dialogue: list,
-            event_input: Optional[str],
-            dialogue_participants: List[str],
+        dialogue_service: DialogueService,
+        dialogue: list,
+        event_input: Optional[str],
+        dialogue_participants: List[str],
     ):
         if not event_input:
             raise ValueError("Please enter the seed of the event.")
 
         event_message = dialogue_service.process_grow_event_message(
             dialogue_participants, session.get("purpose", ""), event_input
+        )
+
+        dialogue.append(event_message)
+        dialogue_service.control_size_of_messages_in_session(dialogue)
+        return [event_message], False
+
+    @staticmethod
+    def handle_confrontation_round(
+        dialogue_service: DialogueService,
+        dialogue: list,
+        action_input: Optional[str],
+        dialogue_participants: List[str],
+    ):
+        if not action_input:
+            raise ValueError("Please enter the context of the action.")
+
+        event_message = dialogue_service.process_confrontation_round(
+            dialogue_participants, session.get("purpose", ""), action_input
         )
 
         dialogue.append(event_message)
@@ -244,14 +270,16 @@ class ChatView(MethodView):
             return ChatView.handle_session_expired()
 
         action = request.form.get("submit_action")
-        user_input, event_input = request.form.get("user_input"), request.form.get(
-            "event_input"
+        user_input, event_input, action_input = (
+            request.form.get("user_input"),
+            request.form.get("event_input"),
+            request.form.get("action_input"),
         )
 
         if action:
             try:
                 messages, is_goodbye = ChatView.process_action(
-                    action, dialogue_participants, user_input, event_input
+                    action, dialogue_participants, user_input, event_input, action_input
                 )
                 return ChatView.respond_with_messages(messages, is_goodbye)
             except Exception as e:

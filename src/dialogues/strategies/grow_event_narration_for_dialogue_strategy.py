@@ -9,9 +9,9 @@ from src.dialogues.transcription import Transcription
 
 class GrowEventNarrationForDialogueStrategy(NarrationForDialogueStrategy):
     def __init__(
-            self,
-            transcription: Transcription,
-            grow_event_provider_factory: GrowEventProviderFactory,
+        self,
+        transcription: Transcription,
+        grow_event_provider_factory: GrowEventProviderFactory,
     ):
         self._transcription = transcription
         self._grow_event_provider_factory = grow_event_provider_factory

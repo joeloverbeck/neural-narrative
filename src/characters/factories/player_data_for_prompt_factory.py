@@ -13,7 +13,7 @@ class PlayerDataForPromptFactory:
         playthrough_name: str,
         character_factory: CharacterFactory,
         playthrough_manager: Optional[PlaythroughManager] = None,
-            character_memories: Optional[CharacterMemoriesManager] = None,
+        character_memories: Optional[CharacterMemoriesManager] = None,
     ):
         self._character_factory = character_factory
         self._playthrough_manager = playthrough_manager or PlaythroughManager(

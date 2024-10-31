@@ -19,7 +19,7 @@ class PartyDataForPromptFactory:
         other_characters_role: str,
         other_characters_identifiers_strategy: OtherCharactersIdentifiersStrategy,
         player_data_for_prompt_factory: PlayerDataForPromptFactory,
-            prettified_memories_factory: PrettifiedMemoriesFactory,
+        prettified_memories_factory: PrettifiedMemoriesFactory,
         characters_manager: Optional[CharactersManager] = None,
     ):
         validate_non_empty_string(playthrough_name, "playthrough_name")

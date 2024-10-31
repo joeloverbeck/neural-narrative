@@ -12,7 +12,7 @@ class CharacterInformationProvider:
         self,
         playthrough_name: str,
         character_identifier: str,
-            character_memories: Optional[CharacterMemoriesManager] = None,
+        character_memories: Optional[CharacterMemoriesManager] = None,
         path_manager: Optional[PathManager] = None,
     ):
         self._playthrough_name = playthrough_name

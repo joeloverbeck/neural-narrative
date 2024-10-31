@@ -51,6 +51,19 @@
                 <div></div>
             </div>
         </div>
+        {% elif message.message_type == 'confrontation_round' %}
+        <!-- Event Message -->
+        <div class="confrontation-round-message" data-file-url="{{ message.file_url }}">
+            <div class="confrontation-round-message-text">{{ message.message_text }}</div>
+            <i class="fas fa-play play-icon"></i>
+            <div class="waveform">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+        </div>
         {% elif message.message_type == 'event' %}
         <!-- Event Message -->
         <div class="event-message" data-file-url="{{ message.file_url }}">
@@ -130,6 +143,27 @@
         </div>
     </div>
 
+
+    <!-- Actions Section -->
+    <div class="collapsible-section">
+        <button class="collapsible">
+            <i class="fas fa-bolt"></i> Actions
+        </button>
+        <div class="content">
+            <!-- Action Form -->
+            <form method="post" class="actions-form ajax-form" action="{{ url_for('chat') }}"
+                  data-success-handler="chatSuccessHandler" data-error-handler="chatErrorHandler">
+                <input id="action-input" name="action_input" placeholder="Describe the context for an action"
+                       type="text">
+                <div class="form-buttons">
+                    <button type="submit" name="submit_action" value="Confrontation round" class="icon-button"
+                            title="Confrontation Round">
+                        <i class="fa-solid fa-gun"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <!-- Navigation Buttons -->
     <div class="buttons">

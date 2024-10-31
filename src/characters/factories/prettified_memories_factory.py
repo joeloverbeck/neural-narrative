@@ -15,13 +15,13 @@ from src.characters.factories.player_data_for_prompt_factory import (
 class PrettifiedMemoriesFactory:
 
     def __init__(
-            self,
-            playthrough_name: str,
-            other_characters_identifiers_strategy: OtherCharactersIdentifiersStrategy,
-            combine_memories_algorithm_factory: CombineMemoriesAlgorithmFactory,
-            player_data_for_prompt_factory: PlayerDataForPromptFactory,
-            characters_manager: Optional[CharactersManager] = None,
-            character_memories_manager: Optional[CharacterMemoriesManager] = None,
+        self,
+        playthrough_name: str,
+        other_characters_identifiers_strategy: OtherCharactersIdentifiersStrategy,
+        combine_memories_algorithm_factory: CombineMemoriesAlgorithmFactory,
+        player_data_for_prompt_factory: PlayerDataForPromptFactory,
+        characters_manager: Optional[CharactersManager] = None,
+        character_memories_manager: Optional[CharacterMemoriesManager] = None,
     ):
         validate_non_empty_string(playthrough_name, "playthrough_name")
 
@@ -35,7 +35,7 @@ class PrettifiedMemoriesFactory:
             playthrough_name
         )
         self._character_memories_manager = (
-                character_memories_manager or CharacterMemoriesManager(playthrough_name)
+            character_memories_manager or CharacterMemoriesManager(playthrough_name)
         )
 
     def create_prettified_memories(self) -> str:

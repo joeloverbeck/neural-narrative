@@ -5,9 +5,9 @@ from src.dialogues.enums import HandleDialogueStateAlgorithmResultType
 
 class HandleDialogueStateAlgorithmProduct:
     def __init__(
-            self,
-            data: Optional[Dict[str, Any]],
-            result_type: HandleDialogueStateAlgorithmResultType,
+        self,
+        data: Optional[Dict[str, Any]],
+        result_type: HandleDialogueStateAlgorithmResultType,
     ):
         self._data = data
         self._result_type = result_type

@@ -27,7 +27,7 @@ class ActionResolutionFactory(BaseToolResponseProvider):
         action_goal: str,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         places_descriptions_factory: PlacesDescriptionsProvider,
-            players_and_followers_information_factory: RelevantCharactersInformationFactory,
+        players_and_followers_information_factory: RelevantCharactersInformationFactory,
         prompt_file: str,
         filesystem_manager: Optional[FilesystemManager] = None,
         time_manager: Optional[TimeManager] = None,

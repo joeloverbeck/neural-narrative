@@ -148,6 +148,10 @@ class PathManager:
         return cls.DIALOGUES_DIR / "ambient_narration_generation_prompt.txt"
 
     @classmethod
+    def get_confrontation_round_generation_prompt_path(cls) -> Path:
+        return cls.DIALOGUES_DIR / "confrontation_round_generation_prompt.txt"
+
+    @classmethod
     def get_story_universe_generation_prompt_path(cls) -> Path:
         return cls.PROMPTING_BASE_DIR / "story_universe_generation_prompt.txt"
 

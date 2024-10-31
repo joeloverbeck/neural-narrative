@@ -24,7 +24,17 @@ function appendMessages(messages) {
                         <div></div><div></div><div></div><div></div><div></div>
                     </div>
                 </div>`;
-            } else if (message.message_type === 'event') {
+            } else if (message.message_type === 'confrontation_round') {
+                messageHtml = `
+                <div class="confrontation-round-message" data-file-url="${message.file_url}">
+                    <div class="confrontation-round-message-text">${message.message_text}</div>
+                    <i class="fas fa-play play-icon"></i>
+                    <div class="waveform">
+                        <div></div><div></div><div></div><div></div><div></div>
+                    </div>
+                </div>`;
+            }
+            else if (message.message_type === 'event') {
                 messageHtml = `
                 <div class="event-message" data-file-url="${message.file_url}">
                     <div class="event-message-text">${message.message_text}</div>

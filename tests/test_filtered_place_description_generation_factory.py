@@ -22,10 +22,6 @@ from src.prompting.products.concrete_filtered_place_description_generation_produ
     ConcreteFilteredPlaceDescriptionGenerationProduct,
 )
 
-# Mock constants
-PLACE_DESCRIPTION_PROMPT_FILE = "place_description_prompt.txt"
-TOOL_INSTRUCTIONS_FOR_INSTRUCTOR_FILE = "tool_instructions_for_instructor.txt"
-
 
 # Begin tests
 def test_get_tool_data():

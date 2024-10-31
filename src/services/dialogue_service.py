@@ -4,6 +4,7 @@ from typing import List, Dict, Optional
 from flask import session, url_for
 
 from src.base.playthrough_manager import PlaythroughManager
+from src.base.validators import validate_non_empty_string
 from src.characters.composers.local_information_factory_composer import (
     LocalInformationFactoryComposer,
 )
@@ -22,6 +23,9 @@ from src.dialogues.dialogue_manager import DialogueManager
 from src.dialogues.factories.ambient_narration_provider_factory import (
     AmbientNarrationProviderFactory,
 )
+from src.dialogues.factories.confrontation_round_provider_factory import (
+    ConfrontationRoundProviderFactory,
+)
 from src.dialogues.factories.grow_event_provider_factory import GrowEventProviderFactory
 from src.dialogues.factories.narrative_beat_provider_factory import (
     NarrativeBeatProviderFactory,
@@ -34,6 +38,9 @@ from src.dialogues.observers.web_narration_observer import (
 from src.dialogues.participants import Participants
 from src.dialogues.strategies.ambient_narration_for_dialogue_strategy import (
     AmbientNarrationForDialogueStrategy,
+)
+from src.dialogues.strategies.confrontation_round_for_dialogue_strategy import (
+    ConfrontationRoundForDialogueStrategy,
 )
 from src.dialogues.strategies.event_narration_for_dialogue_strategy import (
     EventNarrationForDialogueStrategy,
@@ -163,6 +170,55 @@ class DialogueService:
             other_characters_identifiers,
             purpose,
             "narrative_beat",
+            narration_for_dialogue_strategy,
+            web_ambient_narration_observer,
+        )
+
+    def process_confrontation_round(
+        self,
+        other_characters_identifiers: List[str],
+        purpose: Optional[str],
+        confrontation_context: str,
+    ):
+        validate_non_empty_string(confrontation_context, "confrontation_context")
+
+        produce_tool_response_strategy_factory = (
+            ProduceToolResponseStrategyFactoryComposer(
+                Llms().for_confrontation_round(),
+            ).compose_factory()
+        )
+
+        local_information_factory = LocalInformationFactoryComposer(
+            self._playthrough_name
+        ).compose_factory()
+
+        relevant_characters_information_factory = (
+            RelevantCharactersInformationFactoryComposer(
+                self._playthrough_name,
+                "Participant",
+                ParticipantsIdentifiersStrategy(other_characters_identifiers),
+            ).compose_factory()
+        )
+
+        confrontation_round_provider_factory = ConfrontationRoundProviderFactory(
+            self._playthrough_name,
+            confrontation_context,
+            produce_tool_response_strategy_factory,
+            local_information_factory,
+            relevant_characters_information_factory,
+        )
+
+        narration_for_dialogue_strategy = ConfrontationRoundForDialogueStrategy(
+            DialogueManager(self._playthrough_name).load_transcription(),
+            confrontation_round_provider_factory,
+        )
+
+        web_ambient_narration_observer = WebNarrationObserver()
+
+        return self._process_narration(
+            other_characters_identifiers,
+            purpose,
+            "confrontation_round",
             narration_for_dialogue_strategy,
             web_ambient_narration_observer,
         )

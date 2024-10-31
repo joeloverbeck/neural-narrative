@@ -19,12 +19,12 @@ logger = logging.getLogger(__name__)
 
 class HandleDialogueStateDirector:
     def __init__(
-            self,
-            playthrough_name: str,
-            dialogue_participant_identifiers: Optional[List[str]],
-            load_data_from_ongoing_dialogue_algorithm: LoadDataFromOngoingDialogueAlgorithm,
-            extract_identifiers_from_participants_data_algorithm: ExtractIdentifiersFromParticipantsDataAlgorithm,
-            playthrough_manager: Optional[PlaythroughManager] = None,
+        self,
+        playthrough_name: str,
+        dialogue_participant_identifiers: Optional[List[str]],
+        load_data_from_ongoing_dialogue_algorithm: LoadDataFromOngoingDialogueAlgorithm,
+        extract_identifiers_from_participants_data_algorithm: ExtractIdentifiersFromParticipantsDataAlgorithm,
+        playthrough_manager: Optional[PlaythroughManager] = None,
     ):
         validate_non_empty_string(playthrough_name, "playthrough_name")
 
