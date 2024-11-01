@@ -3,7 +3,9 @@ from typing import Optional
 
 class TextProduct:
 
-    def __init__(self, text: str, is_valid: bool, error: Optional[str] = None):
+    def __init__(
+        self, text: Optional[str], is_valid: bool, error: Optional[str] = None
+    ):
         self._text = text
         self._is_valid = is_valid
         self._error = error

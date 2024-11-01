@@ -2,7 +2,7 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-from src.dialogues.products.concrete_summary_product import ConcreteSummaryProduct
+from src.base.products.text_product import TextProduct
 from src.dialogues.transcription import Transcription
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.filesystem.path_manager import PathManager
@@ -36,4 +36,4 @@ class ConcreteDialogueSummaryProvider(BaseToolResponseProvider):
         return {"transcription": self._transcription.get_prettified_transcription()}
 
     def create_product_from_base_model(self, response_model: BaseModel):
-        return ConcreteSummaryProduct(response_model.summary, is_valid=True)
+        return TextProduct(response_model.summary, is_valid=True)

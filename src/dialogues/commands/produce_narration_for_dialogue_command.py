@@ -36,7 +36,7 @@ class ProduceNarrationForDialogueCommand(Command):
         self._store_temporary_dialogue_command = store_temporary_dialogue_command
 
     def execute(self) -> None:
-        self._handle_possible_existence_of_ongoing_conversation_command_factory.create_handle_possible_existence_of_ongoing_conversation_command(
+        self._handle_possible_existence_of_ongoing_conversation_command_factory.create_command(
             self._transcription
         ).execute()
 

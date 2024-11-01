@@ -39,9 +39,6 @@ class InstructorLlmClient(LlmClient):
 
         self._config_loader = config_loader or ConfigLoader()
 
-    def get_client(self) -> Instructor:
-        return self._client
-
     def generate_completion(
         self, model: Llm, messages_to_llm: MessagesToLlm
     ) -> AiCompletionProduct:

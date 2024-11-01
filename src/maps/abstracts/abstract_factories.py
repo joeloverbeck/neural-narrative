@@ -1,7 +1,7 @@
 from typing import Protocol, List
 
+from src.base.products.text_product import TextProduct
 from src.maps.abstracts.factory_products import (
-    PlaceTemplateProduct,
     RandomTemplateTypeMapEntryCreationResult,
     CardinalConnectionCreationProduct,
 )
@@ -9,9 +9,7 @@ from src.maps.abstracts.factory_products import (
 
 class RandomPlaceTemplateBasedOnCategoriesFactory(Protocol):
 
-    def create_place(
-        self, place_templates: dict, categories: List[str]
-    ) -> PlaceTemplateProduct:
+    def create_place(self, place_templates: dict, categories: List[str]) -> TextProduct:
         pass
 
 

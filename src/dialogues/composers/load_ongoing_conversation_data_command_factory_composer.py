@@ -34,7 +34,7 @@ class LoadOngoingConversationDataCommandFactoryComposer:
             self._playthrough_name
         )
 
-    def composer_factory(
+    def compose_factory(
         self,
     ) -> LoadOngoingConversationDataCommandFactory:
         load_data_from_ongoing_dialogue_command_factory = (

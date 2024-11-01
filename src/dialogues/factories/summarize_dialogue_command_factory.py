@@ -19,6 +19,7 @@ class SummarizeDialogueCommandFactory:
     ):
         if not participants.enough_participants():
             raise ValueError("Not enough participants.")
+
         self._participants = participants
         self._dialogue_summary_provider_factory = dialogue_summary_provider_factory
         self._store_character_memory_command_factory = (

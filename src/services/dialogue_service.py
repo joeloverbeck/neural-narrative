@@ -12,9 +12,8 @@ from src.characters.composers.relevant_characters_information_factory_composer i
     RelevantCharactersInformationFactoryComposer,
 )
 from src.dialogues.abstracts.strategies import NarrationForDialogueStrategy
-from src.dialogues.commands.setup_dialogue_command import SetupDialogueCommand
-from src.dialogues.composers.load_ongoing_conversation_data_command_factory_composer import (
-    LoadOngoingConversationDataCommandFactoryComposer,
+from src.dialogues.composers.produce_dialogue_command_composer import (
+    ProduceDialogueCommandComposer,
 )
 from src.dialogues.composers.produce_narration_for_dialogue_command_composer import (
     ProduceNarrationForDialogueCommandComposer,
@@ -53,12 +52,6 @@ from src.dialogues.strategies.narrative_beat_for_dialogue_strategy import (
 )
 from src.dialogues.strategies.participants_identifiers_strategy import (
     ParticipantsIdentifiersStrategy,
-)
-from src.dialogues.strategies.web_message_data_producer_for_introduce_player_input_into_dialogue_strategy import (
-    WebMessageDataProducerForIntroducePlayerInputIntoDialogueStrategy,
-)
-from src.dialogues.strategies.web_message_data_producer_for_speech_turn_strategy import (
-    WebMessageDataProducerForSpeechTurnStrategy,
 )
 from src.filesystem.config_loader import ConfigLoader
 from src.prompting.composers.produce_tool_response_strategy_factory_composer import (
@@ -294,16 +287,6 @@ class DialogueService:
     ) -> (List[Dict], bool):
         participants = Participants()
 
-        load_ongoing_conversation_data_command_factory = (
-            LoadOngoingConversationDataCommandFactoryComposer(
-                self._playthrough_name, other_characters_identifiers, participants
-            ).composer_factory()
-        )
-
-        web_player_input_factory = WebPlayerInputFactory(user_input)
-
-        web_dialogue_observer = WebDialogueObserver()
-
         playthrough_manager = PlaythroughManager(self._playthrough_name)
 
         # If it turns out that at this point there aren't enough participants,
@@ -316,24 +299,24 @@ class DialogueService:
                 participants,
             )
 
-        setup_command = SetupDialogueCommand(
-            self._playthrough_name,
-            playthrough_manager.get_player_identifier(),
-            participants,
-            session.get("purpose", ""),
-            web_dialogue_observer,
-            web_player_input_factory,
-            load_ongoing_conversation_data_command_factory,
-            WebMessageDataProducerForIntroducePlayerInputIntoDialogueStrategy(),
-            WebMessageDataProducerForSpeechTurnStrategy(
-                self._playthrough_name,
-                playthrough_manager.get_player_identifier(),
-            ),
-        )
+        purpose = session.get("purpose", "")
+
+        web_player_input_factory = WebPlayerInputFactory(user_input)
 
         player_input_product = web_player_input_factory.create_player_input()
 
-        setup_command.execute()
+        web_dialogue_observer = WebDialogueObserver()
+
+        produce_dialogue_command = ProduceDialogueCommandComposer(
+            self._playthrough_name,
+            other_characters_identifiers,
+            participants,
+            purpose,
+            web_dialogue_observer,
+            web_player_input_factory,
+        ).compose_command()
+
+        produce_dialogue_command.execute()
 
         is_goodbye = player_input_product.is_goodbye()
 

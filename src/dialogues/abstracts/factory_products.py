@@ -44,18 +44,3 @@ class SpeechDataProduct(ABC):
     @abstractmethod
     def get_error(self) -> str:
         pass
-
-
-class SummaryProduct(ABC):
-
-    @abstractmethod
-    def get(self) -> str:
-        pass
-
-    @abstractmethod
-    def is_valid(self) -> bool:
-        pass
-
-    @abstractmethod
-    def get_error(self) -> str:
-        pass

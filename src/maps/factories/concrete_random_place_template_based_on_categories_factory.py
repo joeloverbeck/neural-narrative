@@ -1,13 +1,10 @@
 from typing import List, Optional
 
+from src.base.products.text_product import TextProduct
 from src.maps.abstracts.abstract_factories import (
     RandomPlaceTemplateBasedOnCategoriesFactory,
 )
-from src.maps.abstracts.factory_products import PlaceTemplateProduct
 from src.maps.place_selection_manager import PlaceSelectionManager
-from src.maps.products.concrete_place_template_product import (
-    ConcretePlaceTemplateProduct,
-)
 
 
 class ConcreteRandomPlaceTemplateBasedOnCategoriesFactory(
@@ -25,9 +22,7 @@ class ConcreteRandomPlaceTemplateBasedOnCategoriesFactory(
         self._place_selection_manager = place_selection_manager
         self._location_type = location_type
 
-    def create_place(
-        self, place_templates: dict, categories: List[str]
-    ) -> PlaceTemplateProduct:
+    def create_place(self, place_templates: dict, categories: List[str]) -> TextProduct:
         if not categories:
             raise ValueError(
                 "Attempted to create a random place, but failed to pass the categories."
@@ -41,9 +36,9 @@ class ConcreteRandomPlaceTemplateBasedOnCategoriesFactory(
         )
 
         if not random_place:
-            return ConcretePlaceTemplateProduct(
+            return TextProduct(
                 None,
                 is_valid=False,
                 error="No available templates for the selected type in this area.",
             )
-        return ConcretePlaceTemplateProduct(random_place, is_valid=True)
+        return TextProduct(random_place, is_valid=True)

@@ -44,7 +44,7 @@ class ProduceNarrationForDialogueCommandComposer:
         handle_possible_existence_of_ongoing_conversation_command_factory = (
             LoadOngoingConversationDataCommandFactoryComposer(
                 self._playthrough_name, self._other_characters_identifiers, participants
-            ).composer_factory()
+            ).compose_factory()
         )
 
         store_temporary_dialogue_command = StoreTemporaryDialogueCommand(

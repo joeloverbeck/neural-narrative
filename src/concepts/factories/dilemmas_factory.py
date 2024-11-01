@@ -23,7 +23,7 @@ class DilemmasFactory(BaseConceptFactory):
         playthrough_name: str,
         produce_tool_response_strategy_factory: BaseModelProduceToolResponseStrategyFactory,
         places_descriptions_factory: PlacesDescriptionsProvider,
-            player_and_followers_information_factory: RelevantCharactersInformationFactory,
+        player_and_followers_information_factory: RelevantCharactersInformationFactory,
         filesystem_manager: Optional[FilesystemManager] = None,
     ):
         super().__init__(

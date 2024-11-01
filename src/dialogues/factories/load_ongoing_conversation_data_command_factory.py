@@ -31,7 +31,7 @@ class LoadOngoingConversationDataCommandFactory:
         )
         self._choose_participants_strategy = choose_participants_strategy
 
-    def create_handle_possible_existence_of_ongoing_conversation_command(
+    def create_command(
         self, transcription: Transcription
     ) -> HandlePossibleExistenceOfOngoingConversationCommand:
         return HandlePossibleExistenceOfOngoingConversationCommand(

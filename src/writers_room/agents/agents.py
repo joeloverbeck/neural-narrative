@@ -12,7 +12,7 @@ def create_agents(playthrough_name: str) -> Dict[str, Agent]:
         return "You should write in a casual style, like member of a writers' room to one of his or her colleagues during creatively intense session."
 
     def showrunner_instructions(context_variables: dict) -> str:
-        return f"Context:\n{context_variables.get("context")}\nPlot Blueprints Inspiration:\n{context_variables.get("plot_blueprints")}\nInstructions: Oversee the entire creative vision of the story, lead the writing team, coordinate overarching story arcs, and manage script development. If the user requests working on an aspect of the story that some other agent specializes in, transfer the call to that agent. {speech_style()}"
+        return f"Context:\n{context_variables.get("context")}\nPlot Blueprints Inspiration:\n{context_variables.get("plot_blueprints")}\nInstructions: Oversee the entire creative vision of the story, lead the writing team, coordinate overarching story arcs, manage script development, and delegate tasks to your team. If the user requests working on an aspect of the story that some other agent specializes in, transfer the call to that agent. {speech_style()}"
 
     def story_editor_instructions(context_variables: dict) -> str:
         return f"Facts:\n{context_variables.get("facts")}\nInstructions: Refine storylines, ensure logical progression and coherence, and polish scripts for clarity and impact. {speech_style()}"

@@ -19,7 +19,7 @@ from src.maps.factories.filter_out_used_templates_algorithm_factory import (
 )
 from src.maps.factories.place_manager_factory import PlaceManagerFactory
 from src.maps.providers.concrete_random_place_type_map_entry_provider import (
-    ConcreteRandomTemplateTypeMapEntryProvider,
+    ConcreteRandomPlaceTypeMapEntryProvider,
 )
 
 
@@ -50,7 +50,7 @@ class RandomTemplateTypeMapEntryProviderFactory:
         father_place_type: TemplateType,
         new_place_type: TemplateType,
     ) -> RandomTemplateTypeMapEntryProvider:
-        return ConcreteRandomTemplateTypeMapEntryProvider(
+        return ConcreteRandomPlaceTypeMapEntryProvider(
             config=RandomTemplateTypeMapEntryProviderConfig(
                 father_identifier, father_template, new_place_type, father_place_type
             ),
@@ -58,6 +58,6 @@ class RandomTemplateTypeMapEntryProviderFactory:
                 self._random_place_template_based_on_categories_factory,
                 self._create_map_entry_for_playthrough_command_provider_factory,
                 self._place_manager_factory,
+                self._filter_out_used_templates_algorithm_factory,
             ),
-            filter_out_used_templates_algorithm_factory=self._filter_out_used_templates_algorithm_factory,
         )
