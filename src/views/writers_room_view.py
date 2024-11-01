@@ -7,6 +7,7 @@ from openai import OpenAI
 from swarm import Swarm
 
 from src.base.constants import OPENROUTER_API_URL
+from src.concepts.enums import ConceptType
 from src.filesystem.config_loader import ConfigLoader
 from src.filesystem.file_operations import (
     read_json_file,
@@ -128,11 +129,13 @@ class WritersRoomView(MethodView):
             "facts": facts_file,
             "characters": characters_file,
             "places_descriptions": places_descriptions,
-            "plot_blueprints": concepts_file["plot_blueprints"],
-            "goals": concepts_file["goals"],
-            "plot_twists": concepts_file["plot_twists"],
-            "scenarios": concepts_file["scenarios"],
-            "dilemmas": concepts_file["dilemmas"],
+            ConceptType.PLOT_BLUEPRINTS.value: concepts_file[
+                ConceptType.PLOT_BLUEPRINTS.value
+            ],
+            ConceptType.GOALS.value: concepts_file[ConceptType.GOALS.value],
+            ConceptType.PLOT_TWISTS.value: concepts_file[ConceptType.PLOT_TWISTS.value],
+            ConceptType.SCENARIOS.value: concepts_file[ConceptType.SCENARIOS.value],
+            ConceptType.DILEMMAS.value: concepts_file[ConceptType.DILEMMAS.value],
         }
 
         response = client.run(

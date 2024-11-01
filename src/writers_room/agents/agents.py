@@ -3,6 +3,7 @@ from typing import Dict
 from swarm import Agent
 
 from src.base.validators import validate_non_empty_string
+from src.concepts.enums import ConceptType
 
 
 def create_agents(playthrough_name: str) -> Dict[str, Agent]:
@@ -12,7 +13,7 @@ def create_agents(playthrough_name: str) -> Dict[str, Agent]:
         return "You should write in a casual style, like member of a writers' room to one of his or her colleagues during creatively intense session."
 
     def showrunner_instructions(context_variables: dict) -> str:
-        return f"Context:\n{context_variables.get("context")}\nPlot Blueprints Inspiration:\n{context_variables.get("plot_blueprints")}\nInstructions: Oversee the entire creative vision of the story, lead the writing team, coordinate overarching story arcs, manage script development, and delegate tasks to your team. If the user requests working on an aspect of the story that some other agent specializes in, transfer the call to that agent. {speech_style()}"
+        return f"Context:\n{context_variables.get("context")}\nPlot Blueprints Inspiration:\n{context_variables.get(ConceptType.PLOT_BLUEPRINTS.value)}\nInstructions: Oversee the entire creative vision of the story, lead the writing team, coordinate overarching story arcs, manage script development, and delegate tasks to your team. If the user requests working on an aspect of the story that some other agent specializes in, transfer the call to that agent. {speech_style()}"
 
     def story_editor_instructions(context_variables: dict) -> str:
         return f"Facts:\n{context_variables.get("facts")}\nInstructions: Refine storylines, ensure logical progression and coherence, and polish scripts for clarity and impact. {speech_style()}"
@@ -33,10 +34,10 @@ def create_agents(playthrough_name: str) -> Dict[str, Agent]:
         return f"Context:\n{context_variables.get("context")}\nInstructions: Develop and weave underlying themes, messages, symbols, and motifs throughout the narrative. {speech_style()}"
 
     def plot_development_agent_instructions(context_variables: dict) -> str:
-        return f"Goals Inspiration:\n{context_variables.get("goals")}\nPlot Twists Inspiration:\n{context_variables.get("plot_twists")}\nScenarios Inspiration:\n{context_variables.get("scenarios")}\nInstructions: Design plot elements including twists, conflicts, mysteries, and subplots to advance the story. {speech_style()}"
+        return f"Goals Inspiration:\n{context_variables.get(ConceptType.GOALS.value)}\nPlot Twists Inspiration:\n{context_variables.get(ConceptType.PLOT_TWISTS.value)}\nScenarios Inspiration:\n{context_variables.get(ConceptType.SCENARIOS.value)}\nInstructions: Design plot elements including twists, conflicts, mysteries, and subplots to advance the story. {speech_style()}"
 
     def pacing_agent_instructions(context_variables: dict) -> str:
-        return f"Dilemmas Inspiration:\n{context_variables.get("dilemmas")}\nInstructions: Manage the flow of the narrative and balance emotional beats to maintain audience engagement. {speech_style()}"
+        return f"Dilemmas Inspiration:\n{context_variables.get(ConceptType.DILEMMAS.value)}\nInstructions: Manage the flow of the narrative and balance emotional beats to maintain audience engagement. {speech_style()}"
 
     def transfer_to_showrunner_agent(_context_variables: dict):
         """Transfer to the Showrunner, that oversees the entire creative vision of the story, leads the writing team, coordinates overarching story arcs, and manages script development."""

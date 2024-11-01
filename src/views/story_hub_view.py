@@ -23,6 +23,7 @@ from src.concepts.algorithms.generate_plot_twists_algorithm import (
 from src.concepts.algorithms.generate_scenarios_algorithm import (
     GenerateScenariosAlgorithm,
 )
+from src.concepts.enums import ConceptType
 from src.concepts.factories.dilemmas_factory import (
     DilemmasFactory,
 )
@@ -119,10 +120,10 @@ class StoryHubView(MethodView):
         if action.startswith("generate_"):
             action_name = action[len("generate_") :]
             generate_action_mapping = {
-                "plot_blueprints": {
+                ConceptType.PLOT_BLUEPRINTS.value: {
                     "factory_class": PlotBlueprintsFactory,
                     "algorithm_class": GeneratePlotBlueprintsAlgorithm,
-                    "response_key": "plot_blueprints",
+                    "response_key": ConceptType.PLOT_BLUEPRINTS.value,
                     "factory_args": [
                         playthrough_name_obj,
                         produce_tool_response_strategy_factory,
@@ -130,10 +131,10 @@ class StoryHubView(MethodView):
                         player_and_followers_information_factory,
                     ],
                 },
-                "scenarios": {
+                ConceptType.SCENARIOS.value: {
                     "factory_class": ScenariosFactory,
                     "algorithm_class": GenerateScenariosAlgorithm,
-                    "response_key": "scenarios",
+                    "response_key": ConceptType.SCENARIOS.value,
                     "factory_args": [
                         playthrough_name_obj,
                         produce_tool_response_strategy_factory,
@@ -141,10 +142,10 @@ class StoryHubView(MethodView):
                         player_and_followers_information_factory,
                     ],
                 },
-                "dilemmas": {
+                ConceptType.DILEMMAS.value: {
                     "factory_class": DilemmasFactory,
                     "algorithm_class": GenerateDilemmasAlgorithm,
-                    "response_key": "dilemmas",
+                    "response_key": ConceptType.DILEMMAS.value,
                     "factory_args": [
                         playthrough_name_obj,
                         produce_tool_response_strategy_factory,
@@ -152,10 +153,10 @@ class StoryHubView(MethodView):
                         player_and_followers_information_factory,
                     ],
                 },
-                "goals": {
+                ConceptType.GOALS.value: {
                     "factory_class": GoalsFactory,
                     "algorithm_class": GenerateGoalsAlgorithm,
-                    "response_key": "goals",
+                    "response_key": ConceptType.GOALS.value,
                     "factory_args": [
                         playthrough_name_obj,
                         produce_tool_response_strategy_factory,
@@ -163,10 +164,10 @@ class StoryHubView(MethodView):
                         player_and_followers_information_factory,
                     ],
                 },
-                "plot_twists": {
+                ConceptType.PLOT_TWISTS.value: {
                     "factory_class": PlotTwistsFactory,
                     "algorithm_class": GeneratePlotTwistsAlgorithm,
-                    "response_key": "plot_twists",
+                    "response_key": ConceptType.PLOT_TWISTS.value,
                     "factory_args": [
                         playthrough_name_obj,
                         produce_tool_response_strategy_factory,
@@ -210,11 +211,11 @@ class StoryHubView(MethodView):
             concepts_file = read_json_file(concepts_file_path)
 
             key_correlation = {
-                "scenario": "scenarios",
-                "plot_twist": "plot_twists",
-                "plot_blueprint": "plot_blueprints",
-                "dilemma": "dilemmas",
-                "goal": "goals",
+                "scenario": ConceptType.SCENARIOS.value,
+                "plot_twist": ConceptType.PLOT_TWISTS.value,
+                "plot_blueprint": ConceptType.PLOT_BLUEPRINTS.value,
+                "dilemma": ConceptType.DILEMMAS.value,
+                "goal": ConceptType.GOALS.value,
             }
 
             key = key_correlation[action_name.lower()]

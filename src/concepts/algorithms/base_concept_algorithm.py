@@ -2,6 +2,7 @@ import logging
 from typing import Generic, TypeVar, List, Optional
 
 from src.base.validators import validate_non_empty_string
+from src.concepts.enums import ConceptType
 from src.concepts.models.dilemmas import Dilemmas
 from src.concepts.models.goals import Goals
 from src.concepts.models.plot_blueprint import PlotBlueprint
@@ -37,15 +38,15 @@ class BaseConceptAlgorithm(Generic[TProduct, TFactory]):
         self._path_manager = path_manager or PathManager()
 
     def do_algorithm(self) -> List[str]:
-        if self._action_name.lower() == "plot_blueprints":
+        if self._action_name.lower() == ConceptType.PLOT_BLUEPRINTS.value:
             product = self._concept_factory.generate_product(PlotBlueprint)
-        elif self._action_name.lower() == "scenarios":
+        elif self._action_name.lower() == ConceptType.SCENARIOS.value:
             product = self._concept_factory.generate_product(Scenarios)
-        elif self._action_name.lower() == "dilemmas":
+        elif self._action_name.lower() == ConceptType.DILEMMAS.value:
             product = self._concept_factory.generate_product(Dilemmas)
-        elif self._action_name.lower() == "goals":
+        elif self._action_name.lower() == ConceptType.GOALS.value:
             product = self._concept_factory.generate_product(Goals)
-        elif self._action_name.lower() == "plot_twists":
+        elif self._action_name.lower() == ConceptType.PLOT_TWISTS.value:
             product = self._concept_factory.generate_product(PlotTwists)
         else:
             raise NotImplementedError(
