@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Optional
 
 from src.characters.factories.relevant_characters_information_factory import (
@@ -21,7 +22,7 @@ class BaseConceptFactory(BaseToolResponseProvider):
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         places_descriptions_factory: PlacesDescriptionsProvider,
         player_and_followers_information_factory: RelevantCharactersInformationFactory,
-        prompt_file: str,
+        prompt_file: Path,
         user_content: str,
         filesystem_manager: Optional[FilesystemManager] = None,
         path_manager: Optional[PathManager] = None,
@@ -41,7 +42,7 @@ class BaseConceptFactory(BaseToolResponseProvider):
     def get_user_content(self) -> str:
         return self._user_content
 
-    def get_prompt_file(self) -> Optional[str]:
+    def get_prompt_file(self) -> Optional[Path]:
         return self._prompt_file
 
     def get_prompt_kwargs(self) -> dict:

@@ -223,7 +223,7 @@ class StoryHubView(MethodView):
                     playthrough_name_obj, action_name, factory_instance
                 )
                 try:
-                    items = algorithm_instance.direct()
+                    items = algorithm_instance.do_algorithm()
                     response = {
                         "success": True,
                         "message": f"{mapping['response_key'].replace('_', ' ').capitalize()} generated successfully.",
