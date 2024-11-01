@@ -165,6 +165,37 @@
         </div>
     </div>
 
+    <!-- Add this after the existing Actions Section -->
+    {% if available_characters %}
+    <div class="collapsible-section">
+        <button class="collapsible">
+            <i class="fas fa-user-plus"></i> Add Participants
+        </button>
+        <div class="content">
+            <!-- Add Participants Form -->
+            <form method="post" class="add-participants-form ajax-form" action="{{ url_for('add_participants') }}"
+                  data-success-handler="addParticipantsSuccessHandler" data-error-handler="chatErrorHandler">
+                <div class="characters-list">
+                    {% for character in available_characters %}
+                    <div class="character">
+                        <input id="char-{{ character.identifier }}" name="selected_characters" type="checkbox"
+                               value="{{ character.identifier }}">
+                        <label for="char-{{ character.identifier }}">
+                            <img alt="{{ character.name }}" src="{{ url_for('static', filename=character.image_url) }}">
+                            <div class="character-name">{{ character.name }}</div>
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
+                <!-- Add Participants Button -->
+                <button type="submit" class="action-button">
+                    <i class="fas fa-user-plus"></i> Add to Chat
+                </button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
     <!-- Navigation Buttons -->
     <div class="buttons">
         <a href="{{ url_for('index') }}" class="button">

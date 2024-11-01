@@ -6,6 +6,7 @@ from flask.views import MethodView
 
 from src.base.playthrough_manager import PlaythroughManager
 from src.base.tools import capture_traceback
+from src.characters.characters_manager import CharactersManager
 from src.dialogues.algorithms.extract_identifiers_from_participants_data_algorithm import (
     ExtractIdentifiersFromParticipantsDataAlgorithm,
 )
@@ -18,6 +19,7 @@ from src.dialogues.directors.handle_dialogue_state_director import (
 from src.dialogues.enums import HandleDialogueStateAlgorithmResultType
 from src.maps.factories.map_manager_factory import MapManagerFactory
 from src.services.dialogue_service import DialogueService
+from src.services.web_service import WebService
 from src.time.time_manager import TimeManager
 
 logger = logging.getLogger(__name__)
@@ -27,12 +29,11 @@ class ChatView(MethodView):
 
     @staticmethod
     def update_session_with_product_data(product):
-        session.update(
-            {
-                "purpose": product.get_data().get("purpose"),
-                "participants": product.get_data().get("participants"),
-            }
-        )
+        # Merge existing participants with new ones
+        existing_participants = session.get("participants", [])
+        new_participants = product.get_data().get("participants", [])
+        session["participants"] = list(set(existing_participants + new_participants))
+        session["purpose"] = product.get_data().get("purpose")
         session.pop("self_reflection_text", None)
         session.pop("worldview_text", None)
 
@@ -94,6 +95,18 @@ class ChatView(MethodView):
 
         ChatView.update_session_with_product_data(product)
 
+        # Fetch available characters to add
+        characters_manager = CharactersManager(playthrough_name)
+        all_characters = (
+            characters_manager.get_characters_at_current_place_plus_followers()
+        )
+        available_characters = [
+            char
+            for char in all_characters
+            if char.identifier not in dialogue_participants
+        ]
+        WebService().format_image_urls_of_characters(available_characters)
+
         return render_template(
             "chat.html",
             dialogue=session.get("dialogue", []),
@@ -101,6 +114,7 @@ class ChatView(MethodView):
             current_place_template=MapManagerFactory(playthrough_name)
             .create_map_manager()
             .get_current_place_template(),
+            available_characters=available_characters,
         )
 
     @staticmethod

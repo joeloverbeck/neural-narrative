@@ -9,6 +9,7 @@ from src.filesystem.file_operations import read_json_file
 from src.filesystem.path_manager import PathManager
 from src.views.action_view import action_view
 from src.views.actions_view import ActionsView
+from src.views.add_participants_view import AddParticipantsView
 from src.views.character_edit_view import CharacterEditView
 from src.views.character_generation_view import CharacterGenerationView
 from src.views.character_memories_view import CharacterMemoriesView
@@ -58,6 +59,9 @@ app.add_url_rule("/location-hub", view_func=LocationHubView.as_view("location-hu
 app.add_url_rule("/travel", view_func=TravelView.as_view("travel"))
 app.add_url_rule("/participants", view_func=ParticipantsView.as_view("participants"))
 app.add_url_rule("/chat", view_func=ChatView.as_view("chat"))
+app.add_url_rule(
+    "/add_participants", view_func=AddParticipantsView.as_view("add_participants")
+)
 app.add_url_rule(
     "/character-generation",
     view_func=CharacterGenerationView.as_view("character-generation"),

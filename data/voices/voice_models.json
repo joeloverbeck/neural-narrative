@@ -1282,5 +1282,101 @@
     "FORMAL",
     "NOBLE",
     "NO SPECIAL EFFECTS"
+  ],
+  "npcmlancercaptainkells": [
+    "MALE",
+    "YOUNG ADULT/ADULT",
+    "CALM",
+    "MODERATE",
+    "NORMAL VOLUME",
+    "GRAVELLY/RASPY",
+    "NEUTRAL",
+    "CASUAL",
+    "NOBLE",
+    "NO SPECIAL EFFECTS"
+  ],
+  "institutecoursermalevoice": [
+    "MALE",
+    "YOUNG ADULT/ADULT",
+    "SERIOUS/FIRM",
+    "SLOW",
+    "NORMAL VOLUME",
+    "GRAVELLY/RASPY",
+    "NEUTRAL",
+    "FORMAL",
+    "STOIC",
+    "NO SPECIAL EFFECTS"
+  ],
+  "museumvoicef1": [
+    "MALE",
+    "YOUNG ADULT/ADULT",
+    "EXCITED",
+    "MODERATE",
+    "NORMAL VOLUME",
+    "MUFFLED",
+    "NEUTRAL",
+    "INTENSE/DRAMATIC",
+    "ENERGETIC",
+    "RETRO"
+  ],
+  "npcmyefimbobrov": [
+    "MALE",
+    "MIDDLE-AGED",
+    "HAPPY/JOYFUL",
+    "SLOW",
+    "LOUD",
+    "SMOOTH",
+    "WARM",
+    "INTENSE/DRAMATIC",
+    "PASSIONATE",
+    "NO SPECIAL EFFECTS"
+  ],
+  "npcmtvanchorman": [
+    "MALE",
+    "YOUNG ADULT/ADULT",
+    "SERIOUS/FIRM",
+    "MODERATE",
+    "NORMAL VOLUME",
+    "GRAVELLY/RASPY",
+    "NEUTRAL",
+    "FORMAL",
+    "STOIC",
+    "NO SPECIAL EFFECTS"
+  ],
+  "nightmother": [
+    "FEMALE",
+    "ELDERLY",
+    "CONFIDENT/DETERMINED",
+    "SLOW",
+    "WHISPERING",
+    "GRAVELLY/RASPY",
+    "NEUTRAL",
+    "DRAWLING",
+    "MYSTERIOUS",
+    "NO SPECIAL EFFECTS"
+  ],
+  "femaleoldkindly": [
+    "FEMALE",
+    "ELDERLY",
+    "CONFIDENT/DETERMINED",
+    "SLOW",
+    "NORMAL VOLUME",
+    "CRISP",
+    "NEUTRAL",
+    "FORMAL",
+    "NOBLE",
+    "NO SPECIAL EFFECTS"
+  ],
+  "npcfarcjettech01": [
+    "FEMALE",
+    "TEENAGE",
+    "HOPEFUL",
+    "SLOW",
+    "NORMAL VOLUME",
+    "SMOOTH",
+    "WARM",
+    "FORMAL",
+    "OPTIMISTIC",
+    "NO SPECIAL EFFECTS"
   ]
 }

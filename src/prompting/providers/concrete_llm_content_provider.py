@@ -53,14 +53,14 @@ class ConcreteLlmContentProvider(LlmContentProvider):
         if ai_completion_product.is_valid():
             content = ai_completion_product.get()
 
-            if isinstance(content, str):
-                return UnparsedLlmContentProduct(content, is_valid=True)
-            elif isinstance(content, BaseModel):
+            if isinstance(content, BaseModel):
                 return BaseModelLlmContentProduct(content, is_valid=True)
             else:
                 raise NotImplemented(
                     f"Case not handled for content being of type '{type(content)}'"
                 )
+
+        error = ai_completion_product.get_error()
 
         if ai_completion_product.get_error() == AiCompletionErrorType.TOO_MANY_REQUESTS:
             logger.warning(f"Attempt failed due to too many requests.")
@@ -108,5 +108,5 @@ class ConcreteLlmContentProvider(LlmContentProvider):
         return UnparsedLlmContentProduct(
             content="",
             is_valid=False,
-            error="Max retries reached. No valid response.",
+            error=f"Max retries reached. No valid response. Error: {error}",
         )

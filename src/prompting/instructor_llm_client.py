@@ -9,6 +9,14 @@ from openai.types.chat import (
 )
 from pydantic import BaseModel
 
+from src.base.constants import (
+    TOO_MANY_REQUESTS_ERROR_NUMBER,
+    UNAUTHORIZED_ERROR_NUMBER,
+    PAYMENT_REQUIRED,
+    INVALID_SSL_CERTIFICATE,
+    MAXIMUM_CONTENT_LENGTH_REACHED,
+)
+from src.base.enums import AiCompletionErrorType
 from src.dialogues.messages_to_llm import MessagesToLlm
 from src.filesystem.config_loader import ConfigLoader
 from src.prompting.abstracts.ai_completion_product import AiCompletionProduct
@@ -52,8 +60,6 @@ class InstructorLlmClient(LlmClient):
             for message in messages_to_llm.get()
         ]
 
-        model_result = None
-
         try:
             model_result = self._client.chat.completions.create(
                 model=model.get_name(),
@@ -68,10 +74,25 @@ class InstructorLlmClient(LlmClient):
                 "Attempts: %s",
                 e.n_attempts,
             )
-            logger.error("Error:\n%s", e.messages[-1]["content"])
             logger.error("Last completion:\n%s", e.last_completion)
 
-        return InstructorAiCompletionProduct(model_result)
+            error_correlation = {
+                TOO_MANY_REQUESTS_ERROR_NUMBER: AiCompletionErrorType.TOO_MANY_REQUESTS,
+                UNAUTHORIZED_ERROR_NUMBER: AiCompletionErrorType.UNAUTHORIZED,
+                PAYMENT_REQUIRED: AiCompletionErrorType.PAYMENT_REQUIRED,
+                INVALID_SSL_CERTIFICATE: AiCompletionErrorType.INVALID_SSL_CERTIFICATE,
+                MAXIMUM_CONTENT_LENGTH_REACHED: AiCompletionErrorType.MAXIMUM_CONTENT_LENGTH_REACHED,
+            }
+
+            return InstructorAiCompletionProduct(
+                None,
+                is_valid=False,
+                error=error_correlation.get(
+                    e.last_completion["error"]["code"], AiCompletionErrorType.UNHANDLED
+                ),
+            )
+
+        return InstructorAiCompletionProduct(model_result, is_valid=True)
 
     def generate_image(self, prompt: str) -> str:
         raise NotImplemented(

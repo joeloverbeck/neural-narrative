@@ -37,6 +37,13 @@
       "temperature": 0.7,
       "top_p": 1.0,
       "supports_tools": true
+    },
+    "ministral_8b": {
+      "name": "mistralai/ministral-8b",
+      "description": "Fails at following schemas.",
+      "temperature": 0.6,
+      "top_p": 1.0,
+      "supports_tools": false
     }
   },
   "story_universe_generation": "hermes_405b",
@@ -57,7 +64,7 @@
   "grow_event": "hermes_405b",
   "confrontation_round": "magnum_72b",
   "speech_turn_choice": "hermes_70b",
-  "speech_turn": "magnum_72b",
+  "speech_turn": "hermes_405b",
   "dialogue_summary": "magnum_72b",
   "action_resolution": "hermes_405b",
   "writers_room": "nemotron_70b"

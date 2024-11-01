@@ -7,8 +7,14 @@ from src.prompting.abstracts.ai_completion_product import AiCompletionProduct
 
 
 class InstructorAiCompletionProduct(AiCompletionProduct):
-    def __init__(self, completion_result: BaseModel):
+    def __init__(
+        self,
+        completion_result: Optional[BaseModel],
+        is_valid: bool,
+        error: Optional[AiCompletionErrorType] = None,
+    ):
         self._completion_result = completion_result
+        self._is_valid = is_valid
         self._error: Optional[AiCompletionErrorType] = None
 
     def get(self) -> BaseModel:
