@@ -7,7 +7,6 @@ from openai import OpenAI
 from swarm import Swarm
 
 from src.base.constants import OPENROUTER_API_URL
-from src.concepts.enums import ConceptType
 from src.filesystem.config_loader import ConfigLoader
 from src.filesystem.file_operations import (
     read_json_file,
@@ -119,28 +118,8 @@ class WritersRoomView(MethodView):
             .get_information()
         )
 
-        plot_blueprints_file = read_file(
-            path_manager.get_concept_file_path(
-                playthrough_name, ConceptType.PLOT_BLUEPRINTS
-            )
-        )
-
-        goals_file = read_file(
-            path_manager.get_concept_file_path(playthrough_name, ConceptType.GOALS)
-        )
-
-        plot_twists_file = read_file(
-            path_manager.get_concept_file_path(
-                playthrough_name, ConceptType.PLOT_TWISTS
-            )
-        )
-
-        scenarios_file = read_file(
-            path_manager.get_concept_file_path(playthrough_name, ConceptType.SCENARIOS)
-        )
-
-        dilemmas_file = read_file(
-            path_manager.get_concept_file_path(playthrough_name, ConceptType.DILEMMAS)
+        concepts_file = read_json_file(
+            path_manager.get_concepts_file_path(playthrough_name)
         )
 
         # Load context data
@@ -149,11 +128,11 @@ class WritersRoomView(MethodView):
             "facts": facts_file,
             "characters": characters_file,
             "places_descriptions": places_descriptions,
-            "plot_blueprints": plot_blueprints_file,
-            "goals": goals_file,
-            "plot_twists": plot_twists_file,
-            "scenarios": scenarios_file,
-            "dilemmas": dilemmas_file,
+            "plot_blueprints": concepts_file["plot_blueprints"],
+            "goals": concepts_file["goals"],
+            "plot_twists": concepts_file["plot_twists"],
+            "scenarios": concepts_file["scenarios"],
+            "dilemmas": concepts_file["dilemmas"],
         }
 
         response = client.run(

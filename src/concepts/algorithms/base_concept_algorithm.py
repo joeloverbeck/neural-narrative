@@ -1,5 +1,4 @@
 import logging
-from pathlib import Path
 from typing import Generic, TypeVar, List, Optional
 
 from src.base.validators import validate_non_empty_string
@@ -8,7 +7,7 @@ from src.concepts.models.goals import Goals
 from src.concepts.models.plot_blueprint import PlotBlueprint
 from src.concepts.models.plot_twists import PlotTwists
 from src.concepts.models.scenarios import Scenarios
-from src.filesystem.file_operations import append_to_file
+from src.filesystem.file_operations import read_json_file, write_json_file
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.filesystem.path_manager import PathManager
 
@@ -72,20 +71,27 @@ class BaseConceptAlgorithm(Generic[TProduct, TFactory]):
     def save_generated_items(self, items: List[str]):
         if not items:
             raise ValueError("There weren't items to save.")
-        file_path = self.get_save_file_path()
-        curated_items = []
+
+        concepts_file_path = self._path_manager.get_concepts_file_path(
+            self._playthrough_name
+        )
+
+        concepts_file = read_json_file(
+            self._path_manager.get_concepts_file_path(self._playthrough_name)
+        )
+
+        if not self._action_name.lower() in concepts_file:
+            # If it doesn't exist, we may as well create it.
+            concepts_file[self._action_name.lower()] = []
+
         for item in items:
             if not item:
                 raise ValueError(
                     f"Received a list with at least an invalid item: {items}"
                 )
-            curated_items.append(item)
+            concepts_file[self._action_name.lower()].append(item)
 
-        content = "\n".join(filter(None, [item for item in curated_items]))
+        # Save the json file.
+        write_json_file(concepts_file_path, concepts_file)
 
-        append_to_file(file_path, content)
-
-        logger.info(f"Saved generated items to '{file_path}'.")
-
-    def get_save_file_path(self) -> Path:
-        raise NotImplementedError("Subclasses must implement get_save_file_path.")
+        logger.info(f"Saved generated items to '{concepts_file_path}'.")

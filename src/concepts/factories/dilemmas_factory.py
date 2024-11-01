@@ -26,7 +26,7 @@ class DilemmasFactory(BaseConceptFactory):
         places_descriptions_factory: PlacesDescriptionsProvider,
         player_and_followers_information_factory: RelevantCharactersInformationFactory,
         filesystem_manager: Optional[FilesystemManager] = None,
-            path_manager: Optional[PathManager] = None,
+        path_manager: Optional[PathManager] = None,
     ):
         path_manager = path_manager or PathManager()
 

@@ -3,7 +3,6 @@ from datetime import datetime
 from pathlib import Path
 
 from src.base.enums import TemplateType
-from src.concepts.enums import ConceptType
 
 
 class PathManager:
@@ -371,11 +370,8 @@ class PathManager:
         return cls.get_playthrough_path(playthrough_name) / "adventure.txt"
 
     @classmethod
-    def get_concept_file_path(
-        cls, playthrough_name: str, concept_type: ConceptType
-    ) -> Path:
-        file_name = f"{concept_type.value}.txt"
-        return cls.get_concepts_path(playthrough_name) / file_name
+    def get_concepts_file_path(cls, playthrough_name: str):
+        return cls.get_concepts_path(playthrough_name) / "concepts.json"
 
     @classmethod
     def get_facts_path(cls, playthrough_name: str) -> Path:

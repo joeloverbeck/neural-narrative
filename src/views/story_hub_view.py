@@ -23,7 +23,6 @@ from src.concepts.algorithms.generate_plot_twists_algorithm import (
 from src.concepts.algorithms.generate_scenarios_algorithm import (
     GenerateScenariosAlgorithm,
 )
-from src.concepts.enums import ConceptType
 from src.concepts.factories.dilemmas_factory import (
     DilemmasFactory,
 )
@@ -34,13 +33,14 @@ from src.concepts.factories.scenarios_factory import (
     ScenariosFactory,
 )
 from src.filesystem.file_operations import (
-    read_file_lines,
     read_file,
     write_file,
     create_directories,
     create_empty_file_if_not_exists,
+    create_empty_json_file_if_not_exists,
+    read_json_file,
+    write_json_file,
 )
-from src.filesystem.filesystem_manager import FilesystemManager
 from src.filesystem.path_manager import PathManager
 from src.interfaces.web_interface_manager import WebInterfaceManager
 from src.maps.composers.places_descriptions_provider_composer import (
@@ -69,52 +69,12 @@ class StoryHubView(MethodView):
         concepts_path = path_manager.get_concepts_path(playthrough_name_obj)
         create_directories(concepts_path)
 
-        plot_blueprints_path = path_manager.get_concept_file_path(
-            playthrough_name_obj, ConceptType.PLOT_BLUEPRINTS
-        )
+        # Ensure that the concepts.json file exists.
+        concepts_file_path = path_manager.get_concepts_file_path(playthrough_name_obj)
 
-        create_empty_file_if_not_exists(plot_blueprints_path)
+        create_empty_json_file_if_not_exists(concepts_file_path)
 
-        scenarios_path = path_manager.get_concept_file_path(
-            playthrough_name_obj, ConceptType.SCENARIOS
-        )
-
-        create_empty_file_if_not_exists(scenarios_path)
-
-        dilemmas_path = path_manager.get_concept_file_path(
-            playthrough_name_obj, ConceptType.DILEMMAS
-        )
-
-        create_empty_file_if_not_exists(dilemmas_path)
-
-        goals_path = path_manager.get_concept_file_path(
-            playthrough_name_obj, ConceptType.GOALS
-        )
-
-        create_empty_file_if_not_exists(goals_path)
-
-        plot_twists_path = path_manager.get_concept_file_path(
-            playthrough_name_obj, ConceptType.PLOT_TWISTS
-        )
-
-        create_empty_file_if_not_exists(plot_twists_path)
-
-        items_to_load = [
-            ("plot_blueprints", plot_blueprints_path),
-            (
-                "scenarios",
-                scenarios_path,
-            ),
-            (
-                "dilemmas",
-                dilemmas_path,
-            ),
-            ("goals", goals_path),
-            ("plot_twists", plot_twists_path),
-        ]
-        data = {}
-        for var_name, file_path in items_to_load:
-            data[var_name] = [line for line in read_file_lines(file_path)]
+        data = read_json_file(concepts_file_path)
 
         facts_file_path = path_manager.get_facts_path(playthrough_name_obj)
 
@@ -132,7 +92,6 @@ class StoryHubView(MethodView):
         if not playthrough_name:
             return redirect(url_for("index"))
         action = request.form.get("submit_action")
-        filesystem_manager = FilesystemManager()
         playthrough_name_obj = playthrough_name
 
         llms = Llms()
@@ -243,27 +202,32 @@ class StoryHubView(MethodView):
         elif action.startswith("delete_"):
             action_name = action[len("delete_") :]
             index = int(request.form.get("item_index"))
-            delete_action_mapping = {
-                "plot_blueprint": path_manager.get_concept_file_path(
-                    playthrough_name_obj, ConceptType.PLOT_BLUEPRINTS
-                ),
-                "scenario": path_manager.get_concept_file_path(
-                    playthrough_name_obj, ConceptType.SCENARIOS
-                ),
-                "dilemma": path_manager.get_concept_file_path(
-                    playthrough_name_obj, ConceptType.DILEMMAS
-                ),
-                "goal": path_manager.get_concept_file_path(
-                    playthrough_name_obj, ConceptType.GOALS
-                ),
-                "plot_twist": path_manager.get_concept_file_path(
-                    playthrough_name_obj, ConceptType.PLOT_TWISTS
-                ),
+
+            concepts_file_path = path_manager.get_concepts_file_path(
+                playthrough_name_obj
+            )
+
+            concepts_file = read_json_file(concepts_file_path)
+
+            key_correlation = {
+                "scenario": "scenarios",
+                "plot_twist": "plot_twists",
+                "plot_blueprint": "plot_blueprints",
+                "dilemma": "dilemmas",
+                "goal": "goals",
             }
-            if action_name in delete_action_mapping:
-                file_path = delete_action_mapping[action_name]
-                filesystem_manager.remove_item_from_file(file_path, index)
-                return redirect(url_for("story-hub"))
+
+            key = key_correlation[action_name.lower()]
+
+            if key in concepts_file:
+                concepts_file[key].pop(index)
+
+                # Save the file.
+                write_json_file(concepts_file_path, concepts_file)
+            else:
+                logger.warning("'%s' wasn't in the concepts file!", action_name.lower())
+
+            return redirect(url_for("story-hub"))
         elif action == "save_facts":
             facts = request.form.get("facts", "")
             facts = WebInterfaceManager.remove_excessive_newline_characters(facts)
