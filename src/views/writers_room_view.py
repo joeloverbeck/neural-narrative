@@ -138,6 +138,7 @@ class WritersRoomView(MethodView):
             ConceptType.DILEMMAS.value: concepts_file[ConceptType.DILEMMAS.value],
         }
 
+        logger.info("Running Writers' Room.")
         response = client.run(
             agent=agents["showrunner"],
             messages=messages,
