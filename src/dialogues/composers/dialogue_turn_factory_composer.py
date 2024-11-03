@@ -14,8 +14,8 @@ from src.dialogues.algorithms.determine_next_speaker_algorithm import (
 from src.dialogues.composers.llm_speech_data_provider_factory_composer import (
     LlmSpeechDataProviderFactoryComposer,
 )
-from src.dialogues.composers.load_ongoing_conversation_data_command_factory_composer import (
-    LoadOngoingConversationDataCommandFactoryComposer,
+from src.dialogues.composers.load_or_initialize_dialogue_data_command_factory_composer import (
+    LoadOrInitializeDialogueDataCommandFactoryComposer,
 )
 from src.dialogues.composers.speech_turn_choice_tool_response_factory_composer import (
     SpeechTurnChoiceToolResponseFactoryComposer,
@@ -106,7 +106,7 @@ class DialogueTurnFactoryComposer:
         transcription = Transcription()
 
         load_ongoing_conversation_data_command_factory = (
-            LoadOngoingConversationDataCommandFactoryComposer(
+            LoadOrInitializeDialogueDataCommandFactoryComposer(
                 self._playthrough_name,
                 self._other_characters_identifiers,
                 self._participants,

@@ -8,8 +8,8 @@ from src.dialogues.commands.produce_narration_for_dialogue_command import (
 from src.dialogues.commands.store_temporary_dialogue_command import (
     StoreTemporaryDialogueCommand,
 )
-from src.dialogues.composers.load_ongoing_conversation_data_command_factory_composer import (
-    LoadOngoingConversationDataCommandFactoryComposer,
+from src.dialogues.composers.load_or_initialize_dialogue_data_command_factory_composer import (
+    LoadOrInitializeDialogueDataCommandFactoryComposer,
 )
 from src.dialogues.observers.web_narration_observer import WebNarrationObserver
 from src.dialogues.participants import Participants
@@ -41,8 +41,8 @@ class ProduceNarrationForDialogueCommandComposer:
         transcription = Transcription()
         participants = Participants()
 
-        handle_possible_existence_of_ongoing_conversation_command_factory = (
-            LoadOngoingConversationDataCommandFactoryComposer(
+        load_or_initialize_dialogue_data_command_factory = (
+            LoadOrInitializeDialogueDataCommandFactoryComposer(
                 self._playthrough_name, self._other_characters_identifiers, participants
             ).compose_factory()
         )
@@ -59,6 +59,6 @@ class ProduceNarrationForDialogueCommandComposer:
             transcription,
             self._web_narration_observer,
             self._narration_for_dialogue_strategy,
-            handle_possible_existence_of_ongoing_conversation_command_factory,
+            load_or_initialize_dialogue_data_command_factory,
             store_temporary_dialogue_command,
         )

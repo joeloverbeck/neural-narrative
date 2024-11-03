@@ -24,6 +24,7 @@ def test_two_participants_with_player():
         "Player Description",
         "Player Personality",
         "Player Equipment",
+        "Player Health",
         "Player Voice Model",
     )
     participants.add_participant(
@@ -32,6 +33,7 @@ def test_two_participants_with_player():
         "NPC Description",
         "NPC Personality",
         "NPC Equipment",
+        "Player Health",
         "NPC Voice Model",
     )
 
@@ -71,6 +73,7 @@ def test_more_than_two_participants():
         "Player Description",
         "Player Personality",
         "Player Equipment",
+        "Player Health",
         "Player Voice Model",
     )
     participants.add_participant(
@@ -79,6 +82,7 @@ def test_more_than_two_participants():
         "NPC1 Description",
         "NPC1 Personality",
         "NPC1 Equipment",
+        "Player Health",
         "NPC1 Voice Model",
     )
     participants.add_participant(
@@ -87,6 +91,7 @@ def test_more_than_two_participants():
         "NPC2 Description",
         "NPC2 Personality",
         "NPC2 Equipment",
+        "Player Health",
         "NPC2 Voice Model",
     )
 
@@ -140,6 +145,7 @@ def test_invalid_response_product():
         "Player Description",
         "Player Personality",
         "Player Equipment",
+        "Player Health",
         "Player Voice Model",
     )
     participants.add_participant(
@@ -148,6 +154,7 @@ def test_invalid_response_product():
         "NPC1 Description",
         "NPC1 Personality",
         "NPC1 Equipment",
+        "Player Health",
         "NPC1 Voice Model",
     )
     participants.add_participant(
@@ -156,6 +163,7 @@ def test_invalid_response_product():
         "NPC2 Description",
         "NPC2 Personality",
         "NPC2 Equipment",
+        "Player Health",
         "NPC2 Voice Model",
     )
 
@@ -202,6 +210,7 @@ def test_next_speaker_is_player():
         "Player Description",
         "Player Personality",
         "Player Equipment",
+        "Player Health",
         "Player Voice Model",
     )
     participants.add_participant(
@@ -210,6 +219,7 @@ def test_next_speaker_is_player():
         "NPC1 Description",
         "NPC1 Personality",
         "NPC1 Equipment",
+        "NPC1 Health",
         "NPC1 Voice Model",
     )
     participants.add_participant(
@@ -218,6 +228,7 @@ def test_next_speaker_is_player():
         "NPC2 Description",
         "NPC2 Personality",
         "NPC2 Equipment",
+        "NPC2 Health",
         "NPC2 Voice Model",
     )
 
@@ -268,6 +279,7 @@ def test_voice_model_missing_in_response():
         "Player Description",
         "Player Personality",
         "Player Equipment",
+        "Player Health",
         "Player Voice Model",
     )
     participants.add_participant(
@@ -276,6 +288,7 @@ def test_voice_model_missing_in_response():
         "NPC1 Description",
         "NPC1 Personality",
         "NPC1 Equipment",
+        "NPC1 Health",
         "NPC1 Voice Model",
     )
     participants.add_participant(
@@ -284,6 +297,7 @@ def test_voice_model_missing_in_response():
         "NPC2 Description",
         "NPC2 Personality",
         "NPC2 Equipment",
+        "NPC2 Health",
         "NPC2 Voice Model",
     )
 
@@ -334,6 +348,7 @@ def test_not_enough_participants():
         "Player Description",
         "Player Personality",
         "Player Equipment",
+        "Player Health",
         "Player Voice Model",
     )
 

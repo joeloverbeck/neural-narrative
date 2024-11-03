@@ -53,20 +53,20 @@
     background-color: #fff;
 }
 
-.message.story_editor {
+.message.story-editor {
     background-color: #fff0f5; /* LavenderBlush */
 }
 
-.message.character_development {
+.message.character-development {
     background-color: #f0fff0; /* HoneyDew */
 }
 
 /* Additional Roles */
-.message.world_building {
+.message.world-building {
     background-color: #FFFACD; /* LemonChiffon */
 }
 
-.message.continuity_manager {
+.message.continuity-manager {
     background-color: #F0F8FF; /* AliceBlue */
 }
 
@@ -78,8 +78,16 @@
     background-color: #FFE4B5; /* Moccasin */
 }
 
-.message.plot_development {
+.message.plot-development {
     background-color: #F5DEB3; /* Wheat */
+}
+
+.tool-calls {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    font-style: italic;
+    border-left: 4px solid #ccc;
 }
 
 .input-group {

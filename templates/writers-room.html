@@ -16,20 +16,26 @@
         {% for message in messages %}
         <div class="message {{ message.message_type.lower().replace(' ', '_') }}">
             <div class="message-header">
-                    <span class="message-sender">
-                        {{ message.sender }}
-                    </span>
+            <span class="message-sender">
+                {{ message.sender }}
+            </span>
                 <span class="message-time">
-                        {% if message.timestamp %}
-                            {{ message.timestamp }}
-                        {% else %}
+                {% if message.timestamp %}
+                    {{ message.timestamp }}
+                {% else %}
                     <!-- You can display the current time or leave it empty -->
-                        {% endif %}
-                    </span>
+                {% endif %}
+            </span>
             </div>
             <div class="message-content">
                 {{ message.message_text | replace('\n', '<br>') | bold_text | safe }}
             </div>
+            {% if message.tool_calls %}
+            <div class="tool-calls">
+                <strong>Tool Calls: </strong>
+                {{ message.tool_calls | replace('\n', '<br>') | safe }}
+            </div>
+            {% endif %}
         </div>
         {% endfor %}
     </div>

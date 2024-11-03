@@ -32,6 +32,7 @@ class ParticipantsManager:
             player.get_attribute("description"),
             player.get_attribute("personality"),
             player.get_attribute("equipment"),
+            player.get_attribute("health"),
             player.get_attribute("voice_model"),
         )
         followers = self._character_manager.get_followers()
@@ -42,6 +43,7 @@ class ParticipantsManager:
                 follower.get_attribute("description"),
                 follower.get_attribute("personality"),
                 follower.get_attribute("equipment"),
+                follower.get_attribute("health"),
                 follower.get_attribute("voice_model"),
             )
         return participants

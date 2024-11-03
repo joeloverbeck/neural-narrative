@@ -4,3 +4,7 @@ class DialogueProcessingError(Exception):
 
 class InvalidNextSpeakerError(DialogueProcessingError):
     pass
+
+
+class InvalidSpeechDataError(DialogueProcessingError):
+    pass

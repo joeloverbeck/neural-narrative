@@ -39,6 +39,7 @@ class LoadDataFromOngoingDialogueCommand(Command):
                 participant["description"],
                 participant["personality"],
                 participant["equipment"],
+                participant["health"],
                 participant["voice_model"],
             )
 

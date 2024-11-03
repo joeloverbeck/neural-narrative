@@ -20,6 +20,7 @@
     },
     "lumimaid_70b": {
       "name": "neversleep/llama-3.1-lumimaid-70b",
+      "description": "Causes validation errors and empty content.",
       "temperature": 0.8,
       "top_p": 1.0,
       "supports_tools": false
@@ -47,7 +48,7 @@
     }
   },
   "story_universe_generation": "hermes_405b",
-  "place_generation": "hermes_405b",
+  "place_generation": "magnum_72b",
   "place_description": "hermes_405b",
   "travel_narration": "hermes_405b",
   "character_generation_guidelines": "hermes_405b",
@@ -57,14 +58,14 @@
   "self-reflection": "hermes_405b",
   "worldview": "magnum_72b",
   "character_connection": "hermes_405b",
-  "secrets": "hermes_405b",
+  "secrets": "magnum_72b",
   "concept_generation": "hermes_405b",
   "ambient_narration": "magnum_72b",
   "narrative_beat": "hermes_405b",
   "grow_event": "hermes_405b",
-  "confrontation_round": "magnum_72b",
-  "speech_turn_choice": "hermes_70b",
-  "speech_turn": "hermes_405b",
+  "confrontation_round": "hermes_405b",
+  "speech_turn_choice": "hermes_405b",
+  "speech_turn": "magnum_72b",
   "dialogue_summary": "magnum_72b",
   "action_resolution": "hermes_405b",
   "writers_room": "nemotron_70b"

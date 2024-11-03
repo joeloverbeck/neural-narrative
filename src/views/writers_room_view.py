@@ -1,5 +1,4 @@
 import logging
-from typing import List, Dict
 
 from flask import redirect, url_for, session, render_template, request, jsonify
 from flask.views import MethodView
@@ -7,32 +6,73 @@ from openai import OpenAI
 from swarm import Swarm
 
 from src.base.constants import OPENROUTER_API_URL
-from src.concepts.enums import ConceptType
 from src.filesystem.config_loader import ConfigLoader
 from src.filesystem.file_operations import (
-    read_json_file,
-    write_json_file,
-    read_file,
     remove_file,
 )
 from src.filesystem.path_manager import PathManager
-from src.maps.composers.places_descriptions_provider_composer import (
-    PlacesDescriptionsProviderComposer,
-)
 from src.prompting.llms import Llms
 from src.writers_room.agents.agents import create_agents
+from src.writers_room.context_loader import ContextLoader
+from src.writers_room.enums import AgentType
 from src.writers_room.utils import (
     ensure_writers_room_files,
-    prepare_messages_for_template,
+    prepare_tool_calls_text,
+)
+from src.writers_room.writers_room_session_repository import (
+    WritersRoomSessionRepository,
 )
 
 logger = logging.getLogger(__name__)
 
 
 class WritersRoomView(MethodView):
+    @staticmethod
+    def _get_agent_key(agent_name):
+        agent_name_correlation = {
+            AgentType.SHOWRUNNER.value: "showrunner",
+            AgentType.STORY_EDITOR.value: "story_editor",
+            AgentType.CHARACTER_DEVELOPMENT.value: "character_development",
+            AgentType.WORLD_BUILDING.value: "world_building",
+            AgentType.CONTINUITY_MANAGER.value: "continuity_manager",
+            AgentType.RESEARCHER.value: "researcher",
+            AgentType.THEME.value: "theme",
+            AgentType.PLOT_DEVELOPMENT.value: "plot_development",
+            AgentType.PACING.value: "pacing",
+        }
+        return agent_name_correlation.get(agent_name, "showrunner")
 
     @staticmethod
-    def get():
+    def _prepare_messages(messages):
+        messages_data = []
+
+        for message in messages:
+            message_text = message.get("content", "")
+
+            message_text = "No content" if not message_text else message_text
+
+            if message.get("role") == "user":
+                message_type = "user"
+                sender = "You"
+            elif message.get("role") == "tool":
+                continue
+            else:
+                message_type = message.get("sender", "assistant")
+                sender = message.get("sender", "Assistant")
+
+            messages_data.append(
+                {
+                    "message_text": message_text,
+                    "message_type": message_type,
+                    "sender": sender,
+                    "tool_calls": prepare_tool_calls_text(message),
+                    "timestamp": message.get("timestamp"),
+                }
+            )
+
+        return messages_data
+
+    def get(self):
         playthrough_name = session.get("playthrough_name")
         if not playthrough_name:
             return redirect(url_for("index"))
@@ -40,17 +80,12 @@ class WritersRoomView(MethodView):
         # Ensure necessary files and directories exist.
         ensure_writers_room_files(playthrough_name)
 
-        path_manager = PathManager()
-
-        # Read the messages from the session file
-        session_file = read_json_file(
-            path_manager.get_writers_room_session(playthrough_name)
-        )
-
-        messages = session_file.get("messages", [])
+        # Use WritersRoomSession to handle session data
+        session_manager = WritersRoomSessionRepository(playthrough_name)
+        messages = session_manager.get_messages()
 
         # Prepare messages data for the template
-        messages_data = prepare_messages_for_template(messages)
+        messages_data = self._prepare_messages(messages)
 
         return render_template("writers-room.html", messages=messages_data)
 
@@ -71,13 +106,12 @@ class WritersRoomView(MethodView):
         else:
             return redirect(url_for("writers-room"))
 
-    @staticmethod
-    def handle_send(playthrough_name):
+    def handle_send(self, playthrough_name):
         user_message = request.form.get("message", "")
         if not user_message:
             return jsonify({"success": False, "error": "No message provided"})
 
-        # Initialise Swarm client and run conversation
+        # Initialise Swarm client
         config_loader = ConfigLoader()
 
         client = Swarm(
@@ -87,83 +121,53 @@ class WritersRoomView(MethodView):
             )
         )
 
+        # Create agents
         agents = create_agents(playthrough_name)
 
-        # If there is a "messages" key in the session.json file of the corresponding writer's room, then we should load those messages.
-        path_manager = PathManager()
+        # Use WritersRoomSession to handle session data
+        writers_room_session_repository = WritersRoomSessionRepository(playthrough_name)
+        messages = writers_room_session_repository.get_messages()
 
-        session_file = read_json_file(
-            path_manager.get_writers_room_session(playthrough_name)
-        )
-
-        messages: List[Dict[str, str]] = []
-
-        if "messages" in session_file:
-            messages = session_file["messages"]
-
+        # Append user message
         messages.append({"role": "user", "content": user_message})
 
-        context_file = read_file(
-            path_manager.get_writers_room_context_path(playthrough_name)
-        )
+        # Get current agent name
+        agent_name = writers_room_session_repository.get_agent_name()
 
-        facts_file = read_file(path_manager.get_facts_path(playthrough_name))
+        # Try to recover the context variables from the repository.
+        context_variables = writers_room_session_repository.get_context_variables()
 
-        characters_file = read_json_file(
-            path_manager.get_characters_file_path(playthrough_name)
-        )
+        if not context_variables:
+            # Prepare context variables using ContextLoader
+            context_loader = ContextLoader(playthrough_name)
+            context_variables = context_loader.load_context_variables()
 
-        places_descriptions = (
-            PlacesDescriptionsProviderComposer(playthrough_name)
-            .compose_provider()
-            .get_information()
-        )
+        # Get agent key
+        agent_key = self._get_agent_key(agent_name)
+        agent = agents[agent_key]
 
-        concepts_file = read_json_file(
-            path_manager.get_concepts_file_path(playthrough_name)
-        )
-
-        # Load context data
-        context_variables = {
-            "context": context_file,
-            "facts": facts_file,
-            "characters": characters_file,
-            "places_descriptions": places_descriptions,
-            ConceptType.PLOT_BLUEPRINTS.value: concepts_file[
-                ConceptType.PLOT_BLUEPRINTS.value
-            ],
-            ConceptType.GOALS.value: concepts_file[ConceptType.GOALS.value],
-            ConceptType.PLOT_TWISTS.value: concepts_file[ConceptType.PLOT_TWISTS.value],
-            ConceptType.SCENARIOS.value: concepts_file[ConceptType.SCENARIOS.value],
-            ConceptType.DILEMMAS.value: concepts_file[ConceptType.DILEMMAS.value],
-        }
-
+        # Run Swarm client
         logger.info("Running Writers' Room.")
         response = client.run(
-            agent=agents["showrunner"],
+            agent=agent,
             messages=messages,
             model_override=Llms().for_writers_room().get_name(),
             context_variables=context_variables,
         )
 
-        # Append the response message to the ongoing messages
-        latest_message = response.messages[-1]
+        # Extend messages with response messages
+        messages.extend(response.messages)
 
-        messages.append(latest_message)
-
-        # Write the messages to file.
-        session_file["messages"] = messages
-
-        write_json_file(
-            path_manager.get_writers_room_session(playthrough_name), session_file
+        # Update session data
+        writers_room_session_repository.set_messages(messages)
+        writers_room_session_repository.set_agent_name(response.agent.name)
+        writers_room_session_repository.set_context_variables(
+            response.context_variables
         )
+        writers_room_session_repository.save()
 
-        messages_data = [
-            {
-                "message_text": latest_message["content"],
-                "message_type": latest_message["sender"],
-            }
-        ]
+        # Prepare messages data for response
+        messages_data = self._prepare_messages(response.messages)
 
         return jsonify({"success": True, "messages": messages_data, "action": "send"})
 

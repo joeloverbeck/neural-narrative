@@ -49,7 +49,7 @@ class LlmSpeechDataProvider(BaseToolResponseProvider):
     def _format_participant_details(self) -> str:
         return "\n".join(
             [
-                f"{participant['name']}: {participant['description']}. Equipment: {participant['equipment']}"
+                f"{participant['name']}: {participant['description']}. Equipment: {participant['equipment']}. Health: {participant['health']}."
                 for _, participant in self._config.participants.get().items()
                 if participant["name"] != self._config.speaker_name
             ]

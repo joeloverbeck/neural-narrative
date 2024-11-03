@@ -40,37 +40,35 @@ function writersRoomSuccess(data, context) {
 
 function createMessageElement(messageData) {
     const messageDiv = document.createElement('div');
-    formattedMessageType = messageData.message_type.toLowerCase();
-    formattedMessageType = formattedMessageType.replace(/ /g, "_");
+    let formattedMessageType = messageData.message_type.toLowerCase().replace(/ /g, "_");
 
     messageDiv.classList.add('message', formattedMessageType);
 
     const headerDiv = document.createElement('div');
     headerDiv.classList.add('message-header');
+
     const senderSpan = document.createElement('span');
     senderSpan.classList.add('message-sender');
     senderSpan.textContent = messageData.message_type === 'user' ? 'You' : capitalizeFirstLetter(messageData.message_type);
+
     const timeSpan = document.createElement('span');
     timeSpan.classList.add('message-time');
     const now = new Date();
     timeSpan.textContent = now.toLocaleTimeString();
+
     headerDiv.appendChild(senderSpan);
     headerDiv.appendChild(timeSpan);
 
     const contentDiv = document.createElement('div');
     contentDiv.classList.add('message-content');
 
-    // Split the text by lines
+    // Format the message text
     const lines = messageData.message_text.split('\n');
     const formattedLines = lines.map(line => {
-        // Count the number of tabs at the beginning of the line
         const tabCount = (line.match(/^\t+/) || [''])[0].length;
         const indentClass = `indent-${tabCount}`;
         let trimmedLine = line.replace(/^\t+/, '');
-
-        // Replace **text** with <strong>text</strong>
         trimmedLine = trimmedLine.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-
         return `<span class="${indentClass}">${trimmedLine}</span>`;
     }).join('<br>');
 
@@ -78,6 +76,25 @@ function createMessageElement(messageData) {
 
     messageDiv.appendChild(headerDiv);
     messageDiv.appendChild(contentDiv);
+
+    // Add tool_calls if they exist
+    if (messageData.tool_calls) {
+        const toolCallsDiv = document.createElement('div');
+        toolCallsDiv.classList.add('tool-calls');
+
+        // Optional: Add a label
+        const label = document.createElement('strong');
+        label.textContent = 'Tool Calls: ';
+        toolCallsDiv.appendChild(label);
+
+        // Handle line breaks in tool_calls
+        const toolCallsText = messageData.tool_calls.replace(/\n/g, '<br>');
+        const toolCallsContent = document.createElement('span');
+        toolCallsContent.innerHTML = toolCallsText;
+        toolCallsDiv.appendChild(toolCallsContent);
+
+        messageDiv.appendChild(toolCallsDiv);
+    }
 
     return messageDiv;
 }

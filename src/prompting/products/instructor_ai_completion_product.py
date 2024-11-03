@@ -11,11 +11,11 @@ class InstructorAiCompletionProduct(AiCompletionProduct):
         self,
         completion_result: Optional[BaseModel],
         is_valid: bool,
-        error: Optional[AiCompletionErrorType] = None,
+        error: Optional[AiCompletionErrorType | str] = None,
     ):
         self._completion_result = completion_result
         self._is_valid = is_valid
-        self._error: Optional[AiCompletionErrorType] = None
+        self._error: Optional[AiCompletionErrorType | str] = error
 
     def get(self) -> BaseModel:
         return self._completion_result

@@ -40,6 +40,7 @@ class DialogueManager:
                 character.description,
                 character.personality,
                 character.equipment,
+                character.health,
                 character.voice_model,
             )
         if player_identifier:
@@ -50,6 +51,7 @@ class DialogueManager:
                 character.description,
                 character.personality,
                 character.equipment,
+                character.health,
                 character.voice_model,
             )
 

@@ -167,6 +167,7 @@ def test_get_prompt_kwargs_with_player_identifier():
         description="A brave adventurer.",
         personality="Bold and daring.",
         equipment="Sword and shield.",
+        health="Full health.",
         voice_model="PlayerVoiceModel",
     )
     participants.add_participant(
@@ -175,6 +176,7 @@ def test_get_prompt_kwargs_with_player_identifier():
         description="A wise mage.",
         personality="Thoughtful and calm.",
         equipment="Magic staff.",
+        health="Full health.",
         voice_model="AliceVoiceModel",
     )
     transcription = Transcription()

@@ -14,6 +14,7 @@ def test_identifier_not_convertible_to_int():
             "NPC Description",
             "NPC Personality",
             "NPC Equipment",
+            "NPC Health",
             "NPC Voice Model",
         )
 
@@ -31,6 +32,7 @@ def test_name_equals_description():
             "Same",
             "Personality",
             "Equipment",
+            "Health",
             "Voice Model",
         )
 

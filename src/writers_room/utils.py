@@ -1,3 +1,6 @@
+import json
+from typing import Dict, Any
+
 from src.filesystem.file_operations import (
     create_directories,
     create_empty_file_if_not_exists,
@@ -19,23 +22,17 @@ def ensure_writers_room_files(playthrough_name):
     )
 
 
-def prepare_messages_for_template(messages):
-    """Prepare messages data for the template."""
-    messages_data = []
-    for message in messages:
-        message_text = message.get("content", "")
-        if message.get("role") == "user":
-            message_type = "user"
-            sender = "You"
-        else:
-            message_type = message.get("sender", "assistant")
-            sender = message.get("sender", "Assistant")
-        messages_data.append(
-            {
-                "message_text": message_text,
-                "message_type": message_type,
-                "sender": sender,
-                "timestamp": message.get("timestamp"),
-            }
-        )
-    return messages_data
+def prepare_tool_calls_text(message: Dict[str, Any]):
+    tool_calls = message.get("tool_calls", [])
+
+    tool_calls_text_list = []
+
+    # It could be that there are no tool calls.
+    if tool_calls:
+        for tool_call in tool_calls:
+            f = tool_call["function"]
+            name, args = f["name"], f["arguments"]
+            arg_str = json.dumps(json.loads(args)).replace(":", "=")
+            tool_calls_text_list.append(f"{name} ({arg_str[1:-1]})")
+
+    return "\n".join(tool_calls_text_list)

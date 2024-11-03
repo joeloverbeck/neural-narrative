@@ -7,6 +7,7 @@ from src.base.abstracts.command import Command
 from src.base.abstracts.observer import Observer
 from src.base.abstracts.subject import Subject
 from src.dialogues.abstracts.strategies import MessageDataProducerForSpeechTurnStrategy
+from src.dialogues.exceptions import InvalidSpeechDataError
 from src.dialogues.factories.llm_speech_data_provider_factory import (
     LlmSpeechDataProviderFactory,
 )
@@ -35,27 +36,6 @@ class CreateSpeechTurnDataCommand(Command, Subject):
         )
         self._observers: List[Observer] = []
 
-    def _fix_invalid_speech_data(self, speech_data_product):
-        if not speech_data_product.is_valid():
-            logger.error(
-                "Failed to produce speech data: %s", speech_data_product.get_error()
-            )
-
-            # Could be that the internal dictionary is None.
-            if not speech_data_product.get():
-                speech_data_product.set({})
-
-            # If it turns out that there isn't a name applied, we enter the name we have.
-            if not "name" in speech_data_product.get():
-                speech_data_product.get()[
-                    "name"
-                ] = self._speech_turn_choice_response.get()["name"]
-
-            speech_data_product.get()[
-                "narration_text"
-            ] = f"{self._speech_turn_choice_response.get()["name"]} looks confused."
-            speech_data_product.get()["speech"] = "I don't know what to say."
-
     def attach(self, observer: Observer) -> None:
         self._observers.append(observer)
 
@@ -81,7 +61,10 @@ class CreateSpeechTurnDataCommand(Command, Subject):
             )
         )
 
-        self._fix_invalid_speech_data(speech_data_product)
+        if not speech_data_product.is_valid():
+            raise InvalidSpeechDataError(
+                f"Failed to produce speech data: {speech_data_product.get_error()}",
+            )
 
         if "name" in speech_data_product.get():
             name = speech_data_product.get()["name"]

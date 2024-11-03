@@ -15,7 +15,7 @@ from src.filesystem.filesystem_manager import FilesystemManager
 from src.filesystem.path_manager import PathManager
 
 
-class HandlePossibleExistenceOfOngoingConversationCommand(Command):
+class LoadOrInitializeDialogueDataCommand(Command):
 
     def __init__(
         self,

@@ -5,8 +5,8 @@ from src.base.validators import validate_non_empty_string
 from src.dialogues.factories.load_data_from_ongoing_dialogue_command_factory import (
     LoadDataFromOngoingDialogueCommandFactory,
 )
-from src.dialogues.factories.load_ongoing_conversation_data_command_factory import (
-    LoadOngoingConversationDataCommandFactory,
+from src.dialogues.factories.load_or_initialize_dialogue_data_command_factory import (
+    LoadOrInitializeDialogueDataCommandFactory,
 )
 from src.dialogues.participants import Participants
 from src.dialogues.strategies.web_choose_participants_strategy import (
@@ -14,7 +14,7 @@ from src.dialogues.strategies.web_choose_participants_strategy import (
 )
 
 
-class LoadOngoingConversationDataCommandFactoryComposer:
+class LoadOrInitializeDialogueDataCommandFactoryComposer:
     def __init__(
         self,
         playthrough_name: str,
@@ -36,7 +36,7 @@ class LoadOngoingConversationDataCommandFactoryComposer:
 
     def compose_factory(
         self,
-    ) -> LoadOngoingConversationDataCommandFactory:
+    ) -> LoadOrInitializeDialogueDataCommandFactory:
         load_data_from_ongoing_dialogue_command_factory = (
             LoadDataFromOngoingDialogueCommandFactory(
                 self._playthrough_name, self._participants
@@ -47,7 +47,7 @@ class LoadOngoingConversationDataCommandFactoryComposer:
             self._other_characters_identifiers
         )
 
-        return LoadOngoingConversationDataCommandFactory(
+        return LoadOrInitializeDialogueDataCommandFactory(
             self._playthrough_name,
             self._playthrough_manager.get_player_identifier(),
             self._participants,

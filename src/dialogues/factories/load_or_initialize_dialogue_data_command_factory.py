@@ -1,7 +1,7 @@
 from src.base.validators import validate_non_empty_string
 from src.dialogues.abstracts.strategies import ChooseParticipantsStrategy
-from src.dialogues.commands.handle_possible_existence_of_ongoing_conversation_command import (
-    HandlePossibleExistenceOfOngoingConversationCommand,
+from src.dialogues.commands.load_or_initialize_dialogue_data_command import (
+    LoadOrInitializeDialogueDataCommand,
 )
 from src.dialogues.factories.load_data_from_ongoing_dialogue_command_factory import (
     LoadDataFromOngoingDialogueCommandFactory,
@@ -10,7 +10,7 @@ from src.dialogues.participants import Participants
 from src.dialogues.transcription import Transcription
 
 
-class LoadOngoingConversationDataCommandFactory:
+class LoadOrInitializeDialogueDataCommandFactory:
 
     def __init__(
         self,
@@ -33,8 +33,8 @@ class LoadOngoingConversationDataCommandFactory:
 
     def create_command(
         self, transcription: Transcription
-    ) -> HandlePossibleExistenceOfOngoingConversationCommand:
-        return HandlePossibleExistenceOfOngoingConversationCommand(
+    ) -> LoadOrInitializeDialogueDataCommand:
+        return LoadOrInitializeDialogueDataCommand(
             self._playthrough_name,
             self._player_identifier,
             self._participants,

@@ -84,12 +84,18 @@ class InstructorLlmClient(LlmClient):
                 MAXIMUM_CONTENT_LENGTH_REACHED: AiCompletionErrorType.MAXIMUM_CONTENT_LENGTH_REACHED,
             }
 
+            error = (
+                e.last_completion.message.content
+                if not hasattr(e.last_completion, "error")
+                else error_correlation.get(
+                    e.last_completion.error["code"], AiCompletionErrorType.UNHANDLED
+                )
+            )
+
             return InstructorAiCompletionProduct(
                 None,
                 is_valid=False,
-                error=error_correlation.get(
-                    e.last_completion["error"]["code"], AiCompletionErrorType.UNHANDLED
-                ),
+                error=error,
             )
 
         return InstructorAiCompletionProduct(model_result, is_valid=True)
