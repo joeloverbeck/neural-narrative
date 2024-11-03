@@ -42,9 +42,9 @@ class PlaythroughManager:
             playthrough_metadata,
         )
 
-    def has_ongoing_dialogue(self, playthrough_name):
+    def has_ongoing_dialogue(self):
         return os.path.exists(
-            self._path_manager.get_ongoing_dialogue_path(playthrough_name)
+            self._path_manager.get_ongoing_dialogue_path(self._playthrough_name)
         )
 
     def update_player_identifier(self, new_player_identifier: str):

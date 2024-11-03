@@ -37,7 +37,7 @@ class AddMessagesToOngoingDialogueCommand(Command):
             self._playthrough_name
         )
 
-        if not self._playthrough_manager.has_ongoing_dialogue(self._playthrough_name):
+        if not self._playthrough_manager.has_ongoing_dialogue():
             create_empty_json_file_if_not_exists(ongoing_dialogue_file_path)
 
         ongoing_dialogue_file = read_json_file(ongoing_dialogue_file_path)

@@ -118,7 +118,7 @@ class IndexView(MethodView):
 
                 session["playthrough_name"] = playthrough_name
                 playthrough_manager = PlaythroughManager(playthrough_name)
-                if playthrough_manager.has_ongoing_dialogue(playthrough_name):
+                if playthrough_manager.has_ongoing_dialogue():
                     return redirect(url_for("chat"))
                 else:
                     return redirect(url_for("story-hub"))

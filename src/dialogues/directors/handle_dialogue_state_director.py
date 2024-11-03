@@ -42,9 +42,7 @@ class HandleDialogueStateDirector:
         )
 
     def direct(self) -> HandleDialogueStateAlgorithmProduct:
-        has_ongoing_dialogue = self._playthrough_manager.has_ongoing_dialogue(
-            self._playthrough_name
-        )
+        has_ongoing_dialogue = self._playthrough_manager.has_ongoing_dialogue()
 
         if not self._dialogue_participant_identifiers and not has_ongoing_dialogue:
             logger.info("There were no dialogue participants, and no ongoing dialogue.")

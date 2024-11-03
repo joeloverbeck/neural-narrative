@@ -73,7 +73,7 @@ class ChatView(MethodView):
             playthrough_name,
             dialogue_participants,
             purpose,
-            PlaythroughManager(playthrough_name).has_ongoing_dialogue(playthrough_name),
+            PlaythroughManager(playthrough_name).has_ongoing_dialogue(),
         )
 
         extract_identifiers_algorithm = ExtractIdentifiersFromParticipantsDataAlgorithm(
@@ -118,13 +118,17 @@ class ChatView(MethodView):
 
         WebService().format_image_urls_of_characters(available_characters)
 
-        ongoing_dialogue_file = read_json_file(
-            PathManager().get_ongoing_dialogue_path(playthrough_name)
-        )
+        if PlaythroughManager(playthrough_name).has_ongoing_dialogue():
+            ongoing_dialogue_file = read_json_file(
+                PathManager().get_ongoing_dialogue_path(playthrough_name)
+            )
+            dialogue = ongoing_dialogue_file.get("messages", [])
+        else:
+            dialogue = []
 
         return render_template(
             "chat.html",
-            dialogue=ongoing_dialogue_file.get("messages", []),
+            dialogue=dialogue,
             current_time=TimeManager(playthrough_name).get_time_of_the_day(),
             current_place_template=MapManagerFactory(playthrough_name)
             .create_map_manager()
