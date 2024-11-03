@@ -36,3 +36,33 @@ def prepare_tool_calls_text(message: Dict[str, Any]):
             tool_calls_text_list.append(f"{name} ({arg_str[1:-1]})")
 
     return "\n".join(tool_calls_text_list)
+
+
+def prepare_messages(messages):
+    messages_data = []
+
+    for message in messages:
+        message_text = message.get("content", "")
+
+        message_text = "No content" if not message_text else message_text
+
+        if message.get("role") == "user":
+            message_type = "user"
+            sender = "You"
+        elif message.get("role") == "tool":
+            continue
+        else:
+            message_type = message.get("sender", "assistant")
+            sender = message.get("sender", "Assistant")
+
+        messages_data.append(
+            {
+                "message_text": message_text,
+                "message_type": message_type,
+                "sender": sender,
+                "tool_calls": prepare_tool_calls_text(message),
+                "timestamp": message.get("timestamp"),
+            }
+        )
+
+    return messages_data

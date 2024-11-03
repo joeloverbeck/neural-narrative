@@ -65,7 +65,7 @@
   "grow_event": "hermes_405b",
   "confrontation_round": "hermes_405b",
   "speech_turn_choice": "hermes_405b",
-  "speech_turn": "magnum_72b",
+  "speech_turn": "hermes_405b",
   "dialogue_summary": "magnum_72b",
   "action_resolution": "hermes_405b",
   "writers_room": "nemotron_70b"

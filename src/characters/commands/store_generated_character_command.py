@@ -113,13 +113,17 @@ class StoreGeneratedCharacterCommand(Command):
             self._produce_and_update_next_identifier_algorithm.do_algorithm()
         ] = modified_character_data
 
+        characters_file_path = self._path_manager.get_characters_file_path(
+            self._playthrough_name
+        )
+
         write_json_file(
-            self._path_manager.get_characters_file_path(self._playthrough_name),
+            characters_file_path,
             characters_file,
         )
 
         logger.info(
-            f"Saved character '{self._character_data.name}' at '{characters_file}'."
+            f"Saved character '{self._character_data.name}' at '{characters_file_path}'."
         )
 
     def _compose_speech_patterns(self) -> str:

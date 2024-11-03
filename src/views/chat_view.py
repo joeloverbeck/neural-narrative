@@ -70,9 +70,11 @@ class ChatView(MethodView):
             purpose,
             PlaythroughManager(playthrough_name).has_ongoing_dialogue(playthrough_name),
         )
+
         extract_identifiers_algorithm = ExtractIdentifiersFromParticipantsDataAlgorithm(
             playthrough_name, dialogue_participants
         )
+
         product = HandleDialogueStateDirector(
             playthrough_name,
             dialogue_participants,
@@ -100,11 +102,15 @@ class ChatView(MethodView):
         all_characters = (
             characters_manager.get_characters_at_current_place_plus_followers()
         )
+
+        dialogue_participants = dialogue_participants if dialogue_participants else []
+
         available_characters = [
             char
             for char in all_characters
             if char.identifier not in dialogue_participants
         ]
+
         WebService().format_image_urls_of_characters(available_characters)
 
         return render_template(

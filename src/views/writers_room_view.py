@@ -17,7 +17,7 @@ from src.writers_room.context_loader import ContextLoader
 from src.writers_room.enums import AgentType
 from src.writers_room.utils import (
     ensure_writers_room_files,
-    prepare_tool_calls_text,
+    prepare_messages,
 )
 from src.writers_room.writers_room_session_repository import (
     WritersRoomSessionRepository,
@@ -42,36 +42,6 @@ class WritersRoomView(MethodView):
         }
         return agent_name_correlation.get(agent_name, "showrunner")
 
-    @staticmethod
-    def _prepare_messages(messages):
-        messages_data = []
-
-        for message in messages:
-            message_text = message.get("content", "")
-
-            message_text = "No content" if not message_text else message_text
-
-            if message.get("role") == "user":
-                message_type = "user"
-                sender = "You"
-            elif message.get("role") == "tool":
-                continue
-            else:
-                message_type = message.get("sender", "assistant")
-                sender = message.get("sender", "Assistant")
-
-            messages_data.append(
-                {
-                    "message_text": message_text,
-                    "message_type": message_type,
-                    "sender": sender,
-                    "tool_calls": prepare_tool_calls_text(message),
-                    "timestamp": message.get("timestamp"),
-                }
-            )
-
-        return messages_data
-
     def get(self):
         playthrough_name = session.get("playthrough_name")
         if not playthrough_name:
@@ -85,7 +55,7 @@ class WritersRoomView(MethodView):
         messages = session_manager.get_messages()
 
         # Prepare messages data for the template
-        messages_data = self._prepare_messages(messages)
+        messages_data = prepare_messages(messages)
 
         return render_template("writers-room.html", messages=messages_data)
 
@@ -167,7 +137,7 @@ class WritersRoomView(MethodView):
         writers_room_session_repository.save()
 
         # Prepare messages data for response
-        messages_data = self._prepare_messages(response.messages)
+        messages_data = prepare_messages(response.messages)
 
         return jsonify({"success": True, "messages": messages_data, "action": "send"})
 
