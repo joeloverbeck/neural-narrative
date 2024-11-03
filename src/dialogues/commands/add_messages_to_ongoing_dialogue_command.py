@@ -42,7 +42,8 @@ class AddMessagesToOngoingDialogueCommand(Command):
 
         ongoing_dialogue_file = read_json_file(ongoing_dialogue_file_path)
 
-        if not "messages" in ongoing_dialogue_file:
+        if not "messages" in ongoing_dialogue_file.keys():
+            logger.info("There weren't messages in the ongoing dialogue file.")
             ongoing_dialogue_file["messages"] = []
 
         for message in self._messages:
