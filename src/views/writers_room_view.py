@@ -42,7 +42,8 @@ class WritersRoomView(MethodView):
         }
         return agent_name_correlation.get(agent_name, "showrunner")
 
-    def get(self):
+    @staticmethod
+    def get():
         playthrough_name = session.get("playthrough_name")
         if not playthrough_name:
             return redirect(url_for("index"))

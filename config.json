@@ -2,7 +2,6 @@
   "produce_voice_lines": true,
   "default_voice_model": "malewarlock",
   "narrator_voice_model": "tulius",
-  "max_dialogue_entries_for_web": 10,
   "time_advanced_due_to_dialogue": 1,
   "time_advanced_due_to_exiting_location": 1,
   "time_advanced_due_to_traveling": 10,

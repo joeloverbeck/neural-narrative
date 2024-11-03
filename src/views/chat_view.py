@@ -13,10 +13,15 @@ from src.dialogues.algorithms.extract_identifiers_from_participants_data_algorit
 from src.dialogues.algorithms.load_data_from_ongoing_dialogue_algorithm import (
     LoadDataFromOngoingDialogueAlgorithm,
 )
+from src.dialogues.commands.add_messages_to_ongoing_dialogue_command import (
+    AddMessagesToOngoingDialogueCommand,
+)
 from src.dialogues.directors.handle_dialogue_state_director import (
     HandleDialogueStateDirector,
 )
 from src.dialogues.enums import HandleDialogueStateAlgorithmResultType
+from src.filesystem.file_operations import read_json_file
+from src.filesystem.path_manager import PathManager
 from src.maps.factories.map_manager_factory import MapManagerFactory
 from src.services.dialogue_service import DialogueService
 from src.services.web_service import WebService
@@ -113,9 +118,13 @@ class ChatView(MethodView):
 
         WebService().format_image_urls_of_characters(available_characters)
 
+        ongoing_dialogue_file = read_json_file(
+            PathManager().get_ongoing_dialogue_path(playthrough_name)
+        )
+
         return render_template(
             "chat.html",
-            dialogue=session.get("dialogue", []),
+            dialogue=ongoing_dialogue_file.get("messages", []),
             current_time=TimeManager(playthrough_name).get_time_of_the_day(),
             current_place_template=MapManagerFactory(playthrough_name)
             .create_map_manager()
@@ -142,7 +151,6 @@ class ChatView(MethodView):
             if is_goodbye:
                 session.pop("participants", None)
                 session.pop("purpose", None)
-                session.pop("dialogue", None)
 
             return (
                 jsonify(
@@ -155,6 +163,7 @@ class ChatView(MethodView):
 
     @staticmethod
     def process_action(
+        playthrough_name: str,
         action,
         dialogue_participants: List[str],
         user_input=None,
@@ -162,31 +171,30 @@ class ChatView(MethodView):
         action_input=None,
     ):
         dialogue_service = DialogueService()
-        dialogue = session.get("dialogue", [])
 
         if action == "Send":
             return ChatView.handle_send(
-                dialogue_service, dialogue, user_input, dialogue_participants
+                playthrough_name, dialogue_service, user_input, dialogue_participants
             )
         elif action == "Ambient narration":
             return ChatView.handle_ambient_narration(
-                dialogue_service, dialogue, dialogue_participants
+                playthrough_name, dialogue_service, dialogue_participants
             )
         elif action == "Event":
             return ChatView.handle_event(
-                dialogue_service, dialogue, event_input, dialogue_participants
+                playthrough_name, dialogue_service, event_input, dialogue_participants
             )
         elif action == "Grow event":
             return ChatView.handle_grow_event(
-                dialogue_service, dialogue, event_input, dialogue_participants
+                playthrough_name, dialogue_service, event_input, dialogue_participants
             )
         elif action == "Confrontation round":
             return ChatView.handle_confrontation_round(
-                dialogue_service, dialogue, action_input, dialogue_participants
+                playthrough_name, dialogue_service, action_input, dialogue_participants
             )
         elif action == "Narrative beat":
             return ChatView.handle_narrative_beat(
-                dialogue_service, dialogue, dialogue_participants
+                playthrough_name, dialogue_service, dialogue_participants
             )
 
         raise ValueError(f"Unknown action: {action}")
@@ -206,40 +214,52 @@ class ChatView(MethodView):
         return redirect(url_for("chat"))
 
     @staticmethod
-    def handle_send(dialogue_service, dialogue, user_input, dialogue_participants):
+    def handle_send(
+        playthrough_name: str, dialogue_service, user_input, dialogue_participants
+    ):
         if not user_input:
             raise ValueError("Please enter a message.")
+
         messages, is_goodbye = dialogue_service.process_user_input(
             user_input, dialogue_participants
         )
-        dialogue.extend(messages)
-        dialogue_service.control_size_of_messages_in_session(dialogue)
+
+        AddMessagesToOngoingDialogueCommand(playthrough_name, messages).execute()
+
         return messages, is_goodbye
 
     @staticmethod
-    def handle_ambient_narration(dialogue_service, dialogue, dialogue_participants):
+    def handle_ambient_narration(
+        playthrough_name: str, dialogue_service, dialogue_participants
+    ):
         ambient_message = dialogue_service.process_ambient_message(
             dialogue_participants, session.get("purpose", "")
         )
-        dialogue.append(ambient_message)
-        dialogue_service.control_size_of_messages_in_session(dialogue)
+
+        AddMessagesToOngoingDialogueCommand(
+            playthrough_name, [ambient_message]
+        ).execute()
+
         return [ambient_message], False
 
     @staticmethod
-    def handle_event(dialogue_service, dialogue, event_input, dialogue_participants):
+    def handle_event(
+        playthrough_name: str, dialogue_service, event_input, dialogue_participants
+    ):
         if not event_input:
             raise ValueError("Please enter an event.")
         event_message = dialogue_service.process_event_message(
             dialogue_participants, session.get("purpose", ""), event_input
         )
-        dialogue.append(event_message)
-        dialogue_service.control_size_of_messages_in_session(dialogue)
+
+        AddMessagesToOngoingDialogueCommand(playthrough_name, [event_message]).execute()
+
         return [event_message], False
 
     @staticmethod
     def handle_grow_event(
+        playthrough_name: str,
         dialogue_service: DialogueService,
-        dialogue: list,
         event_input: Optional[str],
         dialogue_participants: List[str],
     ):
@@ -250,14 +270,14 @@ class ChatView(MethodView):
             dialogue_participants, session.get("purpose", ""), event_input
         )
 
-        dialogue.append(event_message)
-        dialogue_service.control_size_of_messages_in_session(dialogue)
+        AddMessagesToOngoingDialogueCommand(playthrough_name, [event_message]).execute()
+
         return [event_message], False
 
     @staticmethod
     def handle_confrontation_round(
+        playthrough_name: str,
         dialogue_service: DialogueService,
-        dialogue: list,
         action_input: Optional[str],
         dialogue_participants: List[str],
     ):
@@ -268,17 +288,22 @@ class ChatView(MethodView):
             dialogue_participants, session.get("purpose", ""), action_input
         )
 
-        dialogue.append(event_message)
-        dialogue_service.control_size_of_messages_in_session(dialogue)
+        AddMessagesToOngoingDialogueCommand(playthrough_name, [event_message]).execute()
+
         return [event_message], False
 
     @staticmethod
-    def handle_narrative_beat(dialogue_service, dialogue, dialogue_participants):
+    def handle_narrative_beat(
+        playthrough_name: str, dialogue_service, dialogue_participants
+    ):
         narrative_beat_message = dialogue_service.process_narrative_beat(
             dialogue_participants, session.get("purpose", "")
         )
-        dialogue.append(narrative_beat_message)
-        dialogue_service.control_size_of_messages_in_session(dialogue)
+
+        AddMessagesToOngoingDialogueCommand(
+            playthrough_name, [narrative_beat_message]
+        ).execute()
+
         return [narrative_beat_message], False
 
     @staticmethod
@@ -299,7 +324,12 @@ class ChatView(MethodView):
         if action:
             try:
                 messages, is_goodbye = ChatView.process_action(
-                    action, dialogue_participants, user_input, event_input, action_input
+                    playthrough_name,
+                    action,
+                    dialogue_participants,
+                    user_input,
+                    event_input,
+                    action_input,
                 )
                 return ChatView.respond_with_messages(messages, is_goodbye)
             except Exception as e:

@@ -41,9 +41,6 @@ class ConfigLoader:
     def get_default_voice_model(self) -> str:
         return self._get_config_key("default_voice_model")
 
-    def get_max_dialogue_entries_for_web(self) -> int:
-        return self._get_config_key("max_dialogue_entries_for_web")
-
     def get_time_advanced_due_to_dialogue(self) -> int:
         return self._get_config_key("time_advanced_due_to_dialogue")
 

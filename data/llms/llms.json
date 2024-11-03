@@ -45,6 +45,13 @@
       "temperature": 0.6,
       "top_p": 1.0,
       "supports_tools": false
+    },
+    "claude_3.5_sonnet": {
+      "name": "anthropic/claude-3.5-sonnet",
+      "description": "Expensive.",
+      "temperature": 1.0,
+      "top_p": 1.0,
+      "supports_tools": true
     }
   },
   "story_universe_generation": "hermes_405b",
@@ -65,7 +72,7 @@
   "grow_event": "hermes_405b",
   "confrontation_round": "hermes_405b",
   "speech_turn_choice": "hermes_405b",
-  "speech_turn": "hermes_405b",
+  "speech_turn": "claude_3.5_sonnet",
   "dialogue_summary": "magnum_72b",
   "action_resolution": "hermes_405b",
   "writers_room": "nemotron_70b"

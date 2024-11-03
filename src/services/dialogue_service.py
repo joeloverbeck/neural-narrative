@@ -53,7 +53,6 @@ from src.dialogues.strategies.narrative_beat_for_dialogue_strategy import (
 from src.dialogues.strategies.participants_identifiers_strategy import (
     ParticipantsIdentifiersStrategy,
 )
-from src.filesystem.config_loader import ConfigLoader
 from src.prompting.composers.produce_tool_response_strategy_factory_composer import (
     ProduceToolResponseStrategyFactoryComposer,
 )
@@ -333,11 +332,3 @@ class DialogueService:
             )
             messages.append(message)
         return messages
-
-    @staticmethod
-    def control_size_of_messages_in_session(dialogue):
-        config_loader = ConfigLoader()
-
-        if len(dialogue) > config_loader.get_max_dialogue_entries_for_web():
-            dialogue = dialogue[-config_loader.get_max_dialogue_entries_for_web() :]
-        session["dialogue"] = dialogue
