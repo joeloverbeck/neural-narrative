@@ -7,6 +7,7 @@ from src.base.enums import TemplateType
 
 class PathManager:
     TEMPLATE_FILES = {
+        TemplateType.ROOM: "rooms.json",
         TemplateType.LOCATION: "locations.json",
         TemplateType.AREA: "areas.json",
         TemplateType.REGION: "regions.json",
