@@ -9,6 +9,7 @@ from src.base.playthrough_manager import PlaythroughManager
 from src.base.tools import capture_traceback
 from src.characters.characters_manager import CharactersManager
 from src.filesystem.config_loader import ConfigLoader
+from src.maps.algorithms.get_places_in_place_algorithm import GetPlacesInPlaceAlgorithm
 from src.maps.composers.place_selection_manager_composer import (
     PlaceSelectionManagerComposer,
 )
@@ -76,15 +77,23 @@ class LocationHubView(MethodView):
         current_area_identifier = map_manager.get_current_area_identifier()
 
         locations_present = None
+        rooms_present = None
         cardinal_connections = None
         can_search_for_location = False
+        can_search_for_room = False
         available_location_types = []
+        available_room_types = []
 
         if current_place_type == TemplateType.AREA:
             playthrough_manager = PlaythroughManager(playthrough_name)
-            locations_present = map_manager.get_locations_in_area(
-                playthrough_manager.get_current_place_identifier()
-            )
+
+            locations_present = GetPlacesInPlaceAlgorithm(
+                playthrough_name,
+                playthrough_manager.get_current_place_identifier(),
+                TemplateType.AREA,
+                TemplateType.LOCATION,
+            ).do_algorithm()
+
             cardinal_connections = NavigationManager(
                 map_repository
             ).get_cardinal_connections(
@@ -96,10 +105,31 @@ class LocationHubView(MethodView):
             ).compose_manager()
 
             available_location_types = (
-                place_selection_manager.get_available_location_types(current_place)
+                place_selection_manager.get_available_place_types(
+                    current_place, TemplateType.LOCATION
+                )
             )
             if available_location_types:
                 can_search_for_location = True
+        elif current_place_type == TemplateType.LOCATION:
+            playthrough_manager = PlaythroughManager(playthrough_name)
+
+            rooms_present = GetPlacesInPlaceAlgorithm(
+                playthrough_name,
+                playthrough_manager.get_current_place_identifier(),
+                TemplateType.LOCATION,
+                TemplateType.ROOM,
+            ).do_algorithm()
+
+            place_selection_manager = PlaceSelectionManagerComposer(
+                playthrough_name
+            ).compose_manager()
+
+            available_room_types = place_selection_manager.get_available_place_types(
+                current_place, TemplateType.ROOM
+            )
+            if available_room_types:
+                can_search_for_room = True
 
         time_manager = TimeManager(playthrough_name)
         current_hour = time_manager.get_hour()
@@ -137,10 +167,13 @@ class LocationHubView(MethodView):
             current_place_type=current_place_type,
             can_search_for_location=can_search_for_location,
             locations_present=locations_present,
+            can_search_for_room=can_search_for_room,
+            rooms_present=rooms_present,
             cardinal_connections=cardinal_connections,
             current_hour=current_hour,
             current_time_of_day=current_time_of_day,
             location_types=available_location_types,
+            room_types=available_room_types,
             current_weather=current_weather,
             current_weather_description=current_weather_description,
             all_weathers=weathers_manager.get_all_weather_identifiers(),

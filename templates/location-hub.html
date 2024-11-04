@@ -102,10 +102,70 @@
             </div>
 
 
-            <!-- Location Actions -->
-            {% if current_place_type.value == "area" %}
+            <!-- Place Actions -->
+            {% if current_place_type.value == "location" %}
             <div class="action-group">
                 <h2 class="action-group-title">Location Actions</h2>
+                <div class="buttons">
+
+                    <!-- Search Room Group -->
+                    <div class="search-room-group">
+                        {% if can_search_for_room %}
+                        <form method="post" class="action-form search-room-form">
+                            <input name="submit_action" type="hidden" value="Search For Room">
+                            <label for="room_type">Choose Room Type:</label>
+                            <select name="room_type" id="room_type">
+                                <option value="" selected>Any Type</option>
+                                {% for room_type in room_types %}
+                                <option value="{{ room_type }}">{{ room_type }}</option>
+                                {% endfor %}
+                            </select>
+                            <button type="submit" class="action-button">
+                                <i class="fas fa-search-location"></i> Search for room
+                            </button>
+                        </form>
+                        {% else %}
+                        <form method="post" class="action-form search-room-form">
+                            <input name="submit_action" type="hidden" value="Search For Room">
+                            <label for="room_type">Choose Room Type:</label>
+                            <select name="room_type" disabled>
+                                <option value="" selected>Any Type</option>
+                                <!-- Optionally, you can list types but disable them -->
+                            </select>
+                            <button type="submit" class="action-button" disabled>
+                                <i class="fas fa-search-location"></i> Search for room
+                            </button>
+                        </form>
+                        <p class="info-message">
+                            No available room types.
+                        </p>
+                        {% endif %}
+                    </div>
+
+                    <hr class="group-separator">
+
+                    <!-- Enter Room Group -->
+                    {% if rooms_present %}
+                    <div class="enter-room-group">
+                        {% for room in rooms_present %}
+                        <form method="post" class="action-form enter-room-form">
+                            <input name="submit_action" type="hidden" value="Enter Room">
+                            <input name="room_identifier" type="hidden" value="{{ room.identifier }}">
+                            <button type="submit" class="action-button">
+                                <i class="fas fa-door-open"></i> Enter {{ room.place_template }}
+                            </button>
+                        </form>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                </div>
+            </div>
+            {% endif %}
+
+            {% if current_place_type.value == "area" %}
+            <div class="action-group">
+                <h2 class="action-group-title">Area Actions</h2>
                 <div class="buttons">
 
                     <!-- Search Location Group -->
@@ -145,8 +205,8 @@
                     <hr class="group-separator">
 
                     <!-- Visit Location Group -->
+                    {% if locations_present %}
                     <div class="visit-location-group">
-                        {% if locations_present %}
                         {% for location in locations_present %}
                         <form method="post" class="action-form visit-location-form">
                             <input name="submit_action" type="hidden" value="Visit Location">
@@ -156,8 +216,8 @@
                             </button>
                         </form>
                         {% endfor %}
-                        {% endif %}
                     </div>
+                    {% endif %}
 
                 </div>
             </div>
@@ -228,7 +288,7 @@
     {% if characters %}
     <div class="collapsible-section">
         <button class="collapsible">
-            <i class="fas fa-users"></i> Characters at this Location
+            <i class="fas fa-users"></i> Characters at this place
         </button>
         <div class="content">
             <form method="post">
@@ -253,7 +313,7 @@
         </div>
     </div>
     {% else %}
-    <p class="no-characters">No characters are present at this location.</p>
+    <p class="no-characters">No characters are present at this place.</p>
     {% endif %}
 
     <!-- Followers Section -->

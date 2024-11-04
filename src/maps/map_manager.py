@@ -127,30 +127,6 @@ class MapManager:
                 result[f"{place_type}_data"] = result_data
         return result
 
-    def get_locations_in_area(self, area_identifier: str) -> List[Dict[str, str]]:
-        """
-        Retrieve a list of dictionaries containing the identifier and place_template
-        of locations within a given area.
-
-        Args:
-            area_identifier (str): The identifier of the area.
-
-        Returns:
-            List[Dict[str, str]]: A list of dictionaries with keys 'identifier' and 'place_template'.
-        """
-        map_file = self._map_repository.load_map_data()
-        locations = []
-        for identifier, data in map_file.items():
-            if data.get("area") == area_identifier and data.get("type") == "location":
-                location_info = {
-                    "identifier": identifier,
-                    "place_template": data.get("place_template"),
-                }
-                locations.append(location_info)
-        if not locations:
-            logger.warning(f"No locations found in area '{area_identifier}'.")
-        return locations
-
     def get_all_areas(self) -> List[Dict[str, str]]:
         """
         Retrieve all areas present in the map.
