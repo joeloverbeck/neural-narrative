@@ -94,7 +94,15 @@
                     <form method="post" class="action-form">
                         <input name="submit_action" type="hidden" value="Exit Location">
                         <button type="submit" class="action-button">
-                            <i class="fas fa-sign-out-alt"></i> Exit current place
+                            <i class="fas fa-sign-out-alt"></i> Exit
+                        </button>
+                    </form>
+                    {% endif %}
+                    {% if current_place_type.value == "room" %}
+                    <form method="post" class="action-form">
+                        <input name="submit_action" type="hidden" value="Exit Room">
+                        <button type="submit" class="action-button">
+                            <i class="fas fa-sign-out-alt"></i> Exit
                         </button>
                     </form>
                     {% endif %}

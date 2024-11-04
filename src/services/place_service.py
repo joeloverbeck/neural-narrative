@@ -8,13 +8,14 @@ from src.characters.character import Character
 from src.characters.factories.character_information_provider import (
     CharacterInformationProvider,
 )
-from src.filesystem.file_operations import read_json_file
-from src.filesystem.path_manager import PathManager
 from src.maps.abstracts.factory_products import (
     CardinalConnectionCreationProduct,
     RandomTemplateTypeMapEntryCreationResult,
 )
 from src.maps.commands.generate_place_command import GeneratePlaceCommand
+from src.maps.composers.get_current_weather_identifier_algorithm_composer import (
+    GetCurrentWeatherIdentifierAlgorithmComposer,
+)
 from src.maps.composers.random_template_type_map_entry_provider_factory_composer import (
     RandomTemplateTypeMapEntryProviderFactoryComposer,
 )
@@ -123,7 +124,7 @@ class PlaceService:
         )
         place_manager_factory = PlaceManagerFactory(playthrough_name)
         map_manager_factory = MapManagerFactory(playthrough_name)
-        weathers_manager = WeathersManager(map_manager_factory)
+        weathers_manager = WeathersManager()
         factories_config = FilteredPlaceDescriptionGenerationFactoryFactoriesConfig(
             produce_tool_response_strategy_factory,
             character_information_factory,
@@ -131,8 +132,15 @@ class PlaceService:
             map_manager_factory,
             weathers_manager,
         )
+
+        get_current_weather_identifier_algorithm = (
+            GetCurrentWeatherIdentifierAlgorithmComposer(
+                playthrough_name
+            ).compose_algorithm()
+        )
+
         description_product = ConcreteFilteredPlaceDescriptionGenerationFactory(
-            config, factories_config
+            config, factories_config, get_current_weather_identifier_algorithm
         ).generate_product(PlaceDescription)
 
         if description_product.is_valid():
@@ -209,32 +217,9 @@ class PlaceService:
         return random_template_type_map_entry_provider.create_map_entry()
 
     @staticmethod
-    def exit_location(playthrough_name: str):
-        playthrough_manager = PlaythroughManager(playthrough_name)
-
-        if (
-            not PlaceManagerFactory(playthrough_name)
-            .create_place_manager()
-            .get_current_place_type()
-            == TemplateType.LOCATION
-        ):
-            raise ValueError(
-                "Somehow tried to exit a location when the current place wasn't a location."
-            )
-
-        map_file = read_json_file(PathManager().get_map_path(playthrough_name))
-        current_place_identifier = playthrough_manager.get_current_place_identifier()
-        destination_area = map_file[current_place_identifier]["area"]
-
-        visit_command_factory = VisitPlaceCommandFactoryComposer(
-            playthrough_name
-        ).compose_factory()
-
-        visit_command_factory.create_visit_place_command(destination_area).execute()
-
-    @staticmethod
     def visit_place(playthrough_name: str, place_identifier: str):
         visit_command_factory = VisitPlaceCommandFactoryComposer(
             playthrough_name
         ).compose_factory()
+
         visit_command_factory.create_visit_place_command(place_identifier).execute()

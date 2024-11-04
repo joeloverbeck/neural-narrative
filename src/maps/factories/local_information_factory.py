@@ -3,6 +3,9 @@ from typing import Optional
 from src.base.playthrough_manager import PlaythroughManager
 from src.filesystem.file_operations import read_file
 from src.filesystem.path_manager import PathManager
+from src.maps.algorithms.get_current_weather_identifier_algorithm import (
+    GetCurrentWeatherIdentifierAlgorithm,
+)
 from src.maps.place_description_manager import PlaceDescriptionManager
 from src.maps.weathers_manager import WeathersManager
 from src.time.time_manager import TimeManager
@@ -13,6 +16,7 @@ class LocalInformationFactory:
     def __init__(
         self,
         playthrough_name: str,
+        get_current_weather_identifier_algorithm: GetCurrentWeatherIdentifierAlgorithm,
         place_description_manager: PlaceDescriptionManager,
         weathers_manager: WeathersManager,
         time_manager: Optional[TimeManager] = None,
@@ -20,6 +24,9 @@ class LocalInformationFactory:
         path_manager: Optional[PathManager] = None,
     ):
         self._playthrough_name = playthrough_name
+        self._get_current_weather_identifier_algorithm = (
+            get_current_weather_identifier_algorithm
+        )
         self._place_description_manager = place_description_manager
         self._weathers_manager = weathers_manager
 
@@ -41,7 +48,7 @@ class LocalInformationFactory:
             "hour": self._time_manager.get_hour(),
             "time_of_day": self._time_manager.get_time_of_the_day(),
             "weather": self._weathers_manager.get_weather_description(
-                self._weathers_manager.get_current_weather_identifier()
+                self._get_current_weather_identifier_algorithm.do_algorithm()
             ),
         }
 

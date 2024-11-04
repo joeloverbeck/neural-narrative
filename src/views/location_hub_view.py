@@ -18,8 +18,14 @@ from src.base.enums import TemplateType
 from src.base.playthrough_manager import PlaythroughManager
 from src.base.tools import capture_traceback
 from src.characters.characters_manager import CharactersManager
+from src.maps.algorithms.get_current_area_identifier_algorithm import (
+    GetCurrentAreaIdentifierAlgorithm,
+)
 from src.maps.algorithms.get_places_in_place_algorithm import GetPlacesInPlaceAlgorithm
 from src.maps.commands.attach_place_command import AttachPlaceCommand
+from src.maps.composers.get_current_weather_identifier_algorithm_composer import (
+    GetCurrentWeatherIdentifierAlgorithmComposer,
+)
 from src.maps.composers.place_selection_manager_composer import (
     PlaceSelectionManagerComposer,
 )
@@ -27,13 +33,13 @@ from src.maps.enums import (
     CardinalDirection,
     RandomTemplateTypeMapEntryCreationResultType,
 )
-from src.maps.factories.map_manager_factory import MapManagerFactory
 from src.maps.factories.place_manager_factory import PlaceManagerFactory
 from src.maps.map_manager import MapManager
 from src.maps.map_repository import MapRepository
 from src.maps.navigation_manager import NavigationManager
 from src.maps.templates_repository import TemplatesRepository
 from src.maps.weathers_manager import WeathersManager
+from src.movements.composers.exit_place_command_composer import ExitPlaceCommandComposer
 from src.services.character_service import CharacterService
 from src.services.place_service import PlaceService
 from src.services.web_service import WebService
@@ -71,7 +77,12 @@ class LocationHubView(MethodView):
 
         # Get all areas and the current area identifier
         areas = map_manager.get_all_areas()
-        current_area_identifier = map_manager.get_current_area_identifier()
+
+        place_manager_factory = PlaceManagerFactory(playthrough_name)
+
+        current_area_identifier = GetCurrentAreaIdentifierAlgorithm(
+            playthrough_name, place_manager_factory
+        ).do_algorithm()
 
         locations_present = None
         rooms_present = None
@@ -132,9 +143,13 @@ class LocationHubView(MethodView):
         time_manager = TimeManager(playthrough_name)
         current_hour = time_manager.get_hour()
         current_time_of_day = time_manager.get_time_of_the_day()
-        map_manager_factory = MapManagerFactory(playthrough_name)
-        weathers_manager = WeathersManager(map_manager_factory)
-        current_weather = weathers_manager.get_current_weather_identifier()
+        weathers_manager = WeathersManager()
+
+        current_weather = (
+            GetCurrentWeatherIdentifierAlgorithmComposer(playthrough_name)
+            .compose_algorithm()
+            .do_algorithm()
+        )
         current_weather_description = weathers_manager.get_weather_description(
             current_weather
         )
@@ -251,15 +266,28 @@ class LocationHubView(MethodView):
         return redirect(url_for("participants"))
 
     @staticmethod
-    def handle_exit_location(playthrough_name):
-        PlaceService().exit_location(playthrough_name)
+    def exit_place(playthrough_name: str) -> Response:
+        ExitPlaceCommandComposer(playthrough_name).compose_command().execute()
         session.pop("place_description", None)
         return redirect(url_for("location-hub"))
+
+    def handle_exit_location(self, playthrough_name) -> Response:
+        return self.exit_place(playthrough_name)
+
+    def handle_exit_room(self, playthrough_name: str) -> Response:
+        return self.exit_place(playthrough_name)
 
     @staticmethod
     def handle_visit_location(playthrough_name):
         location_identifier = request.form.get("location_identifier")
         PlaceService().visit_place(playthrough_name, location_identifier)
+        session.pop("place_description", None)
+        return redirect(url_for("location-hub"))
+
+    @staticmethod
+    def handle_enter_room(playthrough_name: str):
+        room_identifier = request.form.get("room_identifier")
+        PlaceService().visit_place(playthrough_name, room_identifier)
         session.pop("place_description", None)
         return redirect(url_for("location-hub"))
 

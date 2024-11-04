@@ -19,7 +19,7 @@ def test_validate_non_empty_string_called():
     with patch(
         "src.movements.commands.visit_place_command.validate_non_empty_string"
     ) as mock_validate:
-        cmd = VisitPlaceCommand(
+        VisitPlaceCommand(
             playthrough_name="TestPlaythrough",
             place_identifier="TestPlace",
             process_first_visit_to_place_command_factory=Mock(),

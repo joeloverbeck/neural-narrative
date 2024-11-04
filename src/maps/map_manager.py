@@ -62,19 +62,6 @@ class MapManager:
             self._place_manager.get_place(current_place_id)
         )
 
-    def get_current_area(self) -> dict:
-        map_file = self._map_repository.load_map_data()
-        if self._place_manager.get_current_place_type() == TemplateType.AREA:
-            return map_file[self._playthrough_manager.get_current_place_identifier()]
-        if not self._place_manager.get_current_place_type() == TemplateType.LOCATION:
-            raise ValueError(
-                f"At this point, wasn't expecting the current location to be {self._place_manager.get_current_place_type()}"
-            )
-        current_area_identifier = map_file[
-            self._playthrough_manager.get_current_place_identifier()
-        ]["area"]
-        return map_file[current_area_identifier]
-
     def get_father_template(self) -> str:
         current_place_id = self._playthrough_manager.get_current_place_identifier()
         places_parameter = self._hierarchy_manager.fill_places_templates_parameter(
@@ -144,20 +131,3 @@ class MapManager:
                 }
                 areas.append(area_info)
         return areas
-
-    def get_current_area_identifier(self) -> str:
-        """
-        Get the identifier of the current area.
-
-        Returns:
-            str: The identifier of the current area.
-        """
-        if self._place_manager.get_current_place_type() == TemplateType.AREA:
-            return self._playthrough_manager.get_current_place_identifier()
-        elif self._place_manager.get_current_place_type() == TemplateType.LOCATION:
-            map_data = self._map_repository.load_map_data()
-            current_place_id = self._playthrough_manager.get_current_place_identifier()
-            current_area_identifier = map_data[current_place_id]["area"]
-            return current_area_identifier
-        else:
-            raise ValueError("Current place is not an area or a location.")

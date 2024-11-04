@@ -1,6 +1,9 @@
 from src.characters.factories.character_generation_guidelines_provider_factory import (
     CharacterGenerationGuidelinesProviderFactory,
 )
+from src.maps.composers.get_current_weather_identifier_algorithm_composer import (
+    GetCurrentWeatherIdentifierAlgorithmComposer,
+)
 from src.maps.factories.map_manager_factory import MapManagerFactory
 from src.maps.factories.place_descriptions_for_prompt_factory import (
     PlaceDescriptionsForPromptFactory,
@@ -27,9 +30,19 @@ class CharacterGenerationGuidelinesProviderFactoryComposer:
         )
 
         map_manager_factory = MapManagerFactory(self._playthrough_name)
-        weathers_manager = WeathersManager(map_manager_factory)
+        weathers_manager = WeathersManager()
+
+        get_current_weather_identifier_algorithm = (
+            GetCurrentWeatherIdentifierAlgorithmComposer(
+                self._playthrough_name
+            ).compose_algorithm()
+        )
+
         place_descriptions_for_prompt_factory = PlaceDescriptionsForPromptFactory(
-            self._playthrough_name, map_manager_factory, weathers_manager
+            self._playthrough_name,
+            get_current_weather_identifier_algorithm,
+            map_manager_factory,
+            weathers_manager,
         )
         places_description_provider = PlacesDescriptionsProvider(
             place_descriptions_for_prompt_factory

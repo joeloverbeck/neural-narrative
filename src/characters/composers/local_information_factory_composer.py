@@ -1,6 +1,8 @@
 from src.base.validators import validate_non_empty_string
+from src.maps.composers.get_current_weather_identifier_algorithm_composer import (
+    GetCurrentWeatherIdentifierAlgorithmComposer,
+)
 from src.maps.factories.local_information_factory import LocalInformationFactory
-from src.maps.factories.map_manager_factory import MapManagerFactory
 from src.maps.factories.place_manager_factory import PlaceManagerFactory
 from src.maps.place_description_manager import PlaceDescriptionManager
 from src.maps.templates_repository import TemplatesRepository
@@ -14,9 +16,7 @@ class LocalInformationFactoryComposer:
         self._playthrough_name = playthrough_name
 
     def compose_factory(self) -> LocalInformationFactory:
-        map_manager_factory = MapManagerFactory(self._playthrough_name)
-
-        weathers_manager = WeathersManager(map_manager_factory)
+        weathers_manager = WeathersManager()
 
         place_manager_factory = PlaceManagerFactory(self._playthrough_name)
 
@@ -26,6 +26,15 @@ class LocalInformationFactoryComposer:
             place_manager_factory, template_repository
         )
 
+        get_current_weather_identifier_algorithm = (
+            GetCurrentWeatherIdentifierAlgorithmComposer(
+                self._playthrough_name
+            ).compose_algorithm()
+        )
+
         return LocalInformationFactory(
-            self._playthrough_name, place_description_manager, weathers_manager
+            self._playthrough_name,
+            get_current_weather_identifier_algorithm,
+            place_description_manager,
+            weathers_manager,
         )
