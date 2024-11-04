@@ -1,6 +1,6 @@
 from typing import Optional
 
-from src.base.constants import PARENT_TEMPLATE_TYPE, CHILD_TEMPLATE_TYPE
+from src.base.constants import PARENT_TEMPLATE_TYPE
 from src.base.enums import TemplateType
 from src.base.playthrough_manager import PlaythroughManager
 from src.base.validators import validate_non_empty_string
@@ -10,7 +10,6 @@ from src.characters.factories.character_information_provider import (
 )
 from src.maps.abstracts.factory_products import (
     CardinalConnectionCreationProduct,
-    RandomTemplateTypeMapEntryCreationResult,
 )
 from src.maps.commands.generate_place_command import GeneratePlaceCommand
 from src.maps.composers.get_current_weather_identifier_algorithm_composer import (
@@ -48,10 +47,8 @@ from src.maps.factories.place_manager_factory import PlaceManagerFactory
 from src.maps.factories.store_generated_place_command_factory import (
     StoreGeneratedPlaceCommandFactory,
 )
-from src.maps.map_manager import MapManager
 from src.maps.map_repository import MapRepository
 from src.maps.models.place_description import PlaceDescription
-from src.maps.templates_repository import TemplatesRepository
 from src.maps.weathers_manager import WeathersManager
 from src.prompting.composers.produce_tool_response_strategy_factory_composer import (
     ProduceToolResponseStrategyFactoryComposer,
@@ -181,40 +178,6 @@ class PlaceService:
                 navigation_manager_factory,
             ),
         ).create_cardinal_connection()
-
-    @staticmethod
-    def search_for_place(
-        playthrough_name: str,
-    ) -> RandomTemplateTypeMapEntryCreationResult:
-        validate_non_empty_string(playthrough_name, "playthrough_name")
-
-        place_manager = PlaceManagerFactory(playthrough_name).create_place_manager()
-        map_manager = MapManager(
-            playthrough_name,
-            place_manager,
-            MapRepository(playthrough_name),
-            TemplatesRepository(),
-        )
-
-        father_template = map_manager.get_current_place_template()
-
-        playthrough_manager = PlaythroughManager(playthrough_name)
-
-        father_identifier = playthrough_manager.get_current_place_identifier()
-
-        current_place_type = place_manager.get_current_place_type()
-
-        child_place_type = CHILD_TEMPLATE_TYPE.get(current_place_type)
-
-        random_template_type_map_entry_provider = (
-            RandomTemplateTypeMapEntryProviderFactoryComposer(
-                playthrough_name
-            ).compose_factory()
-        ).create_provider(
-            father_identifier, father_template, current_place_type, child_place_type
-        )
-
-        return random_template_type_map_entry_provider.create_map_entry()
 
     @staticmethod
     def visit_place(playthrough_name: str, place_identifier: str):

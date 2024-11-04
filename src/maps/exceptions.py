@@ -1,0 +1,2 @@
+class SearchForPlaceError(Exception):
+    pass
