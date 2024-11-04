@@ -57,7 +57,7 @@ class LlmSpeechDataProvider(BaseToolResponseProvider):
 
     def _format_dialogue_purpose(self) -> str:
         if self._config.purpose:
-            return f"The purpose of this dialogue is: {self._config.purpose}"
+            return f"Purpose of the Dialogue: {self._config.purpose}"
         return ""
 
     def get_prompt_file(self) -> Path:

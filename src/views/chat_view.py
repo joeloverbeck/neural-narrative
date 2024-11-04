@@ -228,7 +228,8 @@ class ChatView(MethodView):
             user_input, dialogue_participants
         )
 
-        AddMessagesToOngoingDialogueCommand(playthrough_name, messages).execute()
+        if not is_goodbye:
+            AddMessagesToOngoingDialogueCommand(playthrough_name, messages).execute()
 
         return messages, is_goodbye
 
