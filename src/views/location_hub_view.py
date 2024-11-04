@@ -1,7 +1,16 @@
 import logging
 from pathlib import Path
 
-from flask import session, redirect, url_for, render_template, request, jsonify, flash
+from flask import (
+    session,
+    redirect,
+    url_for,
+    render_template,
+    request,
+    jsonify,
+    flash,
+    Response,
+)
 from flask.views import MethodView
 
 from src.base.constants import WEATHER_ICON_MAPPING
@@ -187,6 +196,7 @@ class LocationHubView(MethodView):
         if method:
             return method(playthrough_name)
         else:
+            logger.warning(f"Method '{method_name}' not found in LocationHubView.")
             return redirect(url_for("location-hub"))
 
     @staticmethod
@@ -292,7 +302,7 @@ class LocationHubView(MethodView):
         return redirect(url_for("travel"))
 
     @staticmethod
-    def handle_search_for_location(playthrough_name):
+    def handle_search_for_place(playthrough_name: str, child_place_type: TemplateType):
         place_manager = PlaceManagerFactory(playthrough_name).create_place_manager()
         map_manager = MapManager(
             playthrough_name,
@@ -310,7 +320,10 @@ class LocationHubView(MethodView):
                 or result.get_result_type()
                 == RandomTemplateTypeMapEntryCreationResultType.NO_AVAILABLE_TEMPLATES
             ):
-                flash(f"Couldn't attach location. Error: {result.get_error()}", "error")
+                flash(
+                    f"Couldn't attach {child_place_type.value}. Error: {result.get_error()}",
+                    "error",
+                )
             else:
                 new_id, _ = (
                     map_manager.get_identifier_and_place_template_of_latest_map_entry()
@@ -319,9 +332,15 @@ class LocationHubView(MethodView):
                 AttachPlaceCommand(playthrough_name, new_id, place_manager).execute()
         except Exception as e:
             capture_traceback()
-            flash(f"Couldn't attach location. Error: {str(e)}", "error")
+            flash(f"Couldn't attach {child_place_type.value}. Error: {str(e)}", "error")
 
         return redirect(url_for("location-hub"))
+
+    def handle_search_for_room(self, playthrough_name: str) -> Response:
+        return self.handle_search_for_place(playthrough_name, TemplateType.ROOM)
+
+    def handle_search_for_location(self, playthrough_name) -> Response:
+        return self.handle_search_for_place(playthrough_name, TemplateType.LOCATION)
 
     @staticmethod
     def handle_teleport_to_area(playthrough_name: str):

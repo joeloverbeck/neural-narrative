@@ -54,6 +54,11 @@ class AttachPlaceCommand(Command):
 
         children_key = CHILDREN_KEYS.get(current_place_type)
 
+        # Could be that there's no "children_key" entry in the corresponding map_file entry.
+        # Creating the list should be safe.
+        if not children_key in map_file[current_place_identifier].keys():
+            map_file[current_place_identifier][children_key] = []
+
         if (
             self._map_entry_identifier
             in map_file[current_place_identifier][children_key]
