@@ -4,34 +4,21 @@ from pathlib import Path
 from flask import session, redirect, url_for, render_template, request, jsonify, flash
 from flask.views import MethodView
 
+from src.base.constants import WEATHER_ICON_MAPPING
 from src.base.enums import TemplateType
 from src.base.playthrough_manager import PlaythroughManager
 from src.base.tools import capture_traceback
 from src.characters.characters_manager import CharactersManager
-from src.filesystem.config_loader import ConfigLoader
 from src.maps.algorithms.get_places_in_place_algorithm import GetPlacesInPlaceAlgorithm
+from src.maps.commands.attach_place_command import AttachPlaceCommand
 from src.maps.composers.place_selection_manager_composer import (
     PlaceSelectionManagerComposer,
-)
-from src.maps.composers.random_template_type_map_entry_provider_factory_composer import (
-    RandomTemplateTypeMapEntryProviderFactoryComposer,
-)
-from src.maps.configs.cardinal_connection_creation_factory_config import (
-    CardinalConnectionCreationFactoryConfig,
-)
-from src.maps.configs.cardinal_connection_creation_factory_factories_config import (
-    CardinalConnectionCreationFactoryFactoriesConfig,
 )
 from src.maps.enums import (
     CardinalDirection,
     RandomTemplateTypeMapEntryCreationResultType,
 )
-from src.maps.factories.concrete_cardinal_connection_creation_factory import (
-    ConcreteCardinalConnectionCreationFactory,
-)
-from src.maps.factories.hierarchy_manager_factory import HierarchyManagerFactory
 from src.maps.factories.map_manager_factory import MapManagerFactory
-from src.maps.factories.navigation_manager_factory import NavigationManagerFactory
 from src.maps.factories.place_manager_factory import PlaceManagerFactory
 from src.maps.map_manager import MapManager
 from src.maps.map_repository import MapRepository
@@ -53,6 +40,7 @@ class LocationHubView(MethodView):
         playthrough_name = session.get("playthrough_name")
         if not playthrough_name:
             return redirect(url_for("index"))
+
         place_manager = PlaceManagerFactory(playthrough_name).create_place_manager()
         map_repository = MapRepository(playthrough_name)
         template_repository = TemplatesRepository()
@@ -111,7 +99,8 @@ class LocationHubView(MethodView):
             )
             if available_location_types:
                 can_search_for_location = True
-        elif current_place_type == TemplateType.LOCATION:
+
+        if current_place_type == TemplateType.LOCATION:
             playthrough_manager = PlaythroughManager(playthrough_name)
 
             rooms_present = GetPlacesInPlaceAlgorithm(
@@ -140,21 +129,11 @@ class LocationHubView(MethodView):
         current_weather_description = weathers_manager.get_weather_description(
             current_weather
         )
-        weather_icon_mapping = {
-            "sunny": "fas fa-sun",
-            "rainy": "fas fa-cloud-showers-heavy",
-            "cloudy": "fas fa-cloud",
-            "stormy": "fas fa-cloud-bolt",
-            "snowy": "fas fa-snowflake",
-            "foggy": "fas fa-smog",
-            "windy": "fas fa-wind",
-            "misty": "fas fa-smog",
-            "hail": "fas fa-cloud-rain",
-            "overcast": "fas fa-cloud",
-        }
-        weather_icon_class = weather_icon_mapping.get(
+
+        weather_icon_class = WEATHER_ICON_MAPPING.get(
             current_weather, "fas fa-cloud-sun"
         )
+
         return render_template(
             "location-hub.html",
             current_place=current_place,
@@ -293,27 +272,9 @@ class LocationHubView(MethodView):
     def handle_explore_cardinal_direction(playthrough_name):
         cardinal_direction = CardinalDirection(request.form.get("cardinal_direction"))
 
-        random_template_type_map_entry_provider_factory = (
-            RandomTemplateTypeMapEntryProviderFactoryComposer(
-                playthrough_name
-            ).compose_factory()
+        result = PlaceService().create_cardinal_connection(
+            playthrough_name, cardinal_direction
         )
-
-        hierarchy_manager_factory = HierarchyManagerFactory(playthrough_name)
-        map_manager_factory = MapManagerFactory(playthrough_name)
-        map_repository = MapRepository(playthrough_name)
-        navigation_manager_factory = NavigationManagerFactory(map_repository)
-        result = ConcreteCardinalConnectionCreationFactory(
-            CardinalConnectionCreationFactoryConfig(
-                playthrough_name, cardinal_direction
-            ),
-            CardinalConnectionCreationFactoryFactoriesConfig(
-                random_template_type_map_entry_provider_factory,
-                hierarchy_manager_factory,
-                map_manager_factory,
-                navigation_manager_factory,
-            ),
-        ).create_cardinal_connection()
 
         if not result.was_successful():
             flash(
@@ -340,21 +301,8 @@ class LocationHubView(MethodView):
             TemplatesRepository(),
         )
 
-        father_template = map_manager.get_current_place_template()
-
-        playthrough_manager = PlaythroughManager(playthrough_name)
-        father_identifier = playthrough_manager.get_current_place_identifier()
-
-        random_template_type_map_entry_provider = (
-            RandomTemplateTypeMapEntryProviderFactoryComposer(
-                playthrough_name
-            ).compose_factory()
-        ).create_provider(
-            father_identifier, father_template, TemplateType.AREA, TemplateType.LOCATION
-        )
-
         try:
-            result = random_template_type_map_entry_provider.create_map_entry()
+            result = PlaceService().search_for_place(playthrough_name)
 
             if (
                 result.get_result_type()
@@ -367,13 +315,8 @@ class LocationHubView(MethodView):
                 new_id, _ = (
                     map_manager.get_identifier_and_place_template_of_latest_map_entry()
                 )
-                place_manager.add_location(new_id)
 
-                config_loader = ConfigLoader()
-
-                TimeManager(playthrough_name).advance_time(
-                    config_loader.get_time_advanced_due_to_searching_for_location()
-                )
+                AttachPlaceCommand(playthrough_name, new_id, place_manager).execute()
         except Exception as e:
             capture_traceback()
             flash(f"Couldn't attach location. Error: {str(e)}", "error")

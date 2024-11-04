@@ -1,17 +1,31 @@
 from typing import Optional
 
-from src.base.constants import PARENT_TEMPLATE_TYPE
+from src.base.constants import PARENT_TEMPLATE_TYPE, CHILD_TEMPLATE_TYPE
 from src.base.enums import TemplateType
 from src.base.playthrough_manager import PlaythroughManager
+from src.base.validators import validate_non_empty_string
 from src.characters.character import Character
 from src.characters.factories.character_information_provider import (
     CharacterInformationProvider,
 )
 from src.filesystem.file_operations import read_json_file
 from src.filesystem.path_manager import PathManager
+from src.maps.abstracts.factory_products import (
+    CardinalConnectionCreationProduct,
+    RandomTemplateTypeMapEntryCreationResult,
+)
 from src.maps.commands.generate_place_command import GeneratePlaceCommand
+from src.maps.composers.random_template_type_map_entry_provider_factory_composer import (
+    RandomTemplateTypeMapEntryProviderFactoryComposer,
+)
 from src.maps.composers.visit_place_command_factory_composer import (
     VisitPlaceCommandFactoryComposer,
+)
+from src.maps.configs.cardinal_connection_creation_factory_config import (
+    CardinalConnectionCreationFactoryConfig,
+)
+from src.maps.configs.cardinal_connection_creation_factory_factories_config import (
+    CardinalConnectionCreationFactoryFactoriesConfig,
 )
 from src.maps.configs.filtered_place_description_generation_factory_config import (
     FilteredPlaceDescriptionGenerationFactoryConfig,
@@ -19,15 +33,24 @@ from src.maps.configs.filtered_place_description_generation_factory_config impor
 from src.maps.configs.filtered_place_description_generation_factory_factories_config import (
     FilteredPlaceDescriptionGenerationFactoryFactoriesConfig,
 )
+from src.maps.enums import CardinalDirection
+from src.maps.factories.concrete_cardinal_connection_creation_factory import (
+    ConcreteCardinalConnectionCreationFactory,
+)
 from src.maps.factories.concrete_filtered_place_description_generation_factory import (
     ConcreteFilteredPlaceDescriptionGenerationFactory,
 )
+from src.maps.factories.hierarchy_manager_factory import HierarchyManagerFactory
 from src.maps.factories.map_manager_factory import MapManagerFactory
+from src.maps.factories.navigation_manager_factory import NavigationManagerFactory
 from src.maps.factories.place_manager_factory import PlaceManagerFactory
 from src.maps.factories.store_generated_place_command_factory import (
     StoreGeneratedPlaceCommandFactory,
 )
+from src.maps.map_manager import MapManager
+from src.maps.map_repository import MapRepository
 from src.maps.models.place_description import PlaceDescription
+from src.maps.templates_repository import TemplatesRepository
 from src.maps.weathers_manager import WeathersManager
 from src.prompting.composers.produce_tool_response_strategy_factory_composer import (
     ProduceToolResponseStrategyFactoryComposer,
@@ -121,6 +144,69 @@ class PlaceService:
             playthrough_name, description
         )
         return description, voice_line_file_name
+
+    @staticmethod
+    def create_cardinal_connection(
+        playthrough_name: str, cardinal_direction: CardinalDirection
+    ) -> CardinalConnectionCreationProduct:
+        validate_non_empty_string(playthrough_name, "playthrough_name")
+
+        random_template_type_map_entry_provider_factory = (
+            RandomTemplateTypeMapEntryProviderFactoryComposer(
+                playthrough_name
+            ).compose_factory()
+        )
+
+        hierarchy_manager_factory = HierarchyManagerFactory(playthrough_name)
+        map_manager_factory = MapManagerFactory(playthrough_name)
+        map_repository = MapRepository(playthrough_name)
+        navigation_manager_factory = NavigationManagerFactory(map_repository)
+
+        return ConcreteCardinalConnectionCreationFactory(
+            CardinalConnectionCreationFactoryConfig(
+                playthrough_name, cardinal_direction
+            ),
+            CardinalConnectionCreationFactoryFactoriesConfig(
+                random_template_type_map_entry_provider_factory,
+                hierarchy_manager_factory,
+                map_manager_factory,
+                navigation_manager_factory,
+            ),
+        ).create_cardinal_connection()
+
+    @staticmethod
+    def search_for_place(
+        playthrough_name: str,
+    ) -> RandomTemplateTypeMapEntryCreationResult:
+        validate_non_empty_string(playthrough_name, "playthrough_name")
+
+        place_manager = PlaceManagerFactory(playthrough_name).create_place_manager()
+        map_manager = MapManager(
+            playthrough_name,
+            place_manager,
+            MapRepository(playthrough_name),
+            TemplatesRepository(),
+        )
+
+        father_template = map_manager.get_current_place_template()
+
+        playthrough_manager = PlaythroughManager(playthrough_name)
+
+        father_identifier = playthrough_manager.get_current_place_identifier()
+
+        current_place_type = place_manager.get_current_place_type()
+
+        child_place_type = CHILD_TEMPLATE_TYPE.get(current_place_type)
+
+        random_template_type_map_entry_provider = (
+            RandomTemplateTypeMapEntryProviderFactoryComposer(
+                playthrough_name
+            ).compose_factory()
+        ).create_provider(
+            father_identifier, father_template, current_place_type, child_place_type
+        )
+
+        return random_template_type_map_entry_provider.create_map_entry()
 
     @staticmethod
     def exit_location(playthrough_name: str):

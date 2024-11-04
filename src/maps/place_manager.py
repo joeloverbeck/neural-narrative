@@ -106,26 +106,6 @@ class PlaceManager:
         place = self.get_place(current_place_id)
         return TemplateType(place.get("type"))
 
-    def add_location(self, place_identifier: str) -> None:
-        if not self.get_current_place_type() == TemplateType.AREA:
-            raise ValueError(
-                "Attempted to add a location to a place that wasn't an area."
-            )
-        map_file = self._map_repository.load_map_data()
-        if (
-            place_identifier
-            in map_file[self._playthrough_manager.get_current_place_identifier()][
-                "locations"
-            ]
-        ):
-            raise ValueError(
-                f"Place identifier '{place_identifier}' already present in the locations of the current area."
-            )
-        map_file[self._playthrough_manager.get_current_place_identifier()][
-            "locations"
-        ].append(place_identifier)
-        self._map_repository.save_map_data(map_file)
-
     def set_current_weather(self, weather_identifier: str) -> None:
         if not self.get_current_place_type() == TemplateType.AREA:
             raise ValueError(
