@@ -102,6 +102,13 @@ class ConcreteLlmContentProvider(LlmContentProvider):
             raise ValueError(
                 f"The LLM indicated that the SSL certificate was invalid. Details: {ai_completion_product.get_error_details()}"
             )
+        elif (
+            ai_completion_product.get_error()
+            == AiCompletionErrorType.MAXIMUM_CONTENT_LENGTH_REACHED
+        ):
+            raise ValueError(
+                f"The LLM indicated that either the maximum context length has been reached, or bad JSON parameters have been provided. Details: {ai_completion_product.get_error_details()}"
+            )
         else:
             logger.warning(f"Attempt failed due to an unhandled reason.")
 
