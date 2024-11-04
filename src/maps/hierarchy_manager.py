@@ -1,6 +1,8 @@
 from typing import Optional, Dict
 
+from src.base.constants import PARENT_KEYS
 from src.base.enums import TemplateType
+from src.base.validators import validate_non_empty_string
 from src.maps.place_manager import PlaceManager
 from src.maps.places_templates_parameter import PlacesTemplatesParameter
 
@@ -11,32 +13,51 @@ class HierarchyManager:
         self._place_manager = place_manager
 
     def get_place_hierarchy(self, place_identifier: str) -> Dict[str, Optional[Dict]]:
-        hierarchy = {"world": None, "region": None, "area": None, "location": None}
+        hierarchy = {
+            "world": None,
+            "region": None,
+            "area": None,
+            "location": None,
+            "room": None,
+        }
+
         current_place_id = place_identifier
+
         while current_place_id:
             place = self._place_manager.get_place(current_place_id)
             place_type = self._place_manager.determine_place_type(current_place_id)
+
             if place_type == TemplateType.WORLD:
-                hierarchy["world"] = place
+                hierarchy[place_type.value] = place
                 break
-            elif place_type == TemplateType.REGION:
-                hierarchy["region"] = place
-                current_place_id = place.get("world")
-            elif place_type == TemplateType.AREA:
-                hierarchy["area"] = place
-                if not "region" in place:
-                    raise ValueError("Area didn't have 'region' assigned.")
-                region_identifier = place.get("region")
-                if not region_identifier:
-                    raise ValueError("Area didn't have a proper 'region' assigned.")
-                current_place_id = region_identifier
-            elif place_type == TemplateType.LOCATION:
-                hierarchy["location"] = place
-                current_place_id = place.get("area")
+
+            if (
+                place_type == TemplateType.REGION
+                or place_type == TemplateType.AREA
+                or place_type == TemplateType.LOCATION
+                or place_type == TemplateType.ROOM
+            ):
+                if not place:
+                    raise ValueError(
+                        f"Didn't have a 'place' for place type '{place_type}'."
+                    )
+
+                hierarchy[place_type.value] = place
+
+                parent_key = PARENT_KEYS.get(place_type)
+
+                if not parent_key in place.keys():
+                    raise KeyError(
+                        f"The parent key '{parent_key}' wasn't present in the place data: {place}"
+                    )
+
+                current_place_id = place.get(parent_key)
             else:
                 raise ValueError(f"Unhandled place type '{place_type.value}'.")
+
         if not hierarchy["world"]:
             raise ValueError("World not found in the place hierarchy.")
+
         return hierarchy
 
     def get_father_identifier(self, place_identifier: str) -> str:
@@ -58,20 +79,19 @@ class HierarchyManager:
         """
         place = self._place_manager.get_place(place_identifier)
         place_type = self._place_manager.determine_place_type(place_identifier)
-        if place_type == TemplateType.AREA:
-            father_identifier = place.get("region")
+
+        if (
+            place_type == TemplateType.ROOM
+            or place_type == TemplateType.LOCATION
+            or place_type == TemplateType.AREA
+            or place_type == TemplateType.REGION
+        ):
+            parent_key = PARENT_KEYS.get(place_type)
+            father_identifier = place.get(parent_key)
             if not father_identifier:
-                raise ValueError(f"Area '{place_identifier}' has no 'region' key.")
-            return father_identifier
-        elif place_type == TemplateType.LOCATION:
-            father_identifier = place.get("area")
-            if not father_identifier:
-                raise ValueError(f"Location '{place_identifier}' has no 'area' key.")
-            return father_identifier
-        elif place_type == TemplateType.REGION:
-            father_identifier = place.get("world")
-            if not father_identifier:
-                raise ValueError(f"Region '{place_identifier}' has no 'world' key.")
+                raise ValueError(
+                    f"Location '{place_identifier}' has no '{parent_key}' key."
+                )
             return father_identifier
         elif place_type == TemplateType.WORLD:
             raise ValueError(f"Region '{place_identifier}' has no father identifier.")
@@ -83,28 +103,40 @@ class HierarchyManager:
     def fill_places_templates_parameter(
         self, place_identifier: str
     ) -> PlacesTemplatesParameter:
-        if not place_identifier:
-            raise ValueError("place_identifier can't be empty.")
+        validate_non_empty_string(place_identifier, "place_identifier")
+
         hierarchy = self.get_place_hierarchy(place_identifier)
-        world_template = self._place_manager.get_place_template(hierarchy["world"])
+        world_template = self._place_manager.get_place_template(
+            hierarchy[TemplateType.WORLD.value]
+        )
+
         region_template = (
-            self._place_manager.get_place_template(hierarchy["region"])
-            if hierarchy["region"]
+            self._place_manager.get_place_template(hierarchy[TemplateType.REGION.value])
+            if hierarchy[TemplateType.REGION.value]
             else world_template
         )
         area_template = (
-            self._place_manager.get_place_template(hierarchy["area"])
-            if hierarchy["area"]
+            self._place_manager.get_place_template(hierarchy[TemplateType.AREA.value])
+            if hierarchy[TemplateType.AREA.value]
             else region_template
         )
         location_template = (
-            self._place_manager.get_place_template(hierarchy["location"])
-            if hierarchy["location"]
+            self._place_manager.get_place_template(
+                hierarchy[TemplateType.LOCATION.value]
+            )
+            if hierarchy[TemplateType.LOCATION.value]
             else None
         )
+        room_template = (
+            self._place_manager.get_place_template(hierarchy[TemplateType.ROOM.value])
+            if hierarchy[TemplateType.ROOM.value]
+            else None
+        )
+
         return PlacesTemplatesParameter(
             world_template=world_template,
             region_template=region_template,
             area_template=area_template,
             location_template=location_template,
+            room_template=room_template,
         )

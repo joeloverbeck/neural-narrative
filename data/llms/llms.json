@@ -27,7 +27,7 @@
     },
     "magnum_72b": {
       "name": "anthracite-org/magnum-v4-72b",
-      "description": "Best dialogue. Good summary. Very short context",
+      "description": "Very good dialogue. Good summary. Very short context",
       "temperature": 0.95,
       "top_p": 1.0,
       "context": 32768,
@@ -48,7 +48,7 @@
     },
     "claude_3.5_sonnet": {
       "name": "anthropic/claude-3.5-sonnet",
-      "description": "Expensive.",
+      "description": "Exceptional dialogue. Expensive.",
       "temperature": 1.0,
       "top_p": 1.0,
       "supports_tools": true

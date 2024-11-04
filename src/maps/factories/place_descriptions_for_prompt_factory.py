@@ -44,6 +44,17 @@ class PlaceDescriptionsForPromptFactory:
             )
         return location_description
 
+    @staticmethod
+    def _determine_room_description(place_full_data: Dict[str, Dict[str, str]]) -> str:
+        room_description = ""
+
+        if place_full_data["room_data"] and place_full_data["room_data"]["description"]:
+            room_description = (
+                "Room Description: " + place_full_data["room_data"]["description"]
+            )
+
+        return room_description
+
     def create_place_descriptions_for_prompt(self) -> Dict[str, str]:
         story_universe_description = (
             self._map_manager_factory.create_map_manager().get_story_universe_description()
@@ -64,4 +75,5 @@ class PlaceDescriptionsForPromptFactory:
             "location_description": self._determine_location_description(
                 place_full_data
             ),
+            "room_description": self._determine_room_description(place_full_data),
         }

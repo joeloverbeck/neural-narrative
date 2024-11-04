@@ -4,3 +4,4 @@ Region Description: {region_description}
 Area Description: {area_description}
 Weather: {weather}
 {location_description}
+{room_description}

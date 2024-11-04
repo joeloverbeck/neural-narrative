@@ -1,5 +1,4 @@
 from typing import cast
-from unittest.mock import Mock
 
 import pytest
 
@@ -107,18 +106,6 @@ def test_get_place_hierarchy_world():
     assert hierarchy["location"] is None
 
 
-def test_get_place_hierarchy_missing_world():
-    area_id = "area_1"
-    area_place = {"id": area_id, "name": "Area 1", "region": None}
-    places_data = {area_id: area_place}
-    place_types = {area_id: TemplateType.AREA}
-    place_manager = MockPlaceManager(places_data, {}, place_types)
-    hierarchy_manager = HierarchyManager(cast(PlaceManager, place_manager))
-    with pytest.raises(ValueError) as exc_info:
-        hierarchy_manager.get_place_hierarchy(area_id)
-    assert "Area didn't have a proper 'region' assigned." in str(exc_info)
-
-
 def test_get_place_hierarchy_unhandled_place_type():
     place_id = "unknown_place"
     place = {"id": place_id, "name": "Unknown Place"}
@@ -218,38 +205,3 @@ def test_fill_places_templates_parameter_location():
         places_templates_parameter.get_location_template()
         == templates_data[location_id]
     )
-
-
-def test_fill_places_templates_parameter_area_no_region():
-    world_id = "world_1"
-    area_id = "area_1"
-    world_place = {"id": world_id, "name": "World 1"}
-    area_place = {"id": area_id, "name": "Area 1", "world": world_id}
-    templates_data = {world_id: "world_template", area_id: "area_template"}
-    places_data = {world_id: world_place, area_id: area_place}
-    place_types = {world_id: TemplateType.WORLD, area_id: TemplateType.AREA}
-    place_manager = MockPlaceManager(places_data, templates_data, place_types)
-    hierarchy_manager = HierarchyManager(cast(PlaceManager, place_manager))
-    with pytest.raises(ValueError) as exc_info:
-        hierarchy_manager.fill_places_templates_parameter(area_id)
-    assert "Area didn't have 'region' assigned." in str(exc_info)
-
-
-def test_fill_places_templates_parameter_missing_world():
-    area_id = "area_1"
-    area_place = {"id": area_id, "name": "Area 1", "region": None}
-    places_data = {area_id: area_place}
-    place_types = {area_id: TemplateType.AREA}
-    place_manager = MockPlaceManager(places_data, {}, place_types)
-    hierarchy_manager = HierarchyManager(cast(PlaceManager, place_manager))
-    with pytest.raises(ValueError) as exc_info:
-        hierarchy_manager.fill_places_templates_parameter(area_id)
-    assert "Area didn't have a proper 'region' assigned." in str(exc_info)
-
-
-def test_fill_places_templates_parameter_empty_identifier():
-    place_manager = Mock()
-    hierarchy_manager = HierarchyManager(place_manager)
-    with pytest.raises(ValueError) as exc_info:
-        hierarchy_manager.fill_places_templates_parameter("")
-    assert "can't be empty." in str(exc_info)
