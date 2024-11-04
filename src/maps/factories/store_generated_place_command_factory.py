@@ -8,7 +8,5 @@ class StoreGeneratedPlaceCommandFactory:
     def __init__(self, place_template_type: TemplateType):
         self._place_template_type = place_template_type
 
-    def create_command(self, place_data: PlaceData
-                       ) -> StoreGeneratedPlaceCommand:
-        return StoreGeneratedPlaceCommand(place_data, self._place_template_type
-                                          )
+    def create_command(self, place_data: PlaceData) -> StoreGeneratedPlaceCommand:
+        return StoreGeneratedPlaceCommand(place_data, self._place_template_type)

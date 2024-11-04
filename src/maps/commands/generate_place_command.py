@@ -13,6 +13,7 @@ from src.maps.factories.store_generated_place_command_factory import (
 from src.maps.models.area import Area
 from src.maps.models.location import get_custom_location_class
 from src.maps.models.region import Region
+from src.maps.models.room import get_custom_room_class
 from src.maps.models.world import World
 from src.maps.place_data import PlaceData
 from src.maps.templates_repository import TemplatesRepository
@@ -29,6 +30,7 @@ class GeneratePlaceCommand(Command):
     """
 
     PLACE_TYPE_TO_CLASS: Dict[TemplateType, Callable[[], Type[BaseModel]]] = {
+        TemplateType.ROOM: get_custom_room_class,
         TemplateType.LOCATION: get_custom_location_class,
         TemplateType.AREA: lambda: Area,
         TemplateType.REGION: lambda: Region,

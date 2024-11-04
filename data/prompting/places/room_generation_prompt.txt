@@ -1,0 +1,17 @@
+Given the following location, named {father_place_name}:
+{father_place_description}
+You are tasked with coming up with a room that would fit the location of {father_place_name}. A room is understood as a specific, enclosed space within a larger structure or area, such as a chamber, hall, dungeon cell, secret vault, throne room, etc.
+Your description of the room should be at most four paragraphs long, and it should contain the following information:
+- Physical Description: Describe the architecture, layout, size, and dimensions of the room. What materials are used in its construction? Are the walls made of stone, wood, metal, or something else? Is the ceiling vaulted, flat, or adorned?
+- Lighting and Atmosphere: How is the room illuminated? Through natural light, candles, torches, magical sources, or is it shrouded in darkness? What is the overall mood or feeling evoked by the room's ambiance?
+- Furnishings and Objects: What items are present in the room? Consider furniture, decorations, artworks, artifacts, or utilitarian objects. Are they opulent, worn, mysterious, or mundane?
+- Purpose and Function: What is the room used for? Is it a place of rest, study, confinement, worship, or secrecy? How does its purpose influence its design and contents?
+- Sensory Details: What can be sensed in the room beyond sight? Are there particular sounds (whispers, creaking, silence), smells (incense, dampness, decay), or tactile sensations (a chill in the air, warmth from a fire)?
+- History and Secrets: Does the room hold any historical significance? Are there signs of past events, inscriptions, or relics? Are there hidden passages, secret compartments, or concealed items?
+- Dangers and Challenges: Are there any traps, curses, or hazards within the room that pose a threat?
+That description of the room should fit the following categories, inherited from the location of {father_place_name}:
+{father_place_categories}
+Note: do not mention the location's name in your description of the room (this is necessary because the room may be used in another location).
+You are prohibited from using the following names for the new room (because those names are already used for other rooms):
+{current_place_type_names}
+If the user has provided guidance for the kind of room they want, you should build upon that guidance.

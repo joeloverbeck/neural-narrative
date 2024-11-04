@@ -103,6 +103,10 @@ class PathManager:
         return cls.PLACES_DIR / "location_types.txt"
 
     @classmethod
+    def get_room_types_path(cls) -> Path:
+        return cls.PLACES_DIR / "room_types.txt"
+
+    @classmethod
     def get_tool_instructions_for_instructor_path(cls) -> Path:
         return cls.PROMPTING_DIR / "tool_instructions_for_instructor.txt"
 
@@ -227,6 +231,10 @@ class PathManager:
     @classmethod
     def get_location_generation_prompt_path(cls) -> Path:
         return cls.PROMPTING_PLACES_DIR / "location_generation_prompt.txt"
+
+    @classmethod
+    def get_room_generation_prompt_path(cls) -> Path:
+        return cls.PROMPTING_PLACES_DIR / "room_generation_prompt.txt"
 
     @classmethod
     def get_place_description_prompt_path(cls) -> Path:

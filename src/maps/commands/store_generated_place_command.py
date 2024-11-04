@@ -35,10 +35,14 @@ class StoreGeneratedPlaceCommand(Command):
         )
 
     def _handle_location_type(self, current_places_template_file):
-        if self._template_type == TemplateType.LOCATION:
+        # Locations and Rooms should have a type.
+        if (
+            self._template_type == TemplateType.LOCATION
+            or self._template_type == TemplateType.ROOM
+        ):
             if not self._place_data.type:
                 raise KeyError(
-                    "Was tasked with storing a location, but the place data didn't contain the 'type' key."
+                    f"Was tasked with storing a {self._template_type.value}, but the place data didn't contain the 'type' key."
                 )
             current_places_template_file[self._place_data.name][
                 "type"

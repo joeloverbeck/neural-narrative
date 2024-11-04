@@ -160,6 +160,11 @@ def test_get_template_type_data():
                 template_data.prompt_file
                 == path_manager.get_location_generation_prompt_path()
             )
+        elif template_type == TemplateType.ROOM:
+            assert (
+                template_data.prompt_file
+                == path_manager.get_room_generation_prompt_path()
+            )
         else:
             assert template_data is None
 

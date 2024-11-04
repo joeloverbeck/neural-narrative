@@ -15,6 +15,7 @@ from src.filesystem.path_manager import PathManager
 from src.maps.models.area import Area
 from src.maps.models.location import get_custom_location_class
 from src.maps.models.region import Region
+from src.maps.models.room import get_custom_room_class
 from src.maps.models.world import World
 from src.maps.template_type_data import TemplateTypeData
 from src.maps.templates_repository import TemplatesRepository
@@ -71,6 +72,10 @@ class PlaceGenerationToolResponseProvider(
                 prompt_file=self._path_manager.get_location_generation_prompt_path(),
                 response_model=get_custom_location_class(),
             ),
+            TemplateType.ROOM: TemplateTypeData(
+                prompt_file=self._path_manager.get_room_generation_prompt_path(),
+                response_model=get_custom_room_class(),
+            ),
         }
 
         return data_mapping.get(self._template_type)
@@ -118,7 +123,11 @@ class PlaceGenerationToolResponseProvider(
             "description": description.replace("\n\n", "\n"),
         }
 
-        if self._template_type == TemplateType.LOCATION:
+        # Both locations and rooms have types.
+        if (
+            self._template_type == TemplateType.LOCATION
+            or self._template_type == TemplateType.ROOM
+        ):
             arguments.update({"type": response_model.type})
 
         return DictProduct(arguments, is_valid=True)
