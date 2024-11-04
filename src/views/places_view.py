@@ -22,6 +22,7 @@ class PlacesView(MethodView):
         worlds = templates_repository.load_templates(TemplateType.WORLD)
         regions = templates_repository.load_templates(TemplateType.REGION)
         areas = templates_repository.load_templates(TemplateType.AREA)
+        locations = templates_repository.load_templates(TemplateType.LOCATION)
 
         return render_template(
             "places.html",
@@ -29,6 +30,7 @@ class PlacesView(MethodView):
             worlds=worlds,
             regions=regions,
             areas=areas,
+            locations=locations,
         )
 
     @staticmethod

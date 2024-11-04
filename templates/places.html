@@ -127,6 +127,34 @@ Places Generation
         </div>
     </div>
 
+    <!-- Generate Room Section -->
+    <div class="collapsible-section">
+        <button class="collapsible">
+            <i class="fa-solid fa-person-shelter"></i> Generate Room
+        </button>
+        <div class="content">
+            <form action="{{ url_for('places') }}" method="post" class="ajax-form"
+                  data-success-handler="generatePlaceSuccessHandler" data-place-type="room">
+                <input type="hidden" name="submit_action" value="generate_room">
+                <label for="location_name">Select the location:</label>
+                <select id="location_name" name="location_name" required onchange="updateDescription('location')">
+                    {% for key, value in locations.items() %}
+                    <option value="{{ key }}" data-description="{{ value['description'] }}">{{ key }}</option>
+                    {% endfor %}
+                </select>
+                <div id="location_description" class="description-box">
+                    <h3>Location Description</h3>
+                    <p></p>
+                </div>
+                <label class="notion" for="room_notion">Enter your notions about the room (optional):</label>
+                <textarea id="room_notion" name="room_notion" rows="4" cols="50"></textarea>
+                <button type="submit" class="action-button">
+                    <i class="fas fa-cogs"></i> Generate Room
+                </button>
+            </form>
+        </div>
+    </div>
+
     <!-- Navigation Buttons -->
     <div class="buttons">
         <a href="{{ url_for('index') }}" class="button">

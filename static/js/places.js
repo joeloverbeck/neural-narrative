@@ -17,4 +17,5 @@ window.onload = function() {
     updateDescription('world');
     updateDescription('region');
     updateDescription('area');
+    updateDescription('location');
 }

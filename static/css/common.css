@@ -428,6 +428,10 @@ h1.page-title i {
     content: '\f64f'; /* Example Font Awesome Unicode */
 }
 
+#location_description h3::before {
+    content: '\e54f';
+}
+
 .description-box p {
     font-family: 'Lora', serif;
     font-size: 1em;
