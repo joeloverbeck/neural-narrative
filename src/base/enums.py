@@ -7,6 +7,7 @@ class IdentifierType(Enum):
 
 
 class TemplateType(Enum):
+    ROOM = "room"
     LOCATION = "location"
     AREA = "area"
     REGION = "region"

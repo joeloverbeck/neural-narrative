@@ -8,6 +8,7 @@ from src.base.constants import (
     PARENT_TEMPLATE_TYPE,
 )
 from src.base.enums import TemplateType
+from src.base.products.dict_product import DictProduct
 from src.base.validators import validate_non_empty_string
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.filesystem.path_manager import PathManager
@@ -20,9 +21,6 @@ from src.maps.templates_repository import TemplatesRepository
 from src.prompting.abstracts.abstract_factories import (
     ToolResponseProvider,
     ProduceToolResponseStrategyFactory,
-)
-from src.prompting.products.concrete_llm_tool_response_product import (
-    ConcreteLlmToolResponseProduct,
 )
 from src.prompting.providers.base_tool_response_provider import BaseToolResponseProvider
 
@@ -123,4 +121,4 @@ class PlaceGenerationToolResponseProvider(
         if self._template_type == TemplateType.LOCATION:
             arguments.update({"type": response_model.type})
 
-        return ConcreteLlmToolResponseProduct(arguments, is_valid=True)
+        return DictProduct(arguments, is_valid=True)

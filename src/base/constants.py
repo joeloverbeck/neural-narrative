@@ -20,9 +20,11 @@ PARENT_TEMPLATE_TYPE = {
     TemplateType.REGION: TemplateType.WORLD,
     TemplateType.AREA: TemplateType.REGION,
     TemplateType.LOCATION: TemplateType.AREA,
+    TemplateType.ROOM: TemplateType.LOCATION,
 }
 PARENT_KEYS: Dict[TemplateType, str] = {
     TemplateType.REGION: "world",
     TemplateType.AREA: "region",
     TemplateType.LOCATION: "area",
+    TemplateType.ROOM: "location",
 }

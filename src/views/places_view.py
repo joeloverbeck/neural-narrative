@@ -77,6 +77,16 @@ class PlacesView(MethodView):
                 "redirect_url": "story-hub",
                 "use_flash": False,
             },
+            "generate_room": {
+                "params": [("location_name", None), ("room_notion", "")],
+                "father_place_param": "location_name",
+                "notion_param": "room_notion",
+                "template_type": TemplateType.ROOM,
+                "success_message": "Room generated successfully.",
+                "error_message": "Failed to generate room.",
+                "redirect_url": "story-hub",
+                "use_flash": False,
+            },
         }
         action_config = action_configs.get(action)
         if action_config:
@@ -117,6 +127,7 @@ class PlacesView(MethodView):
                         flash(error_message, "error")
                     return redirect(url_for(action_config["redirect_url"]))
             except Exception as e:
+                capture_traceback()
                 error_message = f"{action_config['error_message']} Error: {str(e)}"
                 logger.error(error_message)
                 response = {"success": False, "error": error_message}
