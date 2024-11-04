@@ -1,231 +1,352 @@
-from unittest.mock import Mock
+from unittest.mock import Mock, create_autospec, patch
 
+import pytest
+
+from src.base.abstracts.command import Command
+from src.base.enums import TemplateType
 from src.base.playthrough_manager import PlaythroughManager
-from src.characters.algorithms.generate_character_generation_guidelines_algorithm import (
-    GenerateCharacterGenerationGuidelinesAlgorithm,
-)
-from src.characters.character_guidelines_manager import CharacterGuidelinesManager
-from src.characters.factories.generate_character_generation_guidelines_algorithm_factory import (
-    GenerateCharacterGenerationGuidelinesAlgorithmFactory,
-)
-from src.maps.factories.hierarchy_manager_factory import HierarchyManagerFactory
+from src.filesystem.config_loader import ConfigLoader
 from src.maps.factories.place_manager_factory import PlaceManagerFactory
-from src.maps.hierarchy_manager import HierarchyManager
-from src.maps.place_manager import PlaceManager
 from src.movements.commands.visit_place_command import VisitPlaceCommand
+from src.movements.factories.process_first_visit_to_place_command_factory import (
+    ProcessFirstVisitToPlaceCommandFactory,
+)
 from src.time.time_manager import TimeManager
 
 
-def test_execute_updates_current_place():
-    playthrough_name = "test_playthrough"
-    place_identifier = "test_place"
-    playthrough_manager_mock = Mock(spec=PlaythroughManager)
-    playthrough_manager_mock.update_current_place = Mock()
-    place_manager_mock = Mock(spec=PlaceManager)
-    place_manager_mock.is_visited.return_value = True
-    place_manager_factory_mock = Mock(spec=PlaceManagerFactory)
-    place_manager_factory_mock.create_place_manager.return_value = place_manager_mock
-    time_manager_mock = Mock(spec=TimeManager)
-    time_manager_mock.advance_time = Mock()
-    command = VisitPlaceCommand(
-        playthrough_name=playthrough_name,
-        place_identifier=place_identifier,
-        generate_character_generation_guidelines_algorithm_factory=Mock(
-            spec=GenerateCharacterGenerationGuidelinesAlgorithmFactory
-        ),
-        hierarchy_manager_factory=Mock(spec=HierarchyManagerFactory),
-        place_manager_factory=place_manager_factory_mock,
-        playthrough_manager=playthrough_manager_mock,
-        time_manager=time_manager_mock,
-        character_guidelines_manager=Mock(spec=CharacterGuidelinesManager),
-    )
-    command.execute()
-    playthrough_manager_mock.update_current_place.assert_called_once_with(
-        place_identifier
-    )
+# Helper function to assert that a string is non-empty
+def test_validate_non_empty_string_called():
+    with patch(
+        "src.movements.commands.visit_place_command.validate_non_empty_string"
+    ) as mock_validate:
+        cmd = VisitPlaceCommand(
+            playthrough_name="TestPlaythrough",
+            place_identifier="TestPlace",
+            process_first_visit_to_place_command_factory=Mock(),
+            place_manager_factory=Mock(),
+        )
+        mock_validate.assert_any_call("TestPlaythrough", "playthrough_name")
+        mock_validate.assert_any_call("TestPlace", "place_identifier")
 
 
-def test_execute_handles_new_place_guidelines_do_not_exist():
-    playthrough_name = "test_playthrough"
-    place_identifier = "new_place"
-    playthrough_manager_mock = Mock(spec=PlaythroughManager)
-    playthrough_manager_mock.update_current_place = Mock()
-    playthrough_manager_mock.get_story_universe_template.return_value = "test_universe"
-    place_manager_mock = Mock(spec=PlaceManager)
-    place_manager_mock.is_visited.return_value = False
-    place_manager_factory_mock = Mock(spec=PlaceManagerFactory)
-    place_manager_factory_mock.create_place_manager.return_value = place_manager_mock
-    time_manager_mock = Mock(spec=TimeManager)
-    time_manager_mock.advance_time = Mock()
-    character_guidelines_manager_mock = Mock(spec=CharacterGuidelinesManager)
-    character_guidelines_manager_mock.guidelines_exist.return_value = False
-    generate_algorithm_mock = Mock(spec=GenerateCharacterGenerationGuidelinesAlgorithm)
-    generate_algorithm_mock.do_algorithm = Mock()
-    generate_character_guidelines_algorithm_factory_mock = Mock(
-        spec=GenerateCharacterGenerationGuidelinesAlgorithmFactory
+@pytest.fixture
+def mock_dependencies():
+    process_first_visit_factory = create_autospec(
+        ProcessFirstVisitToPlaceCommandFactory
     )
-    (
-        generate_character_guidelines_algorithm_factory_mock.create_algorithm.return_value
-    ) = generate_algorithm_mock
-    hierarchy_manager_mock = Mock(spec=HierarchyManager)
-    hierarchy_manager_mock.fill_places_templates_parameter.return_value = Mock(
-        get_world_template=lambda: "world_template",
-        get_region_template=lambda: "region_template",
-        get_area_template=lambda: "area_template",
-        get_location_template=lambda: "location_template",
-    )
-    hierarchy_manager_factory_mock = Mock(spec=HierarchyManagerFactory)
-    (hierarchy_manager_factory_mock.create_hierarchy_manager.return_value) = (
-        hierarchy_manager_mock
-    )
-    command = VisitPlaceCommand(
-        playthrough_name=playthrough_name,
-        place_identifier=place_identifier,
-        generate_character_generation_guidelines_algorithm_factory=generate_character_guidelines_algorithm_factory_mock,
-        hierarchy_manager_factory=hierarchy_manager_factory_mock,
-        place_manager_factory=place_manager_factory_mock,
-        playthrough_manager=playthrough_manager_mock,
-        time_manager=time_manager_mock,
-        character_guidelines_manager=character_guidelines_manager_mock,
-    )
-    command.execute()
-    playthrough_manager_mock.update_current_place.assert_called_once_with(
-        place_identifier
-    )
-    place_manager_mock.is_visited.assert_called_once_with(place_identifier)
-    character_guidelines_manager_mock.guidelines_exist.assert_called_once_with(
-        "test_universe",
-        "world_template",
-        "region_template",
-        "area_template",
-        "location_template",
-    )
-    generate_algorithm_mock.do_algorithm.assert_called_once()
-    place_manager_mock.set_as_visited.assert_called_once_with(place_identifier)
+    place_manager_factory = create_autospec(PlaceManagerFactory)
+    playthrough_manager = create_autospec(PlaythroughManager)
+    time_manager = create_autospec(TimeManager)
+    config_loader = create_autospec(ConfigLoader)
+
+    return {
+        "process_first_visit_factory": process_first_visit_factory,
+        "place_manager_factory": place_manager_factory,
+        "playthrough_manager": playthrough_manager,
+        "time_manager": time_manager,
+        "config_loader": config_loader,
+    }
 
 
-def test_execute_handles_new_place_guidelines_exist():
-    playthrough_name = "test_playthrough"
-    place_identifier = "new_place"
-    playthrough_manager_mock = Mock(spec=PlaythroughManager)
-    playthrough_manager_mock.update_current_place = Mock()
-    playthrough_manager_mock.get_story_universe_template.return_value = "test_universe"
-    place_manager_mock = Mock(spec=PlaceManager)
-    place_manager_mock.is_visited.return_value = False
-    place_manager_factory_mock = Mock(spec=PlaceManagerFactory)
-    place_manager_factory_mock.create_place_manager.return_value = place_manager_mock
-    time_manager_mock = Mock(spec=TimeManager)
-    time_manager_mock.advance_time = Mock()
-    character_guidelines_manager_mock = Mock(spec=CharacterGuidelinesManager)
-    character_guidelines_manager_mock.guidelines_exist.return_value = True
-    generate_algorithm_mock = Mock(spec=GenerateCharacterGenerationGuidelinesAlgorithm)
-    generate_algorithm_mock.do_algorithm = Mock()
-    generate_character_guidelines_algorithm_factory_mock = Mock(
-        spec=GenerateCharacterGenerationGuidelinesAlgorithmFactory
+def test_initialization_with_required_dependencies(mock_dependencies):
+    cmd = VisitPlaceCommand(
+        playthrough_name="TestPlaythrough",
+        place_identifier="TestPlace",
+        process_first_visit_to_place_command_factory=mock_dependencies[
+            "process_first_visit_factory"
+        ],
+        place_manager_factory=mock_dependencies["place_manager_factory"],
     )
-    (
-        generate_character_guidelines_algorithm_factory_mock.create_algorithm.return_value
-    ) = generate_algorithm_mock
-    hierarchy_manager_mock = Mock(spec=HierarchyManager)
-    hierarchy_manager_mock.fill_places_templates_parameter.return_value = Mock(
-        get_world_template=lambda: "world_template",
-        get_region_template=lambda: "region_template",
-        get_area_template=lambda: "area_template",
-        get_location_template=lambda: "location_template",
+
+    assert cmd._place_identifier == "TestPlace"
+    assert (
+        cmd._process_first_visit_to_place_command_factory
+        == mock_dependencies["process_first_visit_factory"]
     )
-    hierarchy_manager_factory_mock = Mock(spec=HierarchyManagerFactory)
-    (hierarchy_manager_factory_mock.create_hierarchy_manager.return_value) = (
-        hierarchy_manager_mock
-    )
-    command = VisitPlaceCommand(
-        playthrough_name=playthrough_name,
-        place_identifier=place_identifier,
-        generate_character_generation_guidelines_algorithm_factory=generate_character_guidelines_algorithm_factory_mock,
-        hierarchy_manager_factory=hierarchy_manager_factory_mock,
-        place_manager_factory=place_manager_factory_mock,
-        playthrough_manager=playthrough_manager_mock,
-        time_manager=time_manager_mock,
-        character_guidelines_manager=character_guidelines_manager_mock,
-    )
-    command.execute()
-    playthrough_manager_mock.update_current_place.assert_called_once_with(
-        place_identifier
-    )
-    place_manager_mock.is_visited.assert_called_once_with(place_identifier)
-    character_guidelines_manager_mock.guidelines_exist.assert_called_once_with(
-        "test_universe",
-        "world_template",
-        "region_template",
-        "area_template",
-        "location_template",
-    )
-    generate_algorithm_mock.do_algorithm.assert_not_called()
-    place_manager_mock.set_as_visited.assert_called_once_with(place_identifier)
+    assert cmd._place_manager_factory == mock_dependencies["place_manager_factory"]
+    assert isinstance(cmd._playthrough_manager, PlaythroughManager)
+    assert isinstance(cmd._time_manager, TimeManager)
+    assert isinstance(cmd._config_loader, ConfigLoader)
 
 
-def test_execute_place_already_visited():
-    playthrough_name = "test_playthrough"
-    place_identifier = "visited_place"
-    playthrough_manager_mock = Mock(spec=PlaythroughManager)
-    playthrough_manager_mock.update_current_place = Mock()
-    place_manager_mock = Mock(spec=PlaceManager)
-    place_manager_mock.is_visited.return_value = True
-    place_manager_factory_mock = Mock(spec=PlaceManagerFactory)
-    place_manager_factory_mock.create_place_manager.return_value = place_manager_mock
-    time_manager_mock = Mock(spec=TimeManager)
-    time_manager_mock.advance_time = Mock()
-    character_guidelines_manager_mock = Mock(spec=CharacterGuidelinesManager)
-    character_guidelines_manager_mock.guidelines_exist = Mock()
-    generate_character_guidelines_algorithm_factory_mock = Mock(
-        spec=GenerateCharacterGenerationGuidelinesAlgorithmFactory
+def test_initialization_with_all_dependencies(mock_dependencies):
+    cmd = VisitPlaceCommand(
+        playthrough_name="TestPlaythrough",
+        place_identifier="TestPlace",
+        process_first_visit_to_place_command_factory=mock_dependencies[
+            "process_first_visit_factory"
+        ],
+        place_manager_factory=mock_dependencies["place_manager_factory"],
+        playthrough_manager=mock_dependencies["playthrough_manager"],
+        time_manager=mock_dependencies["time_manager"],
+        config_loader=mock_dependencies["config_loader"],
     )
-    (generate_character_guidelines_algorithm_factory_mock.create_algorithm) = Mock()
-    command = VisitPlaceCommand(
-        playthrough_name=playthrough_name,
-        place_identifier=place_identifier,
-        generate_character_generation_guidelines_algorithm_factory=generate_character_guidelines_algorithm_factory_mock,
-        hierarchy_manager_factory=Mock(spec=HierarchyManagerFactory),
-        place_manager_factory=place_manager_factory_mock,
-        playthrough_manager=playthrough_manager_mock,
-        time_manager=time_manager_mock,
-        character_guidelines_manager=character_guidelines_manager_mock,
-    )
-    command.execute()
-    playthrough_manager_mock.update_current_place.assert_called_once_with(
-        place_identifier
-    )
-    place_manager_mock.is_visited.assert_called_once_with(place_identifier)
-    character_guidelines_manager_mock.guidelines_exist.assert_not_called()
-    generate_character_guidelines_algorithm_factory_mock.create_algorithm.assert_not_called()
+
+    assert cmd._playthrough_manager == mock_dependencies["playthrough_manager"]
+    assert cmd._time_manager == mock_dependencies["time_manager"]
+    assert cmd._config_loader == mock_dependencies["config_loader"]
 
 
-def test_multiple_visits_do_not_regenerate_guidelines():
-    playthrough_name = "test_playthrough"
-    place_identifier = "revisited_place"
-    playthrough_manager_mock = Mock(spec=PlaythroughManager)
-    playthrough_manager_mock.update_current_place = Mock()
-    place_manager_mock = Mock(spec=PlaceManager)
-    place_manager_mock.is_visited.return_value = True
-    place_manager_factory_mock = Mock(spec=PlaceManagerFactory)
-    place_manager_factory_mock.create_place_manager.return_value = place_manager_mock
-    time_manager_mock = Mock(spec=TimeManager)
-    time_manager_mock.advance_time = Mock()
-    character_guidelines_manager_mock = Mock(spec=CharacterGuidelinesManager)
-    generate_character_guidelines_algorithm_factory_mock = Mock(
-        spec=GenerateCharacterGenerationGuidelinesAlgorithmFactory
+def test_execute_room_type(mock_dependencies):
+    # Arrange
+    place_manager = Mock()
+    place_manager.get_current_place_type.return_value = TemplateType.ROOM
+
+    mock_dependencies["place_manager_factory"].create_place_manager.return_value = (
+        place_manager
     )
-    command = VisitPlaceCommand(
-        playthrough_name=playthrough_name,
-        place_identifier=place_identifier,
-        generate_character_generation_guidelines_algorithm_factory=generate_character_guidelines_algorithm_factory_mock,
-        hierarchy_manager_factory=Mock(spec=HierarchyManagerFactory),
-        place_manager_factory=place_manager_factory_mock,
-        playthrough_manager=playthrough_manager_mock,
-        time_manager=time_manager_mock,
-        character_guidelines_manager=character_guidelines_manager_mock,
+
+    cmd = VisitPlaceCommand(
+        playthrough_name="TestPlaythrough",
+        place_identifier="TestPlace",
+        process_first_visit_to_place_command_factory=mock_dependencies[
+            "process_first_visit_factory"
+        ],
+        place_manager_factory=mock_dependencies["place_manager_factory"],
+        playthrough_manager=mock_dependencies["playthrough_manager"],
+        time_manager=mock_dependencies["time_manager"],
+        config_loader=mock_dependencies["config_loader"],
     )
-    command.execute()
-    command.execute()
-    playthrough_manager_mock.update_current_place.assert_called_with(place_identifier)
-    assert playthrough_manager_mock.update_current_place.call_count == 2
-    generate_character_guidelines_algorithm_factory_mock.create_algorithm.assert_not_called()
+
+    # Act
+    cmd.execute()
+
+    # Assert
+    mock_dependencies[
+        "playthrough_manager"
+    ].update_current_place.assert_called_once_with("TestPlace")
+    mock_dependencies["place_manager_factory"].create_place_manager.assert_called_once()
+    place_manager.get_current_place_type.assert_called_once()
+    mock_dependencies["process_first_visit_factory"].create_command.assert_not_called()
+    mock_dependencies["time_manager"].advance_time.assert_not_called()
+
+
+def test_execute_first_visit(mock_dependencies):
+    # Arrange
+    place_manager = Mock()
+    place_manager.get_current_place_type.return_value = TemplateType.LOCATION
+    place_manager.is_visited.return_value = False
+
+    first_visit_command = Mock(spec=Command)
+    mock_dependencies["process_first_visit_factory"].create_command.return_value = (
+        first_visit_command
+    )
+
+    mock_dependencies["place_manager_factory"].create_place_manager.return_value = (
+        place_manager
+    )
+    mock_dependencies[
+        "config_loader"
+    ].get_time_advanced_due_to_exiting_location.return_value = 10
+
+    cmd = VisitPlaceCommand(
+        playthrough_name="TestPlaythrough",
+        place_identifier="TestPlace",
+        process_first_visit_to_place_command_factory=mock_dependencies[
+            "process_first_visit_factory"
+        ],
+        place_manager_factory=mock_dependencies["place_manager_factory"],
+        playthrough_manager=mock_dependencies["playthrough_manager"],
+        time_manager=mock_dependencies["time_manager"],
+        config_loader=mock_dependencies["config_loader"],
+    )
+
+    # Act
+    cmd.execute()
+
+    # Assert
+    mock_dependencies[
+        "playthrough_manager"
+    ].update_current_place.assert_called_once_with("TestPlace")
+    mock_dependencies["place_manager_factory"].create_place_manager.assert_called_once()
+    place_manager.get_current_place_type.assert_called_once()
+    place_manager.is_visited.assert_called_once_with("TestPlace")
+    mock_dependencies[
+        "process_first_visit_factory"
+    ].create_command.assert_called_once_with("TestPlace")
+    first_visit_command.execute.assert_called_once()
+    mock_dependencies[
+        "config_loader"
+    ].get_time_advanced_due_to_exiting_location.assert_called_once()
+    mock_dependencies["time_manager"].advance_time.assert_called_once_with(10)
+
+
+def test_execute_already_visited(mock_dependencies):
+    # Arrange
+    place_manager = Mock()
+    place_manager.get_current_place_type.return_value = TemplateType.LOCATION
+    place_manager.is_visited.return_value = True
+
+    mock_dependencies["place_manager_factory"].create_place_manager.return_value = (
+        place_manager
+    )
+    mock_dependencies[
+        "config_loader"
+    ].get_time_advanced_due_to_exiting_location.return_value = 5
+
+    cmd = VisitPlaceCommand(
+        playthrough_name="TestPlaythrough",
+        place_identifier="TestPlace",
+        process_first_visit_to_place_command_factory=mock_dependencies[
+            "process_first_visit_factory"
+        ],
+        place_manager_factory=mock_dependencies["place_manager_factory"],
+        playthrough_manager=mock_dependencies["playthrough_manager"],
+        time_manager=mock_dependencies["time_manager"],
+        config_loader=mock_dependencies["config_loader"],
+    )
+
+    # Act
+    cmd.execute()
+
+    # Assert
+    mock_dependencies[
+        "playthrough_manager"
+    ].update_current_place.assert_called_once_with("TestPlace")
+    mock_dependencies["place_manager_factory"].create_place_manager.assert_called_once()
+    place_manager.get_current_place_type.assert_called_once()
+    place_manager.is_visited.assert_called_once_with("TestPlace")
+    mock_dependencies["process_first_visit_factory"].create_command.assert_not_called()
+    mock_dependencies[
+        "config_loader"
+    ].get_time_advanced_due_to_exiting_location.assert_called_once()
+    mock_dependencies["time_manager"].advance_time.assert_called_once_with(5)
+
+
+def test_execute_with_default_dependencies():
+    with patch(
+        "src.movements.commands.visit_place_command.PlaythroughManager"
+    ) as mock_playthrough_manager_cls, patch(
+        "src.movements.commands.visit_place_command.TimeManager"
+    ) as mock_time_manager_cls, patch(
+        "src.movements.commands.visit_place_command.ConfigLoader"
+    ) as mock_config_loader_cls, patch(
+        "src.movements.commands.visit_place_command.PlaceManagerFactory"
+    ) as mock_place_manager_factory_cls, patch(
+        "src.movements.commands.visit_place_command.ProcessFirstVisitToPlaceCommandFactory"
+    ) as mock_process_first_visit_factory_cls:
+
+        mock_playthrough_manager = Mock(spec=PlaythroughManager)
+        mock_time_manager = Mock(spec=TimeManager)
+        mock_config_loader = Mock(spec=ConfigLoader)
+        mock_place_manager_factory = Mock(spec=PlaceManagerFactory)
+        mock_process_first_visit_factory = Mock(
+            spec=ProcessFirstVisitToPlaceCommandFactory
+        )
+
+        mock_playthrough_manager_cls.return_value = mock_playthrough_manager
+        mock_time_manager_cls.return_value = mock_time_manager
+        mock_config_loader_cls.return_value = mock_config_loader
+        mock_place_manager_factory_cls.return_value = mock_place_manager_factory
+        mock_process_first_visit_factory_cls.return_value = (
+            mock_process_first_visit_factory
+        )
+
+        # Setup place manager behavior
+        place_manager = Mock()
+        place_manager.get_current_place_type.return_value = TemplateType.REGION
+        place_manager.is_visited.return_value = False
+        mock_place_manager_factory.create_place_manager.return_value = place_manager
+
+        # Setup config loader
+        mock_config_loader.get_time_advanced_due_to_exiting_location.return_value = 20
+
+        # Setup first visit command
+        first_visit_command = Mock(spec=Command)
+        mock_process_first_visit_factory.create_command.return_value = (
+            first_visit_command
+        )
+
+        cmd = VisitPlaceCommand(
+            playthrough_name="DefaultPlaythrough",
+            place_identifier="DefaultPlace",
+            process_first_visit_to_place_command_factory=mock_process_first_visit_factory,
+            place_manager_factory=mock_place_manager_factory,
+        )
+
+        # Act
+        cmd.execute()
+
+        # Assert
+        mock_playthrough_manager.update_current_place.assert_called_once_with(
+            "DefaultPlace"
+        )
+        mock_place_manager_factory.create_place_manager.assert_called_once()
+        place_manager.get_current_place_type.assert_called_once()
+        place_manager.is_visited.assert_called_once_with("DefaultPlace")
+        mock_process_first_visit_factory.create_command.assert_called_once_with(
+            "DefaultPlace"
+        )
+        first_visit_command.execute.assert_called_once()
+        mock_config_loader.get_time_advanced_due_to_exiting_location.assert_called_once()
+        mock_time_manager.advance_time.assert_called_once_with(20)
+
+
+def test_execute_with_room_type_no_time_advance(mock_dependencies):
+    # Arrange
+    place_manager = Mock()
+    place_manager.get_current_place_type.return_value = TemplateType.ROOM
+
+    mock_dependencies["place_manager_factory"].create_place_manager.return_value = (
+        place_manager
+    )
+
+    cmd = VisitPlaceCommand(
+        playthrough_name="TestPlaythrough",
+        place_identifier="TestRoom",
+        process_first_visit_to_place_command_factory=mock_dependencies[
+            "process_first_visit_factory"
+        ],
+        place_manager_factory=mock_dependencies["place_manager_factory"],
+        playthrough_manager=mock_dependencies["playthrough_manager"],
+        time_manager=mock_dependencies["time_manager"],
+        config_loader=mock_dependencies["config_loader"],
+    )
+
+    # Act
+    cmd.execute()
+
+    # Assert
+    mock_dependencies[
+        "playthrough_manager"
+    ].update_current_place.assert_called_once_with("TestRoom")
+    mock_dependencies["place_manager_factory"].create_place_manager.assert_called_once()
+    place_manager.get_current_place_type.assert_called_once()
+    place_manager.is_visited.assert_not_called()
+    mock_dependencies["process_first_visit_factory"].create_command.assert_not_called()
+    mock_dependencies[
+        "config_loader"
+    ].get_time_advanced_due_to_exiting_location.assert_not_called()
+    mock_dependencies["time_manager"].advance_time.assert_not_called()
+
+
+def test_execute_advance_time_called_correctly(mock_dependencies):
+    # Arrange
+    place_manager = Mock()
+    place_manager.get_current_place_type.return_value = TemplateType.LOCATION
+    place_manager.is_visited.return_value = True
+
+    mock_dependencies["place_manager_factory"].create_place_manager.return_value = (
+        place_manager
+    )
+    mock_dependencies[
+        "config_loader"
+    ].get_time_advanced_due_to_exiting_location.return_value = 15
+
+    cmd = VisitPlaceCommand(
+        playthrough_name="TestPlaythrough",
+        place_identifier="TestLocation",
+        process_first_visit_to_place_command_factory=mock_dependencies[
+            "process_first_visit_factory"
+        ],
+        place_manager_factory=mock_dependencies["place_manager_factory"],
+        playthrough_manager=mock_dependencies["playthrough_manager"],
+        time_manager=mock_dependencies["time_manager"],
+        config_loader=mock_dependencies["config_loader"],
+    )
+
+    # Act
+    cmd.execute()
+
+    # Assert
+    mock_dependencies["time_manager"].advance_time.assert_called_once_with(15)

@@ -1,14 +1,14 @@
 from typing import Optional
 
 from src.base.abstracts.command import Command
+from src.base.enums import TemplateType
 from src.base.playthrough_manager import PlaythroughManager
-from src.characters.character_guidelines_manager import CharacterGuidelinesManager
-from src.characters.factories.generate_character_generation_guidelines_algorithm_factory import (
-    GenerateCharacterGenerationGuidelinesAlgorithmFactory,
-)
+from src.base.validators import validate_non_empty_string
 from src.filesystem.config_loader import ConfigLoader
-from src.maps.factories.hierarchy_manager_factory import HierarchyManagerFactory
 from src.maps.factories.place_manager_factory import PlaceManagerFactory
+from src.movements.factories.process_first_visit_to_place_command_factory import (
+    ProcessFirstVisitToPlaceCommandFactory,
+)
 from src.time.time_manager import TimeManager
 
 
@@ -18,55 +18,41 @@ class VisitPlaceCommand(Command):
         self,
         playthrough_name: str,
         place_identifier: str,
-        generate_character_generation_guidelines_algorithm_factory: GenerateCharacterGenerationGuidelinesAlgorithmFactory,
-        hierarchy_manager_factory: HierarchyManagerFactory,
+        process_first_visit_to_place_command_factory: ProcessFirstVisitToPlaceCommandFactory,
         place_manager_factory: PlaceManagerFactory,
         playthrough_manager: Optional[PlaythroughManager] = None,
         time_manager: Optional[TimeManager] = None,
-        character_guidelines_manager: Optional[CharacterGuidelinesManager] = None,
         config_loader: Optional[ConfigLoader] = None,
     ):
+        validate_non_empty_string(playthrough_name, "playthrough_name")
+        validate_non_empty_string(place_identifier, "place_identifier")
+
         self._place_identifier = place_identifier
-        (self._generate_character_generation_guidelines_algorithm_factory) = (
-            generate_character_generation_guidelines_algorithm_factory
+        self._process_first_visit_to_place_command_factory = (
+            process_first_visit_to_place_command_factory
         )
-        self._hierarchy_manager_factory = hierarchy_manager_factory
         self._place_manager_factory = place_manager_factory
+
         self._playthrough_manager = playthrough_manager or PlaythroughManager(
             playthrough_name
         )
         self._time_manager = time_manager or TimeManager(playthrough_name)
-        self._character_guidelines_manager = (
-            character_guidelines_manager or CharacterGuidelinesManager()
-        )
         self._config_loader = config_loader or ConfigLoader()
-
-    def _handle_place_is_not_visited(self):
-        story_universe_name = self._playthrough_manager.get_story_universe_template()
-        places_templates_parameter = self._hierarchy_manager_factory.create_hierarchy_manager().fill_places_templates_parameter(
-            self._place_identifier
-        )
-        if not self._character_guidelines_manager.guidelines_exist(
-            story_universe_name,
-            places_templates_parameter.get_world_template(),
-            places_templates_parameter.get_region_template(),
-            places_templates_parameter.get_area_template(),
-            places_templates_parameter.get_location_template(),
-        ):
-            self._generate_character_generation_guidelines_algorithm_factory.create_algorithm(
-                self._place_identifier
-            ).do_algorithm()
-        self._place_manager_factory.create_place_manager().set_as_visited(
-            self._place_identifier
-        )
 
     def execute(self) -> None:
         self._playthrough_manager.update_current_place(self._place_identifier)
 
-        if not self._place_manager_factory.create_place_manager().is_visited(
-            self._place_identifier
-        ):
-            self._handle_place_is_not_visited()
+        # The following will only get done if the current place isn't a room.
+        place_manager = self._place_manager_factory.create_place_manager()
+
+        if place_manager.get_current_place_type() == TemplateType.ROOM:
+            return
+
+        if not place_manager.is_visited(self._place_identifier):
+            self._process_first_visit_to_place_command_factory.create_command(
+                self._place_identifier
+            ).execute()
+
         self._time_manager.advance_time(
             self._config_loader.get_time_advanced_due_to_exiting_location()
         )
