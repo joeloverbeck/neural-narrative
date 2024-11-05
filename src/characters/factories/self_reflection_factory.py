@@ -46,7 +46,7 @@ class SelfReflectionFactory(BaseToolResponseProvider):
         return self._path_manager.get_self_reflection_generation_prompt_path()
 
     def get_user_content(self) -> str:
-        return "Write a meaningful and compelling self-reflection from the first-person perspective of the character regarding their memories. Follow the provided instructions."
+        return "Write a meaningful and compelling self-reflection from the third-person perspective of the character regarding their memories. Follow the provided instructions."
 
     def create_product_from_base_model(self, response_model: BaseModel):
         logger.info(

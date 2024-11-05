@@ -58,19 +58,9 @@
         </button>
         <div class="content">
             <!-- Always include the self-reflection-container -->
-            <div class="self-reflection-container" id="self-reflection-container"
-                 {% if self_reflection_voice_line_url %}data-file-url="{{ self_reflection_voice_line_url }}" {% endif
-                 %}>
+            <div class="self-reflection-container" id="self-reflection-container">
                 {% if self_reflection_text %}
                 <p>{{ self_reflection_text }}</p>
-                <i class="fas fa-play play-icon"></i>
-                <div class="waveform">
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                </div>
                 {% else %}
                 <!-- Placeholder content if no self-reflection yet -->
                 <p>No self-reflection available yet.</p>

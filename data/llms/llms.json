@@ -71,9 +71,9 @@
   "narrative_beat": "claude_3.5_sonnet",
   "grow_event": "claude_3.5_sonnet",
   "confrontation_round": "hermes_405b",
-  "speech_turn_choice": "magnum_72b",
+  "speech_turn_choice": "hermes_405b",
   "speech_turn": "claude_3.5_sonnet",
-  "dialogue_summary": "magnum_72b",
+  "dialogue_summary": "claude_3.5_sonnet",
   "action_resolution": "hermes_405b",
   "writers_room": "nemotron_70b"
 }

@@ -5,4 +5,5 @@ Consider how these events have affected {name}, the lessons learned, how {name}'
 The reflection should be introspective and deepen the understanding of {name}'s character.
 Character Information and Memories:
 {character_information}
-Important: the self-reflection should be at the most three paragraphs long. You are prohibited from repeating verbatim the character information you have been provided for this task.
+Important: the self-reflection should be at the most three paragraphs long. It should be written in the third-person, referring to the character by their full name.
+You are prohibited from repeating verbatim the character information you have been provided for this task.
