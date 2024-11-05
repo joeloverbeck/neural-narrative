@@ -95,9 +95,10 @@ class MapManager:
             "region_data": None,
             "area_data": None,
             "location_data": None,
+            "room_data": None,
         }
 
-        for place_type in ["world", "region", "area", "location"]:
+        for place_type in ["world", "region", "area", "location", "room"]:
 
             place = hierarchy.get(place_type)
 

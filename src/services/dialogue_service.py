@@ -300,6 +300,13 @@ class DialogueService:
 
         purpose = session.get("purpose", "")
 
+        logger.info(
+            "About to process the user's input, the purpose of the chat was: %s",
+            purpose,
+        )
+
+        logger.info("Purpose: %s", purpose)
+
         web_player_input_factory = WebPlayerInputFactory(user_input)
 
         player_input_product = web_player_input_factory.create_player_input()

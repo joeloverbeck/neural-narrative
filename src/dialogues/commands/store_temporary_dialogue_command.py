@@ -1,3 +1,4 @@
+import logging
 from typing import Optional
 
 from src.base.abstracts.command import Command
@@ -7,6 +8,8 @@ from src.dialogues.transcription import Transcription
 from src.filesystem.file_operations import write_json_file, read_json_file
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.filesystem.path_manager import PathManager
+
+logger = logging.getLogger(__name__)
 
 
 class StoreTemporaryDialogueCommand(Command):
@@ -48,6 +51,11 @@ class StoreTemporaryDialogueCommand(Command):
             ongoing_dialogue_file = read_json_file(ongoing_dialogue_file_path)
         else:
             ongoing_dialogue_file = {}
+
+        logger.info(
+            "Will store the temporary dialogue, including the following purpose: %s",
+            self._purpose,
+        )
 
         ongoing_dialogue_file.update(
             {

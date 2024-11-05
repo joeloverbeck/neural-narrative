@@ -1,8 +1,12 @@
+import logging
+
 from flask import request, session, redirect, url_for, render_template
 from flask.views import MethodView
 
 from src.characters.characters_manager import CharactersManager
 from src.services.web_service import WebService
+
+logger = logging.getLogger(__name__)
 
 
 class ParticipantsView(MethodView):
@@ -38,5 +42,8 @@ class ParticipantsView(MethodView):
             )
         session["participants"] = selected_characters
         session["purpose"] = purpose
+
+        logger.info("Purpose stored in session: %s", session.get("purpose"))
+
         session.pop("place_description", None)
         return redirect(url_for("chat"))

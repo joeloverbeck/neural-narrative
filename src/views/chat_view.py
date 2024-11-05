@@ -38,7 +38,10 @@ class ChatView(MethodView):
         existing_participants = session.get("participants", [])
         new_participants = product.get_data().get("participants", [])
         session["participants"] = list(set(existing_participants + new_participants))
-        session["purpose"] = product.get_data().get("purpose")
+
+        # Careful with the purpose here.
+        if "purpose" in product.get_data().keys() and product.get_data().get("purpose"):
+            session["purpose"] = product.get_data().get("purpose")
         session.pop("self_reflection_text", None)
         session.pop("worldview_text", None)
 
