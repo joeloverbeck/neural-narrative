@@ -221,6 +221,6 @@ def test_do_algorithm_template_data_missing_description():
     )
 
     with pytest.raises(ValueError) as exc_info:
-        result = algorithm.do_algorithm()
+        algorithm.do_algorithm()
 
     assert "World template data is missing" in str(exc_info.value)

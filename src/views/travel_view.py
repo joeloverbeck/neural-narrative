@@ -137,6 +137,14 @@ class TravelView(MethodView):
 
         character_factory = CharacterFactory(playthrough_name)
 
+        place_manager_factory = PlaceManagerFactory(playthrough_name)
+
+        hierarchy_manager_factory = HierarchyManagerFactory(playthrough_name)
+
+        get_place_full_data_algorithm_factory = GetPlaceFullDataAlgorithmFactory(
+            place_manager_factory, hierarchy_manager_factory
+        )
+
         product = TravelNarrationFactory(
             TravelNarrationFactoryConfig(
                 playthrough_name, destination_identifier, travel_context
@@ -144,6 +152,7 @@ class TravelView(MethodView):
             TravelNarrationFactoryFactoriesConfig(
                 produce_tool_response_strategy_factory,
                 player_and_followers_information_factory,
+                get_place_full_data_algorithm_factory,
                 character_factory,
                 map_manager_factory,
             ),

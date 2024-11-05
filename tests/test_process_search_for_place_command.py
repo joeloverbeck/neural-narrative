@@ -157,7 +157,7 @@ def test_execute_attach_place_command_factory_called_after_search(
     process_command.execute()
 
     # Ensure the order of calls: search_for_place_command.execute() before attach_place_command_factory.create_command()
-    expected_calls = [
+    _expected_calls = [
         call.execute(),
         call.create_map_manager(),
         call.get_identifier_and_place_template_of_latest_map_entry(),

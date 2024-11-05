@@ -8,7 +8,7 @@ from src.base.enums import TemplateType
 from src.maps.algorithms.get_area_info_algorithm import GetAreaInfoAlgorithm
 from src.maps.algorithms.get_location_info_algorithm import GetLocationInfoAlgorithm
 from src.maps.algorithms.get_place_info_algorithm import GetPlaceInfoAlgorithm
-from src.maps.dataclasses.get_place_info_algorithm_data import GetPlaceInfoAlgorithmData
+from src.maps.data.get_place_info_algorithm_data import GetPlaceInfoAlgorithmData
 from src.maps.factories.place_manager_factory import PlaceManagerFactory
 
 

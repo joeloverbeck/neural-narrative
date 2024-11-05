@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from flask import session, redirect, url_for, render_template, request, jsonify
 from flask.views import MethodView
 
@@ -22,10 +20,6 @@ from src.prompting.composers.produce_tool_response_strategy_factory_composer imp
     ProduceToolResponseStrategyFactoryComposer,
 )
 from src.prompting.llms import Llms
-from src.services.web_service import WebService
-from src.voices.factories.direct_voice_line_generation_algorithm_factory import (
-    DirectVoiceLineGenerationAlgorithmFactory,
-)
 
 
 class CharacterMemoriesView(MethodView):
@@ -130,30 +124,21 @@ class CharacterMemoriesView(MethodView):
             )
             algorithm = ProduceSelfReflectionAlgorithm(
                 playthrough_name,
-                character_identifier,
+                Character(playthrough_name, character_identifier),
                 SelfReflectionFactory(
                     playthrough_name,
                     character_identifier,
                     produce_tool_response_strategy_factory,
                     character_information_factory,
                 ),
-                DirectVoiceLineGenerationAlgorithmFactory(),
             )
             produce_self_reflection_product = algorithm.do_algorithm()
-            session["self_reflection_text"] = produce_self_reflection_product.get_text()
-
-            self_reflection_voice_line_url = WebService.get_file_url(
-                Path("voice_lines"),
-                produce_self_reflection_product.get_voice_line_file_name(),
-            )
-
-            session["self_reflection_voice_line_url"] = self_reflection_voice_line_url
+            session["self_reflection_text"] = produce_self_reflection_product.get()
 
             response = {
                 "success": True,
                 "message": "Self-reflection produced and added to memories.",
-                "self_reflection_text": produce_self_reflection_product.get_text(),
-                "self_reflection_voice_line_url": self_reflection_voice_line_url,
+                "self_reflection_text": produce_self_reflection_product.get(),
             }
 
             if request.headers.get("X-Requested-With") == "XMLHttpRequest":

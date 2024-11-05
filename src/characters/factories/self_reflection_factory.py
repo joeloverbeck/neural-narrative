@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 from typing import Optional
 
@@ -15,6 +16,8 @@ from src.prompting.abstracts.abstract_factories import (
     ProduceToolResponseStrategyFactory,
 )
 from src.prompting.providers.base_tool_response_provider import BaseToolResponseProvider
+
+logger = logging.getLogger(__name__)
 
 
 class SelfReflectionFactory(BaseToolResponseProvider):
@@ -46,8 +49,13 @@ class SelfReflectionFactory(BaseToolResponseProvider):
         return "Write a meaningful and compelling self-reflection from the first-person perspective of the character regarding their memories. Follow the provided instructions."
 
     def create_product_from_base_model(self, response_model: BaseModel):
+        logger.info(
+            f"Self-reflection reasoning: %s",
+            response_model.self_reflection.chain_of_thought,
+        )
+
         # have in mind that the self-reflection can come with multiple paragraphs.
-        self_reflection = str(response_model.self_reflection)
+        self_reflection = str(response_model.self_reflection.reflection)
 
         return TextProduct(self_reflection.replace("\n\n", "\n"), is_valid=True)
 

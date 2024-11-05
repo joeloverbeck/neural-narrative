@@ -6,7 +6,7 @@ from src.filesystem.config_loader import ConfigLoader
 from src.maps.algorithms.get_current_weather_identifier_algorithm import (
     GetCurrentWeatherIdentifierAlgorithm,
 )
-from src.maps.dataclasses.get_time_and_weather_info_algorithm_data import (
+from src.maps.data.get_time_and_weather_info_algorithm_data import (
     GetTimeAndWeatherInfoAlgorithmData,
 )
 from src.maps.weathers_manager import WeathersManager

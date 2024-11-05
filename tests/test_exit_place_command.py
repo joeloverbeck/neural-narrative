@@ -209,7 +209,7 @@ def test_exit_place_command_defaults():
     ) as MockPathManager:
 
         # Act
-        command = ExitPlaceCommand(
+        ExitPlaceCommand(
             playthrough_name,
             visit_place_command_factory,
             place_manager_factory,
@@ -240,7 +240,7 @@ def test_exit_place_command_with_provided_optional_parameters():
     ) as MockPathManager:
 
         # Act
-        command = ExitPlaceCommand(
+        ExitPlaceCommand(
             playthrough_name,
             visit_place_command_factory,
             place_manager_factory,

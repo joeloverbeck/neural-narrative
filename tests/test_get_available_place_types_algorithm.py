@@ -2,7 +2,6 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from src.base.constants import PARENT_TEMPLATE_TYPE
 from src.base.enums import TemplateType
 from src.maps.algorithms.get_available_place_types_algorithm import (
     GetAvailablePlaceTypesAlgorithm,
@@ -150,7 +149,6 @@ def test_do_algorithm_returns_empty_list_when_no_available_places():
     place_manager = Mock()
     place_manager_factory.create_place_manager.return_value = place_manager
 
-    parent_template_type = PARENT_TEMPLATE_TYPE.get(place_type)
     place_categories = ["category1"]
     place_manager.get_place_categories.return_value = place_categories
 
@@ -192,7 +190,6 @@ def test_do_algorithm_returns_empty_list_when_all_places_are_used():
     place_manager = Mock()
     place_manager_factory.create_place_manager.return_value = place_manager
 
-    parent_template_type = PARENT_TEMPLATE_TYPE.get(place_type)
     place_categories = ["category1"]
     place_manager.get_place_categories.return_value = place_categories
 
@@ -231,7 +228,6 @@ def test_do_algorithm_with_empty_templates_repository():
     place_manager = Mock()
     place_manager_factory.create_place_manager.return_value = place_manager
 
-    parent_template_type = PARENT_TEMPLATE_TYPE.get(place_type)
     place_categories = ["category1"]
     place_manager.get_place_categories.return_value = place_categories
 
@@ -274,7 +270,6 @@ def test_do_algorithm_ignores_places_without_type_field():
     place_manager = Mock()
     place_manager_factory.create_place_manager.return_value = place_manager
 
-    parent_template_type = PARENT_TEMPLATE_TYPE.get(place_type)
     place_categories = ["category1"]
     place_manager.get_place_categories.return_value = place_categories
 
@@ -317,7 +312,6 @@ def test_do_algorithm_ignores_places_with_none_or_empty_type():
     place_manager = Mock()
     place_manager_factory.create_place_manager.return_value = place_manager
 
-    parent_template_type = PARENT_TEMPLATE_TYPE.get(place_type)
     place_categories = ["category1"]
     place_manager.get_place_categories.return_value = place_categories
 
@@ -360,7 +354,6 @@ def test_do_algorithm_returns_unique_types():
     place_manager = Mock()
     place_manager_factory.create_place_manager.return_value = place_manager
 
-    parent_template_type = PARENT_TEMPLATE_TYPE.get(place_type)
     place_categories = ["category1"]
     place_manager.get_place_categories.return_value = place_categories
 
@@ -407,7 +400,6 @@ def test_do_algorithm_with_default_templates_repository():
         place_manager = Mock()
         place_manager_factory.create_place_manager.return_value = place_manager
 
-        parent_template_type = PARENT_TEMPLATE_TYPE.get(place_type)
         place_categories = ["category1"]
         place_manager.get_place_categories.return_value = place_categories
 

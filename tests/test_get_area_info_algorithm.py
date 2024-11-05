@@ -7,7 +7,7 @@ from src.maps.algorithms.get_available_place_types_algorithm import (
     GetAvailablePlaceTypesAlgorithm,
 )
 from src.maps.algorithms.get_places_in_place_algorithm import GetPlacesInPlaceAlgorithm
-from src.maps.dataclasses.get_area_info_algorithm_data import GetAreaInfoAlgorithmData
+from src.maps.data.get_area_info_algorithm_data import GetAreaInfoAlgorithmData
 from src.maps.factories.navigation_manager_factory import NavigationManagerFactory
 
 

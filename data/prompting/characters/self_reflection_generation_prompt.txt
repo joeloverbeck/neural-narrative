@@ -1,6 +1,6 @@
-Based on the following character information and memories of {name}, write a first-person self-reflection from {name}'s perspective.
+Based on the following character information and memories of {name}, write a third-person self-reflection from {name}'s perspective.
 The reflection should be meaningful and compelling, exploring {name}'s thoughts, feelings, and insights about their experiences.
-Rely on the character's speech patterns to make the writing voice unique.
+Refer to the character by their full name, because this self-reflection will get mixed with other memories.
 Consider how these events have affected {name}, the lessons learned, how {name}'s relationships have evolved, and how {name} now perceives themselves and the world.
 The reflection should be introspective and deepen the understanding of {name}'s character.
 Character Information and Memories:

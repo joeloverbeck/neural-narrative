@@ -2,7 +2,7 @@ from src.maps.algorithms.get_available_place_types_algorithm import (
     GetAvailablePlaceTypesAlgorithm,
 )
 from src.maps.algorithms.get_places_in_place_algorithm import GetPlacesInPlaceAlgorithm
-from src.maps.dataclasses.get_location_info_algorithm_data import (
+from src.maps.data.get_location_info_algorithm_data import (
     GetLocationInfoAlgorithmData,
 )
 

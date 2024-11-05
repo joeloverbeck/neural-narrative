@@ -110,7 +110,7 @@ def test_init_with_empty_playthrough_name():
     )
 
     with pytest.raises(ValueError):
-        algorithm = GetTimeAndWeatherInfoAlgorithm(
+        GetTimeAndWeatherInfoAlgorithm(
             playthrough_name=playthrough_name,
             get_current_weather_identifier_algorithm=mock_get_current_weather_identifier_algorithm,
         )

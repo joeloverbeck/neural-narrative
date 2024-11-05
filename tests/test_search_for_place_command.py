@@ -285,9 +285,7 @@ def test_execute_calls_methods_in_correct_order(
         mock_provider
     )
 
-    with patch.object(
-        command_instance, "execute", wraps=command_instance.execute
-    ) as wrapped_execute:
+    with patch.object(command_instance, "execute", wraps=command_instance.execute):
         command_instance.execute()
 
     # Here, instead of checking the order, we ensure all methods were called.
