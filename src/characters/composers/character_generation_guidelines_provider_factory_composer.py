@@ -1,9 +1,12 @@
+from src.base.playthrough_manager import PlaythroughManager
 from src.characters.factories.character_generation_guidelines_provider_factory import (
     CharacterGenerationGuidelinesProviderFactory,
 )
+from src.maps.algorithms.get_place_full_data_algorithm import GetPlaceFullDataAlgorithm
 from src.maps.composers.get_current_weather_identifier_algorithm_composer import (
     GetCurrentWeatherIdentifierAlgorithmComposer,
 )
+from src.maps.factories.hierarchy_manager_factory import HierarchyManagerFactory
 from src.maps.factories.map_manager_factory import MapManagerFactory
 from src.maps.factories.place_descriptions_for_prompt_factory import (
     PlaceDescriptionsForPromptFactory,
@@ -38,8 +41,18 @@ class CharacterGenerationGuidelinesProviderFactoryComposer:
             ).compose_algorithm()
         )
 
+        place_manager_factory = PlaceManagerFactory(self._playthrough_name)
+
+        hierarchy_manager_factory = HierarchyManagerFactory(self._playthrough_name)
+
+        get_place_full_data_algorithm = GetPlaceFullDataAlgorithm(
+            PlaythroughManager(self._playthrough_name).get_current_place_identifier(),
+            place_manager_factory,
+            hierarchy_manager_factory,
+        )
+
         place_descriptions_for_prompt_factory = PlaceDescriptionsForPromptFactory(
-            self._playthrough_name,
+            get_place_full_data_algorithm,
             get_current_weather_identifier_algorithm,
             map_manager_factory,
             weathers_manager,

@@ -66,6 +66,14 @@ class ConfigLoader:
 
         return self._config[key]
 
+    def get_default_weather_icon(self) -> str:
+        key = "default_weather_icon"
+
+        if not key in self._config:
+            raise KeyError(f"The config file didn't contain an entry for '{key}'.")
+
+        return self._config[key]
+
     def load_openai_project_key(self) -> str:
         return self._load_secret_key(self._path_manager.get_openai_project_key_path())
 

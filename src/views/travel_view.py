@@ -13,7 +13,13 @@ from src.characters.strategies.followers_identifiers_strategy import (
     FollowersIdentifiersStrategy,
 )
 from src.filesystem.config_loader import ConfigLoader
+from src.maps.algorithms.get_place_full_data_algorithm import GetPlaceFullDataAlgorithm
+from src.maps.factories.get_place_full_data_algorithm_factory import (
+    GetPlaceFullDataAlgorithmFactory,
+)
+from src.maps.factories.hierarchy_manager_factory import HierarchyManagerFactory
 from src.maps.factories.map_manager_factory import MapManagerFactory
+from src.maps.factories.place_manager_factory import PlaceManagerFactory
 from src.movements.configs.travel_narration_factory_config import (
     TravelNarrationFactoryConfig,
 )
@@ -52,9 +58,17 @@ class TravelView(MethodView):
         ).get_current_place_identifier()
 
         # Get the names of origin and destination areas
-        map_manager = MapManagerFactory(playthrough_name).create_map_manager()
-        current_area_data = map_manager.get_place_full_data(current_area_identifier)
-        destination_area_data = map_manager.get_place_full_data(destination_identifier)
+        place_manager_factory = PlaceManagerFactory(playthrough_name)
+        hierarchy_manager_factory = HierarchyManagerFactory(playthrough_name)
+        get_place_full_data_algorithm_factory = GetPlaceFullDataAlgorithmFactory(
+            place_manager_factory, hierarchy_manager_factory
+        )
+        current_area_data = get_place_full_data_algorithm_factory.create_algorithm(
+            current_area_identifier
+        ).do_algorithm()
+        destination_area_data = get_place_full_data_algorithm_factory.create_algorithm(
+            destination_identifier
+        ).do_algorithm()
 
         origin_area_name = current_area_data["area_data"]["name"]
         destination_area_name = destination_area_data["area_data"]["name"]
@@ -147,11 +161,15 @@ class TravelView(MethodView):
 
         playthrough_manager.add_to_adventure(narrative + "\n" + outcome)
 
-        destination_place_data = (
-            MapManagerFactory(playthrough_name)
-            .create_map_manager()
-            .get_place_full_data(destination_identifier)
+        place_manager_factory = PlaceManagerFactory(playthrough_name)
+
+        hierarchy_manager_factory = HierarchyManagerFactory(playthrough_name)
+
+        get_place_full_data_algorithm = GetPlaceFullDataAlgorithm(
+            destination_identifier, place_manager_factory, hierarchy_manager_factory
         )
+
+        destination_place_data = get_place_full_data_algorithm.do_algorithm()
 
         destination_area_name = destination_place_data["area_data"]["name"]
 

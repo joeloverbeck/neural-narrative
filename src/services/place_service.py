@@ -11,6 +11,7 @@ from src.characters.factories.character_information_provider import (
 from src.maps.abstracts.factory_products import (
     CardinalConnectionCreationProduct,
 )
+from src.maps.algorithms.get_place_full_data_algorithm import GetPlaceFullDataAlgorithm
 from src.maps.commands.generate_place_command import GeneratePlaceCommand
 from src.maps.composers.get_current_weather_identifier_algorithm_composer import (
     GetCurrentWeatherIdentifierAlgorithmComposer,
@@ -26,6 +27,9 @@ from src.maps.configs.cardinal_connection_creation_factory_config import (
 )
 from src.maps.configs.cardinal_connection_creation_factory_factories_config import (
     CardinalConnectionCreationFactoryFactoriesConfig,
+)
+from src.maps.configs.filtered_place_description_generation_factory_algorithms_config import (
+    FilteredPlaceDescriptionGenerationFactoryAlgorithmsConfig,
 )
 from src.maps.configs.filtered_place_description_generation_factory_config import (
     FilteredPlaceDescriptionGenerationFactoryConfig,
@@ -110,8 +114,11 @@ class PlaceService:
         character_information_factory = CharacterInformationProvider(
             playthrough_name, playthrough_manager.get_player_identifier()
         )
+
+        current_place_identifier = playthrough_manager.get_current_place_identifier()
+
         config = FilteredPlaceDescriptionGenerationFactoryConfig(
-            playthrough_name, playthrough_manager.get_current_place_identifier()
+            playthrough_name, current_place_identifier
         )
 
         produce_tool_response_strategy_factory = (
@@ -120,13 +127,11 @@ class PlaceService:
             ).compose_factory()
         )
         place_manager_factory = PlaceManagerFactory(playthrough_name)
-        map_manager_factory = MapManagerFactory(playthrough_name)
         weathers_manager = WeathersManager()
         factories_config = FilteredPlaceDescriptionGenerationFactoryFactoriesConfig(
             produce_tool_response_strategy_factory,
             character_information_factory,
             place_manager_factory,
-            map_manager_factory,
             weathers_manager,
         )
 
@@ -136,8 +141,18 @@ class PlaceService:
             ).compose_algorithm()
         )
 
+        hierarchy_manager_factory = HierarchyManagerFactory(playthrough_name)
+
+        get_place_full_data_algorithm = GetPlaceFullDataAlgorithm(
+            current_place_identifier, place_manager_factory, hierarchy_manager_factory
+        )
+
+        algorithms_config = FilteredPlaceDescriptionGenerationFactoryAlgorithmsConfig(
+            get_current_weather_identifier_algorithm, get_place_full_data_algorithm
+        )
+
         description_product = ConcreteFilteredPlaceDescriptionGenerationFactory(
-            config, factories_config, get_current_weather_identifier_algorithm
+            config, factories_config, algorithms_config
         ).generate_product(PlaceDescription)
 
         if description_product.is_valid():

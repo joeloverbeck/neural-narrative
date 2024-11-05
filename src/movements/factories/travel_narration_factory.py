@@ -51,12 +51,12 @@ class TravelNarrationFactory(BaseToolResponseProvider):
         current_place_identifier = (
             self._playthrough_manager.get_current_place_identifier()
         )
-        current_place_data = self._factories_config.map_manager_factory.create_map_manager().get_place_full_data(
+        current_place_data = self._factories_config.get_place_full_data_algorithm_factory.create_algorithm(
             current_place_identifier
-        )
-        destination_place_data = self._factories_config.map_manager_factory.create_map_manager().get_place_full_data(
+        ).do_algorithm()
+        destination_place_data = self._factories_config.get_place_full_data_algorithm_factory.create_algorithm(
             self._config.destination_identifier
-        )
+        ).do_algorithm()
 
         player_name = self._factories_config.character_factory.create_character(
             self._playthrough_manager.get_player_identifier()

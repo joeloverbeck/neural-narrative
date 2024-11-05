@@ -1,9 +1,9 @@
-from typing import Dict, Optional
+from typing import Dict
 
-from src.base.playthrough_manager import PlaythroughManager
 from src.maps.algorithms.get_current_weather_identifier_algorithm import (
     GetCurrentWeatherIdentifierAlgorithm,
 )
+from src.maps.algorithms.get_place_full_data_algorithm import GetPlaceFullDataAlgorithm
 from src.maps.factories.map_manager_factory import MapManagerFactory
 from src.maps.weathers_manager import WeathersManager
 
@@ -12,22 +12,17 @@ class PlaceDescriptionsForPromptFactory:
 
     def __init__(
         self,
-        playthrough_name: str,
+        get_place_full_data_algorithm: GetPlaceFullDataAlgorithm,
         get_current_weather_identifier_algorithm: GetCurrentWeatherIdentifierAlgorithm,
         map_manager_factory: MapManagerFactory,
         weathers_manager: WeathersManager,
-        playthrough_manager: Optional[PlaythroughManager] = None,
     ):
-        self._playthrough_name = playthrough_name
+        self._get_place_full_data_algorithm = get_place_full_data_algorithm
         self._get_current_weather_identifier_algorithm = (
             get_current_weather_identifier_algorithm
         )
         self._map_manager_factory = map_manager_factory
         self._weathers_manager = weathers_manager
-
-        self._playthrough_manager = playthrough_manager or PlaythroughManager(
-            self._playthrough_name
-        )
 
     @staticmethod
     def _determine_location_description(
@@ -59,11 +54,8 @@ class PlaceDescriptionsForPromptFactory:
         story_universe_description = (
             self._map_manager_factory.create_map_manager().get_story_universe_description()
         )
-        place_full_data = (
-            self._map_manager_factory.create_map_manager().get_place_full_data(
-                self._playthrough_manager.get_current_place_identifier()
-            )
-        )
+        place_full_data = self._get_place_full_data_algorithm.do_algorithm()
+
         return {
             "story_universe_description": story_universe_description,
             "world_description": place_full_data["world_data"]["description"],

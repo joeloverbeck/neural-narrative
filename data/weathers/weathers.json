@@ -28,5 +28,125 @@
   },
   "overcast": {
     "description": "A uniform layer of gray clouds covers the sky, diffusing the sunlight into a flat, directionless glow. The world seems drained of color and contrast, existing in a perpetual twilight."
+  },
+  "thunderstorm": {
+    "description": "Lightning splits the sky, illuminating the dark clouds as thunder roars in the distance. The air is charged with electricity, and heavy rain pours down in torrents."
+  },
+  "drizzle": {
+    "description": "A light rain falls gently, barely noticeable but enough to dampen the ground. The world appears softly blurred as tiny droplets hang in the air."
+  },
+  "sleet": {
+    "description": "A mix of rain and snow falls from the sky, forming icy pellets that sting upon contact. The ground becomes slick and treacherous underfoot."
+  },
+  "blazing": {
+    "description": "The sun beats down mercilessly, the heat shimmering off the ground in waves. The air is dry and oppressive, and shade offers little relief."
+  },
+  "heatwave": {
+    "description": "An intense heat grips the land, causing mirages to dance on the horizon. The air is thick and stifling, and every movement feels like an effort."
+  },
+  "dust_storm": {
+    "description": "A wall of dust approaches, darkening the sky and blotting out the sun. The wind howls, carrying sand and debris that scratch and sting."
+  },
+  "sandstorm": {
+    "description": "A raging sandstorm engulfs the area, turning the world into a swirling vortex of sand and grit. Visibility drops to zero as the storm rages."
+  },
+  "tornado": {
+    "description": "A funnel cloud descends from the sky, its twisting form tearing across the landscape. Debris flies through the air as the tornado consumes everything in its path."
+  },
+  "hurricane": {
+    "description": "A massive storm system brings torrential rain and fierce winds. The ocean churns, and waves crash violently against the shore as the hurricane approaches."
+  },
+  "blizzard": {
+    "description": "A severe snowstorm with high winds reduces visibility to near zero. The biting cold and swirling snow make travel nearly impossible."
+  },
+  "aurora": {
+    "description": "Colorful lights dance across the night sky, painting it with ethereal hues of green and purple. The aurora casts a magical glow over the landscape."
+  },
+  "eclipse": {
+    "description": "The sky darkens as the sun is obscured, plunging the world into an eerie twilight. Shadows sharpen, and a hush falls over the land during the eclipse."
+  },
+  "blood_moon": {
+    "description": "The moon rises, tinted a deep crimson that casts an ominous light over the world. Night creatures stir, and a sense of unease permeates the air."
+  },
+  "meteor_shower": {
+    "description": "Streaks of light flash across the night sky as meteors burn up in the atmosphere. The celestial display captivates all who witness it."
+  },
+  "acid_rain": {
+    "description": "A toxic rain falls from the sky, its corrosive droplets hissing upon contact with surfaces. Plants wither, and the air smells sharply of chemicals."
+  },
+  "ashfall": {
+    "description": "Fine ash drifts down from the sky, coating everything in a layer of gray. The air is thick with particles, making breathing difficult."
+  },
+  "volcanic_eruption": {
+    "description": "Molten lava spews from the earth, and thick plumes of smoke and ash rise into the sky. The ground trembles with the fury of the eruption."
+  },
+  "solar_flare": {
+    "description": "An intense burst of solar radiation disrupts communications and causes strange auroras. Electronic devices malfunction, and the sky shimmers with energy."
+  },
+  "plasma_storm": {
+    "description": "Brilliant arcs of plasma dance across the sky, their otherworldly glow illuminating the night. The air crackles with energy, and static fills the air."
+  },
+  "radiation_fog": {
+    "description": "A low-lying fog emits a faint glow, and Geiger counters click ominously. The air is thick with radiation, posing unseen dangers."
+  },
+  "frost": {
+    "description": "A delicate frost covers surfaces, sparkling in the early morning light. The air is crisp and cold, and breath forms visible clouds."
+  },
+  "humid": {
+    "description": "The air is heavy with moisture, making it feel hotter than it is. Sweat beads on the skin, and everything feels sticky to the touch."
+  },
+  "dry": {
+    "description": "The atmosphere is arid, and the lack of moisture causes lips to chap and skin to crack. Every breath feels parched."
+  },
+  "sweltering": {
+    "description": "An oppressive heat hangs over the area, with no breeze to provide relief. The sun blazes overhead, and even the shade offers little respite."
+  },
+  "cold_snap": {
+    "description": "An unexpected drop in temperature brings freezing conditions. The ground hardens, and a biting chill fills the air."
+  },
+  "drought": {
+    "description": "An extended period without rain has left the land parched and cracked. Vegetation withers, and water sources run low."
+  },
+  "flood": {
+    "description": "Heavy rains have caused rivers to overflow, submerging roads and fields. The landscape transforms into a watery expanse."
+  },
+  "rainbow": {
+    "description": "After the rain, a vibrant rainbow arcs across the sky, its colors vivid against the remaining clouds. It brings a sense of hope and renewal."
+  },
+  "smog": {
+    "description": "A thick layer of pollution hangs over the area, reducing visibility and causing a burning sensation in the lungs. The sun appears as a dull orb behind the haze."
+  },
+  "smoke": {
+    "description": "Smoke fills the air, the result of distant fires. The scent of burning wood lingers, and ash particles drift down like dark snow."
+  },
+  "glowing_clouds": {
+    "description": "Clouds emit an unnatural glow, casting an eerie light over the landscape. The phenomenon defies explanation, inspiring awe and fear."
+  },
+  "ethereal_lights": {
+    "description": "Mystical lights hover above the ground, shifting in color and intensity. They seem almost alive, moving with a will of their own."
+  },
+  "time_distortion": {
+    "description": "The flow of time feels altered; movements seem sluggish, and sounds are distorted. Clocks run erratically, and a sense of disorientation prevails."
+  },
+  "dimensional_rift": {
+    "description": "Tears in reality appear, revealing glimpses of other worlds. Strange energies seep through, and the fabric of space seems unstable."
+  },
+  "blood_rain": {
+    "description": "Rain falls with a crimson hue, staining everything it touches. The eerie phenomenon unsettles all who witness it."
+  },
+  "magnetic_storm": {
+    "description": "Compasses spin wildly as magnetic fields fluctuate. Electronic devices malfunction, and strange lights appear in the sky."
+  },
+  "psychic_fog": {
+    "description": "A mental haze descends, clouding thoughts and making it difficult to focus. Strange whispers seem to emanate from the fog."
+  },
+  "crystal_rain": {
+    "description": "Tiny crystals fall from the sky, sparkling like diamonds as they catch the light. They shatter upon impact, leaving shimmering dust."
+  },
+  "shadow_eclipse": {
+    "description": "A darkness deeper than night envelops the world, swallowing light. Shadows seem to move on their own, and an unshakable dread fills the air."
+  },
+  "ghostly_mist": {
+    "description": "A mist rises that seems to carry whispers and fleeting images. Figures are seen out of the corner of the eye but vanish when looked at directly."
   }
 }

@@ -29,6 +29,7 @@ class MapManager:
 
         self._place_manager = place_manager
         self._map_repository = map_repository
+
         self._template_repository = template_repository or TemplatesRepository()
         self._hierarchy_manager = hierarchy_manager or HierarchyManager(
             self._place_manager
@@ -84,45 +85,6 @@ class MapManager:
         place = self._place_manager.get_place(max_id_str)
         place_template = self._place_manager.get_place_template(place)
         return max_id_str, place_template
-
-    def get_place_full_data(
-        self, place_identifier: str
-    ) -> Dict[str, Optional[Dict[str, str]]]:
-        hierarchy = self._hierarchy_manager.get_place_hierarchy(place_identifier)
-
-        result = {
-            "world_data": None,
-            "region_data": None,
-            "area_data": None,
-            "location_data": None,
-            "room_data": None,
-        }
-
-        for place_type in ["world", "region", "area", "location", "room"]:
-
-            place = hierarchy.get(place_type)
-
-            if not place:
-                continue
-
-            template_name = self._place_manager.get_place_template(place)
-            templates = self._template_repository.load_templates(
-                TemplateType(place_type)
-            )
-            template_data = templates.get(template_name)
-
-            if not template_data:
-                raise ValueError(
-                    f"{place_type.capitalize()} template '{template_name}' not found."
-                )
-
-            result_data: Dict[str, str] = {
-                "name": template_name,
-                "description": template_data.get("description"),
-            }
-            result[f"{place_type}_data"] = result_data
-
-        return result
 
     def get_all_areas(self) -> List[Dict[str, str]]:
         """

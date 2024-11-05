@@ -4,8 +4,8 @@ from pydantic import BaseModel
 
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.filesystem.path_manager import PathManager
-from src.maps.algorithms.get_current_weather_identifier_algorithm import (
-    GetCurrentWeatherIdentifierAlgorithm,
+from src.maps.configs.filtered_place_description_generation_factory_algorithms_config import (
+    FilteredPlaceDescriptionGenerationFactoryAlgorithmsConfig,
 )
 from src.maps.configs.filtered_place_description_generation_factory_config import (
     FilteredPlaceDescriptionGenerationFactoryConfig,
@@ -26,7 +26,7 @@ class ConcreteFilteredPlaceDescriptionGenerationFactory(BaseToolResponseProvider
         self,
         config: FilteredPlaceDescriptionGenerationFactoryConfig,
         factories_config: FilteredPlaceDescriptionGenerationFactoryFactoriesConfig,
-        get_current_weather_identifier_algorithm: GetCurrentWeatherIdentifierAlgorithm,
+        algorithms_config: FilteredPlaceDescriptionGenerationFactoryAlgorithmsConfig,
         filesystem_manager: Optional[FilesystemManager] = None,
         path_manager: Optional[PathManager] = None,
         time_manager: Optional[TimeManager] = None,
@@ -38,9 +38,7 @@ class ConcreteFilteredPlaceDescriptionGenerationFactory(BaseToolResponseProvider
         )
         self._config = config
         self._factories_config = factories_config
-        self._get_current_weather_identifier_algorithm = (
-            get_current_weather_identifier_algorithm
-        )
+        self._algorithms_config = algorithms_config
         self._time_manager = time_manager or TimeManager(self._config.playthrough_name)
 
     def get_prompt_file(self) -> Optional[str]:
@@ -53,15 +51,15 @@ class ConcreteFilteredPlaceDescriptionGenerationFactory(BaseToolResponseProvider
         place_type = self._factories_config.place_manager_factory.create_place_manager().determine_place_type(
             self._config.place_identifier
         )
-        place_full_data = self._factories_config.map_manager_factory.create_map_manager().get_place_full_data(
-            self._config.place_identifier
+        place_full_data = (
+            self._algorithms_config.get_place_full_data_algorithm.do_algorithm()
         )
         place_data = place_full_data[f"{place_type.value}_data"]
         data_for_prompt = {
             "hour": self._time_manager.get_hour(),
             "time_of_the_day": self._time_manager.get_time_of_the_day(),
             "weather": self._factories_config.weathers_manager.get_weather_description(
-                self._get_current_weather_identifier_algorithm.do_algorithm()
+                self._algorithms_config.get_current_weather_identifier_algorithm.do_algorithm()
             ),
             "place_type": place_type.value,
             "place_template": place_data["name"],

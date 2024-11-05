@@ -13,25 +13,27 @@ from flask import (
 )
 from flask.views import MethodView
 
-from src.base.constants import WEATHER_ICON_MAPPING
 from src.base.enums import TemplateType
 from src.base.playthrough_manager import PlaythroughManager
 from src.base.tools import capture_traceback
 from src.characters.characters_manager import CharactersManager
-from src.maps.algorithms.get_available_place_types_algorithm import (
-    GetAvailablePlaceTypesAlgorithm,
-)
 from src.maps.algorithms.get_current_area_identifier_algorithm import (
     GetCurrentAreaIdentifierAlgorithm,
 )
-from src.maps.algorithms.get_places_in_place_algorithm import GetPlacesInPlaceAlgorithm
+from src.maps.algorithms.get_place_info_algorithm import GetPlaceInfoAlgorithm
+from src.maps.algorithms.get_time_and_weather_info_algorithm import (
+    GetTimeAndWeatherInfoAlgorithm,
+)
 from src.maps.commands.attach_place_command import AttachPlaceCommand
 from src.maps.commands.search_for_place_command import SearchForPlaceCommand
+from src.maps.composers.get_area_info_algorithm_composer import (
+    GetAreaInfoAlgorithmComposer,
+)
 from src.maps.composers.get_current_weather_identifier_algorithm_composer import (
     GetCurrentWeatherIdentifierAlgorithmComposer,
 )
-from src.maps.composers.place_selection_manager_composer import (
-    PlaceSelectionManagerComposer,
+from src.maps.composers.get_location_info_algorithm_composer import (
+    GetLocationInfoAlgorithmComposer,
 )
 from src.maps.composers.random_template_type_map_entry_provider_factory_composer import (
     RandomTemplateTypeMapEntryProviderFactoryComposer,
@@ -44,9 +46,7 @@ from src.maps.factories.map_manager_factory import MapManagerFactory
 from src.maps.factories.place_manager_factory import PlaceManagerFactory
 from src.maps.map_manager import MapManager
 from src.maps.map_repository import MapRepository
-from src.maps.navigation_manager import NavigationManager
 from src.maps.templates_repository import TemplatesRepository
-from src.maps.weathers_manager import WeathersManager
 from src.movements.composers.exit_place_command_composer import ExitPlaceCommandComposer
 from src.services.character_service import CharacterService
 from src.services.place_service import PlaceService
@@ -100,140 +100,6 @@ class LocationHubView(MethodView):
 
         return areas, current_area_identifier
 
-    def get_place_specific_info(
-        self, playthrough_name, current_place_type, current_place
-    ):
-        locations_present = None
-        can_search_for_location = False
-        available_location_types = []
-        rooms_present = None
-        can_search_for_room = False
-        available_room_types = []
-        cardinal_connections = None
-
-        if current_place_type == TemplateType.AREA:
-            (
-                locations_present,
-                can_search_for_location,
-                available_location_types,
-                cardinal_connections,
-            ) = self.handle_area_specifics(playthrough_name, current_place)
-
-        if current_place_type == TemplateType.LOCATION:
-            (
-                rooms_present,
-                can_search_for_room,
-                available_room_types,
-            ) = self.handle_location_specifics(playthrough_name, current_place)
-
-        return (
-            locations_present,
-            can_search_for_location,
-            available_location_types,
-            rooms_present,
-            can_search_for_room,
-            available_room_types,
-            cardinal_connections,
-        )
-
-    @staticmethod
-    def handle_area_specifics(playthrough_name, current_place: str):
-        playthrough_manager = PlaythroughManager(playthrough_name)
-
-        locations_present = GetPlacesInPlaceAlgorithm(
-            playthrough_name,
-            playthrough_manager.get_current_place_identifier(),
-            TemplateType.AREA,
-            TemplateType.LOCATION,
-        ).do_algorithm()
-
-        cardinal_connections = NavigationManager(
-            MapRepository(playthrough_name)
-        ).get_cardinal_connections(playthrough_manager.get_current_place_identifier())
-
-        place_selection_manager = PlaceSelectionManagerComposer(
-            playthrough_name
-        ).compose_manager()
-
-        place_manager_factory = PlaceManagerFactory(playthrough_name)
-
-        available_location_types = GetAvailablePlaceTypesAlgorithm(
-            playthrough_name,
-            current_place,
-            TemplateType.LOCATION,
-            place_manager_factory,
-            place_selection_manager,
-        ).do_algorithm()
-
-        can_search_for_location = bool(available_location_types)
-
-        return (
-            locations_present,
-            can_search_for_location,
-            available_location_types,
-            cardinal_connections,
-        )
-
-    @staticmethod
-    def handle_location_specifics(playthrough_name, current_place: str):
-        playthrough_manager = PlaythroughManager(playthrough_name)
-
-        rooms_present = GetPlacesInPlaceAlgorithm(
-            playthrough_name,
-            playthrough_manager.get_current_place_identifier(),
-            TemplateType.LOCATION,
-            TemplateType.ROOM,
-        ).do_algorithm()
-
-        place_selection_manager = PlaceSelectionManagerComposer(
-            playthrough_name
-        ).compose_manager()
-
-        place_manager_factory = PlaceManagerFactory(playthrough_name)
-
-        available_room_types = GetAvailablePlaceTypesAlgorithm(
-            playthrough_name,
-            current_place,
-            TemplateType.ROOM,
-            place_manager_factory,
-            place_selection_manager,
-        ).do_algorithm()
-
-        can_search_for_room = bool(available_room_types)
-
-        return rooms_present, can_search_for_room, available_room_types
-
-    @staticmethod
-    def get_time_and_weather_info(playthrough_name):
-        time_manager = TimeManager(playthrough_name)
-        current_hour = time_manager.get_hour()
-        current_time_of_day = time_manager.get_time_of_the_day()
-        weathers_manager = WeathersManager()
-
-        current_weather = (
-            GetCurrentWeatherIdentifierAlgorithmComposer(playthrough_name)
-            .compose_algorithm()
-            .do_algorithm()
-        )
-        current_weather_description = weathers_manager.get_weather_description(
-            current_weather
-        )
-
-        weather_icon_class = WEATHER_ICON_MAPPING.get(
-            current_weather, "fas fa-cloud-sun"
-        )
-
-        all_weathers = weathers_manager.get_all_weather_identifiers()
-
-        return (
-            current_hour,
-            current_time_of_day,
-            current_weather,
-            current_weather_description,
-            weather_icon_class,
-            all_weathers,
-        )
-
     def get(self):
         playthrough_name, redirect_response = self.get_playthrough_name()
         if redirect_response:
@@ -257,28 +123,29 @@ class LocationHubView(MethodView):
 
         areas, current_area_identifier = self.get_area_information(playthrough_name)
 
-        (
-            locations_present,
-            can_search_for_location,
-            available_location_types,
-            rooms_present,
-            can_search_for_room,
-            available_room_types,
-            cardinal_connections,
-        ) = self.get_place_specific_info(
-            playthrough_name,
-            current_place_type,
-            current_place,
+        get_area_info_algorithm = GetAreaInfoAlgorithmComposer(
+            playthrough_name
+        ).compose_algorithm()
+
+        get_location_info_algorithm = GetLocationInfoAlgorithmComposer(
+            playthrough_name
+        ).compose_algorithm()
+
+        place_manager_factory = PlaceManagerFactory(playthrough_name)
+
+        place_data = GetPlaceInfoAlgorithm(
+            get_area_info_algorithm, get_location_info_algorithm, place_manager_factory
+        ).do_algorithm()
+
+        get_current_weather_identifier_algorithm = (
+            GetCurrentWeatherIdentifierAlgorithmComposer(
+                playthrough_name
+            ).compose_algorithm()
         )
 
-        (
-            current_hour,
-            current_time_of_day,
-            current_weather,
-            current_weather_description,
-            weather_icon_class,
-            all_weathers,
-        ) = self.get_time_and_weather_info(playthrough_name)
+        time_and_weather_data = GetTimeAndWeatherInfoAlgorithm(
+            playthrough_name, get_current_weather_identifier_algorithm
+        ).do_algorithm()
 
         return render_template(
             "location-hub.html",
@@ -290,19 +157,19 @@ class LocationHubView(MethodView):
                 "place_description_voice_line_url", None
             ),
             current_place_type=current_place_type,
-            can_search_for_location=can_search_for_location,
-            locations_present=locations_present,
-            can_search_for_room=can_search_for_room,
-            rooms_present=rooms_present,
-            cardinal_connections=cardinal_connections,
-            current_hour=current_hour,
-            current_time_of_day=current_time_of_day,
-            location_types=available_location_types,
-            room_types=available_room_types,
-            current_weather=current_weather,
-            current_weather_description=current_weather_description,
-            all_weathers=all_weathers,
-            weather_icon_class=weather_icon_class,
+            can_search_for_location=place_data.can_search_for_location,
+            locations_present=place_data.locations_present,
+            can_search_for_room=place_data.can_search_for_room,
+            rooms_present=place_data.rooms_present,
+            cardinal_connections=place_data.cardinal_connections,
+            current_hour=time_and_weather_data.current_hour,
+            current_time_of_day=time_and_weather_data.current_time_of_day,
+            location_types=place_data.available_location_types,
+            room_types=place_data.available_room_types,
+            current_weather=time_and_weather_data.current_weather,
+            current_weather_description=time_and_weather_data.current_weather_description,
+            all_weathers=time_and_weather_data.all_weathers,
+            weather_icon_class=time_and_weather_data.weather_icon_class,
             areas=areas,
             current_area_identifier=current_area_identifier,
         )
