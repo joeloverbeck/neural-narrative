@@ -24,8 +24,6 @@ from src.maps.algorithms.get_place_info_algorithm import GetPlaceInfoAlgorithm
 from src.maps.algorithms.get_time_and_weather_info_algorithm import (
     GetTimeAndWeatherInfoAlgorithm,
 )
-from src.maps.commands.attach_place_command import AttachPlaceCommand
-from src.maps.commands.search_for_place_command import SearchForPlaceCommand
 from src.maps.composers.get_area_info_algorithm_composer import (
     GetAreaInfoAlgorithmComposer,
 )
@@ -35,8 +33,8 @@ from src.maps.composers.get_current_weather_identifier_algorithm_composer import
 from src.maps.composers.get_location_info_algorithm_composer import (
     GetLocationInfoAlgorithmComposer,
 )
-from src.maps.composers.random_template_type_map_entry_provider_factory_composer import (
-    RandomTemplateTypeMapEntryProviderFactoryComposer,
+from src.maps.composers.process_search_for_place_command_composer import (
+    ProcessSearchForPlaceCommandComposer,
 )
 from src.maps.enums import (
     CardinalDirection,
@@ -88,18 +86,6 @@ class LocationHubView(MethodView):
             web_service,
         )
 
-    @staticmethod
-    def get_area_information(playthrough_name):
-        map_manager = MapManagerFactory(playthrough_name).create_map_manager()
-        areas = map_manager.get_all_areas()
-        place_manager_factory = PlaceManagerFactory(playthrough_name)
-
-        current_area_identifier = GetCurrentAreaIdentifierAlgorithm(
-            playthrough_name, place_manager_factory
-        ).do_algorithm()
-
-        return areas, current_area_identifier
-
     def get(self):
         playthrough_name, redirect_response = self.get_playthrough_name()
         if redirect_response:
@@ -121,7 +107,13 @@ class LocationHubView(MethodView):
         followers = characters_manager.get_followers()
         web_service.format_image_urls_of_characters(followers)
 
-        areas, current_area_identifier = self.get_area_information(playthrough_name)
+        map_manager = MapManagerFactory(playthrough_name).create_map_manager()
+        areas = map_manager.get_all_areas()
+        place_manager_factory = PlaceManagerFactory(playthrough_name)
+
+        current_area_identifier = GetCurrentAreaIdentifierAlgorithm(
+            playthrough_name, place_manager_factory
+        ).do_algorithm()
 
         get_area_info_algorithm = GetAreaInfoAlgorithmComposer(
             playthrough_name
@@ -323,30 +315,9 @@ class LocationHubView(MethodView):
     @staticmethod
     def handle_search_for_place(playthrough_name: str, child_place_type: TemplateType):
         try:
-            random_template_type_map_entry_provider_factory = (
-                RandomTemplateTypeMapEntryProviderFactoryComposer(
-                    playthrough_name
-                ).compose_factory()
-            )
-
-            place_manager_factory = PlaceManagerFactory(playthrough_name)
-
-            map_manager_factory = MapManagerFactory(playthrough_name)
-
-            SearchForPlaceCommand(
-                playthrough_name,
-                random_template_type_map_entry_provider_factory,
-                place_manager_factory,
-                map_manager_factory,
-            ).execute()
-
-            new_id, _ = (
-                map_manager_factory.create_map_manager().get_identifier_and_place_template_of_latest_map_entry()
-            )
-
-            AttachPlaceCommand(
-                playthrough_name, new_id, place_manager_factory.create_place_manager()
-            ).execute()
+            ProcessSearchForPlaceCommandComposer(
+                playthrough_name
+            ).compose_command().execute()
         except SearchForPlaceError as e:
             flash(f"Couldn't attach {child_place_type.value}. Error: {str(e)}", "error")
         except Exception as e:
