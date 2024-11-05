@@ -121,6 +121,7 @@ class MapManager:
                 "description": template_data.get("description"),
             }
             result[f"{place_type}_data"] = result_data
+
         return result
 
     def get_all_areas(self) -> List[Dict[str, str]]:
