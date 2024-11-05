@@ -7,7 +7,8 @@ class Speech(BaseModel):
     chain_of_thought: str = Field(
         ...,
         description="Think step by step to generate the character's speech. It should be original material, relevant to the dialogue, "
-        "and uniquely fitting to the character. Important: avoid repeating previous lines of dialogue.",
+        "and uniquely fitting to the character. Try to vary the structure of the speech so that it contrasts with the character's previous utterances, and doesn't sound repetitive. "
+        "Important: avoid repeating previous lines of dialogue.",
     )
     speech: str
 
