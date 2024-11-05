@@ -135,7 +135,7 @@ def test_get_user_content():
 
     # Assert
     expected_content = (
-        "Write a meaningful and compelling self-reflection from the first-person perspective of the "
+        "Write a meaningful and compelling self-reflection from the third-person perspective of the "
         "character regarding their memories. Follow the provided instructions."
     )
     assert user_content == expected_content

@@ -1,9 +1,13 @@
-from typing import Dict
+from typing import Dict, Optional
 
+from src.base.playthrough_manager import PlaythroughManager
+from src.base.validators import validate_non_empty_string
 from src.maps.algorithms.get_current_weather_identifier_algorithm import (
     GetCurrentWeatherIdentifierAlgorithm,
 )
-from src.maps.algorithms.get_place_full_data_algorithm import GetPlaceFullDataAlgorithm
+from src.maps.factories.get_place_full_data_algorithm_factory import (
+    GetPlaceFullDataAlgorithmFactory,
+)
 from src.maps.factories.map_manager_factory import MapManagerFactory
 from src.maps.weathers_manager import WeathersManager
 
@@ -12,17 +16,27 @@ class PlaceDescriptionsForPromptFactory:
 
     def __init__(
         self,
-        get_place_full_data_algorithm: GetPlaceFullDataAlgorithm,
+        playthrough_name: str,
+        get_place_full_data_algorithm_factory: GetPlaceFullDataAlgorithmFactory,
         get_current_weather_identifier_algorithm: GetCurrentWeatherIdentifierAlgorithm,
         map_manager_factory: MapManagerFactory,
         weathers_manager: WeathersManager,
+        playthrough_manager: Optional[PlaythroughManager] = None,
     ):
-        self._get_place_full_data_algorithm = get_place_full_data_algorithm
+        validate_non_empty_string(playthrough_name, "playthrough_name")
+
+        self._get_place_full_data_algorithm_factory = (
+            get_place_full_data_algorithm_factory
+        )
         self._get_current_weather_identifier_algorithm = (
             get_current_weather_identifier_algorithm
         )
         self._map_manager_factory = map_manager_factory
         self._weathers_manager = weathers_manager
+
+        self._playthrough_manager = playthrough_manager or PlaythroughManager(
+            playthrough_name
+        )
 
     @staticmethod
     def _determine_location_description(
@@ -54,7 +68,9 @@ class PlaceDescriptionsForPromptFactory:
         story_universe_description = (
             self._map_manager_factory.create_map_manager().get_story_universe_description()
         )
-        place_full_data = self._get_place_full_data_algorithm.do_algorithm()
+        place_full_data = self._get_place_full_data_algorithm_factory.create_algorithm(
+            self._playthrough_manager.get_current_place_identifier()
+        ).do_algorithm()
 
         return {
             "story_universe_description": story_universe_description,

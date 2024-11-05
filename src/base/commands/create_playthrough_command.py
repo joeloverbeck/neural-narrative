@@ -19,7 +19,7 @@ class CreatePlaythroughCommand(Command):
         create_initial_map_command: CreateInitialMapCommand,
         generate_player_character_command: GeneratePlayerCharacterCommand,
         visit_place_command_factory: VisitPlaceCommandFactory,
-            map_manager_factory: MapManagerFactory,
+        map_manager_factory: MapManagerFactory,
     ):
         self._create_playthrough_metadata_command = create_playthrough_metadata_command
         self._create_initial_map_command = create_initial_map_command
@@ -29,11 +29,15 @@ class CreatePlaythroughCommand(Command):
 
     def execute(self) -> None:
         self._create_playthrough_metadata_command.execute()
+
         self._create_initial_map_command.execute()
+
         latest_identifier, _ = (
             self._map_manager_factory.create_map_manager().get_identifier_and_place_template_of_latest_map_entry()
         )
+
         self._visit_place_command_factory.create_visit_place_command(
             latest_identifier
         ).execute()
+
         self._generate_player_character_command.execute()

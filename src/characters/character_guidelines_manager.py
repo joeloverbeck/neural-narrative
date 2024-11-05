@@ -1,8 +1,11 @@
+import logging
 from typing import Optional, Dict, List
 
 from src.base.validators import validate_non_empty_string
 from src.filesystem.file_operations import read_json_file, write_json_file
 from src.filesystem.path_manager import PathManager
+
+logger = logging.getLogger(__name__)
 
 
 class CharacterGuidelinesManager:
@@ -47,8 +50,11 @@ class CharacterGuidelinesManager:
     ) -> List[str]:
         key = self.create_key(story_universe, world, region, area, location)
 
-        if key not in self._guidelines_file:
-            raise ValueError(f"No guidelines found for key '{key}'.")
+        logger.info("Guidelines key: %s", key)
+
+        if key not in self._guidelines_file.keys():
+            logger.warning(f"No guidelines found for key '{key}'.")
+            return []
 
         return [guideline for guideline in self._guidelines_file[key]]
 

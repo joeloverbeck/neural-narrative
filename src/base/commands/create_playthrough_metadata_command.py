@@ -14,6 +14,7 @@ from src.base.exceptions import (
     StoryUniverseTemplateNotFoundError,
     PlaythroughAlreadyExistsError,
 )
+from src.base.validators import validate_non_empty_string
 from src.filesystem.file_operations import (
     write_json_file,
     create_directories,
@@ -36,6 +37,9 @@ class CreatePlaythroughMetadataCommand(Command):
         templates_repository: Optional[TemplatesRepository] = None,
         path_manager: Optional[PathManager] = None,
     ):
+        validate_non_empty_string(playthrough_name, "playthrough_name")
+        validate_non_empty_string(story_universe_template, "story_universe_template")
+
         self._playthrough_name = playthrough_name
         self._story_universe_template = story_universe_template
 
@@ -47,9 +51,18 @@ class CreatePlaythroughMetadataCommand(Command):
         # First ensure that the playthroughs dir exists.
         create_directories(self._path_manager.get_playthroughs_path())
 
-        if self._filesystem_manager.playthrough_exists(self._playthrough_name):
+        playthrough_exists = self._filesystem_manager.playthrough_exists(
+            self._playthrough_name
+        )
+
+        if playthrough_exists:
             raise PlaythroughAlreadyExistsError(
                 f"A playthrough with the name '{self._playthrough_name}' already exists."
+            )
+        else:
+            # if it doesn't exist, we must create it.
+            create_directories(
+                self._path_manager.get_playthrough_path(self._playthrough_name)
             )
 
     def _validate_story_universe_template_exists(self) -> None:
