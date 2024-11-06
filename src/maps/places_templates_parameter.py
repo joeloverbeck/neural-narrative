@@ -28,6 +28,3 @@ class PlacesTemplatesParameter:
 
     def get_location_template(self) -> Optional[str]:
         return self._location_template
-
-    def get_room_template(self) -> Optional[str]:
-        return self._room_template
