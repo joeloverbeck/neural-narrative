@@ -76,11 +76,14 @@ class BaseCharacterDataGenerationToolResponseProvider(
         return user_content_product.get()
 
     def create_product_from_base_model(self, response_model: BaseModel):
+        # The profile may have double lines.
+        profile = str(response_model.profile)
+
         arguments = {
             "name": response_model.name,
             "description": response_model.description,
             "personality": response_model.personality,
-            "profile": response_model.profile,
+            "profile": profile.replace("\n\n", "\n"),
             "likes": response_model.likes,
             "dislikes": response_model.dislikes,
             "secrets": response_model.secrets,

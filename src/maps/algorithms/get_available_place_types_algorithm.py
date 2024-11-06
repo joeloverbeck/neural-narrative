@@ -3,10 +3,14 @@ from typing import List, Optional
 
 from src.base.enums import TemplateType
 from src.base.validators import validate_non_empty_string
+from src.maps.abstracts.strategies import DataToReturnOfAvailablePlacesStrategy
 from src.maps.factories.filter_places_by_categories_algorithm_factory import (
     FilterPlacesByCategoriesAlgorithmFactory,
 )
 from src.maps.factories.place_manager_factory import PlaceManagerFactory
+from src.maps.strategies.identifiers_data_to_return_of_available_places_strategy import (
+    IdentifiersDataToReturnOfAvailablePlacesStrategy,
+)
 from src.maps.templates_repository import TemplatesRepository
 
 logger = logging.getLogger(__name__)
@@ -22,6 +26,9 @@ class GetAvailablePlaceTypesAlgorithm:
         place_type: TemplateType,
         filter_places_by_categories_algorithm_factory: FilterPlacesByCategoriesAlgorithmFactory,
         place_manager_factory: PlaceManagerFactory,
+        data_to_return_of_available_places_strategy: Optional[
+            DataToReturnOfAvailablePlacesStrategy
+        ] = None,
         templates_repository: Optional[TemplatesRepository] = None,
     ):
         validate_non_empty_string(playthrough_name, "playthrough_name")
@@ -36,6 +43,10 @@ class GetAvailablePlaceTypesAlgorithm:
         )
         self._place_manager_factory = place_manager_factory
 
+        self._data_to_return_of_available_places_strategy = (
+            data_to_return_of_available_places_strategy
+            or IdentifiersDataToReturnOfAvailablePlacesStrategy()
+        )
         self._templates_repository = templates_repository or TemplatesRepository()
 
     def do_algorithm(self) -> List[str]:
@@ -71,4 +82,8 @@ class GetAvailablePlaceTypesAlgorithm:
             if identifier not in used_templates
         }
 
-        return list(set(identifier for identifier, data in available_places.items()))
+        return list(
+            self._data_to_return_of_available_places_strategy.data_to_return(
+                available_places
+            )
+        )

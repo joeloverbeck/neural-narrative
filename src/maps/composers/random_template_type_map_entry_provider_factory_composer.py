@@ -1,3 +1,5 @@
+from typing import Optional
+
 from src.maps.composers.create_map_entry_for_playthrough_command_provider_factory_composer import (
     CreateMapEntryForPlaythroughCommandProviderFactoryComposer,
 )
@@ -21,8 +23,11 @@ from src.maps.factories.random_template_type_map_entry_provider_factory import (
 
 class RandomTemplateTypeMapEntryProviderFactoryComposer:
 
-    def __init__(self, playthrough_name: str):
+    def __init__(
+        self, playthrough_name: str, location_or_room_type: Optional[str] = None
+    ):
         self._playthrough_name = playthrough_name
+        self._location_or_room_type = location_or_room_type
 
     def compose_factory(self) -> RandomTemplateTypeMapEntryProviderFactory:
         place_selection_manager = PlaceSelectionManagerComposer(
@@ -30,7 +35,7 @@ class RandomTemplateTypeMapEntryProviderFactoryComposer:
         ).compose_manager()
 
         filter_places_by_categories_algorithm_factory = (
-            FilterPlacesByCategoriesAlgorithmFactory()
+            FilterPlacesByCategoriesAlgorithmFactory(self._location_or_room_type)
         )
 
         random_place_template_based_on_categories_factory = (

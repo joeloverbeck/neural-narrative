@@ -9,6 +9,9 @@ from src.maps.factories.get_available_place_types_algorithm_composer import (
 from src.maps.factories.map_manager_factory import MapManagerFactory
 from src.maps.factories.navigation_manager_factory import NavigationManagerFactory
 from src.maps.map_repository import MapRepository
+from src.maps.strategies.types_data_to_return_of_available_places_strategy import (
+    TypesDataToReturnOfAvailablePlacesStrategy,
+)
 
 
 class GetAreaInfoAlgorithmComposer:
@@ -43,6 +46,7 @@ class GetAreaInfoAlgorithmComposer:
             current_place_template,
             TemplateType.AREA,
             place_type,
+            TypesDataToReturnOfAvailablePlacesStrategy(),
         ).compose_algorithm()
 
         map_repository = MapRepository(self._playthrough_name)

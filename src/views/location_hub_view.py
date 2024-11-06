@@ -1,5 +1,6 @@
 import logging
 from pathlib import Path
+from typing import Optional
 
 from flask import (
     session,
@@ -318,9 +319,18 @@ class LocationHubView(MethodView):
 
     @staticmethod
     def handle_search_for_place(playthrough_name: str, child_place_type: TemplateType):
+
+        location_or_room_type: Optional[str] = None
+
+        location_type = request.form.get("location_type")
+
+        if child_place_type == TemplateType.LOCATION and location_type:
+            logger.info("Location type: %s", location_type)
+            location_or_room_type = location_type
+
         try:
             ProcessSearchForPlaceCommandComposer(
-                playthrough_name
+                playthrough_name, location_or_room_type
             ).compose_command().execute()
         except SearchForPlaceError as e:
             flash(f"Couldn't attach {child_place_type.value}. Error: {str(e)}", "error")

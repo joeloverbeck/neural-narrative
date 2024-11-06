@@ -1,8 +1,6 @@
 import logging
 from typing import Dict, Any, List, Optional
 
-from src.base.enums import TemplateType
-
 logger = logging.getLogger(__name__)
 
 
@@ -11,11 +9,11 @@ class FilterPlacesByCategoriesAlgorithm:
         self,
         place_templates: Dict[str, Dict[str, Any]],
         father_place_categories: List[str],
-        place_type: Optional[TemplateType] = None,
+        location_or_room_type: Optional[str] = None,
     ):
         self._place_templates = place_templates
         self._father_place_categories = father_place_categories
-        self._place_type = place_type
+        self._location_or_room_type = location_or_room_type
 
     def do_algorithm(self) -> Dict[str, Dict[str, Any]]:
         """Filter places whose categories match any of the father place's categories."""
@@ -23,7 +21,7 @@ class FilterPlacesByCategoriesAlgorithm:
 
         for name, data in self._place_templates.items():
             place_categories = data.get("categories", [])
-            place_type = data.get("type", None)
+            location_or_room_type = data.get("type", None)
 
             if not any(
                 category in place_categories
@@ -31,7 +29,10 @@ class FilterPlacesByCategoriesAlgorithm:
             ):
                 continue
 
-            if place_type and place_type != self._place_type.value:
+            if (
+                self._location_or_room_type
+                and location_or_room_type != self._location_or_room_type
+            ):
                 continue
 
             filtered_places[name] = data
