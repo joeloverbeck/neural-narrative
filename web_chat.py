@@ -10,6 +10,7 @@ from src.filesystem.path_manager import PathManager
 from src.views.action_view import action_view
 from src.views.actions_view import ActionsView
 from src.views.add_participants_view import AddParticipantsView
+from src.views.attach_places_view import AttachPlacesView
 from src.views.character_edit_view import CharacterEditView
 from src.views.character_generation_view import CharacterGenerationView
 from src.views.character_memories_view import CharacterMemoriesView
@@ -56,6 +57,7 @@ app.add_url_rule(
     "/characters-hub", view_func=CharactersHubView.as_view("characters-hub")
 )
 app.add_url_rule("/location-hub", view_func=LocationHubView.as_view("location-hub"))
+app.add_url_rule("/attach-places", view_func=AttachPlacesView.as_view("attach-places"))
 app.add_url_rule("/travel", view_func=TravelView.as_view("travel"))
 app.add_url_rule("/participants", view_func=ParticipantsView.as_view("participants"))
 app.add_url_rule("/chat", view_func=ChatView.as_view("chat"))

@@ -1,9 +1,5 @@
-from src.base.algorithms.produce_and_update_next_identifier_algorithm import (
-    ProduceAndUpdateNextIdentifierAlgorithm,
-)
-from src.base.enums import IdentifierType
-from src.base.factories.store_last_identifier_command_factory import (
-    StoreLastIdentifierCommandFactory,
+from src.maps.composers.create_map_entry_for_playthrough_command_provider_factory_composer import (
+    CreateMapEntryForPlaythroughCommandProviderFactoryComposer,
 )
 from src.maps.composers.place_selection_manager_composer import (
     PlaceSelectionManagerComposer,
@@ -11,11 +7,11 @@ from src.maps.composers.place_selection_manager_composer import (
 from src.maps.factories.concrete_random_place_template_based_on_categories_factory import (
     ConcreteRandomPlaceTemplateBasedOnCategoriesFactory,
 )
-from src.maps.factories.create_map_entry_for_playthrough_command_provider_factory import (
-    CreateMapEntryForPlaythroughCommandProviderFactory,
-)
 from src.maps.factories.filter_out_used_templates_algorithm_factory import (
     FilterOutUsedTemplatesAlgorithmFactory,
+)
+from src.maps.factories.filter_places_by_categories_algorithm_factory import (
+    FilterPlacesByCategoriesAlgorithmFactory,
 )
 from src.maps.factories.place_manager_factory import PlaceManagerFactory
 from src.maps.factories.random_template_type_map_entry_provider_factory import (
@@ -32,24 +28,21 @@ class RandomTemplateTypeMapEntryProviderFactoryComposer:
         place_selection_manager = PlaceSelectionManagerComposer(
             self._playthrough_name
         ).compose_manager()
+
+        filter_places_by_categories_algorithm_factory = (
+            FilterPlacesByCategoriesAlgorithmFactory()
+        )
+
         random_place_template_based_on_categories_factory = (
-            ConcreteRandomPlaceTemplateBasedOnCategoriesFactory(place_selection_manager)
-        )
-
-        store_last_identifier_command_factory = StoreLastIdentifierCommandFactory(
-            self._playthrough_name
-        )
-
-        produce_and_update_next_identifier = ProduceAndUpdateNextIdentifierAlgorithm(
-            self._playthrough_name,
-            IdentifierType.PLACES,
-            store_last_identifier_command_factory,
+            ConcreteRandomPlaceTemplateBasedOnCategoriesFactory(
+                filter_places_by_categories_algorithm_factory, place_selection_manager
+            )
         )
 
         create_map_entry_for_playthrough_command_provider_factory = (
-            CreateMapEntryForPlaythroughCommandProviderFactory(
-                self._playthrough_name, produce_and_update_next_identifier
-            )
+            CreateMapEntryForPlaythroughCommandProviderFactoryComposer(
+                self._playthrough_name
+            ).create_factory()
         )
 
         place_manager_factory = PlaceManagerFactory(self._playthrough_name)

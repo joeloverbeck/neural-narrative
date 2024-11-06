@@ -2,10 +2,11 @@ import logging
 from typing import Optional
 
 from src.base.abstracts.command import Command
+from src.base.enums import TemplateType
 from src.base.playthrough_manager import PlaythroughManager
 from src.base.validators import validate_non_empty_string
-from src.filesystem.file_operations import read_json_file, write_json_file
 from src.filesystem.path_manager import PathManager
+from src.maps.map_repository import MapRepository
 from src.movements.exceptions import PlaceCharacterAtPlaceError
 
 logger = logging.getLogger(__name__)
@@ -18,6 +19,7 @@ class PlaceCharacterAtPlaceCommand(Command):
         character_identifier: str,
         place_identifier: str,
         playthrough_manager: Optional[PlaythroughManager] = None,
+        map_repository: Optional[MapRepository] = None,
         path_manager: Optional[PathManager] = None,
     ):
         validate_non_empty_string(playthrough_name, "playthrough_name")
@@ -31,6 +33,7 @@ class PlaceCharacterAtPlaceCommand(Command):
         self._playthrough_manager = playthrough_manager or PlaythroughManager(
             self._playthrough_name
         )
+        self._map_repository = map_repository or MapRepository(self._playthrough_name)
         self._path_manager = path_manager or PathManager()
 
     def execute(self) -> None:
@@ -41,9 +44,7 @@ class PlaceCharacterAtPlaceCommand(Command):
                 "If you intended to remove them from the followers and place them at a location, you should remove them from the followers first."
             )
 
-        map_file = read_json_file(
-            self._path_manager.get_map_path(self._playthrough_name)
-        )
+        map_file = self._map_repository.load_map_data()
 
         place = map_file.get(self._place_identifier)
 
@@ -52,7 +53,7 @@ class PlaceCharacterAtPlaceCommand(Command):
 
         place_type = place.get("type")
 
-        if place_type not in ("area", "location"):
+        if place_type not in (TemplateType.AREA.value, TemplateType.LOCATION.value):
             raise PlaceCharacterAtPlaceError(
                 f"Place type '{place_type}' cannot house characters."
             )
@@ -70,10 +71,7 @@ class PlaceCharacterAtPlaceCommand(Command):
         characters_list.append(self._character_identifier)
 
         # Save new list of characters.
-        write_json_file(
-            self._path_manager.get_map_path(self._playthrough_name),
-            map_file,
-        )
+        self._map_repository.save_map_data(map_file)
 
         logger.info(
             f"Character '{self._character_identifier}' placed at {place_type} '{self._place_identifier}'. Current character list: {characters_list}"

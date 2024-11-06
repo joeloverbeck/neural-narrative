@@ -18,10 +18,10 @@ from src.base.validators import validate_non_empty_string
 from src.filesystem.file_operations import (
     write_json_file,
     create_directories,
-    create_empty_json_file_if_not_exists,
 )
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.filesystem.path_manager import PathManager
+from src.maps.map_repository import MapRepository
 from src.maps.templates_repository import TemplatesRepository
 
 logger = logging.getLogger(__name__)
@@ -35,6 +35,7 @@ class CreatePlaythroughMetadataCommand(Command):
         story_universe_template: str,
         filesystem_manager: Optional[FilesystemManager] = None,
         templates_repository: Optional[TemplatesRepository] = None,
+        map_repository: Optional[MapRepository] = None,
         path_manager: Optional[PathManager] = None,
     ):
         validate_non_empty_string(playthrough_name, "playthrough_name")
@@ -45,6 +46,7 @@ class CreatePlaythroughMetadataCommand(Command):
 
         self._filesystem_manager = filesystem_manager or FilesystemManager()
         self._templates_repository = templates_repository or TemplatesRepository()
+        self._map_repository = map_repository or MapRepository(self._playthrough_name)
         self._path_manager = path_manager or PathManager()
 
     def _validate_playthrough_does_not_exist(self) -> None:
@@ -94,11 +96,6 @@ class CreatePlaythroughMetadataCommand(Command):
 
         write_json_file(metadata_path, playthrough_metadata)
 
-    def _save_empty_map_file(self) -> None:
-        map_path = self._path_manager.get_map_path(self._playthrough_name)
-
-        create_empty_json_file_if_not_exists(map_path)
-
     def _log_playthrough_creation_success(self) -> None:
         playthrough_path = self._path_manager.get_playthrough_path(
             self._playthrough_name
@@ -118,7 +115,7 @@ class CreatePlaythroughMetadataCommand(Command):
 
         try:
             self._build_and_save_playthrough_metadata()
-            self._save_empty_map_file()
+            self._map_repository.initialize_map_data()
         except IOError as e:
             logger.error(f"Failed to save playthrough files: {e}")
             raise

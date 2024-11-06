@@ -17,6 +17,9 @@ from src.base.enums import TemplateType
 from src.base.playthrough_manager import PlaythroughManager
 from src.base.tools import capture_traceback
 from src.characters.characters_manager import CharactersManager
+from src.maps.algorithms.get_all_place_types_in_map_algorithm import (
+    GetAllPlaceTypesInMapAlgorithm,
+)
 from src.maps.algorithms.get_current_area_identifier_algorithm import (
     GetCurrentAreaIdentifierAlgorithm,
 )
@@ -40,7 +43,6 @@ from src.maps.enums import (
     CardinalDirection,
 )
 from src.maps.exceptions import SearchForPlaceError
-from src.maps.factories.map_manager_factory import MapManagerFactory
 from src.maps.factories.place_manager_factory import PlaceManagerFactory
 from src.maps.map_manager import MapManager
 from src.maps.map_repository import MapRepository
@@ -107,8 +109,10 @@ class LocationHubView(MethodView):
         followers = characters_manager.get_followers()
         web_service.format_image_urls_of_characters(followers)
 
-        map_manager = MapManagerFactory(playthrough_name).create_map_manager()
-        areas = map_manager.get_all_areas()
+        areas = GetAllPlaceTypesInMapAlgorithm(
+            playthrough_name, TemplateType.AREA
+        ).do_algorithm()
+
         place_manager_factory = PlaceManagerFactory(playthrough_name)
 
         current_area_identifier = GetCurrentAreaIdentifierAlgorithm(

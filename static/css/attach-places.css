@@ -1,0 +1,12 @@
+/* static/css/attach-places.css */
+
+
+/* Example: */
+.places-container {
+    margin-top: 20px;
+}
+
+.places-container h1.page-title {
+    font-size: 50px;
+    margin-bottom: 30px;
+}

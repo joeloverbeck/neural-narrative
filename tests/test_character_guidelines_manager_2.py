@@ -145,13 +145,13 @@ def test_load_guidelines_with_empty_guidelines(
     mock_read_json_file, mock_write_json_file, mock_path_manager
 ):
     # Add a key with empty guidelines
-    MOCK_GUIDELINES_DATA_EMPTY = {
+    mock_guidelines_data_empty = {
         "Empty Universe:Empty World:Empty Region:Empty Area": []
     }
 
     with patch(
         "src.characters.character_guidelines_manager.read_json_file",
-        return_value=MOCK_GUIDELINES_DATA_EMPTY,
+        return_value=mock_guidelines_data_empty,
     ):
         manager = CharacterGuidelinesManager()
 
@@ -333,7 +333,7 @@ def test_load_guidelines_trimmed_strings(
 ):
     # Add a key with leading/trailing spaces to the mock data
     key_with_spaces = " The Whimsical Divine Playground:Reincarnation Earth:Shinwa-koku:Celestial Garden Peak "
-    MOCK_GUIDELINES_DATA_SPACED = {
+    mock_guidelines_data_spaced = {
         key_with_spaces.strip(): MOCK_GUIDELINES_DATA[
             "The Whimsical Divine Playground:Reincarnation Earth:Shinwa-koku:Celestial Garden Peak"
         ]
@@ -341,7 +341,7 @@ def test_load_guidelines_trimmed_strings(
 
     with patch(
         "src.characters.character_guidelines_manager.read_json_file",
-        return_value=MOCK_GUIDELINES_DATA_SPACED,
+        return_value=mock_guidelines_data_spaced,
     ):
         manager = CharacterGuidelinesManager()
 

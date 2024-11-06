@@ -2,6 +2,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 
+from src.base.enums import TemplateType
 from src.base.products.text_product import TextProduct
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.enums import RandomTemplateTypeMapEntryCreationResultType
@@ -18,7 +19,7 @@ def provider_config():
     return Mock(
         father_identifier="father_id",
         father_template="father_template",
-        place_type="PLACE_TYPE",
+        place_type=TemplateType.WORLD,
         father_place_type="FATHER_PLACE_TYPE",
     )
 
@@ -86,12 +87,12 @@ def test_create_map_entry_success(provider, factories_config):
         result.get_result_type() == RandomTemplateTypeMapEntryCreationResultType.SUCCESS
     )
     factories_config.filter_out_used_templates_algorithm_factory.create_factory.assert_called_once_with(
-        "PLACE_TYPE"
+        TemplateType.WORLD
     )
     factories_config.filter_out_used_templates_algorithm_factory.create_factory.return_value.do_algorithm.assert_called_once()
     factories_config.random_place_template_based_on_categories_factory.create_place.assert_called_once()
     factories_config.create_map_entry_for_playthrough_command_provider_factory.create_provider.assert_called_once_with(
-        "father_id", "PLACE_TYPE"
+        "father_id", TemplateType.WORLD
     )
     factories_config.create_map_entry_for_playthrough_command_provider_factory.create_provider.return_value.create_command.assert_called_once_with(
         "selected_template"
@@ -114,7 +115,7 @@ def test_create_map_entry_no_available_templates(provider, factories_config):
         == RandomTemplateTypeMapEntryCreationResultType.NO_AVAILABLE_TEMPLATES
     )
     factories_config.filter_out_used_templates_algorithm_factory.create_factory.assert_called_once_with(
-        "PLACE_TYPE"
+        TemplateType.WORLD
     )
     factories_config.filter_out_used_templates_algorithm_factory.create_factory.return_value.do_algorithm.assert_called_once()
     # Ensure that other factories are not called
@@ -139,7 +140,7 @@ def test_create_map_entry_invalid_template_product(provider, factories_config):
     )
     assert (
         result.get_error()
-        == "Failed to produce a PLACE_TYPE template: Invalid template error."
+        == f"Failed to produce a {TemplateType.WORLD.value} template: Invalid template error."
     )
     factories_config.create_map_entry_for_playthrough_command_provider_factory.create_provider.assert_not_called()
 
@@ -226,7 +227,7 @@ def test_create_map_entry_template_product_creation_failure(provider, factories_
     )
     assert (
         result.get_error()
-        == "Failed to produce a PLACE_TYPE template: Template creation failed."
+        == f"Failed to produce a {TemplateType.WORLD.value} template: Template creation failed."
     )
     factories_config.create_map_entry_for_playthrough_command_provider_factory.create_provider.assert_not_called()
 
@@ -268,5 +269,5 @@ def test_create_map_entry_multiple_calls(provider, factories_config):
     )
     assert (
         result3.get_error()
-        == "Failed to produce a PLACE_TYPE template: Invalid template."
+        == f"Failed to produce a {TemplateType.WORLD.value} template: Invalid template."
     )

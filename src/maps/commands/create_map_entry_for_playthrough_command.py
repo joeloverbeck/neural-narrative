@@ -8,8 +8,9 @@ from src.base.algorithms.produce_and_update_next_identifier_algorithm import (
 from src.base.constants import PARENT_KEYS
 from src.base.enums import TemplateType
 from src.base.identifiers_manager import IdentifiersManager
-from src.filesystem.file_operations import read_json_file, write_json_file
+from src.base.validators import validate_non_empty_string
 from src.filesystem.path_manager import PathManager
+from src.maps.map_repository import MapRepository
 
 logger = logging.getLogger(__name__)
 
@@ -24,8 +25,16 @@ class CreateMapEntryForPlaythroughCommand(Command):
         place_template: str,
         produce_and_update_next_identifier: ProduceAndUpdateNextIdentifierAlgorithm,
         identifiers_manager: Optional[IdentifiersManager] = None,
+        map_repository: Optional[MapRepository] = None,
         path_manager: Optional[PathManager] = None,
     ):
+        validate_non_empty_string(playthrough_name, "playthrough_name")
+        validate_non_empty_string(place_template, "place_template")
+        if not isinstance(place_type, TemplateType):
+            raise TypeError(
+                f"Expected 'place_type' to be a TemplateType, but was '{type(place_type)}'."
+            )
+
         self._playthrough_name = playthrough_name
         self._father_identifier = father_identifier
         self._place_type = place_type
@@ -35,6 +44,7 @@ class CreateMapEntryForPlaythroughCommand(Command):
         self._identifiers_manager = identifiers_manager or IdentifiersManager(
             self._playthrough_name
         )
+        self._map_repository = map_repository or MapRepository(self._playthrough_name)
         self._path_manager = path_manager or PathManager()
 
     def _get_parent_key(self) -> Optional[str]:
@@ -54,14 +64,15 @@ class CreateMapEntryForPlaythroughCommand(Command):
                 }
             )
         elif self._place_type == TemplateType.LOCATION:
-            additional_fields.update({"characters": [], "visited": False})
+            additional_fields.update({"characters": [], "rooms": [], "visited": False})
+        elif self._place_type == TemplateType.ROOM:
+            additional_fields.update({"characters": []})
         return additional_fields
 
     def execute(self) -> None:
         """Create a map entry for the playthrough using the selected place."""
-        map_file = read_json_file(
-            self._path_manager.get_map_path(self._playthrough_name)
-        )
+        map_file = self._map_repository.load_map_data()
+
         new_id = self._produce_and_update_next_identifier.do_algorithm()
 
         map_entry = {
@@ -80,12 +91,14 @@ class CreateMapEntryForPlaythroughCommand(Command):
 
         additional_fields = self._get_additional_fields()
         map_entry.update(additional_fields)
+
+        # If for whatever reason we don't get a map, may as well initialize it here.
+        if not map_file:
+            map_file = {}
+
         map_file[str(new_id)] = map_entry
 
-        write_json_file(
-            self._path_manager.get_map_path(self._playthrough_name),
-            map_file,
-        )
+        self._map_repository.save_map_data(map_file)
 
         logger.info(
             f"Map entry created for playthrough '{self._playthrough_name}' with {self._place_type.value} '{self._place_template}'."

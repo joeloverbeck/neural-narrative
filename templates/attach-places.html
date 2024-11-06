@@ -1,0 +1,126 @@
+<!-- templates/attach-places.html -->
+{% extends "base.html" %}
+
+{% block title %}Attach Places{% endblock %}
+
+{% block styles %}
+{{ super() }}
+<link href="{{ url_for('static', filename='css/attach-places.css') }}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block content %}
+<div class="places-container">
+    <h1 class="page-title"><i class="fas fa-map"></i> Places</h1>
+
+    <!-- Attach World Section -->
+    <div class="collapsible-section">
+        <button class="collapsible">
+            <i class="fas fa-globe"></i> Attach World
+        </button>
+        <div class="content">
+            <form method="post">
+                <input type="hidden" name="submit_action" value="Attach World">
+                <label for="world_template">Choose a world to attach:</label>
+                <select name="world_template" id="world_template">
+                    {% for world in available_worlds %}
+                    <option value="{{ world }}">{{ world }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="action-button">
+                    <i class="fa-solid fa-link"></i> Attach to Story Universe
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Attach Region Section -->
+    <div class="collapsible-section">
+        <button class="collapsible">
+            <i class="fas fa-border-style"></i> Attach Region
+        </button>
+        <div class="content">
+            <form method="post">
+                <input type="hidden" name="submit_action" value="Attach Region">
+                <!-- Select World -->
+                <label for="world_identifier">Choose a world:</label>
+                <select name="world_identifier" id="world_identifier">
+                    {% for world in worlds_in_map %}
+                    <option value="{{ world.identifier }}">{{ world.place_template }}</option>
+                    {% endfor %}
+                </select>
+                <!-- Select Region -->
+                <label for="region_template">Choose a region to attach:</label>
+                <select name="region_template" id="region_template">
+                    {% for region in available_regions %}
+                    <option value="{{ region }}">{{ region }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="action-button">
+                    <i class="fa-solid fa-link"></i> Attach to World
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Attach Area Section -->
+    <div class="collapsible-section">
+        <button class="collapsible">
+            <i class="fas fa-city"></i> Attach Area
+        </button>
+        <div class="content">
+            <form method="post">
+                <input type="hidden" name="submit_action" value="Attach Area">
+                <!-- Select Region -->
+                <label for="region_identifier">Choose a region:</label>
+                <select name="region_identifier" id="region_identifier">
+                    {% for region in regions_in_map %}
+                    <option value="{{ region.identifier }}">{{ region.place_template }}</option>
+                    {% endfor %}
+                </select>
+                <!-- Select Area -->
+                <label for="area_template">Choose an area to attach:</label>
+                <select name="area_template" id="area_template">
+                    {% for area in available_areas %}
+                    <option value="{{ area }}">{{ area }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="action-button">
+                    <i class="fa-solid fa-link"></i> Attach to Region
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div class="buttons">
+        <a href="{{ url_for('location-hub') }}" class="button">
+            <i class="fas fa-map-marker-alt"></i> Location Hub
+        </a>
+        <a href="{{ url_for('index') }}" class="button">
+            <i class="fa-solid fa-dungeon"></i> Home
+        </a>
+        <a href="{{ url_for('places') }}" class="button">
+            <i class="fas fa-map"></i> Places
+        </a>
+        <a href="{{ url_for('story-hub') }}" class="button">
+            <i class="fas fa-feather-alt"></i> Story Hub
+        </a>
+        <a href="{{ url_for('characters-hub') }}" class="button">
+            <i class="fas fa-users"></i> Characters Hub
+        </a>
+        <a href="{{ url_for('chat') }}" class="button">
+            <i class="fas fa-comments"></i> Chat
+        </a>
+        <a href="{{ url_for('actions') }}" class="button">
+            <i class="fas fa-bolt"></i> Actions
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="{{ url_for('static', filename='js/jquery-3.7.1.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script src="{{ url_for('static', filename='js/attach-places.js') }}"></script>
+{% endblock %}

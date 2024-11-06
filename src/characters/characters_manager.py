@@ -10,6 +10,7 @@ from src.filesystem.file_operations import (
     create_empty_json_file_if_not_exists,
 )
 from src.filesystem.path_manager import PathManager
+from src.maps.map_repository import MapRepository
 
 
 class CharactersManager:
@@ -19,6 +20,7 @@ class CharactersManager:
         playthrough_name: str,
         identifiers_manager: Optional[IdentifiersManager] = None,
         playthrough_manager: Optional[PlaythroughManager] = None,
+        map_repository: Optional[MapRepository] = None,
         path_manager: Optional[PathManager] = None,
     ):
         validate_non_empty_string(playthrough_name, "playthrough_manager")
@@ -31,6 +33,7 @@ class CharactersManager:
         self._playthrough_manager = playthrough_manager or PlaythroughManager(
             self._playthrough_name
         )
+        self._map_repository = map_repository or MapRepository(self._playthrough_name)
         self._path_manager = path_manager or PathManager()
 
     def _load_characters_file(self) -> Dict[str, Dict]:
@@ -46,9 +49,6 @@ class CharactersManager:
         create_empty_json_file_if_not_exists(characters_file_path)
 
         return read_json_file(characters_file_path)
-
-    def _load_map_file(self) -> Dict[str, Dict]:
-        return read_json_file(self._path_manager.get_map_path(self._playthrough_name))
 
     def get_latest_character_identifier(self) -> str:
         characters_file = self._load_characters_file()
@@ -66,7 +66,7 @@ class CharactersManager:
 
     def get_characters_at_current_place(self) -> List[Character]:
         current_place = self._playthrough_manager.get_current_place_identifier()
-        map_file = self._load_map_file()
+        map_file = self._map_repository.load_map_data()
 
         current_place_data = map_file.get(current_place, {})
         character_ids = current_place_data.get("characters", [])

@@ -53,8 +53,7 @@ class CharacterGuidelinesManager:
         logger.info("Guidelines key: %s", key)
 
         if key not in self._guidelines_file.keys():
-            logger.warning(f"No guidelines found for key '{key}'.")
-            return []
+            raise ValueError(f"No guidelines found for key '{key}'.")
 
         return [guideline for guideline in self._guidelines_file[key]]
 

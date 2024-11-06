@@ -1,6 +1,7 @@
 import logging
 from typing import Dict, Optional
 
+from src.base.enums import TemplateType
 from src.base.products.text_product import TextProduct
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.maps.abstracts.abstract_factories import RandomTemplateTypeMapEntryProvider
@@ -30,6 +31,12 @@ class ConcreteRandomPlaceTypeMapEntryProvider(RandomTemplateTypeMapEntryProvider
         filesystem_manager: Optional[FilesystemManager] = None,
     ):
         self._config = config
+
+        if not isinstance(self._config.place_type, TemplateType):
+            raise TypeError(
+                f"Expected 'place_type' to be a TemplateType, but it was '{self._config.place_type}'."
+            )
+
         self._factories_config = factories_config
 
         self._filesystem_manager = filesystem_manager or FilesystemManager()
@@ -75,7 +82,7 @@ class ConcreteRandomPlaceTypeMapEntryProvider(RandomTemplateTypeMapEntryProvider
 
             if not template_product.is_valid():
                 error_message = (
-                    f"Failed to produce a {self._config.place_type} template: "
+                    f"Failed to produce a {self._config.place_type.value} template: "
                     f"{template_product.get_error()}"
                 )
                 return ConcreteRandomTemplateTypeMapEntryCreationResult(

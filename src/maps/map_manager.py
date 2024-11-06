@@ -1,5 +1,5 @@
 import logging
-from typing import List, Dict, Optional
+from typing import Optional
 
 from src.base.enums import TemplateType
 from src.base.identifiers_manager import IdentifiersManager
@@ -85,21 +85,3 @@ class MapManager:
         place = self._place_manager.get_place(max_id_str)
         place_template = self._place_manager.get_place_template(place)
         return max_id_str, place_template
-
-    def get_all_areas(self) -> List[Dict[str, str]]:
-        """
-        Retrieve all areas present in the map.
-
-        Returns:
-            List[Dict[str, str]]: A list of dictionaries with 'identifier' and 'place_template' keys.
-        """
-        map_data = self._map_repository.load_map_data()
-        areas = []
-        for identifier, data in map_data.items():
-            if data.get("type") == "area":
-                area_info = {
-                    "identifier": identifier,
-                    "place_template": data.get("place_template"),
-                }
-                areas.append(area_info)
-        return areas
