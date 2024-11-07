@@ -1,11 +1,13 @@
 import logging
-import os
 from pathlib import Path
 from typing import Optional
 
 from pydantic import BaseModel
 
 from src.base.validators import validate_non_empty_string
+from src.dialogues.algorithms.format_character_dialogue_purpose_algorithm import (
+    FormatCharacterDialoguePurposeAlgorithm,
+)
 from src.dialogues.configs.llm_speech_data_provider_config import (
     LlmSpeechDataProviderConfig,
 )
@@ -15,7 +17,6 @@ from src.dialogues.configs.llm_speech_data_provider_factories_config import (
 from src.dialogues.products.concrete_speech_data_product import (
     ConcreteSpeechDataProduct,
 )
-from src.filesystem.file_operations import read_file
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.filesystem.path_manager import PathManager
 from src.prompting.providers.base_tool_response_provider import BaseToolResponseProvider
@@ -29,6 +30,7 @@ class LlmSpeechDataProvider(BaseToolResponseProvider):
         self,
         config: LlmSpeechDataProviderConfig,
         factories_config: LlmSpeechDataProviderFactoriesConfig,
+        format_character_dialogue_purpose_algorithm: FormatCharacterDialoguePurposeAlgorithm,
         time_manager: Optional[TimeManager] = None,
         filesystem_manager: Optional[FilesystemManager] = None,
         path_manager: Optional[PathManager] = None,
@@ -45,6 +47,9 @@ class LlmSpeechDataProvider(BaseToolResponseProvider):
 
         self._config = config
         self._factories_config = factories_config
+        self._format_character_dialogue_purpose_algorithm = (
+            format_character_dialogue_purpose_algorithm
+        )
 
         self._time_manager = time_manager or TimeManager(self._config.playthrough_name)
 
@@ -56,23 +61,6 @@ class LlmSpeechDataProvider(BaseToolResponseProvider):
                 if participant["name"] != self._config.speaker_name
             ]
         )
-
-    def _format_character_dialogue_purpose(self) -> str:
-        purpose_path = self._path_manager.get_purpose_path(
-            self._config.playthrough_name,
-            self._config.speaker_identifier,
-            self._config.speaker_name,
-        )
-
-        character_purpose = ""
-
-        if os.path.exists(purpose_path):
-            character_purpose = (
-                f"{self._config.speaker_name}'s Dialogue Purpose: "
-                + read_file(purpose_path)
-            )
-
-        return character_purpose
 
     def _format_dialogue_purpose(self) -> str:
         if self._config.purpose:
@@ -123,6 +111,6 @@ class LlmSpeechDataProvider(BaseToolResponseProvider):
                 self._config.speaker_identifier
             ).get_information(),
             "dialogue_purpose": self._format_dialogue_purpose(),
-            "character_dialogue_purpose": self._format_character_dialogue_purpose(),
+            "character_dialogue_purpose": self._format_character_dialogue_purpose_algorithm.do_algorithm(),
             "dialogue": self._config.transcription.get_prettified_transcription(),
         }

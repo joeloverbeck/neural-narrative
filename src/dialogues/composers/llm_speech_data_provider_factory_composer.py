@@ -4,6 +4,9 @@ from src.base.validators import validate_non_empty_string
 from src.characters.factories.character_information_provider_factory import (
     CharacterInformationProviderFactory,
 )
+from src.dialogues.factories.format_character_dialogue_purpose_algorithm_factory import (
+    FormatCharacterDialoguePurposeAlgorithmFactory,
+)
 from src.dialogues.factories.llm_speech_data_provider_factory import (
     LlmSpeechDataProviderFactory,
 )
@@ -43,10 +46,15 @@ class LlmSpeechDataProviderFactoryComposer:
             self._playthrough_name
         )
 
+        format_character_dialogue_purpose_algorithm_factory = (
+            FormatCharacterDialoguePurposeAlgorithmFactory(self._playthrough_name)
+        )
+
         return LlmSpeechDataProviderFactory(
             self._playthrough_name,
             self._participants,
             self._purpose,
+            format_character_dialogue_purpose_algorithm_factory,
             produce_tool_response_strategy_factory,
             places_descriptions_provider,
             character_information_provider_factory,

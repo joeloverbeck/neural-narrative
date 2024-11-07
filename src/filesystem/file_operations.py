@@ -49,6 +49,15 @@ def remove_folder(folder_path: Path) -> None:
         logger.warning(f"Folder does not exist at: {folder_path}")
 
 
+def read_file_if_exists(file_path: Path) -> str:
+    file_contents = ""
+    if os.path.exists(file_path):
+        file = read_file(file_path)
+        if file:
+            file_contents = file
+    return file_contents
+
+
 def read_file(file_path: Path) -> str:
     with file_path.open("r", encoding="utf-8") as file:
         return file.read().strip()

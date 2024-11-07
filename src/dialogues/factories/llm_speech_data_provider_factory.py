@@ -10,6 +10,9 @@ from src.dialogues.configs.llm_speech_data_provider_config import (
 from src.dialogues.configs.llm_speech_data_provider_factories_config import (
     LlmSpeechDataProviderFactoriesConfig,
 )
+from src.dialogues.factories.format_character_dialogue_purpose_algorithm_factory import (
+    FormatCharacterDialoguePurposeAlgorithmFactory,
+)
 from src.dialogues.participants import Participants
 from src.dialogues.providers.llm_speech_data_provider import LlmSpeechDataProvider
 from src.dialogues.transcription import Transcription
@@ -26,6 +29,7 @@ class LlmSpeechDataProviderFactory:
         playthrough_name: str,
         participants: Participants,
         purpose: Optional[str],
+        format_character_dialogue_purpose_algorithm_factory: FormatCharacterDialoguePurposeAlgorithmFactory,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         places_descriptions_provider: PlacesDescriptionsProvider,
         character_information_provider_factory: CharacterInformationProviderFactory,
@@ -35,6 +39,9 @@ class LlmSpeechDataProviderFactory:
         self._playthrough_name = playthrough_name
         self._participants = participants
         self._purpose = purpose
+        self._format_character_dialogue_purpose_algorithm_factory = (
+            format_character_dialogue_purpose_algorithm_factory
+        )
         self._produce_tool_response_strategy_factory = (
             produce_tool_response_strategy_factory
         )
@@ -60,5 +67,8 @@ class LlmSpeechDataProviderFactory:
                 self._produce_tool_response_strategy_factory,
                 self._places_descriptions_provider,
                 self._character_information_provider_factory,
+            ),
+            self._format_character_dialogue_purpose_algorithm_factory.create_algorithm(
+                speaker_identifier, speaker_name
             ),
         )
