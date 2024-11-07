@@ -1,4 +1,5 @@
 import logging
+import os
 from pathlib import Path
 from typing import Optional
 
@@ -14,6 +15,7 @@ from src.dialogues.configs.llm_speech_data_provider_factories_config import (
 from src.dialogues.products.concrete_speech_data_product import (
     ConcreteSpeechDataProduct,
 )
+from src.filesystem.file_operations import read_file
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.filesystem.path_manager import PathManager
 from src.prompting.providers.base_tool_response_provider import BaseToolResponseProvider
@@ -55,9 +57,26 @@ class LlmSpeechDataProvider(BaseToolResponseProvider):
             ]
         )
 
+    def _format_character_dialogue_purpose(self) -> str:
+        purpose_path = self._path_manager.get_purpose_path(
+            self._config.playthrough_name,
+            self._config.speaker_identifier,
+            self._config.speaker_name,
+        )
+
+        character_purpose = ""
+
+        if os.path.exists(purpose_path):
+            character_purpose = (
+                f"{self._config.speaker_name}'s Dialogue Purpose: "
+                + read_file(purpose_path)
+            )
+
+        return character_purpose
+
     def _format_dialogue_purpose(self) -> str:
         if self._config.purpose:
-            return f"Purpose of the Dialogue: {self._config.purpose}"
+            return f"General Purpose of the Dialogue: {self._config.purpose}"
         return ""
 
     def get_prompt_file(self) -> Path:
@@ -93,7 +112,6 @@ class LlmSpeechDataProvider(BaseToolResponseProvider):
 
     def get_prompt_kwargs(self) -> dict:
         participant_details = self._format_participant_details()
-        dialogue_purpose = self._format_dialogue_purpose()
 
         return {
             "places_descriptions": self._factories_config.places_descriptions_provider.get_information(),
@@ -104,6 +122,7 @@ class LlmSpeechDataProvider(BaseToolResponseProvider):
             "character_information": self._factories_config.character_information_provider_factory.create_provider(
                 self._config.speaker_identifier
             ).get_information(),
-            "dialogue_purpose": dialogue_purpose,
+            "dialogue_purpose": self._format_dialogue_purpose(),
+            "character_dialogue_purpose": self._format_character_dialogue_purpose(),
             "dialogue": self._config.transcription.get_prettified_transcription(),
         }

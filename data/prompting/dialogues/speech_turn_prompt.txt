@@ -23,6 +23,7 @@ Be Engaging and Creative:
 Maintain Roleplay Integrity:
 - Avoid sounding like a helpful assistant.
 {dialogue_purpose}
+{character_dialogue_purpose}
 ----
 Ongoing Dialogue:
 {dialogue}

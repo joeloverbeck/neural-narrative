@@ -360,6 +360,17 @@ class PathManager:
         )
 
     @classmethod
+    def get_purpose_path(
+        cls, playthrough_name: str, character_identifier: str, character_name: str
+    ):
+        return (
+            cls.get_character_path(
+                playthrough_name, character_identifier, character_name
+            )
+            / "purpose.txt"
+        )
+
+    @classmethod
     def get_dialogues_path(
         cls, playthrough_name: str, character_identifier: str, character_name: str
     ):
