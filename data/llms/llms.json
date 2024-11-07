@@ -62,7 +62,7 @@
   "base_character_data_generation": "claude_3.5_sonnet",
   "speech_patterns_generation": "claude_3.5_sonnet",
   "character_description": "hermes_405b",
-  "self-reflection": "magnum_72b",
+  "self-reflection": "claude_3.5_sonnet",
   "worldview": "magnum_72b",
   "character_connection": "magnum_72b",
   "secrets": "magnum_72b",
