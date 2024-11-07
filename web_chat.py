@@ -14,6 +14,7 @@ from src.views.attach_places_view import AttachPlacesView
 from src.views.character_edit_view import CharacterEditView
 from src.views.character_generation_view import CharacterGenerationView
 from src.views.character_memories_view import CharacterMemoriesView
+from src.views.character_purpose_view import CharacterPurposeView
 from src.views.character_secrets_view import CharacterSecretsView
 from src.views.character_voice_view import CharacterVoiceView
 from src.views.characters_hub_view import CharactersHubView
@@ -75,6 +76,9 @@ app.add_url_rule(
     "/character-memories",
     view_func=CharacterMemoriesView.as_view("character-memories"),
     methods=["GET", "POST"],
+)
+app.add_url_rule(
+    "/character-purpose", view_func=CharacterPurposeView.as_view("character-purpose")
 )
 app.add_url_rule(
     "/character-voice", view_func=CharacterVoiceView.as_view("character-voice")
