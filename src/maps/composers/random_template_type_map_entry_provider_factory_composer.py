@@ -1,3 +1,4 @@
+import logging
 from typing import Optional
 
 from src.maps.composers.create_map_entry_for_playthrough_command_provider_factory_composer import (
@@ -19,6 +20,8 @@ from src.maps.factories.place_manager_factory import PlaceManagerFactory
 from src.maps.factories.random_template_type_map_entry_provider_factory import (
     RandomTemplateTypeMapEntryProviderFactory,
 )
+
+logger = logging.getLogger(__name__)
 
 
 class RandomTemplateTypeMapEntryProviderFactoryComposer:

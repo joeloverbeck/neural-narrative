@@ -7,6 +7,9 @@ from src.maps.factories.get_available_place_types_algorithm_composer import (
     GetAvailablePlaceTypesAlgorithmComposer,
 )
 from src.maps.factories.map_manager_factory import MapManagerFactory
+from src.maps.strategies.types_data_to_return_of_available_places_strategy import (
+    TypesDataToReturnOfAvailablePlacesStrategy,
+)
 
 
 class GetLocationInfoAlgorithmComposer:
@@ -40,6 +43,7 @@ class GetLocationInfoAlgorithmComposer:
             current_place_template,
             TemplateType.LOCATION,
             place_type,
+            TypesDataToReturnOfAvailablePlacesStrategy(),
         ).compose_algorithm()
 
         return GetLocationInfoAlgorithm(

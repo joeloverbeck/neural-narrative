@@ -1,11 +1,10 @@
 import logging
-from typing import Optional
+from typing import Optional, List
 
 from src.base.abstracts.command import Command
 from src.base.enums import TemplateType
 from src.base.playthrough_manager import PlaythroughManager
 from src.base.validators import validate_non_empty_string
-from src.filesystem.path_manager import PathManager
 from src.maps.map_repository import MapRepository
 from src.movements.exceptions import PlaceCharacterAtPlaceError
 
@@ -20,7 +19,6 @@ class PlaceCharacterAtPlaceCommand(Command):
         place_identifier: str,
         playthrough_manager: Optional[PlaythroughManager] = None,
         map_repository: Optional[MapRepository] = None,
-        path_manager: Optional[PathManager] = None,
     ):
         validate_non_empty_string(playthrough_name, "playthrough_name")
         validate_non_empty_string(character_identifier, "character_identifier")
@@ -34,15 +32,33 @@ class PlaceCharacterAtPlaceCommand(Command):
             self._playthrough_name
         )
         self._map_repository = map_repository or MapRepository(self._playthrough_name)
-        self._path_manager = path_manager or PathManager()
 
-    def execute(self) -> None:
-        # First ensure that the character doesn't exist in the list of followers.
+    def _validate_character_is_not_follower(self):
         if self._character_identifier in self._playthrough_manager.get_followers():
             raise PlaceCharacterAtPlaceError(
                 f"Character {self._character_identifier} is one of the followers. "
                 "If you intended to remove them from the followers and place them at a location, you should remove them from the followers first."
             )
+
+    @staticmethod
+    def _validate_place_type_can_house_characters(place_type: str):
+        if place_type not in (
+            TemplateType.AREA.value,
+            TemplateType.LOCATION.value,
+            TemplateType.ROOM.value,
+        ):
+            raise PlaceCharacterAtPlaceError(
+                f"Place type '{place_type}' cannot house characters."
+            )
+
+    def _validate_character_is_not_already_at_place(self, characters_list: List[str]):
+        if self._character_identifier in characters_list:
+            raise PlaceCharacterAtPlaceError(
+                f"Character {self._character_identifier} is already at place {self._place_identifier}."
+            )
+
+    def execute(self) -> None:
+        self._validate_character_is_not_follower()
 
         map_file = self._map_repository.load_map_data()
 
@@ -53,20 +69,15 @@ class PlaceCharacterAtPlaceCommand(Command):
 
         place_type = place.get("type")
 
-        if place_type not in (TemplateType.AREA.value, TemplateType.LOCATION.value):
-            raise PlaceCharacterAtPlaceError(
-                f"Place type '{place_type}' cannot house characters."
-            )
+        self._validate_place_type_can_house_characters(place_type)
 
         characters_list = place.get("characters")
 
         if characters_list is None:
             characters_list = []
             place["characters"] = characters_list
-        if self._character_identifier in characters_list:
-            raise PlaceCharacterAtPlaceError(
-                f"Character {self._character_identifier} is already at place {self._place_identifier}."
-            )
+
+        self._validate_character_is_not_already_at_place(characters_list)
 
         characters_list.append(self._character_identifier)
 

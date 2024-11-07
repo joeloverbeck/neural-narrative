@@ -323,16 +323,19 @@ class LocationHubView(MethodView):
         location_or_room_type: Optional[str] = None
 
         location_type = request.form.get("location_type")
+        room_type = request.form.get("room_type")
 
         if child_place_type == TemplateType.LOCATION and location_type:
-            logger.info("Location type: %s", location_type)
             location_or_room_type = location_type
+        elif child_place_type == TemplateType.ROOM and room_type:
+            location_or_room_type = room_type
 
         try:
             ProcessSearchForPlaceCommandComposer(
                 playthrough_name, location_or_room_type
             ).compose_command().execute()
         except SearchForPlaceError as e:
+            capture_traceback()
             flash(f"Couldn't attach {child_place_type.value}. Error: {str(e)}", "error")
         except Exception as e:
             capture_traceback()

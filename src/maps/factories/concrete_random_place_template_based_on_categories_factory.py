@@ -1,3 +1,4 @@
+import logging
 from typing import List, Optional
 
 from src.base.products.text_product import TextProduct
@@ -8,6 +9,8 @@ from src.maps.factories.filter_places_by_categories_algorithm_factory import (
     FilterPlacesByCategoriesAlgorithmFactory,
 )
 from src.maps.place_selection_manager import PlaceSelectionManager
+
+logger = logging.getLogger(__name__)
 
 
 class ConcreteRandomPlaceTemplateBasedOnCategoriesFactory(
