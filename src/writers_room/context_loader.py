@@ -35,18 +35,43 @@ class ContextLoader:
             self._path_manager.get_concepts_file_path(self._playthrough_name)
         )
 
+        # Note that if any of such concepts hasn't been generated, this would fail unless handled.
+        plot_blueprints = (
+            concepts_file[ConceptType.PLOT_BLUEPRINTS.value]
+            if ConceptType.PLOT_BLUEPRINTS.value in concepts_file
+            else ""
+        )
+        goals = (
+            concepts_file[ConceptType.GOALS.value]
+            if ConceptType.GOALS.value in concepts_file
+            else ""
+        )
+        plot_twists = (
+            concepts_file[ConceptType.PLOT_TWISTS.value]
+            if ConceptType.PLOT_TWISTS.value in concepts_file
+            else ""
+        )
+        scenarios = (
+            concepts_file[ConceptType.SCENARIOS.value]
+            if ConceptType.SCENARIOS.value in concepts_file
+            else ""
+        )
+        dilemmas = (
+            concepts_file[ConceptType.DILEMMAS.value]
+            if ConceptType.DILEMMAS.value in concepts_file
+            else ""
+        )
+
         context_variables = {
             "context": context_file,
             "facts": facts_file,
             "characters": characters_file,
             "places_descriptions": places_descriptions,
-            ConceptType.PLOT_BLUEPRINTS.value: concepts_file[
-                ConceptType.PLOT_BLUEPRINTS.value
-            ],
-            ConceptType.GOALS.value: concepts_file[ConceptType.GOALS.value],
-            ConceptType.PLOT_TWISTS.value: concepts_file[ConceptType.PLOT_TWISTS.value],
-            ConceptType.SCENARIOS.value: concepts_file[ConceptType.SCENARIOS.value],
-            ConceptType.DILEMMAS.value: concepts_file[ConceptType.DILEMMAS.value],
+            ConceptType.PLOT_BLUEPRINTS.value: plot_blueprints,
+            ConceptType.GOALS.value: goals,
+            ConceptType.PLOT_TWISTS.value: plot_twists,
+            ConceptType.SCENARIOS.value: scenarios,
+            ConceptType.DILEMMAS.value: dilemmas,
         }
 
         return context_variables
