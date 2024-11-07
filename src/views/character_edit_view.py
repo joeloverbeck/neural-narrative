@@ -27,6 +27,7 @@ class CharacterEditView(MethodView):
             character_data = {
                 "description": selected_character.description,
                 "profile": selected_character.profile,
+                "speech_patterns": selected_character.speech_patterns,
                 "health": selected_character.health,
                 "equipment": selected_character.equipment,
             }
@@ -57,6 +58,7 @@ class CharacterEditView(MethodView):
             selected_character = Character(playthrough_name, character_identifier)
             description = request.form.get("description", "")
             profile = request.form.get("profile", "")
+            speech_patterns = request.form.get("speech_patterns", "")
             health = request.form.get("health", "")
             equipment = request.form.get("equipment", "")
 
@@ -64,6 +66,7 @@ class CharacterEditView(MethodView):
                 {
                     "description": description,
                     "profile": profile,
+                    "speech_patterns": speech_patterns,
                     "health": health,
                     "equipment": equipment,
                 }
