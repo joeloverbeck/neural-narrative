@@ -78,20 +78,15 @@ class LlmSpeechDataProvider(BaseToolResponseProvider):
         if response_model.result is not None:
             speech_data_response = response_model.result
 
-            # Log the reasoning.
-            logger.info(
-                "%s reasoning: %s",
-                speech_data_response.name,
-                speech_data_response.speech.chain_of_thought,
-            )
-
             speech_data = {
                 "name": speech_data_response.name,
                 "narration_text": speech_data_response.narration_text,
-                "speech": speech_data_response.speech.speech,
+                "speech": speech_data_response.speech,
             }
 
             return ConcreteSpeechDataProduct(speech_data, is_valid=True)
+
+        logger.error("The call failed with the following result:\n%s", response_model)
 
         # The call failed.
         return ConcreteSpeechDataProduct(

@@ -25,7 +25,7 @@ class InstructorLlmClientFactory(LlmClientFactory):
     ) -> LlmClient:
         # Note: Mode.TOOLS doesn't work for some reason: it raises a NoneType exception.
         # The structure is done if in the future I want to delve into why this isn't working.
-        mode = Mode.TOOLS if llm.supports_tools() else Mode.JSON
+        mode = Mode.JSON if llm.supports_tools() else Mode.JSON
 
         return InstructorLlmClient(
             instructor.from_openai(
