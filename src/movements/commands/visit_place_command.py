@@ -42,6 +42,8 @@ class VisitPlaceCommand(Command):
     def execute(self) -> None:
         place_manager = self._place_manager_factory.create_place_manager()
 
+        # Note that this command is used to both exit and enter a place (enter a location from an area,
+        # enter a room from a location, etc.)
         origin_was_room = False
 
         if place_manager.get_current_place_type() == TemplateType.ROOM:
@@ -49,7 +51,10 @@ class VisitPlaceCommand(Command):
 
         self._playthrough_manager.update_current_place(self._place_identifier)
 
-        if not origin_was_room:
+        if (
+            not origin_was_room
+            and place_manager.get_current_place_type() != TemplateType.ROOM
+        ):
             if not place_manager.is_visited(self._place_identifier):
                 self._process_first_visit_to_place_command_factory.create_command(
                     self._place_identifier
