@@ -1486,5 +1486,89 @@
     "FORMAL",
     "ADVENTUROUS/DRIVEN",
     "NO SPECIAL EFFECTS"
+  ],
+  "robotdrfeelgood": [
+    "FEMALE",
+    "ELDERLY",
+    "EXCITED",
+    "SLOW",
+    "NORMAL VOLUME",
+    "GRAVELLY/RASPY",
+    "WARM",
+    "MELODIC",
+    "PASSIONATE",
+    "DISTORTED"
+  ],
+  "npcmneilfreund": [
+    "MALE",
+    "YOUNG ADULT/ADULT",
+    "CALM",
+    "MODERATE",
+    "NORMAL VOLUME",
+    "NASAL",
+    "WARM",
+    "FORMAL",
+    "NOBLE",
+    "NO SPECIAL EFFECTS"
+  ],
+  "synthgen3male02": [
+    "MALE",
+    "YOUNG ADULT/ADULT",
+    "HAPPY/JOYFUL",
+    "MODERATE",
+    "NORMAL VOLUME",
+    "SMOOTH",
+    "WARM",
+    "INTENSE/DRAMATIC",
+    "PASSIONATE",
+    "NO SPECIAL EFFECTS"
+  ],
+  "npcmdannysullivan": [
+    "MALE",
+    "YOUNG ADULT/ADULT",
+    "CONFIDENT/DETERMINED",
+    "MODERATE",
+    "NORMAL VOLUME",
+    "SMOOTH",
+    "NEUTRAL",
+    "CASUAL",
+    "ADVENTUROUS/DRIVEN",
+    "NO SPECIAL EFFECTS"
+  ],
+  "peryite": [
+    "MALE",
+    "MIDDLE-AGED",
+    "EXCITED",
+    "SLOW",
+    "LOUD",
+    "WHISPERY/AIRY",
+    "NEUTRAL",
+    "MELODIC",
+    "MYSTERIOUS",
+    "GHOSTLY/ECHOED"
+  ],
+  "npcfrosalindorman": [
+    "FEMALE",
+    "YOUNG ADULT/ADULT",
+    "EXCITED",
+    "MODERATE",
+    "NORMAL VOLUME",
+    "SMOOTH",
+    "WARM",
+    "CASUAL",
+    "OPTIMISTIC",
+    "NO SPECIAL EFFECTS"
+  ],
+  "femaleorc": [
+    "FEMALE",
+    "MIDDLE-AGED",
+    "SERIOUS/FIRM",
+    "MODERATE",
+    "NORMAL VOLUME",
+    "GRAVELLY/RASPY",
+    "AUTHORITATIVE",
+    "FORMAL",
+    "VILLAINOUS",
+    "NO SPECIAL EFFECTS"
   ]
 }
