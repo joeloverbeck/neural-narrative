@@ -5,7 +5,6 @@ from src.base.constants import PARENT_KEYS
 from src.base.enums import TemplateType
 from src.base.playthrough_manager import PlaythroughManager
 from src.base.validators import validate_non_empty_string
-from src.filesystem.path_manager import PathManager
 from src.maps.factories.place_manager_factory import PlaceManagerFactory
 from src.maps.factories.visit_place_command_factory import VisitPlaceCommandFactory
 from src.maps.map_repository import MapRepository
@@ -19,7 +18,6 @@ class ExitPlaceCommand(Command):
         place_manager_factory: PlaceManagerFactory,
         playthrough_manager: Optional[PlaythroughManager] = None,
         map_repository: Optional[MapRepository] = None,
-        path_manager: Optional[PathManager] = None,
     ):
         validate_non_empty_string(playthrough_name, "playthrough_name")
 
@@ -31,7 +29,6 @@ class ExitPlaceCommand(Command):
             self._playthrough_name
         )
         self._map_repository = map_repository or MapRepository(self._playthrough_name)
-        self._path_manager = path_manager or PathManager()
 
     def execute(self) -> None:
         place_manager = self._place_manager_factory.create_place_manager()

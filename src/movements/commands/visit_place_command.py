@@ -40,19 +40,21 @@ class VisitPlaceCommand(Command):
         self._config_loader = config_loader or ConfigLoader()
 
     def execute(self) -> None:
-        self._playthrough_manager.update_current_place(self._place_identifier)
-
-        # The following will only get done if the current place isn't a room.
         place_manager = self._place_manager_factory.create_place_manager()
 
+        origin_was_room = False
+
         if place_manager.get_current_place_type() == TemplateType.ROOM:
-            return
+            origin_was_room = True
 
-        if not place_manager.is_visited(self._place_identifier):
-            self._process_first_visit_to_place_command_factory.create_command(
-                self._place_identifier
-            ).execute()
+        self._playthrough_manager.update_current_place(self._place_identifier)
 
-        self._time_manager.advance_time(
-            self._config_loader.get_time_advanced_due_to_exiting_location()
-        )
+        if not origin_was_room:
+            if not place_manager.is_visited(self._place_identifier):
+                self._process_first_visit_to_place_command_factory.create_command(
+                    self._place_identifier
+                ).execute()
+
+            self._time_manager.advance_time(
+                self._config_loader.get_time_advanced_due_to_exiting_location()
+            )

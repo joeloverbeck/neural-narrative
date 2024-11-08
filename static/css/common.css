@@ -181,6 +181,7 @@ h1.page-title i {
 /* Style input fields, selects, and textareas inside .content divs */
 .content input[type="text"],
 .content input[type="email"],
+.content input[type="number"],
 .content select,
 .content textarea {
     display: block;
@@ -199,6 +200,7 @@ h1.page-title i {
 /* Add focus effect */
 .content input[type="text"]:focus,
 .content input[type="email"]:focus,
+.content input[type="number"]:focus,
 .content select:focus,
 .content textarea:focus {
     outline: none;
