@@ -3,10 +3,9 @@ from src.characters.factories.generate_character_command_factory_composer import
     GenerateCharacterCommandFactoryComposer,
 )
 from src.maps.factories.place_manager_factory import PlaceManagerFactory
-from src.movements.factories.place_character_at_place_command_factory import (
-    PlaceCharacterAtPlaceCommandFactory,
+from src.maps.factories.remove_character_from_place_command_factory import (
+    RemoveCharacterFromPlaceCommandFactory,
 )
-from src.movements.movement_manager import MovementManager
 
 
 class CharacterService:
@@ -14,21 +13,14 @@ class CharacterService:
     @staticmethod
     def add_followers(playthrough_name, character_ids):
         place_manager_factory = PlaceManagerFactory(playthrough_name)
-        movement_manager = MovementManager(playthrough_name, place_manager_factory)
         playthrough_manager = PlaythroughManager(playthrough_name)
         for character_id in character_ids:
-            movement_manager.add_follower(
+            playthrough_manager.add_follower(character_id)
+
+            RemoveCharacterFromPlaceCommandFactory(
+                playthrough_name, place_manager_factory
+            ).create_command(
                 character_id, playthrough_manager.get_current_place_identifier()
-            )
-
-    @staticmethod
-    def remove_followers(playthrough_name, follower_ids):
-        playthrough_manager = PlaythroughManager(playthrough_name)
-
-        for follower_id in follower_ids:
-            playthrough_manager.remove_follower(follower_id)
-            PlaceCharacterAtPlaceCommandFactory(playthrough_name).create_command(
-                follower_id, playthrough_manager.get_current_place_identifier()
             ).execute()
 
     @staticmethod

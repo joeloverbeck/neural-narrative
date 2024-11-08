@@ -24,14 +24,13 @@ class PlaceCharacterAtPlaceCommand(Command):
         validate_non_empty_string(character_identifier, "character_identifier")
         validate_non_empty_string(place_identifier, "place_identifier")
 
-        self._playthrough_name = playthrough_name
         self._character_identifier = character_identifier
         self._place_identifier = place_identifier
 
         self._playthrough_manager = playthrough_manager or PlaythroughManager(
-            self._playthrough_name
+            playthrough_name
         )
-        self._map_repository = map_repository or MapRepository(self._playthrough_name)
+        self._map_repository = map_repository or MapRepository(playthrough_name)
 
     def _validate_character_is_not_follower(self):
         if self._character_identifier in self._playthrough_manager.get_followers():

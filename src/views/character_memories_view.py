@@ -1,4 +1,4 @@
-from flask import session, redirect, url_for, render_template, request, jsonify
+from flask import session, redirect, url_for, render_template, request, jsonify, flash
 from flask.views import MethodView
 
 from src.characters.algorithms.produce_self_reflection_algorithm import (
@@ -16,6 +16,7 @@ from src.characters.factories.character_information_provider import (
 from src.characters.factories.self_reflection_factory import SelfReflectionFactory
 from src.characters.factories.worldview_factory import WorldviewFactory
 from src.interfaces.web_interface_manager import WebInterfaceManager
+from src.prompting.algorithms.tokenize_algorithm import TokenizeAlgorithm
 from src.prompting.composers.produce_tool_response_strategy_factory_composer import (
     ProduceToolResponseStrategyFactoryComposer,
 )
@@ -29,11 +30,13 @@ class CharacterMemoriesView(MethodView):
         playthrough_name = session.get("playthrough_name")
         if not playthrough_name:
             return redirect(url_for("index"))
+
         characters_manager = CharactersManager(playthrough_name)
         all_characters = characters_manager.get_all_characters()
         selected_character_identifier = request.args.get("character_identifier")
         character_memories = ""
         selected_character = None
+
         if selected_character_identifier:
             selected_character = Character(
                 playthrough_name, selected_character_identifier
@@ -41,6 +44,7 @@ class CharacterMemoriesView(MethodView):
             character_memories = CharacterMemoriesManager(
                 playthrough_name
             ).load_memories(selected_character)
+
         for character in all_characters:
             character["selected"] = False
             if (
@@ -48,11 +52,13 @@ class CharacterMemoriesView(MethodView):
                 and character["identifier"] == selected_character.identifier
             ):
                 character["selected"] = True
+
         self_reflection_text = session.pop("self_reflection_text", None)
         self_reflection_voice_line_url = session.pop(
             "self_reflection_voice_line_url", None
         )
         worldview_text = session.pop("worldview_text", None)
+
         return render_template(
             "character-memories.html",
             all_characters=all_characters,
@@ -61,6 +67,7 @@ class CharacterMemoriesView(MethodView):
             self_reflection_text=self_reflection_text,
             self_reflection_voice_line_url=self_reflection_voice_line_url,
             worldview_text=worldview_text,
+            token_count=TokenizeAlgorithm(character_memories).do_algorithm(),
         )
 
     @staticmethod
@@ -78,7 +85,7 @@ class CharacterMemoriesView(MethodView):
             CharacterMemoriesManager(playthrough_name).save_memories(
                 Character(playthrough_name, character_identifier), new_memories
             )
-            session["memories_saved_message"] = "Memories saved successfully."
+            flash("Memories saved successfully.", "success")
         elif action == "produce_worldview" and character_identifier:
             produce_tool_response_strategy_factory = (
                 ProduceToolResponseStrategyFactoryComposer(

@@ -40,7 +40,6 @@ def test_initialization_valid_inputs(mock_playthrough_manager, mock_map_reposito
         map_repository=mock_map_repository,
     )
 
-    assert command._playthrough_name == "TestPlaythrough"
     assert command._character_identifier == "Char1"
     assert command._place_identifier == "Place1"
     assert command._playthrough_manager == mock_playthrough_manager

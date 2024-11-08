@@ -1,4 +1,4 @@
-/* characters-hub.css */
+/* static/css/characters-hub.css */
 
 /* Container styles */
 .characters-hub-container {
@@ -29,6 +29,85 @@
 
 .player-character .character-name {
     font-size: 2em; /* Larger font size for the name */
+}
+
+/* Style for the Change Protagonist Form Container */
+.change-protagonist-form {
+    background-color: #ffffff; /* White background for contrast */
+    border-radius: 10px; /* Rounded corners */
+    padding: 20px; /* Inner spacing */
+    margin: 20px auto; /* Centered with vertical spacing */
+    max-width: 400px; /* Fixed width for consistency */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.change-protagonist-form:hover {
+    transform: translateY(-5px); /* Slight lift on hover */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Enhanced shadow */
+}
+
+/* Label Styling */
+.change-protagonist-form label {
+    display: block;
+    font-size: 1.1em;
+    color: #333;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+/* Select Dropdown Styling */
+.change-protagonist-form select {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1em;
+    margin-bottom: 15px;
+    appearance: none;
+    background: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%23333" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>') no-repeat right 15px center;
+    background-size: 16px 16px;
+}
+
+/* Remove default arrow for IE and Edge */
+.change-protagonist-form select::-ms-expand {
+    display: none;
+}
+
+/* Button Styling */
+.change-protagonist-form .action-button {
+    width: 100%;
+    padding: 12px;
+    background-color: #3f51b5; /* Deep blue */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.change-protagonist-form .action-button i {
+    margin-right: 8px;
+    font-size: 1.2em;
+}
+
+.change-protagonist-form .action-button:hover {
+    background-color: #303f9f; /* Darker blue on hover */
+    transform: scale(1.02);
+}
+
+.change-protagonist-form .action-button:active {
+    transform: scale(0.98);
+}
+
+
+/* Ensure the parent container has position: relative if using ::before */
+.player-character-section {
+    position: relative;
 }
 
 /* Responsive adjustments */

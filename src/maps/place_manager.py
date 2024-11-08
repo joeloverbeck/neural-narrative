@@ -84,23 +84,6 @@ class PlaceManager:
         map_file[place_identifier]["visited"] = True
         self._map_repository.save_map_data(map_file)
 
-    def remove_character_from_place(
-        self, character_identifier_to_remove: str, place_identifier: str
-    ):
-        place = self.get_place(place_identifier)
-
-        place["characters"] = [
-            character_id
-            for character_id in place.get("characters", [])
-            if character_id != character_identifier_to_remove
-        ]
-
-        map_file = self._map_repository.load_map_data()
-
-        map_file[place_identifier] = place
-
-        self._map_repository.save_map_data(map_file)
-
     def get_current_place_type(self) -> TemplateType:
         current_place_id = self._playthrough_manager.get_current_place_identifier()
         place = self.get_place(current_place_id)

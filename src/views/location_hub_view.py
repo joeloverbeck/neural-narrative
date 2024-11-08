@@ -14,6 +14,7 @@ from flask import (
 )
 from flask.views import MethodView
 
+from src.base.commands.remove_followers_command import RemoveFollowersCommand
 from src.base.enums import TemplateType
 from src.base.playthrough_manager import PlaythroughManager
 from src.base.tools import capture_traceback
@@ -49,6 +50,9 @@ from src.maps.map_manager import MapManager
 from src.maps.map_repository import MapRepository
 from src.maps.templates_repository import TemplatesRepository
 from src.movements.composers.exit_place_command_composer import ExitPlaceCommandComposer
+from src.movements.factories.place_character_at_place_command_factory import (
+    PlaceCharacterAtPlaceCommandFactory,
+)
 from src.services.character_service import CharacterService
 from src.services.place_service import PlaceService
 from src.services.web_service import WebService
@@ -209,7 +213,15 @@ class LocationHubView(MethodView):
     @staticmethod
     def handle_remove_from_followers(playthrough_name):
         selected_remove = request.form.getlist("remove_followers")
-        CharacterService.remove_followers(playthrough_name, selected_remove)
+
+        place_character_at_place_command_factory = PlaceCharacterAtPlaceCommandFactory(
+            playthrough_name
+        )
+
+        RemoveFollowersCommand(
+            playthrough_name, selected_remove, place_character_at_place_command_factory
+        ).execute()
+
         return redirect(url_for("location-hub"))
 
     @staticmethod

@@ -1,4 +1,4 @@
-/* character-memories.css */
+/* static/css/character-memories.css */
 
 .success-message {
     color: green;
@@ -48,4 +48,12 @@ input[type="submit"] {
 .self-reflection-container:hover,
 .worldview-container:hover {
     background-color: #f0f0f0;
+}
+
+.token-count {
+    text-align: center;
+    font-size: 14px;
+    color: #666;
+    margin-top: 5px;
+    margin-bottom: 10px; /* Optional spacing */
 }

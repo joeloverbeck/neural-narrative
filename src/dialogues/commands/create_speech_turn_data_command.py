@@ -1,8 +1,6 @@
 import logging
 from typing import List
 
-import instructor
-
 from src.base.abstracts.command import Command
 from src.base.abstracts.observer import Observer
 from src.base.abstracts.subject import Subject
@@ -53,10 +51,8 @@ class CreateSpeechTurnDataCommand(Command, Subject):
                 self._speech_turn_choice_response.get()["name"],
                 self._transcription,
             ).generate_product(
-                instructor.Maybe(
-                    get_custom_speech_turn_class(
-                        self._speech_turn_choice_response.get()["name"]
-                    )
+                get_custom_speech_turn_class(
+                    self._speech_turn_choice_response.get()["name"]
                 )
             )
         )

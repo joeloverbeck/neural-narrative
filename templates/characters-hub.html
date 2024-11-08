@@ -11,78 +11,101 @@
 <div class="characters-hub-container">
     <h1 class="page-title"><i class="fas fa-users"></i> Characters Hub</h1>
 
+
     <!-- Player Character Section -->
     <div class="player-character-section">
         <div class="character player-character">
             <img alt="{{ player_character.name }}" src="{{ url_for('static', filename=player_character.image_url) }}">
             <h2 class="character-name">{{ player_character.name }}</h2>
         </div>
-    </div>
 
-    <!-- Non-player Characters Section -->
-    {% if non_player_characters %}
-    <div class="collapsible-section">
-        <button class="collapsible">
-            <i class="fas fa-users"></i> Non-player Characters
-        </button>
-        <div class="content">
-            <div class="characters-list">
-                {% for character in non_player_characters %}
-                <div class="character">
-                    <img alt="{{ character.name }}" src="{{ character.image_url }}">
-                    <h2 class="character-name">{{ character.name }}</h2>
+        <!-- Change Protagonist Form -->
+        <div class="change-protagonist-form">
+            <form action="{{ url_for('characters-hub') }}" method="post">
+                <label for="new_protagonist">Change Protagonist:</label>
+                <select id="new_protagonist" name="new_protagonist_identifier" aria-label="Change Protagonist">
+                    {% for character in all_characters %}
+                    {% if character.identifier != player_character.identifier %}
+                    <option value="{{ character.identifier }}">{{ character.name }}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+                <button type="submit" class="action-button">
+                    <i class="fas fa-exchange-alt"></i> Change Protagonist
+                </button>
+            </form>
+        </div>
+
+
+        <!-- Non-player Characters Section -->
+        {% if non_player_characters %}
+        <div class="collapsible-section">
+            <button class="collapsible">
+                <i class="fas fa-users"></i> Non-player Characters
+            </button>
+            <div class="content">
+                <div class="characters-list">
+                    {% for character in non_player_characters %}
+                    <div class="character">
+                        <img alt="{{ character.name }}" src="{{ character.image_url }}">
+                        <h2 class="character-name">{{ character.name }}</h2>
+                    </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
             </div>
         </div>
-    </div>
-    {% endif %}
+        {% endif %}
 
-    <!-- Action Buttons with Unique Style -->
-    <div class="action-buttons">
-        <a href="{{ url_for('character-generation') }}" class="action-button-unique">
-            <i class="fas fa-plus-circle"></i> Generate
-        </a>
-        <a href="{{ url_for('character-edit') }}" class="action-button-unique">
-            <i class="fas fa-edit"></i> Edit
-        </a>
-        <a href="{{ url_for('character-memories') }}" class="action-button-unique">
-            <i class="fas fa-brain"></i> Memories
-        </a>
-        <a href="{{ url_for('character-purpose') }}" class="action-button-unique">
-            <i class="fas fa-bullseye"></i> Purpose
-        </a>
-        <a href="{{ url_for('connections') }}" class="action-button-unique">
-            <i class="fas fa-handshake"></i> Connections
-        </a>
-        <a href="{{ url_for('character-voice') }}" class="action-button-unique">
-            <i class="fas fa-microphone"></i> Voice
-        </a>
-        <a href="{{ url_for('character-secrets') }}" class="action-button-unique">
-            <i class="fas fa-user-secret"></i> Secrets
-        </a>
-    </div>
+        <!-- Action Buttons with Unique Style -->
+        <div class="action-buttons">
+            <a href="{{ url_for('character-generation') }}" class="action-button-unique">
+                <i class="fas fa-plus-circle"></i> Generate
+            </a>
+            <a href="{{ url_for('character-edit') }}" class="action-button-unique">
+                <i class="fas fa-edit"></i> Edit
+            </a>
+            <a href="{{ url_for('character-memories') }}" class="action-button-unique">
+                <i class="fas fa-brain"></i> Memories
+            </a>
+            <a href="{{ url_for('character-purpose') }}" class="action-button-unique">
+                <i class="fas fa-bullseye"></i> Purpose
+            </a>
+            <a href="{{ url_for('connections') }}" class="action-button-unique">
+                <i class="fas fa-handshake"></i> Connections
+            </a>
+            <a href="{{ url_for('character-voice') }}" class="action-button-unique">
+                <i class="fas fa-microphone"></i> Voice
+            </a>
+            <a href="{{ url_for('character-secrets') }}" class="action-button-unique">
+                <i class="fas fa-user-secret"></i> Secrets
+            </a>
+        </div>
 
-    <!-- Navigation Buttons -->
-    <div class="buttons">
-        <a href="{{ url_for('index') }}" class="button">
-            <i class="fa-solid fa-dungeon"></i> Home
-        </a>
-        <a href="{{ url_for('places') }}" class="button">
-            <i class="fas fa-map"></i> Places
-        </a>
-        <a href="{{ url_for('story-hub') }}" class="button">
-            <i class="fas fa-feather-alt"></i> Story Hub
-        </a>
-        <a href="{{ url_for('location-hub') }}" class="button">
-            <i class="fas fa-map-marker-alt"></i> Location Hub
-        </a>
-        <a href="{{ url_for('chat') }}" class="button">
-            <i class="fas fa-comments"></i> Chat
-        </a>
-        <a href="{{ url_for('actions') }}" class="button">
-            <i class="fas fa-bolt"></i> Actions
-        </a>
+        <!-- Navigation Buttons -->
+        <div class="buttons">
+            <a href="{{ url_for('index') }}" class="button">
+                <i class="fa-solid fa-dungeon"></i> Home
+            </a>
+            <a href="{{ url_for('places') }}" class="button">
+                <i class="fas fa-map"></i> Places
+            </a>
+            <a href="{{ url_for('story-hub') }}" class="button">
+                <i class="fas fa-feather-alt"></i> Story Hub
+            </a>
+            <a href="{{ url_for('location-hub') }}" class="button">
+                <i class="fas fa-map-marker-alt"></i> Location Hub
+            </a>
+            <a href="{{ url_for('chat') }}" class="button">
+                <i class="fas fa-comments"></i> Chat
+            </a>
+            <a href="{{ url_for('actions') }}" class="button">
+                <i class="fas fa-bolt"></i> Actions
+            </a>
+        </div>
     </div>
 </div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/jquery-3.7.1.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 {% endblock %}

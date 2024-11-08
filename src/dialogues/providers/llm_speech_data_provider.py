@@ -74,24 +74,13 @@ class LlmSpeechDataProvider(BaseToolResponseProvider):
         return f"Write {self._config.speaker_name}'s speech."
 
     def create_product_from_base_model(self, response_model: BaseModel):
-        # The base model is a MaybeSpeechTurn, given that it fails somewhat often.
-        if response_model.result is not None:
-            speech_data_response = response_model.result
+        speech_data = {
+            "name": response_model.name,
+            "narration_text": response_model.narration_text,
+            "speech": response_model.speech,
+        }
 
-            speech_data = {
-                "name": speech_data_response.name,
-                "narration_text": speech_data_response.narration_text,
-                "speech": speech_data_response.speech,
-            }
-
-            return ConcreteSpeechDataProduct(speech_data, is_valid=True)
-
-        logger.error("The call failed with the following result:\n%s", response_model)
-
-        # The call failed.
-        return ConcreteSpeechDataProduct(
-            None, is_valid=False, error=response_model.message
-        )
+        return ConcreteSpeechDataProduct(speech_data, is_valid=True)
 
     def get_prompt_kwargs(self) -> dict:
         participant_details = self._format_participant_details()
