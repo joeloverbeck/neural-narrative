@@ -1570,5 +1570,41 @@
     "FORMAL",
     "VILLAINOUS",
     "NO SPECIAL EFFECTS"
+  ],
+  "npcfalexiscombes": [
+    "FEMALE",
+    "YOUNG ADULT/ADULT",
+    "CONFIDENT/DETERMINED",
+    "FAST",
+    "NORMAL VOLUME",
+    "SMOOTH",
+    "WARM",
+    "CASUAL",
+    "ADVENTUROUS/DRIVEN",
+    "NO SPECIAL EFFECTS"
+  ],
+  "npcfness": [
+    "FEMALE",
+    "YOUNG ADULT/ADULT",
+    "ANGRY/AGGRESSIVE",
+    "MODERATE",
+    "NORMAL VOLUME",
+    "CRISP",
+    "AUTHORITATIVE",
+    "INTENSE/DRAMATIC",
+    "VILLAINOUS",
+    "NO SPECIAL EFFECTS"
+  ],
+  "npcmcalvinwhitaker": [
+    "MALE",
+    "ELDERLY",
+    "HOPEFUL",
+    "SLOW",
+    "NORMAL VOLUME",
+    "GRAVELLY/RASPY",
+    "WARM",
+    "CASUAL",
+    "OPTIMISTIC",
+    "NO SPECIAL EFFECTS"
   ]
 }
