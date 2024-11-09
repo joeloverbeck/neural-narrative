@@ -9,6 +9,7 @@ from src.filesystem.file_operations import (
     create_empty_file_if_not_exists,
     read_file,
     write_file,
+    create_directories,
 )
 from src.filesystem.path_manager import PathManager
 from src.interfaces.web_interface_manager import WebInterfaceManager
@@ -33,6 +34,13 @@ class CharacterPurposeView(MethodView):
                 playthrough_name, selected_character_identifier
             )
             path_manager = PathManager()
+            create_directories(
+                path_manager.get_character_path(
+                    playthrough_name,
+                    selected_character.identifier,
+                    selected_character.name,
+                )
+            )
             purpose_path = path_manager.get_purpose_path(
                 playthrough_name, selected_character_identifier, selected_character.name
             )

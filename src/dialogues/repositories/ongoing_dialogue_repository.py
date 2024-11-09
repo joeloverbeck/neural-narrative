@@ -62,9 +62,9 @@ class OngoingDialogueRepository:
         )
 
     def add_messages(self, messages: List[Dict[str, Any]]):
-        ongoing_dialogue_file = self._load_ongoing_dialogue_data()
-
         self._initialize_messages()
+
+        ongoing_dialogue_file = self._load_ongoing_dialogue_data()
 
         ongoing_dialogue_file[self.OngoingDialogueEntryType.MESSAGES.value].extend(
             messages
