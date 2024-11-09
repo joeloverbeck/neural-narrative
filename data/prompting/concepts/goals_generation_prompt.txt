@@ -1,4 +1,4 @@
-Using the following descriptions of the game world, region, area, location, and the player's character (including any followers), generate three intriguing and engaging short-term goals for the player to pursue. Each goal should meet the following criteria:
+Using the following detailed descriptions, generate three intriguing and engaging short-term goals for the player to pursue. Each goal should meet the following criteria:
 Relevance: Align with the player's character's background, skills, or current situation.
 Conflict and Challenge: Include obstacles that require strategy, problem-solving, or moral choices.
 Rewards: Offer meaningful incentives such as rare items, valuable information, or relationship improvements with key NPCs.

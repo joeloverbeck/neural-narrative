@@ -3,6 +3,7 @@ from typing import Optional
 from pydantic import BaseModel
 
 from src.base.products.texts_product import TextsProduct
+from src.base.validators import validate_non_empty_string
 from src.characters.factories.relevant_characters_information_factory import (
     RelevantCharactersInformationFactory,
 )
@@ -14,7 +15,7 @@ from src.prompting.factories.base_model_produce_tool_response_strategy_factory i
 )
 
 
-class DilemmasFactory(BaseConceptFactory):
+class AntagonistsFactory(BaseConceptFactory):
 
     def __init__(
         self,
@@ -24,6 +25,8 @@ class DilemmasFactory(BaseConceptFactory):
         player_and_followers_information_factory: RelevantCharactersInformationFactory,
         path_manager: Optional[PathManager] = None,
     ):
+        validate_non_empty_string(playthrough_name, "playthrough_name")
+
         path_manager = path_manager or PathManager()
 
         super().__init__(
@@ -31,10 +34,12 @@ class DilemmasFactory(BaseConceptFactory):
             produce_tool_response_strategy_factory,
             places_descriptions_factory,
             player_and_followers_information_factory,
-            prompt_file=path_manager.get_dilemmas_generation_prompt_path(),
-            user_content="Write a list of three intriguing moral and ethical dilemmas that could stem from the provided information, as per the above instructions.",
+            prompt_file=path_manager.get_antagonists_generation_prompt_path(),
+            user_content="Generate a complex and intriguing antagonist profile that could stem from the provided information, as per the above instructions.",
             path_manager=path_manager,
         )
 
     def create_product_from_base_model(self, response_model: BaseModel):
-        return TextsProduct(response_model.dilemmas, is_valid=True)
+        antagonist = str(response_model.antagonist)
+
+        return TextsProduct([antagonist.replace("\n\n", "\n")], is_valid=True)

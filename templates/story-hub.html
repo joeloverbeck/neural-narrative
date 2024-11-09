@@ -1,3 +1,4 @@
+<!-- templates/story-hub.html -->
 {% extends 'base.html' %}
 
 {% block styles %}
@@ -32,7 +33,7 @@ Story Hub
 
             <!-- Modals -->
             {% for plot_blueprint in plot_blueprints %}
-            <div id="modal-{{ loop.index0 }}" class="modal">
+            <div id="modal-plot_blueprint-{{ loop.index0 }}" class="modal">
                 <div class="modal-content">
                     <span class="close" onclick="closeModal({{ loop.index0 }})">&times;</span>
                     <h2>Plot Blueprint {{ loop.index }}</h2>
@@ -56,6 +57,56 @@ Story Hub
                 <input type="hidden" name="submit_action" value="generate_plot_blueprints">
                 <button type="submit" class="action-button" id="generate-plot-blueprints-button">
                     <i class="fas fa-lightbulb"></i> Generate Plot Blueprints
+                </button>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- Antagonists Section -->
+    <div class="collapsible-section">
+        <button class="collapsible">
+            <i class="fa-solid fa-skull"></i> Antagonists
+        </button>
+        <div class="content">
+            {% if antagonists %}
+            <!-- Antagonists list -->
+            <div class="antagonists-list">
+                {% for antagonist in antagonists %}
+                <div class="antagonist-item" onclick="openModal({{ loop.index0 }}, 'antagonist')"
+                     data-index="{{ loop.index0 }}">
+                    <h3>Antagonist {{ loop.index }}</h3>
+                    <p>{{ antagonist[:150] }}...</p>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Modals -->
+            {% for antagonist in antagonists %}
+            <div id="modal-antagonist-{{ loop.index0 }}" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeModal({{ loop.index0 }}, 'antagonist')">&times;</span>
+                    <h2>Antagonist {{ loop.index }}</h2>
+                    <p>{{ antagonist }}</p>
+                    <form action="{{ url_for('story-hub') }}" method="post">
+                        <input type="hidden" name="item_index" value="{{ loop.index0 }}">
+                        <input type="hidden" name="submit_action" value="delete_antagonist">
+                        <button type="submit" class="delete-button">
+                            <i class="fas fa-trash-alt"></i> Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <p>No antagonists generated yet.</p>
+            {% endif %}
+
+            <form method="post" class="ajax-form" action="{{ url_for('story-hub') }}"
+                  data-success-handler="generateAntagonistsSuccess">
+                <input type="hidden" name="submit_action" value="generate_antagonists">
+                <button type="submit" class="action-button" id="generate-antagonists-button">
+                    <i class="fa-solid fa-skull"></i> Generate Antagonists
                 </button>
             </form>
         </div>

@@ -1,4 +1,4 @@
-Given the following information about the player character, possible followers of the player, and their collective memories, analyze them and generate three very interesting and intriguing scenarios that could stem from that information.
+Given the following detailed descriptions, generate three very interesting and intriguing scenarios that could stem from that information.
 These scenarios should involve unexpected twists, conflicts, or developments that would engage the player.
 Consider the characters' motivations, relationships, and any hints or clues in the dialogue to create these scenarios.
 Each situation should be described in two or three sentences. Do not precede each situation with a number (it shouldn't be a numbered list).

@@ -1,4 +1,4 @@
-Given the following information about the player character, possible followers of the player, and their collective memories, analyze them and generate three intriguing moral and ethical dilemmas that could stem from this information.
+Using the following detailed descriptions, generate three intriguing moral and ethical dilemmas that could stem from this information.
 These dilemmas should present the player with difficult choices between equally compelling options, highlighting moral ambiguity and challenging their values and ethics.
 They should force the player to make tough decisions that affect their moral alignment and have far-reaching, significant consequences.
 Consider the characters' motivations, relationships, and any hints or clues in the provided information to create these dilemmas.

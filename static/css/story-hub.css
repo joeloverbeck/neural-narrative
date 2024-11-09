@@ -15,18 +15,23 @@ form input[type="submit"] {
     margin-top: 20px;
 }
 
+.content p {
+    white-space: pre-wrap;
+}
+
 /* Adjust margin for content */
-.content .plot-blueprints-list {
+.content .plot-blueprints-list,
+.content .antagonists-list {
     margin-top: 15px;
 }
 
-.plot-blueprints-list, .scenarios-list, .dilemmas-list, .goals-list, .plot-twists-list {
+.plot-blueprints-list, .antagonist-list, .scenarios-list, .dilemmas-list, .goals-list, .plot-twists-list {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     margin-bottom: 20px;
 }
-.plot-blueprint-form {
+.plot-blueprint-form, .antagonist-form {
     display: inline-block;
     margin: 0;
     padding: 0;
@@ -35,7 +40,7 @@ form input[type="submit"] {
 }
 
 /* Plot Blueprint item styling */
-.plot-blueprint-item {
+.plot-blueprint-item, .antagonist-item {
     background-color: #fff;
     padding: 20px;
     margin: 15px;
@@ -46,7 +51,7 @@ form input[type="submit"] {
     width: 90%;
 }
 
-.plot-blueprint-item:hover {
+.plot-blueprint-item:hover, .antagonist-item:hover {
     background-color: #f9f9f9;
 }
 

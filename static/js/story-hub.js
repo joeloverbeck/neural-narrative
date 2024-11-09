@@ -12,37 +12,30 @@ function generateItemsSuccess(data, context, options) {
             let contentDiv = null;
 
             if (!itemsList) {
-                // Create items-list div and append to contentDiv
                 itemsList = document.createElement('div');
                 itemsList.classList.add(options.listClass);
-                // Find the content div
                 contentDiv = context.form.closest('.content');
-                // Remove the "No items generated yet." message if it exists
                 const noItemsMessage = contentDiv.querySelector('p');
                 if (noItemsMessage) {
                     noItemsMessage.remove();
                 }
                 contentDiv.appendChild(itemsList);
             } else {
-                // If itemsList exists, get its parent as contentDiv
                 contentDiv = itemsList.parentElement;
             }
 
-            // Append each new item to the items list
             data[options.itemsKey].forEach((item, i) => {
                 const itemIndex = startIndex + i;
                 const itemElement = options.createItemElement(item, itemIndex);
                 itemsList.appendChild(itemElement);
 
-                // Call afterItemAdded if provided
                 if (typeof options.afterItemAdded === 'function') {
                     options.afterItemAdded(item, itemIndex, context, options);
                 }
             });
 
-            // Re-initialize event listeners for new forms
-            if (typeof options.initItemForms === 'function') {
-                options.initItemForms();
+            if (typeof options.initItemClickEvents === 'function') {
+                options.initItemClickEvents(options.itemClass, options.actionName);
             }
         }
     } else {
@@ -94,58 +87,49 @@ function createItemForm(submitAction, item, index) {
     return form;
 }
 
-function openModal(index) {
-    document.getElementById('modal-' + index).style.display = 'block';
+function openModal(index, actionName) {
+    document.getElementById(`modal-${actionName}-${index}`).style.display = 'block';
 }
 
-function closeModal(index) {
-    document.getElementById('modal-' + index).style.display = 'none';
+function closeModal(index, actionName) {
+    document.getElementById(`modal-${actionName}-${index}`).style.display = 'none';
 }
 
-function createModal(plotBlueprint, index) {
-    // Create the modal div
+function createModal(itemContent, index, itemType, actionName) {
     const modal = document.createElement('div');
-    modal.id = `modal-${index}`;
+    modal.id = `modal-${actionName}-${index}`;
     modal.classList.add('modal');
 
-    // Create modal-content div
     const modalContent = document.createElement('div');
     modalContent.classList.add('modal-content');
 
-    // Create the close span
     const closeSpan = document.createElement('span');
     closeSpan.classList.add('close');
     closeSpan.innerHTML = '&times;';
     closeSpan.onclick = function() {
-        closeModal(index);
+        closeModal(index, actionName);
     };
 
-    // Create h2 element for Plot Blueprint title
     const h2 = document.createElement('h2');
-    h2.textContent = `Plot Blueprint ${index + 1}`;
+    h2.textContent = `${itemType} ${index + 1}`;
 
-    // Create p element for plot blueprint text
     const p = document.createElement('p');
-    p.textContent = plotBlueprint;
+    p.textContent = itemContent;
 
-    // Create form for deleting plot blueprint
     const form = document.createElement('form');
-    form.action = window.location.href; // Use current URL
+    form.action = window.location.href;
     form.method = 'post';
 
-    // Create hidden input for item_index
     const inputIndex = document.createElement('input');
     inputIndex.type = 'hidden';
     inputIndex.name = 'item_index';
     inputIndex.value = index;
 
-    // Create hidden input for submit_action
     const inputAction = document.createElement('input');
     inputAction.type = 'hidden';
     inputAction.name = 'submit_action';
-    inputAction.value = 'delete_plot_blueprint';
+    inputAction.value = `delete_${actionName}`;
 
-    // Create delete button
     const button = document.createElement('button');
     button.type = 'submit';
     button.classList.add('delete-button');
@@ -155,50 +139,61 @@ function createModal(plotBlueprint, index) {
     button.appendChild(icon);
     button.appendChild(document.createTextNode(' Delete'));
 
-    // Append inputs and button to form
     form.appendChild(inputIndex);
     form.appendChild(inputAction);
     form.appendChild(button);
 
-    // Append elements to modal-content
     modalContent.appendChild(closeSpan);
     modalContent.appendChild(h2);
     modalContent.appendChild(p);
     modalContent.appendChild(form);
 
-    // Append modal-content to modal
     modal.appendChild(modalContent);
 
     return modal;
 }
 
-function createPlotBlueprintItem(plotBlueprint, index) {
-    // Create a plot-blueprint-item div
-    const plotBlueprintItem = document.createElement('div');
-    plotBlueprintItem.classList.add('plot-blueprint-item');
-    plotBlueprintItem.setAttribute('data-index', index);
+function createItemElement(itemContent, index, itemType, itemClass, actionName) {
+    const itemElement = document.createElement('div');
+    itemElement.classList.add(itemClass);
+    itemElement.setAttribute('data-index', index);
 
-    // Set the onclick attribute to call openModal with the current index
-    plotBlueprintItem.onclick = function() {
-        openModal(index);
+    itemElement.onclick = function() {
+        openModal(index, actionName);
     };
 
-    // Create the h3 element for the plot blueprint title
     const header = document.createElement('h3');
-    header.textContent = `Plot Blueprint ${index + 1}`; // Assuming index starts at 0
+    header.textContent = `${itemType} ${index + 1}`;
 
-    // Create the p element for the plot blueprint description
     const paragraph = document.createElement('p');
+    const truncatedItem = itemContent.length > 150 ? `${itemContent.substring(0, 150)}...` : itemContent;
+    paragraph.textContent = truncatedItem;
 
-    // Truncate the plot blueprint text to 150 characters and add ellipsis if necessary
-    const truncatedPlotBlueprint = plotBlueprint.length > 150 ? `${plotBlueprint.substring(0, 150)}...` : plotBlueprint;
-    paragraph.textContent = truncatedPlotBlueprint;
+    itemElement.appendChild(header);
+    itemElement.appendChild(paragraph);
 
-    // Append the header and paragraph to the plot-blueprint-item div
-    plotBlueprintItem.appendChild(header);
-    plotBlueprintItem.appendChild(paragraph);
+    return itemElement;
+}
 
-    return plotBlueprintItem;
+function generateAntagonistsSuccess(data, context) {
+    generateItemsSuccess(data, context, {
+        defaultSuccessMessage: 'Antagonists generated successfully.',
+        itemsKey: 'antagonists',
+        listSelector: '.antagonists-list',
+        listClass: 'antagonists-list',
+        itemSelector: '.antagonists-list .antagonist-item',
+        itemClass: 'antagonist-item',
+        actionName: 'antagonist',
+        createItemElement: function(item, index) {
+            return createItemElement(item, index, 'Antagonist', 'antagonist-item', 'antagonist');
+        },
+        initItemClickEvents: initItemClickEvents,
+        afterItemAdded: function(item, itemIndex, context, options) {
+            const contentDiv = context.form.closest('.content');
+            const modal = createModal(item, itemIndex, 'Antagonist', 'antagonist');
+            contentDiv.appendChild(modal);
+        }
+    });
 }
 
 function generatePlotBlueprintsSuccess(data, context) {
@@ -208,12 +203,16 @@ function generatePlotBlueprintsSuccess(data, context) {
         listSelector: '.plot-blueprints-list',
         listClass: 'plot-blueprints-list',
         itemSelector: '.plot-blueprints-list .plot-blueprint-item',
-        createItemElement: createPlotBlueprintItem,
-        initItemForms: initPlotBlueprintItemForms,
+        itemClass: 'plot-blueprint',
+        actionName: 'plot_blueprint',
+        createItemElement: function(item, index) {
+            return createItemElement(item, index, 'Plot Blueprint', 'plot-blueprint-item', 'plot_blueprint');
+        },
+        initItemClickEvents: initItemClickEvents,
         afterItemAdded: function(item, itemIndex, context, options) {
             // Create and append the modal
             const contentDiv = context.form.closest('.content');
-            const modal = createModal(item, itemIndex);
+            const modal = createModal(item, itemIndex, 'Plot Blueprint', 'plot_blueprint');
             contentDiv.appendChild(modal);
         }
     });
@@ -267,6 +266,17 @@ function generatePlotTwistsSuccess(data, context) {
     });
 }
 
+function initItemClickEvents(itemClass, actionName) {
+    const items = document.querySelectorAll(`.${itemClass}`);
+
+    items.forEach(function(item) {
+        item.onclick = function() {
+            const index = parseInt(this.getAttribute('data-index'));
+            openModal(index, actionName);
+        };
+    });
+}
+
 // Close modal when clicking outside of content
 window.onclick = function(event) {
     let modals = document.querySelectorAll('.modal');
@@ -308,9 +318,12 @@ function initItemForms() {
 }
 
 function pageInit() {
-    // Initialize event listeners for plot blueprint items
-    initPlotBlueprintItemForms();
+    // Initialize event listeners for plot blueprints
+    initItemClickEvents('plot-blueprint-item', 'plot_blueprint');
 
-    // Initialize event listeners for item forms
+    // Initialize event listeners for antagonists
+    initItemClickEvents('antagonist-item', 'antagonist');
+
+    // Initialize event listeners for other item forms if needed
     initItemForms();
 }

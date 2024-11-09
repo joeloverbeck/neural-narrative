@@ -24,6 +24,7 @@ from src.concepts.algorithms.generate_scenarios_algorithm import (
     GenerateScenariosAlgorithm,
 )
 from src.concepts.enums import ConceptType
+from src.concepts.factories.antagonists_factory import AntagonistsFactory
 from src.concepts.factories.dilemmas_factory import (
     DilemmasFactory,
 )
@@ -168,6 +169,17 @@ class StoryHubView(MethodView):
                     "factory_class": PlotTwistsFactory,
                     "algorithm_class": GeneratePlotTwistsAlgorithm,
                     "response_key": ConceptType.PLOT_TWISTS.value,
+                    "factory_args": [
+                        playthrough_name_obj,
+                        produce_tool_response_strategy_factory,
+                        places_descriptions_provider,
+                        player_and_followers_information_factory,
+                    ],
+                },
+                ConceptType.ANTAGONISTS.value: {
+                    "factory_class": AntagonistsFactory,
+                    "algorithm_class": GeneratePlotTwistsAlgorithm,
+                    "response_key": ConceptType.ANTAGONISTS.value,
                     "factory_args": [
                         playthrough_name_obj,
                         produce_tool_response_strategy_factory,

@@ -6,7 +6,6 @@ from typing import Optional, Type
 from pydantic import BaseModel
 
 from src.filesystem.file_operations import read_file
-from src.filesystem.filesystem_manager import FilesystemManager
 from src.filesystem.path_manager import PathManager
 from src.prompting.abstracts.abstract_factories import (
     ProduceToolResponseStrategyFactory,
@@ -23,14 +22,12 @@ class BaseToolResponseProvider:
     def __init__(
         self,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
-        filesystem_manager: Optional[FilesystemManager] = None,
         path_manager: Optional[PathManager] = None,
     ):
         self._produce_tool_response_strategy_factory = (
             produce_tool_response_strategy_factory
         )
 
-        self._filesystem_manager = filesystem_manager or FilesystemManager()
         self._path_manager = path_manager or PathManager()
 
     @staticmethod

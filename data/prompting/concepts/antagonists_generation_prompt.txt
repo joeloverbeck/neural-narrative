@@ -1,0 +1,26 @@
+Using the following detailed descriptions, generate a complex and intriguing antagonist profile for the story. The antagonist profile should include:
+
+- Choose gender, as well as a species among those possibly by the setting.
+- A compelling backstory that explains their motivations and goals.
+- Their relationship or connection to the player character.
+- Unique abilities, resources, or strategies they employ.
+- Personal strengths and weaknesses.
+- Moral complexity, including inner conflicts and core beliefs.
+- Their character arc and potential for change or redemption.
+- Relationships with allies, subordinates, and their impact on the world.
+- Distinctive personality traits, quirks, and signature methods.
+- Symbolism and how they embody or challenge the story's themes.
+- The long-term consequences of their actions on the narrative and protagonist.
+- Visual and aesthetic details that make them memorable.
+- Dialogue and communication style, including manipulation tactics.
+
+Provided Elements:
+{places_descriptions}
+{player_and_followers_information}
+Known Facts:
+{known_facts}
+
+Important:
+- Ensure the antagonist is deeply integrated into the world and the player's journey.
+- Avoid repeating any of the provided information verbatim.
+- Do not write any preamble; just present the antagonist profile as instructed.
