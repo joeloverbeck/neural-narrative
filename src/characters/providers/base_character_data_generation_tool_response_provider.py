@@ -7,7 +7,6 @@ from src.base.enums import TemplateType
 from src.base.tools import capture_traceback
 from src.characters.models.base_character_data import BaseCharacterData
 from src.filesystem.file_operations import read_file, read_json_file
-from src.filesystem.filesystem_manager import FilesystemManager
 from src.filesystem.path_manager import PathManager
 from src.maps.templates_repository import TemplatesRepository
 from src.prompting.abstracts.abstract_factories import (
@@ -37,13 +36,10 @@ class BaseCharacterDataGenerationToolResponseProvider(
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         user_content_for_character_generation_factory: UserContentForCharacterGenerationFactory,
         character_generation_instructions_formatter_factory: CharacterGenerationInstructionsFormatterFactory,
-        filesystem_manager: Optional[FilesystemManager] = None,
         templates_repository: Optional[TemplatesRepository] = None,
         path_manager: Optional[PathManager] = None,
     ):
-        super().__init__(
-            produce_tool_response_strategy_factory, filesystem_manager, path_manager
-        )
+        super().__init__(produce_tool_response_strategy_factory, path_manager)
 
         self._playthrough_name = playthrough_name
         self._user_content_for_character_generation_factory = (
