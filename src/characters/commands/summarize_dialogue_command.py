@@ -1,6 +1,8 @@
 import logging
+from typing import List
 
 from src.base.abstracts.command import Command
+from src.base.validators import validate_list_of_str
 from src.characters.factories.store_character_memory_command_factory import (
     StoreCharacterMemoryCommandFactory,
 )
@@ -8,7 +10,6 @@ from src.dialogues.factories.dialogue_summary_provider_factory import (
     DialogueSummaryProviderFactory,
 )
 from src.dialogues.models.dialogue_summary import DialogueSummary
-from src.dialogues.participants import Participants
 from src.dialogues.transcription import Transcription
 
 logger = logging.getLogger(__name__)
@@ -18,15 +19,14 @@ class SummarizeDialogueCommand(Command):
 
     def __init__(
         self,
-        participants: Participants,
+        character_identifiers: List[str],
         transcription: Transcription,
         dialogue_summary_provider_factory: DialogueSummaryProviderFactory,
         store_character_memory_command_factory: StoreCharacterMemoryCommandFactory,
     ):
-        if not participants.enough_participants():
-            raise ValueError("There weren't enough participants.")
+        validate_list_of_str(character_identifiers)
 
-        self._participants = participants
+        self._character_identifiers = character_identifiers
         self._transcription = transcription
         self._dialogue_summary_provider_factory = dialogue_summary_provider_factory
         self._store_character_memory_command_factory = (
@@ -51,7 +51,7 @@ class SummarizeDialogueCommand(Command):
                 f"Failed to create a summary for the dialogue: {summary_product.get_error()}"
             )
 
-        for participant_identifier in self._participants.get_participant_keys():
+        for participant_identifier in self._character_identifiers:
             self._store_character_memory_command_factory.create_store_character_memory_command(
                 participant_identifier, summary_product.get()
             ).execute()

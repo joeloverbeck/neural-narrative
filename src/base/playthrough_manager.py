@@ -1,9 +1,11 @@
 import logging.config
-import os
 from pathlib import Path
 from typing import List, Optional
 
 from src.base.validators import validate_non_empty_string
+from src.dialogues.repositories.ongoing_dialogue_repository import (
+    OngoingDialogueRepository,
+)
 from src.filesystem.file_operations import (
     append_to_file,
     read_json_file,
@@ -23,12 +25,17 @@ class PlaythroughManager:
         playthrough_name: str,
         filesystem_manager: Optional[FilesystemManager] = None,
         path_manager: Optional[PathManager] = None,
+        ongoing_dialogue_repository: Optional[OngoingDialogueRepository] = None,
     ):
         validate_non_empty_string(playthrough_name, "playthrough_name")
 
         self._playthrough_name = playthrough_name
         self._filesystem_manager = filesystem_manager or FilesystemManager()
         self._path_manager = path_manager or PathManager()
+        self._ongoing_dialogue_repository = (
+            ongoing_dialogue_repository
+            or OngoingDialogueRepository(self._playthrough_name)
+        )
 
     def _update_playthrough_metadata_identifier(self, key: str, new_value: str):
         playthrough_metadata = read_json_file(
@@ -43,9 +50,7 @@ class PlaythroughManager:
         )
 
     def has_ongoing_dialogue(self):
-        return os.path.exists(
-            self._path_manager.get_ongoing_dialogue_path(self._playthrough_name)
-        )
+        return self._ongoing_dialogue_repository.dialogue_exists()
 
     def update_player_identifier(self, new_player_identifier: str):
         self._update_playthrough_metadata_identifier(

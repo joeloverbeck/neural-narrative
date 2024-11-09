@@ -6,9 +6,14 @@ from flask.views import MethodView
 
 from src.base.playthrough_manager import PlaythroughManager
 from src.base.tools import capture_traceback
-from src.characters.characters_manager import CharactersManager
 from src.dialogues.algorithms.extract_identifiers_from_participants_data_algorithm import (
     ExtractIdentifiersFromParticipantsDataAlgorithm,
+)
+from src.dialogues.algorithms.get_available_characters_algorithm import (
+    GetAvailableCharactersAlgorithm,
+)
+from src.dialogues.algorithms.get_participant_characters_other_than_player_algorithm import (
+    GetParticipantCharactersOtherThanPlayerAlgorithm,
 )
 from src.dialogues.algorithms.load_data_from_ongoing_dialogue_algorithm import (
     LoadDataFromOngoingDialogueAlgorithm,
@@ -105,20 +110,9 @@ class ChatView(MethodView):
 
         ChatView.update_session_with_product_data(product)
 
-        # Fetch available characters to add
-        characters_manager = CharactersManager(playthrough_name)
-        all_characters = (
-            characters_manager.get_characters_at_current_place_plus_followers()
-        )
-
-        dialogue_participants = dialogue_participants if dialogue_participants else []
-
-        available_characters = [
-            char
-            for char in all_characters
-            if char.identifier not in dialogue_participants
-        ]
-
+        available_characters = GetAvailableCharactersAlgorithm(
+            playthrough_name, dialogue_participants
+        ).do_algorithm()
         WebService().format_image_urls_of_characters(available_characters)
 
         if PlaythroughManager(playthrough_name).has_ongoing_dialogue():
@@ -129,6 +123,12 @@ class ChatView(MethodView):
         else:
             dialogue = []
 
+        # Get participant characters
+        participant_characters = GetParticipantCharactersOtherThanPlayerAlgorithm(
+            playthrough_name, dialogue_participants
+        ).do_algorithm()
+        WebService().format_image_urls_of_characters(participant_characters)
+
         return render_template(
             "chat.html",
             dialogue=dialogue,
@@ -137,6 +137,7 @@ class ChatView(MethodView):
             .create_map_manager()
             .get_current_place_template(),
             available_characters=available_characters,
+            participant_characters=participant_characters,
         )
 
     @staticmethod

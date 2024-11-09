@@ -58,7 +58,7 @@ class ActionResolutionFactory(BaseToolResponseProvider):
         prompt_data = {
             "hour": self._time_manager.get_hour(),
             "time_of_day": self._time_manager.get_time_of_the_day(),
-            "facts_known": read_file(
+            "known_facts": read_file(
                 self._path_manager.get_facts_path(self._playthrough_name)
             ),
         }

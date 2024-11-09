@@ -113,6 +113,16 @@ function addParticipantsSuccessHandler(response) {
     }
 }
 
+function removeParticipantsSuccessHandler(response) {
+    if (response.success) {
+        showToast(response.message || 'Participants removed successfully.', 'success');
+        // Optionally, reload the page to update the participants
+        location.reload();
+    } else {
+        showToast(response.error || 'An error occurred while removing participants.', 'error');
+    }
+}
+
 // Function to scroll the chat window to the bottom
 function scrollToBottom() {
     const chatWindow = document.getElementById('chat-window');

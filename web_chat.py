@@ -24,6 +24,7 @@ from src.views.index_view import IndexView
 from src.views.location_hub_view import LocationHubView
 from src.views.participants_view import ParticipantsView
 from src.views.places_view import PlacesView
+from src.views.remove_participants_view import RemoveParticipantsView
 from src.views.story_hub_view import StoryHubView
 from src.views.travel_view import TravelView
 from src.views.writers_room_view import WritersRoomView
@@ -64,6 +65,10 @@ app.add_url_rule("/participants", view_func=ParticipantsView.as_view("participan
 app.add_url_rule("/chat", view_func=ChatView.as_view("chat"))
 app.add_url_rule(
     "/add_participants", view_func=AddParticipantsView.as_view("add_participants")
+)
+app.add_url_rule(
+    "/remove_participants",
+    view_func=RemoveParticipantsView.as_view("remove_participants"),
 )
 app.add_url_rule(
     "/character-generation",

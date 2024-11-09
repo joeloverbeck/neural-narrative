@@ -44,16 +44,16 @@ class CharacterGenerationGuidelinesProvider(BaseToolResponseProvider):
         self._place_manager_factory = place_manager_factory
         self._map_manager_factory = map_manager_factory
 
-    def _format_facts_known(self) -> str:
+    def _format_known_facts(self) -> str:
         facts_file = read_file(
             self._path_manager.get_facts_path(self._playthrough_name)
         )
 
-        facts_known = ""
+        known_facts = ""
         if facts_file:
-            facts_known = "Facts Known: " + facts_file
+            known_facts = "Facts Known: " + facts_file
 
-        return facts_known
+        return known_facts
 
     def get_prompt_file(self) -> str:
         return self._path_manager.get_character_generation_guidelines_prompt_path()
@@ -61,7 +61,7 @@ class CharacterGenerationGuidelinesProvider(BaseToolResponseProvider):
     def get_prompt_kwargs(self) -> dict:
         prompt_data = {
             "places_descriptions": self._places_descriptions_factory.get_information(),
-            "facts_known": self._format_facts_known(),
+            "known_facts": self._format_known_facts(),
         }
         place_categories = self._place_manager_factory.create_place_manager().get_place_categories(
             self._map_manager_factory.create_map_manager().get_current_place_template(),

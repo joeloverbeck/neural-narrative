@@ -1,5 +1,5 @@
 {places_descriptions}
-{facts_known}
+{known_facts}
 Your task is the following: influenced by the above combination of places, write three entries that are guidelines for creating interesting characters based on the above combination of places. Those guidelines for character creation should fit the following categories: {categories}. Each guideline should be about two or three sentences that feature the following:
 - Specify the character's species or race, including any unique traits or abilities relevant to the setting.
 - Specify the character's approximate age.

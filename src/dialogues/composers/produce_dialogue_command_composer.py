@@ -41,7 +41,7 @@ class ProduceDialogueCommandComposer:
     def compose_command(self) -> ProduceDialogueCommand:
         summarize_dialogue_command_factory = SummarizeDialogueCommandFactoryComposer(
             self._playthrough_name,
-            self._participants,
+            self._participants.get_participant_keys(),
         ).compose_factory()
 
         store_dialogues_command_factory = StoreDialoguesCommandFactory(

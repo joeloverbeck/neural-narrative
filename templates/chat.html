@@ -1,3 +1,4 @@
+<!-- templates/chat.html -->
 {% extends 'base.html' %}
 
 {% block title %}Chat{% endblock %}
@@ -196,6 +197,35 @@
     </div>
     {% endif %}
 
+    {% if participant_characters %}
+    <div class="collapsible-section">
+        <button class="collapsible">
+            <i class="fas fa-user-minus"></i> Remove Participants
+        </button>
+        <div class="content">
+            <!-- Remove Participants Form -->
+            <form method="post" class="remove-participants-form ajax-form" action="{{ url_for('remove_participants') }}"
+                  data-success-handler="removeParticipantsSuccessHandler" data-error-handler="chatErrorHandler">
+                <div class="characters-list">
+                    {% for character in participant_characters %}
+                    <div class="character">
+                        <input id="char-remove-{{ character.identifier }}" name="selected_characters" type="checkbox"
+                               value="{{ character.identifier }}">
+                        <label for="char-remove-{{ character.identifier }}">
+                            <img alt="{{ character.name }}" src="{{ url_for('static', filename=character.image_url) }}">
+                            <div class="character-name">{{ character.name }}</div>
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
+                <!-- Remove Participants Button -->
+                <button type="submit" class="action-button">
+                    <i class="fas fa-user-minus"></i> Remove from Chat
+                </button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
     <!-- Navigation Buttons -->
     <div class="buttons">
         <a href="{{ url_for('index') }}" class="button">

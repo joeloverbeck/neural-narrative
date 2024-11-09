@@ -1,198 +1,245 @@
-from unittest.mock import Mock, patch
+from typing import List
+from unittest.mock import MagicMock, patch
 
 import pytest
 
 from src.dialogues.algorithms.load_data_from_ongoing_dialogue_algorithm import (
     LoadDataFromOngoingDialogueAlgorithm,
 )
-from src.filesystem.path_manager import PathManager
+from src.dialogues.repositories.ongoing_dialogue_repository import (
+    OngoingDialogueRepository,
+)
 
 
-# Fixtures for common mocks
 @pytest.fixture
-def mock_path_manager():
+def playthrough_name():
+    return "test_playthrough"
+
+
+@pytest.fixture
+def dialogue_participants_identifiers():
+    return ["user1", "user2"]
+
+
+@pytest.fixture
+def purpose():
+    return "test_purpose"
+
+
+@pytest.fixture
+def mock_repository():
     with patch(
-        "src.dialogues.algorithms.load_data_from_ongoing_dialogue_algorithm.PathManager"
-    ) as MockPathManager:
-        instance = MockPathManager.return_value
-        instance.get_ongoing_dialogue_path.return_value = "/fake/path/dialogue.json"
+        "src.dialogues.algorithms.load_data_from_ongoing_dialogue_algorithm.OngoingDialogueRepository"
+    ) as MockRepo:
+        instance = MockRepo.return_value
+        instance.validate_dialogue_is_not_malformed = MagicMock()
+        instance.get_participants.return_value = {
+            "user1": {"name": "Alice"},
+            "user2": {"name": "Bob"},
+        }
+        instance.get_purpose.return_value = "Loaded Purpose"
         yield instance
 
 
-@pytest.fixture
-def mock_read_json_file():
-    with patch(
-        "src.dialogues.algorithms.load_data_from_ongoing_dialogue_algorithm.read_json_file"
-    ) as mock_read:
-        yield mock_read
+def test_do_algorithm_no_ongoing_dialogue(
+    playthrough_name: str,
+    dialogue_participants_identifiers: List[str],
+    purpose: str,
+    mock_repository: OngoingDialogueRepository,
+):
+    """
+    Test that when has_ongoing_dialogue is False, do_algorithm returns an empty dictionary.
+    """
+    algorithm = LoadDataFromOngoingDialogueAlgorithm(
+        playthrough_name=playthrough_name,
+        dialogue_participants_identifiers=dialogue_participants_identifiers,
+        purpose=purpose,
+        has_ongoing_dialogue=False,
+        ongoing_dialogue_repository=mock_repository,
+    )
+
+    result = algorithm.do_algorithm()
+    assert result == {}
+    mock_repository.validate_dialogue_is_not_malformed.assert_not_called()  # noqa
+    mock_repository.get_participants.assert_not_called()  # noqa
+    mock_repository.get_purpose.assert_not_called()  # noqa
 
 
-@pytest.fixture
-def valid_ongoing_dialogue_file():
-    return {
-        "participants": ["user1", "user2"],
-        "purpose": "Testing dialogue persistence",
+def test_do_algorithm_ongoing_dialogue_all_data_present(
+    playthrough_name: str,
+    dialogue_participants_identifiers: List[str],
+    purpose: str,
+    mock_repository: OngoingDialogueRepository,
+):
+    """
+    Test that when has_ongoing_dialogue is True and both dialogue_participants_identifiers and purpose are provided,
+    do_algorithm returns an empty dictionary.
+    """
+    algorithm = LoadDataFromOngoingDialogueAlgorithm(
+        playthrough_name=playthrough_name,
+        dialogue_participants_identifiers=dialogue_participants_identifiers,
+        purpose=purpose,
+        has_ongoing_dialogue=True,
+        ongoing_dialogue_repository=mock_repository,
+    )
+
+    result = algorithm.do_algorithm()
+    assert result == {}
+    mock_repository.validate_dialogue_is_not_malformed.assert_not_called()  # noqa
+    mock_repository.get_participants.assert_not_called()  # noqa
+    mock_repository.get_purpose.assert_not_called()  # noqa
+
+
+def test_do_algorithm_ongoing_dialogue_missing_participants(
+    playthrough_name: str,
+    purpose: str,
+    mock_repository: OngoingDialogueRepository,
+):
+    """
+    Test that when has_ongoing_dialogue is True and dialogue_participants_identifiers is missing,
+    do_algorithm retrieves participants from the repository.
+    """
+    algorithm = LoadDataFromOngoingDialogueAlgorithm(
+        playthrough_name=playthrough_name,
+        dialogue_participants_identifiers=None,
+        purpose=purpose,
+        has_ongoing_dialogue=True,
+        ongoing_dialogue_repository=mock_repository,
+    )
+
+    result = algorithm.do_algorithm()
+    assert result == {
+        "participants": {"user1": {"name": "Alice"}, "user2": {"name": "Bob"}}
     }
+    mock_repository.validate_dialogue_is_not_malformed.assert_called_once()  # noqa
+    mock_repository.get_participants.assert_called_once()  # noqa
+    mock_repository.get_purpose.assert_not_called()  # noqa
 
 
-# Initialization Tests
+def test_do_algorithm_ongoing_dialogue_missing_purpose(
+    playthrough_name: str,
+    dialogue_participants_identifiers: List[str],
+    mock_repository: OngoingDialogueRepository,
+):
+    """
+    Test that when has_ongoing_dialogue is True and purpose is missing,
+    do_algorithm retrieves purpose from the repository.
+    """
+    algorithm = LoadDataFromOngoingDialogueAlgorithm(
+        playthrough_name=playthrough_name,
+        dialogue_participants_identifiers=dialogue_participants_identifiers,
+        purpose=None,
+        has_ongoing_dialogue=True,
+        ongoing_dialogue_repository=mock_repository,
+    )
+
+    result = algorithm.do_algorithm()
+    assert result == {"purpose": "Loaded Purpose"}
+    mock_repository.validate_dialogue_is_not_malformed.assert_called_once()  # noqa
+    mock_repository.get_participants.assert_not_called()  # noqa
+    mock_repository.get_purpose.assert_called_once()  # noqa
+
+
+def test_do_algorithm_ongoing_dialogue_missing_both(
+    playthrough_name: str,
+    mock_repository: OngoingDialogueRepository,
+):
+    """
+    Test that when has_ongoing_dialogue is True and both dialogue_participants_identifiers and purpose are missing,
+    do_algorithm retrieves both from the repository.
+    """
+    algorithm = LoadDataFromOngoingDialogueAlgorithm(
+        playthrough_name=playthrough_name,
+        dialogue_participants_identifiers=None,
+        purpose=None,
+        has_ongoing_dialogue=True,
+        ongoing_dialogue_repository=mock_repository,
+    )
+
+    result = algorithm.do_algorithm()
+    expected = {
+        "participants": {"user1": {"name": "Alice"}, "user2": {"name": "Bob"}},
+        "purpose": "Loaded Purpose",
+    }
+    assert result == expected
+    mock_repository.validate_dialogue_is_not_malformed.assert_called_once()  # noqa
+    mock_repository.get_participants.assert_called_once()  # noqa
+    mock_repository.get_purpose.assert_called_once()  # noqa
+
+
+def test_do_algorithm_validate_dialogue_is_malformed(
+    playthrough_name: str,
+    mock_repository: OngoingDialogueRepository,
+):
+    """
+    Test that do_algorithm raises ValueError when the ongoing dialogue file is malformed.
+    """
+    mock_repository.validate_dialogue_is_not_malformed.side_effect = ValueError(
+        "Malformed dialogue file"
+    )
+
+    algorithm = LoadDataFromOngoingDialogueAlgorithm(
+        playthrough_name=playthrough_name,
+        dialogue_participants_identifiers=None,
+        purpose=None,
+        has_ongoing_dialogue=True,
+        ongoing_dialogue_repository=mock_repository,
+    )
+
+    with pytest.raises(ValueError, match="Malformed dialogue file"):
+        algorithm.do_algorithm()
+
+    mock_repository.validate_dialogue_is_not_malformed.assert_called_once()  # noqa
+    mock_repository.get_participants.assert_not_called()  # noqa
+    mock_repository.get_purpose.assert_not_called()  # noqa
+
+
+def test_do_algorithm_repository_instantiated_if_not_provided(
+    playthrough_name: str,
+    dialogue_participants_identifiers: List[str],
+    purpose: str,
+):
+    """
+    Test that OngoingDialogueRepository is instantiated with the correct playthrough_name
+    when it is not provided.
+    """
+    with patch(
+        "src.dialogues.algorithms.load_data_from_ongoing_dialogue_algorithm.OngoingDialogueRepository"
+    ) as MockRepo:
+        algorithm = LoadDataFromOngoingDialogueAlgorithm(
+            playthrough_name=playthrough_name,
+            dialogue_participants_identifiers=dialogue_participants_identifiers,
+            purpose=purpose,
+            has_ongoing_dialogue=True,
+            ongoing_dialogue_repository=None,
+        )
+
+        # Assuming that do_algorithm is called and repository methods are invoked
+        # Mock the methods to prevent actual calls
+        mock_instance = MockRepo.return_value
+        mock_instance.validate_dialogue_is_not_malformed = MagicMock()
+        mock_instance.get_participants.return_value = {}
+        mock_instance.get_purpose.return_value = ""
+
+        result = algorithm.do_algorithm()
+        assert result == {}
+
+        MockRepo.assert_called_once_with(playthrough_name)
+        mock_instance.validate_dialogue_is_not_malformed.assert_not_called()
+        mock_instance.get_participants.assert_not_called()
+        mock_instance.get_purpose.assert_not_called()
+
+
 def test_init_with_empty_playthrough_name():
-    with pytest.raises(ValueError) as exc_info:
+    """
+    Test that initializing LoadDataFromOngoingDialogueAlgorithm with an empty playthrough_name
+    raises a ValueError.
+    """
+    with pytest.raises(ValueError, match="playthrough_name"):
         LoadDataFromOngoingDialogueAlgorithm(
             playthrough_name="",
             dialogue_participants_identifiers=None,
             purpose=None,
-            has_ongoing_dialogue=False,
+            has_ongoing_dialogue=True,
+            ongoing_dialogue_repository=None,
         )
-    assert "playthrough_name" in str(exc_info.value)
-
-
-def test_init_with_valid_parameters():
-    path_manager = Mock(spec=PathManager)
-    algorithm = LoadDataFromOngoingDialogueAlgorithm(
-        playthrough_name="TestPlaythrough",
-        dialogue_participants_identifiers=["user1"],
-        purpose="Test Purpose",
-        has_ongoing_dialogue=True,
-        path_manager=path_manager,
-    )
-    assert algorithm._playthrough_name == "TestPlaythrough"
-    assert algorithm._dialogue_participants_identifiers == ["user1"]
-    assert algorithm._purpose == "Test Purpose"
-    assert algorithm._has_ongoing_dialogue is True
-    assert algorithm._path_manager is path_manager
-
-
-def test_init_with_default_path_manager():
-    with patch(
-        "src.dialogues.algorithms.load_data_from_ongoing_dialogue_algorithm.PathManager"
-    ) as MockPathManager:
-        algorithm = LoadDataFromOngoingDialogueAlgorithm(
-            playthrough_name="TestPlaythrough",
-            dialogue_participants_identifiers=None,
-            purpose=None,
-            has_ongoing_dialogue=False,
-        )
-        MockPathManager.assert_called_once()
-        assert algorithm._path_manager == MockPathManager.return_value
-
-
-# do_algorithm Tests
-def test_do_algorithm_no_ongoing_dialogue(mock_read_json_file, mock_path_manager):
-    algorithm = LoadDataFromOngoingDialogueAlgorithm(
-        playthrough_name="TestPlaythrough",
-        dialogue_participants_identifiers=["user1"],
-        purpose="Test Purpose",
-        has_ongoing_dialogue=False,
-        path_manager=mock_path_manager,
-    )
-    result = algorithm.do_algorithm()
-    assert result == {}
-    mock_read_json_file.assert_not_called()
-
-
-def test_do_algorithm_ongoing_dialogue_data_present(
-    mock_read_json_file, mock_path_manager, valid_ongoing_dialogue_file
-):
-    algorithm = LoadDataFromOngoingDialogueAlgorithm(
-        playthrough_name="TestPlaythrough",
-        dialogue_participants_identifiers=["user1"],
-        purpose="Test Purpose",
-        has_ongoing_dialogue=True,
-        path_manager=mock_path_manager,
-    )
-    result = algorithm.do_algorithm()
-    assert result == {}
-    mock_read_json_file.assert_not_called()
-
-
-def test_do_algorithm_missing_participants(
-    mock_read_json_file, mock_path_manager, valid_ongoing_dialogue_file
-):
-    mock_read_json_file.return_value = valid_ongoing_dialogue_file
-
-    algorithm = LoadDataFromOngoingDialogueAlgorithm(
-        playthrough_name="TestPlaythrough",
-        dialogue_participants_identifiers=None,
-        purpose="Test Purpose",
-        has_ongoing_dialogue=True,
-        path_manager=mock_path_manager,
-    )
-    result = algorithm.do_algorithm()
-    assert result == {"participants": ["user1", "user2"]}
-    mock_read_json_file.assert_called_once_with("/fake/path/dialogue.json")
-
-
-def test_do_algorithm_missing_purpose(
-    mock_read_json_file, mock_path_manager, valid_ongoing_dialogue_file
-):
-    mock_read_json_file.return_value = valid_ongoing_dialogue_file
-
-    algorithm = LoadDataFromOngoingDialogueAlgorithm(
-        playthrough_name="TestPlaythrough",
-        dialogue_participants_identifiers=["user1"],
-        purpose=None,
-        has_ongoing_dialogue=True,
-        path_manager=mock_path_manager,
-    )
-    result = algorithm.do_algorithm()
-    assert result == {"purpose": "Testing dialogue persistence"}
-    mock_read_json_file.assert_called_once_with("/fake/path/dialogue.json")
-
-
-def test_do_algorithm_missing_both(
-    mock_read_json_file, mock_path_manager, valid_ongoing_dialogue_file
-):
-    mock_read_json_file.return_value = valid_ongoing_dialogue_file
-
-    algorithm = LoadDataFromOngoingDialogueAlgorithm(
-        playthrough_name="TestPlaythrough",
-        dialogue_participants_identifiers=None,
-        purpose=None,
-        has_ongoing_dialogue=True,
-        path_manager=mock_path_manager,
-    )
-    result = algorithm.do_algorithm()
-    assert result == {
-        "participants": ["user1", "user2"],
-        "purpose": "Testing dialogue persistence",
-    }
-    mock_read_json_file.assert_called_once_with("/fake/path/dialogue.json")
-
-
-def test_do_algorithm_malformed_file_missing_participants(
-    mock_read_json_file, mock_path_manager
-):
-    malformed_file = {"purpose": "Testing dialogue persistence"}
-    mock_read_json_file.return_value = malformed_file
-
-    algorithm = LoadDataFromOngoingDialogueAlgorithm(
-        playthrough_name="TestPlaythrough",
-        dialogue_participants_identifiers=None,
-        purpose="Test Purpose",
-        has_ongoing_dialogue=True,
-        path_manager=mock_path_manager,
-    )
-    with pytest.raises(ValueError) as exc_info:
-        algorithm.do_algorithm()
-    assert "Malformed ongoing dialogue file" in str(exc_info.value)
-    mock_read_json_file.assert_called_once_with("/fake/path/dialogue.json")
-
-
-def test_do_algorithm_malformed_file_missing_purpose(
-    mock_read_json_file, mock_path_manager
-):
-    malformed_file = {"participants": ["user1", "user2"]}
-    mock_read_json_file.return_value = malformed_file
-
-    algorithm = LoadDataFromOngoingDialogueAlgorithm(
-        playthrough_name="TestPlaythrough",
-        dialogue_participants_identifiers=["user1"],
-        purpose=None,
-        has_ongoing_dialogue=True,
-        path_manager=mock_path_manager,
-    )
-    with pytest.raises(ValueError) as exc_info:
-        algorithm.do_algorithm()
-    assert "Malformed ongoing dialogue file" in str(exc_info.value)
-    mock_read_json_file.assert_called_once_with("/fake/path/dialogue.json")

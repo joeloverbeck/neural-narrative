@@ -18,6 +18,9 @@ from src.dialogues.composers.produce_dialogue_command_composer import (
 from src.dialogues.composers.produce_narration_for_dialogue_command_composer import (
     ProduceNarrationForDialogueCommandComposer,
 )
+from src.dialogues.composers.summarize_dialogue_command_factory_composer import (
+    SummarizeDialogueCommandFactoryComposer,
+)
 from src.dialogues.dialogue_manager import DialogueManager
 from src.dialogues.factories.ambient_narration_provider_factory import (
     AmbientNarrationProviderFactory,
@@ -53,6 +56,8 @@ from src.dialogues.strategies.narrative_beat_for_dialogue_strategy import (
 from src.dialogues.strategies.participants_identifiers_strategy import (
     ParticipantsIdentifiersStrategy,
 )
+from src.filesystem.file_operations import read_json_file, write_json_file
+from src.filesystem.path_manager import PathManager
 from src.prompting.composers.produce_tool_response_strategy_factory_composer import (
     ProduceToolResponseStrategyFactoryComposer,
 )
@@ -332,3 +337,43 @@ class DialogueService:
             )
             messages.append(message)
         return messages
+
+    @staticmethod
+    def remove_participants_from_dialogue(
+        playthrough_name: str, selected_characters: List[str]
+    ) -> None:
+        # Remove selected characters from session participants
+        session["participants"] = [
+            identifier
+            for identifier in session.get("participants", [])
+            if identifier not in selected_characters
+        ]
+        session.modified = True  # Ensure session is saved
+
+        # It's also necessary to remove each participant from the ongoing dialogue.
+        ongoing_dialogue_path = PathManager().get_ongoing_dialogue_path(
+            playthrough_name
+        )
+        ongoing_dialogue_file = read_json_file(ongoing_dialogue_path)
+
+        for participant in selected_characters:
+            ongoing_dialogue_file["participants"].pop(participant, None)
+
+        write_json_file(ongoing_dialogue_path, ongoing_dialogue_file)
+
+        # Generate summaries for each removed character
+        summarize_dialogue_command_factory = SummarizeDialogueCommandFactoryComposer(
+            playthrough_name,
+            selected_characters,
+        ).compose_factory()
+
+        # Load the transcription.
+        transcription = DialogueManager(playthrough_name).load_transcription()
+
+        # Create and execute SummarizeDialogueCommand
+        summarize_command = (
+            summarize_dialogue_command_factory.create_summarize_dialogue_command(
+                transcription
+            )
+        )
+        summarize_command.execute()

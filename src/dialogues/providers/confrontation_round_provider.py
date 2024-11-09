@@ -77,7 +77,7 @@ class ConfrontationRoundProvider(BaseToolResponseProvider):
             "hour": self._time_manager.get_hour(),
             "time_of_day": self._time_manager.get_time_of_the_day(),
             "local_information": self._local_information_factory.get_information(),
-            "facts_known": facts_file,
+            "known_facts": facts_file,
             "relevant_characters_information": self._relevant_characters_information_factory.get_information(),
             "transcription": self._transcription.get_prettified_transcription(),
         }
