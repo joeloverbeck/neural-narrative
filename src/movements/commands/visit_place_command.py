@@ -1,6 +1,7 @@
 from typing import Optional
 
 from src.base.abstracts.command import Command
+from src.base.constants import DEFAULT_CURRENT_PLACE
 from src.base.enums import TemplateType
 from src.base.playthrough_manager import PlaythroughManager
 from src.base.validators import validate_non_empty_string
@@ -46,7 +47,11 @@ class VisitPlaceCommand(Command):
         # enter a room from a location, etc.)
         origin_was_room = False
 
-        if place_manager.get_current_place_type() == TemplateType.ROOM:
+        if (
+            self._playthrough_manager.get_current_place_identifier()
+            != DEFAULT_CURRENT_PLACE
+            and place_manager.get_current_place_type() == TemplateType.ROOM
+        ):
             origin_was_room = True
 
         self._playthrough_manager.update_current_place(self._place_identifier)
