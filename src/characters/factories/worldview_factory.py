@@ -9,7 +9,6 @@ from src.characters.character import Character
 from src.characters.factories.character_information_provider import (
     CharacterInformationProvider,
 )
-from src.filesystem.filesystem_manager import FilesystemManager
 from src.filesystem.path_manager import PathManager
 from src.prompting.abstracts.abstract_factories import (
     ProduceToolResponseStrategyFactory,
@@ -24,12 +23,9 @@ class WorldviewFactory(BaseToolResponseProvider):
         character_identifier: str,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         character_information_factory: CharacterInformationProvider,
-        filesystem_manager: Optional[FilesystemManager] = None,
         path_manager: Optional[PathManager] = None,
     ):
-        super().__init__(
-            produce_tool_response_strategy_factory, filesystem_manager, path_manager
-        )
+        super().__init__(produce_tool_response_strategy_factory, path_manager)
 
         validate_non_empty_string(playthrough_name, "playthrough_name")
         validate_non_empty_string(character_identifier, "character_identifier")

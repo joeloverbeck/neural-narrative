@@ -10,7 +10,6 @@ from src.characters.factories.relevant_characters_information_factory import (
     RelevantCharactersInformationFactory,
 )
 from src.dialogues.transcription import Transcription
-from src.filesystem.filesystem_manager import FilesystemManager
 from src.filesystem.path_manager import PathManager
 from src.maps.factories.local_information_factory import LocalInformationFactory
 from src.prompting.abstracts.abstract_factories import (
@@ -29,12 +28,9 @@ class GrowEventProvider(BaseToolResponseProvider):
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         local_information_factory: LocalInformationFactory,
         relevant_characters_information_factory: RelevantCharactersInformationFactory,
-        filesystem_manager: Optional[FilesystemManager] = None,
         path_manager: Optional[PathManager] = None,
     ):
-        super().__init__(
-            produce_tool_response_strategy_factory, filesystem_manager, path_manager
-        )
+        super().__init__(produce_tool_response_strategy_factory, path_manager)
 
         validate_non_empty_string(suggested_event, "suggested_event")
 

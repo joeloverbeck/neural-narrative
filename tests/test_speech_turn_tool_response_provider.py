@@ -9,7 +9,6 @@ from src.characters.factories.character_factory import CharacterFactory
 from src.dialogues.models.speech_turn_choice import SpeechTurnChoice
 from src.dialogues.participants import Participants
 from src.dialogues.transcription import Transcription
-from src.filesystem.filesystem_manager import FilesystemManager
 from src.prompting.abstracts.abstract_factories import (
     ProduceToolResponseStrategyFactory,
 )
@@ -27,7 +26,6 @@ def test_init_with_valid_parameters():
     produce_tool_response_strategy_factory = MagicMock(
         spec=ProduceToolResponseStrategyFactory
     )
-    filesystem_manager = MagicMock(spec=FilesystemManager)
 
     # Act
     provider = SpeechTurnChoiceToolResponseProvider(
@@ -38,7 +36,6 @@ def test_init_with_valid_parameters():
         produce_tool_response_strategy_factory=cast(
             ProduceToolResponseStrategyFactory, produce_tool_response_strategy_factory
         ),
-        filesystem_manager=filesystem_manager,
     )
 
     # Assert
@@ -50,7 +47,6 @@ def test_init_with_valid_parameters():
         provider._produce_tool_response_strategy_factory
         == produce_tool_response_strategy_factory
     )
-    assert provider._filesystem_manager == filesystem_manager
 
 
 def test_init_with_empty_player_identifier_raises_error():
@@ -215,7 +211,6 @@ def test_get_prompt_kwargs_with_player_identifier():
 @patch("src.prompting.providers.base_tool_response_provider.read_file")
 def test_generate_product_calls_produce_tool_response(mock_read_file):
     # Arrange
-    filesystem_manager = MagicMock(spec=FilesystemManager)
     mock_read_file.return_value = "Prompt content"
     produce_tool_response_strategy_factory = MagicMock(
         spec=ProduceToolResponseStrategyFactory
@@ -244,7 +239,6 @@ def test_generate_product_calls_produce_tool_response(mock_read_file):
         produce_tool_response_strategy_factory=cast(
             ProduceToolResponseStrategyFactory, produce_tool_response_strategy_factory
         ),
-        filesystem_manager=filesystem_manager,
     )
 
     # Act
@@ -308,7 +302,6 @@ def test_peep_into_system_content_does_nothing():
 @patch("src.prompting.providers.base_tool_response_provider.read_file")
 def test_generate_product_with_invalid_tool_response(mock_read_file):
     # Arrange
-    filesystem_manager = MagicMock(spec=FilesystemManager)
     mock_read_file.return_value = "Prompt content"
     produce_tool_response_strategy_factory = MagicMock(
         spec=ProduceToolResponseStrategyFactory
@@ -329,7 +322,6 @@ def test_generate_product_with_invalid_tool_response(mock_read_file):
         produce_tool_response_strategy_factory=cast(
             ProduceToolResponseStrategyFactory, produce_tool_response_strategy_factory
         ),
-        filesystem_manager=filesystem_manager,
     )
 
     # Act & Assert
@@ -359,7 +351,6 @@ def test_get_formatted_prompt_returns_none():
 @patch("src.prompting.providers.base_tool_response_provider.read_file")
 def test_generate_system_content_calls_format_prompt_correctly(mock_read_file):
     # Arrange
-    filesystem_manager = MagicMock(spec=FilesystemManager)
     prompt_content = "Prompt template with {placeholder}"
     mock_read_file.return_value = prompt_content
     provider = SpeechTurnChoiceToolResponseProvider(
@@ -370,7 +361,6 @@ def test_generate_system_content_calls_format_prompt_correctly(mock_read_file):
         produce_tool_response_strategy_factory=cast(
             ProduceToolResponseStrategyFactory, MagicMock()
         ),
-        filesystem_manager=filesystem_manager,
     )
     provider.get_prompt_kwargs = MagicMock(return_value={"placeholder": "value"})
 

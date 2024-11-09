@@ -8,7 +8,6 @@ from src.characters.factories.relevant_characters_information_factory import (
     RelevantCharactersInformationFactory,
 )
 from src.filesystem.file_operations import read_file
-from src.filesystem.filesystem_manager import FilesystemManager
 from src.filesystem.path_manager import PathManager
 from src.maps.providers.places_descriptions_provider import PlacesDescriptionsProvider
 from src.prompting.abstracts.abstract_factories import (
@@ -29,16 +28,13 @@ class ActionResolutionFactory(BaseToolResponseProvider):
         places_descriptions_factory: PlacesDescriptionsProvider,
         players_and_followers_information_factory: RelevantCharactersInformationFactory,
         prompt_file: str,
-        filesystem_manager: Optional[FilesystemManager] = None,
         time_manager: Optional[TimeManager] = None,
         path_manager: Optional[PathManager] = None,
     ):
         validate_non_empty_string(action_name, "action_name")
         validate_non_empty_string(action_goal, "action_goal")
 
-        super().__init__(
-            produce_tool_response_strategy_factory, filesystem_manager, path_manager
-        )
+        super().__init__(produce_tool_response_strategy_factory, path_manager)
 
         self._playthrough_name = playthrough_name
         self._action_name = action_name

@@ -106,7 +106,6 @@ def test_get_prompt_file():
     character_factory = MagicMock()
     character_information_provider_factory = MagicMock()
     produce_tool_response_strategy_factory = MagicMock()
-    filesystem_manager = MagicMock()
 
     cf = ConnectionFactory(
         character_a_identifier,
@@ -116,7 +115,6 @@ def test_get_prompt_file():
         cast(
             ProduceToolResponseStrategyFactory, produce_tool_response_strategy_factory
         ),
-        filesystem_manager,
     )
 
     # Act

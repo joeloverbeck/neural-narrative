@@ -127,16 +127,10 @@ class HierarchyManager:
             if hierarchy[TemplateType.LOCATION.value]
             else None
         )
-        room_template = (
-            self._place_manager.get_place_template(hierarchy[TemplateType.ROOM.value])
-            if hierarchy[TemplateType.ROOM.value]
-            else None
-        )
 
         return PlacesTemplatesParameter(
             world_template=world_template,
             region_template=region_template,
             area_template=area_template,
             location_template=location_template,
-            room_template=room_template,
         )

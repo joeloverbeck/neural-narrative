@@ -7,7 +7,6 @@ from src.characters.character import Character
 from src.characters.products.character_description_product import (
     CharacterDescriptionProduct,
 )
-from src.filesystem.filesystem_manager import FilesystemManager
 from src.filesystem.path_manager import PathManager
 from src.prompting.abstracts.abstract_factories import (
     ProduceToolResponseStrategyFactory,
@@ -21,12 +20,9 @@ class CharacterDescriptionProvider(BaseToolResponseProvider):
         self,
         character: Character,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
-        filesystem_manager: Optional[FilesystemManager] = None,
         path_manager: Optional[PathManager] = None,
     ):
-        super().__init__(
-            produce_tool_response_strategy_factory, filesystem_manager, path_manager
-        )
+        super().__init__(produce_tool_response_strategy_factory, path_manager)
 
         self._character = character
 

@@ -3,7 +3,6 @@ from typing import Optional
 from src.base.enums import TemplateType
 from src.base.models.story_universe import StoryUniverse
 from src.base.products.story_universe_product import StoryUniverseProduct
-from src.filesystem.filesystem_manager import FilesystemManager
 from src.filesystem.path_manager import PathManager
 from src.maps.templates_repository import TemplatesRepository
 from src.prompting.abstracts.abstract_factories import (
@@ -18,13 +17,10 @@ class StoryUniverseFactory(BaseToolResponseProvider):
         self,
         story_universe_notion: str,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
-        filesystem_manager: Optional[FilesystemManager] = None,
         path_manager: Optional[PathManager] = None,
         templates_repository: Optional[TemplatesRepository] = None,
     ):
-        super().__init__(
-            produce_tool_response_strategy_factory, filesystem_manager, path_manager
-        )
+        super().__init__(produce_tool_response_strategy_factory, path_manager)
         self._story_universe_notion = story_universe_notion
 
         self._templates_repository = templates_repository or TemplatesRepository()

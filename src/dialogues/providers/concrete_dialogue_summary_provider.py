@@ -4,7 +4,6 @@ from pydantic import BaseModel
 
 from src.base.products.text_product import TextProduct
 from src.dialogues.transcription import Transcription
-from src.filesystem.filesystem_manager import FilesystemManager
 from src.filesystem.path_manager import PathManager
 from src.prompting.abstracts.abstract_factories import (
     ProduceToolResponseStrategyFactory,
@@ -17,12 +16,9 @@ class ConcreteDialogueSummaryProvider(BaseToolResponseProvider):
         self,
         transcription: Transcription,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
-        filesystem_manager: Optional[FilesystemManager] = None,
         path_manager: Optional[PathManager] = None,
     ):
-        super().__init__(
-            produce_tool_response_strategy_factory, filesystem_manager, path_manager
-        )
+        super().__init__(produce_tool_response_strategy_factory, path_manager)
 
         self._transcription = transcription
 

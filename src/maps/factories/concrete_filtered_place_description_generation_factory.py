@@ -2,7 +2,6 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-from src.filesystem.filesystem_manager import FilesystemManager
 from src.filesystem.path_manager import PathManager
 from src.maps.configs.filtered_place_description_generation_factory_algorithms_config import (
     FilteredPlaceDescriptionGenerationFactoryAlgorithmsConfig,
@@ -27,13 +26,11 @@ class ConcreteFilteredPlaceDescriptionGenerationFactory(BaseToolResponseProvider
         config: FilteredPlaceDescriptionGenerationFactoryConfig,
         factories_config: FilteredPlaceDescriptionGenerationFactoryFactoriesConfig,
         algorithms_config: FilteredPlaceDescriptionGenerationFactoryAlgorithmsConfig,
-        filesystem_manager: Optional[FilesystemManager] = None,
         path_manager: Optional[PathManager] = None,
         time_manager: Optional[TimeManager] = None,
     ):
         super().__init__(
             factories_config.produce_tool_response_strategy_factory,
-            filesystem_manager,
             path_manager,
         )
         self._config = config

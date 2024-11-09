@@ -8,7 +8,6 @@ from src.characters.products.character_generation_guidelines_product import (
     CharacterGenerationGuidelinesProduct,
 )
 from src.filesystem.file_operations import read_file
-from src.filesystem.filesystem_manager import FilesystemManager
 from src.filesystem.path_manager import PathManager
 from src.maps.factories.map_manager_factory import MapManagerFactory
 from src.maps.factories.place_manager_factory import PlaceManagerFactory
@@ -30,12 +29,9 @@ class CharacterGenerationGuidelinesProvider(BaseToolResponseProvider):
         places_descriptions_factory: PlacesDescriptionsProvider,
         place_manager_factory: PlaceManagerFactory,
         map_manager_factory: MapManagerFactory,
-        filesystem_manager: Optional[FilesystemManager] = None,
         path_manager: Optional[PathManager] = None,
     ):
-        super().__init__(
-            produce_tool_response_strategy_factory, filesystem_manager, path_manager
-        )
+        super().__init__(produce_tool_response_strategy_factory, path_manager)
 
         validate_non_empty_string(playthrough_name, "playthough_name")
 

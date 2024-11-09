@@ -3,7 +3,6 @@ from typing import Optional
 from pydantic import BaseModel
 
 from src.base.playthrough_manager import PlaythroughManager
-from src.filesystem.filesystem_manager import FilesystemManager
 from src.filesystem.path_manager import PathManager
 from src.movements.configs.travel_narration_factory_config import (
     TravelNarrationFactoryConfig,
@@ -27,12 +26,10 @@ class TravelNarrationFactory(BaseToolResponseProvider):
         factories_config: TravelNarrationFactoryFactoriesConfig,
         time_manager: Optional[TimeManager] = None,
         playthrough_manager: Optional[PlaythroughManager] = None,
-        filesystem_manager: Optional[FilesystemManager] = None,
         path_manager: Optional[PathManager] = None,
     ):
         super().__init__(
             factories_config.produce_tool_response_strategy_factory,
-            filesystem_manager,
             path_manager,
         )
 

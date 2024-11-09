@@ -62,8 +62,6 @@ def test_init_valid_arguments():
         spec=ProduceToolResponseStrategyFactory
     )
     templates_repository = Mock(spec=TemplatesRepository)
-    filesystem_manager = Mock(spec=FilesystemManager)
-
     provider = PlaceGenerationToolResponseProvider(
         father_place_identifier,
         template_type,
@@ -72,7 +70,6 @@ def test_init_valid_arguments():
             ProduceToolResponseStrategyFactory, produce_tool_response_strategy_factory
         ),
         templates_repository,
-        filesystem_manager,
     )
 
     assert provider._father_place_identifier == father_place_identifier
@@ -83,7 +80,6 @@ def test_init_valid_arguments():
         == produce_tool_response_strategy_factory
     )
     assert provider._templates_repository == templates_repository
-    assert provider._filesystem_manager == filesystem_manager
 
 
 def test_init_empty_father_place_identifier():
@@ -94,7 +90,6 @@ def test_init_empty_father_place_identifier():
         spec=ProduceToolResponseStrategyFactory
     )
     templates_repository = Mock(spec=TemplatesRepository)
-    filesystem_manager = Mock(spec=FilesystemManager)
 
     with pytest.raises(ValueError) as excinfo:
         PlaceGenerationToolResponseProvider(
@@ -106,7 +101,6 @@ def test_init_empty_father_place_identifier():
                 produce_tool_response_strategy_factory,
             ),
             templates_repository,
-            filesystem_manager,
         )
     assert "'father_place_identifier' must be a" in str(excinfo.value)
 
@@ -118,7 +112,6 @@ def test_get_template_type_data():
         spec=ProduceToolResponseStrategyFactory
     )
     templates_repository = Mock(spec=TemplatesRepository)
-    filesystem_manager = Mock(spec=FilesystemManager)
 
     # Test for each TemplateType
     for template_type in TemplateType:
@@ -131,7 +124,6 @@ def test_get_template_type_data():
                 produce_tool_response_strategy_factory,
             ),
             templates_repository,
-            filesystem_manager,
         )
         template_data = provider._get_template_type_data()
 
@@ -177,7 +169,6 @@ def test_get_prompt_file_valid():
         spec=ProduceToolResponseStrategyFactory
     )
     templates_repository = Mock(spec=TemplatesRepository)
-    filesystem_manager = Mock(spec=FilesystemManager)
 
     provider = PlaceGenerationToolResponseProvider(
         father_place_identifier,
@@ -187,7 +178,6 @@ def test_get_prompt_file_valid():
             ProduceToolResponseStrategyFactory, produce_tool_response_strategy_factory
         ),
         templates_repository,
-        filesystem_manager,
     )
 
     prompt_file = provider.get_prompt_file()
@@ -375,7 +365,6 @@ def test_generate_product():
         {father_place_identifier: {"description": "Desc", "categories": []}},
         {"Place1": {}, "Place2": {}},
     ]
-    filesystem_manager = Mock(spec=FilesystemManager)
 
     # Mock BaseToolResponseProvider methods
     with patch.object(
@@ -397,7 +386,6 @@ def test_generate_product():
                     produce_tool_response_strategy_factory,
                 ),
                 templates_repository,
-                filesystem_manager,
             )
 
             # Mock response_model

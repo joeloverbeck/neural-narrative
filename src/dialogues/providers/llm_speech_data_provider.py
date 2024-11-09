@@ -17,7 +17,6 @@ from src.dialogues.configs.llm_speech_data_provider_factories_config import (
 from src.dialogues.products.concrete_speech_data_product import (
     ConcreteSpeechDataProduct,
 )
-from src.filesystem.filesystem_manager import FilesystemManager
 from src.filesystem.path_manager import PathManager
 from src.prompting.providers.base_tool_response_provider import BaseToolResponseProvider
 from src.time.time_manager import TimeManager
@@ -32,12 +31,10 @@ class LlmSpeechDataProvider(BaseToolResponseProvider):
         factories_config: LlmSpeechDataProviderFactoriesConfig,
         format_character_dialogue_purpose_algorithm: FormatCharacterDialoguePurposeAlgorithm,
         time_manager: Optional[TimeManager] = None,
-        filesystem_manager: Optional[FilesystemManager] = None,
         path_manager: Optional[PathManager] = None,
     ):
         super().__init__(
             factories_config.produce_tool_response_strategy_factory,
-            filesystem_manager,
             path_manager,
         )
 

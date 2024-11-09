@@ -10,7 +10,6 @@ from src.base.constants import (
 from src.base.enums import TemplateType
 from src.base.products.dict_product import DictProduct
 from src.base.validators import validate_non_empty_string
-from src.filesystem.filesystem_manager import FilesystemManager
 from src.filesystem.path_manager import PathManager
 from src.maps.models.area import Area
 from src.maps.models.location import get_custom_location_class
@@ -39,12 +38,9 @@ class PlaceGenerationToolResponseProvider(
         notion: str,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         templates_repository: Optional[TemplatesRepository] = None,
-        filesystem_manager: Optional[FilesystemManager] = None,
         path_manager: Optional[PathManager] = None,
     ):
-        super().__init__(
-            produce_tool_response_strategy_factory, filesystem_manager, path_manager
-        )
+        super().__init__(produce_tool_response_strategy_factory, path_manager)
 
         validate_non_empty_string(father_place_identifier, "father_place_identifier")
 

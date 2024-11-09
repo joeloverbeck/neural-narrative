@@ -4,7 +4,6 @@ from typing import Optional, Dict
 from pydantic import BaseModel
 
 from src.characters.products.speech_patterns_product import SpeechPatternsProduct
-from src.filesystem.filesystem_manager import FilesystemManager
 from src.filesystem.path_manager import PathManager
 from src.prompting.abstracts.abstract_factories import (
     ProduceToolResponseStrategyFactory,
@@ -18,12 +17,9 @@ class SpeechPatternsProvider(BaseToolResponseProvider):
         self,
         base_character_data: Dict[str, str],
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
-        filesystem_manager: Optional[FilesystemManager] = None,
         path_manager: Optional[PathManager] = None,
     ):
-        super().__init__(
-            produce_tool_response_strategy_factory, filesystem_manager, path_manager
-        )
+        super().__init__(produce_tool_response_strategy_factory, path_manager)
 
         self._base_character_data = base_character_data
 

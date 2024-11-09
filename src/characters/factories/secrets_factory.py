@@ -5,7 +5,6 @@ from pydantic import BaseModel
 from src.characters.character import Character
 from src.characters.character_memories_manager import CharacterMemoriesManager
 from src.characters.products.secrets_product import SecretsProduct
-from src.filesystem.filesystem_manager import FilesystemManager
 from src.filesystem.path_manager import PathManager
 from src.maps.providers.places_descriptions_provider import PlacesDescriptionsProvider
 from src.prompting.abstracts.abstract_factories import (
@@ -22,13 +21,10 @@ class SecretsFactory(BaseToolResponseProvider):
         character_identifier: str,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         places_descriptions_factory: PlacesDescriptionsProvider,
-        filesystem_manager: Optional[FilesystemManager] = None,
         path_manager: Optional[PathManager] = None,
         character_memories: Optional[CharacterMemoriesManager] = None,
     ):
-        super().__init__(
-            produce_tool_response_strategy_factory, filesystem_manager, path_manager
-        )
+        super().__init__(produce_tool_response_strategy_factory, path_manager)
 
         self._playthrough_name = playthrough_name
         self._character_identifier = character_identifier
