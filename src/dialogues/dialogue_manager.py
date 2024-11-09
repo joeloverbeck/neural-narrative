@@ -1,12 +1,12 @@
-import os.path
 from typing import Optional, List
 
-from src.base.validators import validate_non_empty_string
 from src.characters.character import Character
 from src.characters.characters_manager import CharactersManager
 from src.dialogues.participants import Participants
+from src.dialogues.repositories.ongoing_dialogue_repository import (
+    OngoingDialogueRepository,
+)
 from src.dialogues.transcription import Transcription
-from src.filesystem.file_operations import read_json_file
 from src.filesystem.path_manager import PathManager
 
 
@@ -17,6 +17,7 @@ class DialogueManager:
         playthrough_name: str,
         characters_manager: Optional[CharactersManager] = None,
         path_manager: Optional[PathManager] = None,
+        ongoing_dialogue_repository: Optional[OngoingDialogueRepository] = None,
     ):
         self._playthrough_name = playthrough_name
 
@@ -24,6 +25,10 @@ class DialogueManager:
             self._playthrough_name
         )
         self._path_manager = path_manager or PathManager()
+        self._ongoing_dialogue_repository = (
+            ongoing_dialogue_repository
+            or OngoingDialogueRepository(self._playthrough_name)
+        )
 
     def gather_participants_data(
         self,
@@ -56,24 +61,9 @@ class DialogueManager:
             )
 
     def load_transcription(self) -> Transcription:
-        ongoing_dialogue_path = self._path_manager.get_ongoing_dialogue_path(
-            self._playthrough_name
-        )
-
         transcription = Transcription()
 
-        if os.path.exists(ongoing_dialogue_path):
-            ongoing_dialogue_file = read_json_file(ongoing_dialogue_path)
-
-            for speech_turn in ongoing_dialogue_file["transcription"]:
-                transcription.add_line(speech_turn)
+        for speech_turn in self._ongoing_dialogue_repository.get_transcription():
+            transcription.add_line(speech_turn)
 
         return transcription
-
-    def remove_ongoing_dialogue(self, playthrough_name: str):
-        validate_non_empty_string(playthrough_name, "playthrough_name")
-
-        file_path = self._path_manager.get_ongoing_dialogue_path(playthrough_name)
-
-        if os.path.exists(file_path):
-            os.remove(file_path)

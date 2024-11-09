@@ -10,6 +10,9 @@ from src.dialogues.composers.dialogue_turn_factory_composer import (
 from src.dialogues.composers.summarize_dialogue_command_factory_composer import (
     SummarizeDialogueCommandFactoryComposer,
 )
+from src.dialogues.factories.end_dialogue_command_factory import (
+    EndDialogueCommandFactory,
+)
 from src.dialogues.factories.store_dialogues_command_factory import (
     StoreDialoguesCommandFactory,
 )
@@ -39,14 +42,6 @@ class ProduceDialogueCommandComposer:
         self._player_input_factory = player_input_factory
 
     def compose_command(self) -> ProduceDialogueCommand:
-        summarize_dialogue_command_factory = SummarizeDialogueCommandFactoryComposer(
-            self._playthrough_name,
-            self._participants.get_participant_keys(),
-        ).compose_factory()
-
-        store_dialogues_command_factory = StoreDialoguesCommandFactory(
-            self._playthrough_name, self._participants
-        )
 
         store_temporary_dialogue_command_factory = StoreTemporaryDialogueCommandFactory(
             self._playthrough_name, self._participants, self._purpose
@@ -61,10 +56,24 @@ class ProduceDialogueCommandComposer:
             self._player_input_factory,
         ).compose()
 
+        summarize_dialogue_command_factory = SummarizeDialogueCommandFactoryComposer(
+            self._playthrough_name,
+            self._participants.get_participant_keys(),
+        ).compose_factory()
+
+        store_dialogues_command_factory = StoreDialoguesCommandFactory(
+            self._playthrough_name, self._participants
+        )
+
+        end_dialogue_command_factory = EndDialogueCommandFactory(
+            self._playthrough_name,
+            summarize_dialogue_command_factory,
+            store_dialogues_command_factory,
+        )
+
         return ProduceDialogueCommand(
             self._playthrough_name,
             dialogue_turn_factory,
-            summarize_dialogue_command_factory,
-            store_dialogues_command_factory,
             store_temporary_dialogue_command_factory,
+            end_dialogue_command_factory,
         )

@@ -2,12 +2,11 @@ import logging
 from typing import Optional
 
 from src.base.abstracts.command import Command
-from src.base.playthrough_manager import PlaythroughManager
 from src.dialogues.participants import Participants
+from src.dialogues.repositories.ongoing_dialogue_repository import (
+    OngoingDialogueRepository,
+)
 from src.dialogues.transcription import Transcription
-from src.filesystem.file_operations import write_json_file, read_json_file
-from src.filesystem.filesystem_manager import FilesystemManager
-from src.filesystem.path_manager import PathManager
 
 logger = logging.getLogger(__name__)
 
@@ -20,19 +19,14 @@ class StoreTemporaryDialogueCommand(Command):
         participants: Participants,
         purpose: Optional[str],
         transcription: Transcription,
-        filesystem_manager: Optional[FilesystemManager] = None,
-        path_manager: Optional[PathManager] = None,
-        playthrough_manager: Optional[PlaythroughManager] = None,
+        ongoing_dialogue_repository: Optional[OngoingDialogueRepository] = None,
     ):
-        self._playthrough_name = playthrough_name
         self._participants = participants
         self._purpose = purpose
         self._transcription = transcription
 
-        self._filesystem_manager = filesystem_manager or FilesystemManager()
-        self._path_manager = path_manager or PathManager()
-        self._playthrough_manager = playthrough_manager or PlaythroughManager(
-            self._playthrough_name
+        self._ongoing_dialogue_repository = (
+            ongoing_dialogue_repository or OngoingDialogueRepository(playthrough_name)
         )
 
     def execute(self) -> None:
@@ -42,30 +36,6 @@ class StoreTemporaryDialogueCommand(Command):
                 f"About to store the ongoing dialogue, there weren't enough participants. {self._participants.get()}"
             )
 
-        ongoing_dialogue_file_path = self._path_manager.get_ongoing_dialogue_path(
-            self._playthrough_name
-        )
-
-        # Ensure not to overwrite the messages if there's an existing dialogue.
-        if self._playthrough_manager.has_ongoing_dialogue():
-            ongoing_dialogue_file = read_json_file(ongoing_dialogue_file_path)
-        else:
-            ongoing_dialogue_file = {}
-
-        logger.info(
-            "Will store the temporary dialogue, including the following purpose: %s",
-            self._purpose,
-        )
-
-        ongoing_dialogue_file.update(
-            {
-                "participants": self._participants.get(),
-                "purpose": self._purpose,
-                "transcription": self._transcription.get(),
-            }
-        )
-
-        write_json_file(
-            ongoing_dialogue_file_path,
-            ongoing_dialogue_file,
-        )
+        self._ongoing_dialogue_repository.set_participants(self._participants.get())
+        self._ongoing_dialogue_repository.set_purpose(self._purpose)
+        self._ongoing_dialogue_repository.set_transcription(self._transcription.get())

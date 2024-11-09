@@ -38,6 +38,9 @@ from src.dialogues.observers.web_narration_observer import (
     WebNarrationObserver,
 )
 from src.dialogues.participants import Participants
+from src.dialogues.repositories.ongoing_dialogue_repository import (
+    OngoingDialogueRepository,
+)
 from src.dialogues.strategies.ambient_narration_for_dialogue_strategy import (
     AmbientNarrationForDialogueStrategy,
 )
@@ -56,8 +59,6 @@ from src.dialogues.strategies.narrative_beat_for_dialogue_strategy import (
 from src.dialogues.strategies.participants_identifiers_strategy import (
     ParticipantsIdentifiersStrategy,
 )
-from src.filesystem.file_operations import read_json_file, write_json_file
-from src.filesystem.path_manager import PathManager
 from src.prompting.composers.produce_tool_response_strategy_factory_composer import (
     ProduceToolResponseStrategyFactoryComposer,
 )
@@ -350,16 +351,9 @@ class DialogueService:
         ]
         session.modified = True  # Ensure session is saved
 
-        # It's also necessary to remove each participant from the ongoing dialogue.
-        ongoing_dialogue_path = PathManager().get_ongoing_dialogue_path(
-            playthrough_name
+        OngoingDialogueRepository(playthrough_name).remove_participants(
+            selected_characters
         )
-        ongoing_dialogue_file = read_json_file(ongoing_dialogue_path)
-
-        for participant in selected_characters:
-            ongoing_dialogue_file["participants"].pop(participant, None)
-
-        write_json_file(ongoing_dialogue_path, ongoing_dialogue_file)
 
         # Generate summaries for each removed character
         summarize_dialogue_command_factory = SummarizeDialogueCommandFactoryComposer(

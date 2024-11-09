@@ -18,15 +18,13 @@ from src.dialogues.algorithms.get_participant_characters_other_than_player_algor
 from src.dialogues.algorithms.load_data_from_ongoing_dialogue_algorithm import (
     LoadDataFromOngoingDialogueAlgorithm,
 )
-from src.dialogues.commands.add_messages_to_ongoing_dialogue_command import (
-    AddMessagesToOngoingDialogueCommand,
-)
 from src.dialogues.directors.handle_dialogue_state_director import (
     HandleDialogueStateDirector,
 )
 from src.dialogues.enums import HandleDialogueStateAlgorithmResultType
-from src.filesystem.file_operations import read_json_file
-from src.filesystem.path_manager import PathManager
+from src.dialogues.repositories.ongoing_dialogue_repository import (
+    OngoingDialogueRepository,
+)
 from src.maps.factories.map_manager_factory import MapManagerFactory
 from src.services.dialogue_service import DialogueService
 from src.services.web_service import WebService
@@ -115,14 +113,6 @@ class ChatView(MethodView):
         ).do_algorithm()
         WebService().format_image_urls_of_characters(available_characters)
 
-        if PlaythroughManager(playthrough_name).has_ongoing_dialogue():
-            ongoing_dialogue_file = read_json_file(
-                PathManager().get_ongoing_dialogue_path(playthrough_name)
-            )
-            dialogue = ongoing_dialogue_file.get("messages", [])
-        else:
-            dialogue = []
-
         # Get participant characters
         participant_characters = GetParticipantCharactersOtherThanPlayerAlgorithm(
             playthrough_name, dialogue_participants
@@ -131,7 +121,7 @@ class ChatView(MethodView):
 
         return render_template(
             "chat.html",
-            dialogue=dialogue,
+            dialogue=OngoingDialogueRepository(playthrough_name).get_messages(),
             current_time=TimeManager(playthrough_name).get_time_of_the_day(),
             current_place_template=MapManagerFactory(playthrough_name)
             .create_map_manager()
@@ -233,7 +223,7 @@ class ChatView(MethodView):
         )
 
         if not is_goodbye:
-            AddMessagesToOngoingDialogueCommand(playthrough_name, messages).execute()
+            OngoingDialogueRepository(playthrough_name).add_messages(messages)
 
         return messages, is_goodbye
 
@@ -245,9 +235,7 @@ class ChatView(MethodView):
             dialogue_participants, session.get("purpose", "")
         )
 
-        AddMessagesToOngoingDialogueCommand(
-            playthrough_name, [ambient_message]
-        ).execute()
+        OngoingDialogueRepository(playthrough_name).add_messages([ambient_message])
 
         return [ambient_message], False
 
@@ -261,7 +249,7 @@ class ChatView(MethodView):
             dialogue_participants, session.get("purpose", ""), event_input
         )
 
-        AddMessagesToOngoingDialogueCommand(playthrough_name, [event_message]).execute()
+        OngoingDialogueRepository(playthrough_name).add_messages([event_message])
 
         return [event_message], False
 
@@ -279,7 +267,7 @@ class ChatView(MethodView):
             dialogue_participants, session.get("purpose", ""), event_input
         )
 
-        AddMessagesToOngoingDialogueCommand(playthrough_name, [event_message]).execute()
+        OngoingDialogueRepository(playthrough_name).add_messages([event_message])
 
         return [event_message], False
 
@@ -297,7 +285,7 @@ class ChatView(MethodView):
             dialogue_participants, session.get("purpose", ""), action_input
         )
 
-        AddMessagesToOngoingDialogueCommand(playthrough_name, [event_message]).execute()
+        OngoingDialogueRepository(playthrough_name).add_messages([event_message])
 
         return [event_message], False
 
@@ -309,9 +297,9 @@ class ChatView(MethodView):
             dialogue_participants, session.get("purpose", "")
         )
 
-        AddMessagesToOngoingDialogueCommand(
-            playthrough_name, [narrative_beat_message]
-        ).execute()
+        OngoingDialogueRepository(playthrough_name).add_messages(
+            [narrative_beat_message]
+        )
 
         return [narrative_beat_message], False
 

@@ -1,4 +1,3 @@
-import os
 from typing import Optional
 
 from src.base.abstracts.command import Command
@@ -9,10 +8,10 @@ from src.dialogues.factories.load_data_from_ongoing_dialogue_command_factory imp
     LoadDataFromOngoingDialogueCommandFactory,
 )
 from src.dialogues.participants import Participants
+from src.dialogues.repositories.ongoing_dialogue_repository import (
+    OngoingDialogueRepository,
+)
 from src.dialogues.transcription import Transcription
-from src.filesystem.file_operations import read_json_file
-from src.filesystem.filesystem_manager import FilesystemManager
-from src.filesystem.path_manager import PathManager
 
 
 class LoadOrInitializeDialogueDataCommand(Command):
@@ -25,13 +24,12 @@ class LoadOrInitializeDialogueDataCommand(Command):
         transcription: Transcription,
         load_data_from_ongoing_dialogue_command_factory: LoadDataFromOngoingDialogueCommandFactory,
         choose_participants_strategy: ChooseParticipantsStrategy,
-        filesystem_manager: Optional[FilesystemManager] = None,
         dialogue_manager: Optional[DialogueManager] = None,
-        path_manager: Optional[PathManager] = None,
+        ongoing_dialogue_repository: Optional[OngoingDialogueRepository] = None,
     ):
         validate_non_empty_string(playthrough_name, "playthrough_name")
+        validate_non_empty_string(player_identifier, "player_identifier")
 
-        self._playthrough_name = playthrough_name
         self._player_identifier = player_identifier
         self._participants = participants
         self._transcription = transcription
@@ -40,20 +38,13 @@ class LoadOrInitializeDialogueDataCommand(Command):
         )
         self._choose_participants_strategy = choose_participants_strategy
 
-        self._filesystem_manager = filesystem_manager or FilesystemManager()
-        self._dialogue_manager = dialogue_manager or DialogueManager(
-            self._playthrough_name
+        self._dialogue_manager = dialogue_manager or DialogueManager(playthrough_name)
+        self._ongoing_dialogue_repository = (
+            ongoing_dialogue_repository or OngoingDialogueRepository(playthrough_name)
         )
-        self._path_manager = path_manager or PathManager()
 
     def execute(self) -> None:
-        ongoing_dialogue_path = self._path_manager.get_ongoing_dialogue_path(
-            self._playthrough_name
-        )
-
-        if os.path.exists(ongoing_dialogue_path) and "participants" in read_json_file(
-            ongoing_dialogue_path
-        ):
+        if self._ongoing_dialogue_repository.has_participants():
             self._load_data_from_ongoing_dialogue_command_factory.create_load_data_from_ongoing_dialogue_command(
                 self._transcription
             ).execute()
