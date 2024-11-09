@@ -7,7 +7,7 @@ from src.base.validators import validate_non_empty_string
 from src.characters.products.character_generation_guidelines_product import (
     CharacterGenerationGuidelinesProduct,
 )
-from src.filesystem.file_operations import read_file
+from src.filesystem.file_operations import read_file, create_empty_file_if_not_exists
 from src.filesystem.path_manager import PathManager
 from src.maps.factories.map_manager_factory import MapManagerFactory
 from src.maps.factories.place_manager_factory import PlaceManagerFactory
@@ -41,9 +41,9 @@ class CharacterGenerationGuidelinesProvider(BaseToolResponseProvider):
         self._map_manager_factory = map_manager_factory
 
     def _format_known_facts(self) -> str:
-        facts_file = read_file(
-            self._path_manager.get_facts_path(self._playthrough_name)
-        )
+        facts_file_path = self._path_manager.get_facts_path(self._playthrough_name)
+        create_empty_file_if_not_exists(facts_file_path)
+        facts_file = read_file(facts_file_path)
 
         known_facts = ""
         if facts_file:
