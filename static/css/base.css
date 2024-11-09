@@ -41,6 +41,10 @@ h1.page-title {
     animation: fadeIn 2s ease-in-out;
 }
 
+.flashes {
+    display:none;
+}
+
 .current-time,
 .current-place {
     font-size: 16px;

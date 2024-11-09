@@ -3,6 +3,7 @@ from typing import Optional
 
 from pydantic import BaseModel
 
+from src.base.validators import validate_non_empty_string
 from src.characters.products.character_generation_guidelines_product import (
     CharacterGenerationGuidelinesProduct,
 )
@@ -24,6 +25,7 @@ class CharacterGenerationGuidelinesProvider(BaseToolResponseProvider):
 
     def __init__(
         self,
+        playthrough_name: str,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         places_descriptions_factory: PlacesDescriptionsProvider,
         place_manager_factory: PlaceManagerFactory,
@@ -34,16 +36,32 @@ class CharacterGenerationGuidelinesProvider(BaseToolResponseProvider):
         super().__init__(
             produce_tool_response_strategy_factory, filesystem_manager, path_manager
         )
+
+        validate_non_empty_string(playthrough_name, "playthough_name")
+
+        self._playthrough_name = playthrough_name
         self._places_descriptions_factory = places_descriptions_factory
         self._place_manager_factory = place_manager_factory
         self._map_manager_factory = map_manager_factory
+
+    def _format_facts_known(self) -> str:
+        facts_file = read_file(
+            self._path_manager.get_facts_path(self._playthrough_name)
+        )
+
+        facts_known = ""
+        if facts_file:
+            facts_known = "Facts Known: " + facts_file
+
+        return facts_known
 
     def get_prompt_file(self) -> str:
         return self._path_manager.get_character_generation_guidelines_prompt_path()
 
     def get_prompt_kwargs(self) -> dict:
         prompt_data = {
-            "places_descriptions": self._places_descriptions_factory.get_information()
+            "places_descriptions": self._places_descriptions_factory.get_information(),
+            "facts_known": self._format_facts_known(),
         }
         place_categories = self._place_manager_factory.create_place_manager().get_place_categories(
             self._map_manager_factory.create_map_manager().get_current_place_template(),

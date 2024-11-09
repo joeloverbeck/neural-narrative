@@ -13,11 +13,13 @@ class CharacterGenerationGuidelinesProviderFactory:
 
     def __init__(
         self,
+        playthrough_name: str,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         places_descriptions_provider: PlacesDescriptionsProvider,
         place_manager_factory: PlaceManagerFactory,
         map_manager_factory: MapManagerFactory,
     ):
+        self._playthrough_name = playthrough_name
         self._produce_tool_response_strategy_factory = (
             produce_tool_response_strategy_factory
         )
@@ -27,6 +29,7 @@ class CharacterGenerationGuidelinesProviderFactory:
 
     def create_provider(self) -> CharacterGenerationGuidelinesProvider:
         return CharacterGenerationGuidelinesProvider(
+            self._playthrough_name,
             self._produce_tool_response_strategy_factory,
             self._places_descriptions_provider,
             self._place_manager_factory,

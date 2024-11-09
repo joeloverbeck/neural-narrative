@@ -64,6 +64,7 @@ class CharacterGenerationGuidelinesProviderFactoryComposer:
         place_manager_factory = PlaceManagerFactory(self._playthrough_name)
 
         return CharacterGenerationGuidelinesProviderFactory(
+            self._playthrough_name,
             produce_tool_response_strategy_factory,
             places_description_provider,
             place_manager_factory,
