@@ -1,4 +1,4 @@
-Using the following detailed descriptions, generate a complex and intriguing antagonist profile for the story. The antagonist profile should include:
+Using the following detailed descriptions of places, characters, and their memories, generate a complex and intriguing antagonist profile for the story. The antagonist profile should include:
 
 - Choose gender, as well as a species among those possibly by the setting.
 - A compelling backstory that explains their motivations and goals.

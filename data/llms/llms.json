@@ -52,6 +52,15 @@
       "temperature": 1.0,
       "top_p": 1.0,
       "supports_tools": true
+    },
+    "eva-qwen-2.5-32b": {
+      "name": "eva-unit-01/eva-qwen-2.5-32b",
+      "description": "Slow as magnum, but worse quality, and causes validation errors.",
+      "temperature": 1.0,
+      "top_p": 1.0,
+      "context": 32000,
+      "supports_tools": false,
+      "price": "0.5/0.5"
     }
   },
   "story_universe_generation": "hermes_405b",
@@ -62,18 +71,18 @@
   "base_character_data_generation": "magnum_72b",
   "speech_patterns_generation": "claude_3.5_sonnet",
   "character_description": "hermes_405b",
-  "self-reflection": "claude_3.5_sonnet",
+  "self-reflection": "magnum_72b",
   "worldview": "magnum_72b",
   "character_connection": "magnum_72b",
   "secrets": "magnum_72b",
-  "concept_generation": "hermes_405b",
-  "ambient_narration": "claude_3.5_sonnet",
-  "narrative_beat": "claude_3.5_sonnet",
-  "grow_event": "claude_3.5_sonnet",
+  "concept_generation": "magnum_72b",
+  "ambient_narration": "magnum_72b",
+  "narrative_beat": "magnum_72b",
+  "grow_event": "magnum_72b",
   "confrontation_round": "hermes_405b",
-  "speech_turn_choice": "hermes_405b",
-  "speech_turn": "claude_3.5_sonnet",
-  "dialogue_summary": "claude_3.5_sonnet",
+  "speech_turn_choice": "magnum_72b",
+  "speech_turn": "magnum_72b",
+  "dialogue_summary": "magnum_72b",
   "action_resolution": "hermes_405b",
   "writers_room": "nemotron_70b"
 }

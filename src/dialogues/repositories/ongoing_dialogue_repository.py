@@ -128,7 +128,7 @@ class OngoingDialogueRepository:
 
     def get_transcription(self) -> List[str]:
         return self._load_ongoing_dialogue_data().get(
-            self.OngoingDialogueEntryType.TRANSCRIPTION.value
+            self.OngoingDialogueEntryType.TRANSCRIPTION.value, []
         )
 
     def set_transcription(self, transcription: List[str]) -> None:

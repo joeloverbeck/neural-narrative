@@ -1,4 +1,4 @@
-Using the following detailed descriptions, generate one magnificent plot blueprint for a full story. The plot blueprint should be a concise summary that includes:
+Using the following detailed descriptions of places, characters, and their memories, generate one magnificent plot blueprint for a full story. The plot blueprint should be a concise summary that includes:
 - A compelling plot centered around the player character.
 - Integration of the world, region, area, and location details to create a rich setting.
 - A central conflict or challenge that the protagonist must face.
