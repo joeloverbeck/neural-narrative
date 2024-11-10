@@ -8,3 +8,4 @@ class ConceptType(Enum):
     PLOT_BLUEPRINTS = "plot_blueprints"
     PLOT_TWISTS = "plot_twists"
     SCENARIOS = "scenarios"
+    LORE_AND_LEGENDS = "lore_and_legends"

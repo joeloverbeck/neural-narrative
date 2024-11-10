@@ -8,7 +8,7 @@
     "NORMAL VOLUME",
     "SMOOTH",
     "FORMAL",
-    "CHARMING",
+    "CHARMING/WITTY",
     "NO SPECIAL EFFECTS"
   ],
   "npcmlucasmiller": [
@@ -152,7 +152,7 @@
     "NORMAL VOLUME",
     "GRAVELLY/RASPY",
     "FORMAL",
-    "CHARMING",
+    "CHARMING/WITTY",
     "NO SPECIAL EFFECTS"
   ],
   "florentius": [
@@ -356,7 +356,7 @@
     "SMOOTH",
     "WARM",
     "FORMAL",
-    "CHARMING",
+    "CHARMING/WITTY",
     "NO SPECIAL EFFECTS"
   ],
   "molagbal": [
@@ -464,7 +464,7 @@
     "SMOOTH",
     "NEUTRAL",
     "INTENSE/DRAMATIC",
-    "CHARMING",
+    "CHARMING/WITTY",
     "NO SPECIAL EFFECTS"
   ],
   "npcmhonestdan": [
@@ -488,7 +488,7 @@
     "SMOOTH",
     "WARM",
     "CASUAL",
-    "CHARMING",
+    "CHARMING/WITTY",
     "NO SPECIAL EFFECTS"
   ],
   "npcffahrenheit": [
@@ -680,7 +680,7 @@
     "GRAVELLY/RASPY",
     "NEUTRAL",
     "FORMAL",
-    "CHARMING",
+    "CHARMING/WITTY",
     "NO SPECIAL EFFECTS"
   ],
   "npcmdavies": [
@@ -764,7 +764,7 @@
     "WHISPERY/AIRY",
     "WARM",
     "MELODIC",
-    "CHARMING",
+    "CHARMING/WITTY",
     "NO SPECIAL EFFECTS"
   ],
   "garan": [
@@ -848,7 +848,7 @@
     "GRAVELLY/RASPY",
     "NEUTRAL",
     "FORMAL",
-    "CHARMING",
+    "CHARMING/WITTY",
     "NO SPECIAL EFFECTS"
   ],
   "npcfellieperkins": [
@@ -980,7 +980,7 @@
     "NASAL",
     "WARM",
     "INTENSE/DRAMATIC",
-    "CHARMING",
+    "CHARMING/WITTY",
     "NO SPECIAL EFFECTS"
   ],
   "malecoward": [
@@ -1412,7 +1412,7 @@
     "GRAVELLY/RASPY",
     "NEUTRAL",
     "FORMAL",
-    "CHARMING",
+    "CHARMING/WITTY",
     "NO SPECIAL EFFECTS"
   ],
   "npcmbull": [

@@ -21,17 +21,27 @@ form input[type="submit"] {
 
 /* Adjust margin for content */
 .content .plot-blueprints-list,
-.content .antagonists-list {
+.content .antagonists-list,
+.content .lore-and-legends-list {
     margin-top: 15px;
 }
 
-.plot-blueprints-list, .antagonist-list, .scenarios-list, .dilemmas-list, .goals-list, .plot-twists-list {
+.plot-blueprints-list,
+.antagonist-list,
+.scenarios-list,
+.dilemmas-list,
+.goals-list,
+.plot-twists-list,
+.lore-and-legends-list {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     margin-bottom: 20px;
 }
-.plot-blueprint-form, .antagonist-form {
+
+.plot-blueprint-form,
+.antagonist-form,
+.lore-or-legend-form {
     display: inline-block;
     margin: 0;
     padding: 0;
@@ -40,7 +50,9 @@ form input[type="submit"] {
 }
 
 /* Plot Blueprint item styling */
-.plot-blueprint-item, .antagonist-item {
+.plot-blueprint-item,
+.antagonist-item,
+.lore-or-legend-item {
     background-color: #fff;
     padding: 20px;
     margin: 15px;
@@ -51,7 +63,9 @@ form input[type="submit"] {
     width: 90%;
 }
 
-.plot-blueprint-item:hover, .antagonist-item:hover {
+.plot-blueprint-item:hover,
+.antagonist-item:hover,
+.lore-or-legend-item:hover {
     background-color: #f9f9f9;
 }
 

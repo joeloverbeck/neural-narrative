@@ -240,6 +240,55 @@ Story Hub
         </div>
     </div>
 
+    <!-- Lore and Legends Section -->
+    <div class="collapsible-section">
+        <button class="collapsible">
+            <i class="fas fa-dragon"></i> Lore and Legends
+        </button>
+        <div class="content">
+            {% if lore_and_legends %}
+            <!-- Lore and Legends list -->
+            <div class="lore-and-legends-list">
+                {% for lore_or_legend in lore_and_legends %}
+                <div class="lore-or-legend-item" onclick="openModal({{ loop.index0 }}, 'lore_or_legend')"
+                     data-index="{{ loop.index0 }}">
+                    <h3>Lore or Legend {{ loop.index }}</h3>
+                    <p>{{ lore_or_legend[:150] }}...</p>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Modals -->
+            {% for lore_or_legend in lore_and_legends %}
+            <div id="modal-lore_or_legend-{{ loop.index0 }}" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeModal({{ loop.index0 }}, 'lore_or_legend')">&times;</span>
+                    <h2>Lore or Legend {{ loop.index }}</h2>
+                    <p>{{ lore_or_legend }}</p>
+                    <form action="{{ url_for('story-hub') }}" method="post">
+                        <input type="hidden" name="item_index" value="{{ loop.index0 }}">
+                        <input type="hidden" name="submit_action" value="delete_lore_or_legend">
+                        <button type="submit" class="delete-button">
+                            <i class="fas fa-trash-alt"></i> Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <p>No lore and legends generated yet.</p>
+            {% endif %}
+
+            <form method="post" class="ajax-form" action="{{ url_for('story-hub') }}"
+                  data-success-handler="generateLoreAndLegendsSuccess">
+                <input type="hidden" name="submit_action" value="generate_lore_and_legends">
+                <button type="submit" class="action-button" id="generate-lore-and-legends-button">
+                    <i class="fas fa-dragon"></i> Generate Lore and Legends
+                </button>
+            </form>
+        </div>
+    </div>
+
     <!-- Facts Section -->
     <div class="collapsible-section">
         <button class="collapsible">

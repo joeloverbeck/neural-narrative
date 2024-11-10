@@ -17,6 +17,9 @@ from src.concepts.algorithms.generate_dilemmas_algorithm import (
     GenerateDilemmasAlgorithm,
 )
 from src.concepts.algorithms.generate_goals_algorithm import GenerateGoalsAlgorithm
+from src.concepts.algorithms.generate_lore_and_legends_algorithm import (
+    GenerateLoreAndLegendsAlgorithm,
+)
 from src.concepts.algorithms.generate_plot_blueprints_algorithm import (
     GeneratePlotBlueprintsAlgorithm,
 )
@@ -35,6 +38,7 @@ from src.concepts.factories.dilemmas_factory import (
     DilemmasFactory,
 )
 from src.concepts.factories.goals_factory import GoalsFactory
+from src.concepts.factories.lore_and_legends_factory import LoreAndLegendsFactory
 from src.concepts.factories.plot_blueprints_factory import PlotBlueprintsFactory
 from src.concepts.factories.plot_twists_factory import PlotTwistsFactory
 from src.concepts.factories.scenarios_factory import (
@@ -183,6 +187,15 @@ class StoryHubView(MethodView):
                         produce_tool_response_strategy_factory,
                     ],
                 },
+                ConceptType.LORE_AND_LEGENDS.value: {
+                    "factory_class": LoreAndLegendsFactory,
+                    "algorithm_class": GenerateLoreAndLegendsAlgorithm,
+                    "response_key": ConceptType.LORE_AND_LEGENDS.value,
+                    "factory_args": [
+                        get_concepts_prompt_data_algorithm,
+                        produce_tool_response_strategy_factory,
+                    ],
+                },
             }
             if action_name in generate_action_mapping:
                 mapping = generate_action_mapping[action_name]
@@ -224,6 +237,7 @@ class StoryHubView(MethodView):
                 "plot_blueprint": ConceptType.PLOT_BLUEPRINTS.value,
                 "dilemma": ConceptType.DILEMMAS.value,
                 "goal": ConceptType.GOALS.value,
+                "lore_or_legend": ConceptType.LORE_AND_LEGENDS.value,
             }
 
             key = key_correlation[action_name.lower()]

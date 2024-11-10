@@ -266,6 +266,28 @@ function generatePlotTwistsSuccess(data, context) {
     });
 }
 
+function generateLoreAndLegendsSuccess(data, context) {
+    generateItemsSuccess(data, context, {
+        defaultSuccessMessage: 'Lore and legends generated successfully.',
+        itemsKey: 'lore_and_legends',
+        listSelector: '.lore-and-legends-list',
+        listClass: 'lore-and-legends-list',
+        itemSelector: '.lore-and-legends-list .lore-or-legend-item',
+        itemClass: 'lore-or-legend',
+        actionName: 'lore_or_legend',
+        createItemElement: function(item, index) {
+            return createItemElement(item, index, 'Lore or Legend', 'lore-or-legend-item', 'lore_or_legend');
+        },
+        initItemClickEvents: initItemClickEvents,
+        afterItemAdded: function(item, itemIndex, context, options) {
+            // Create and append the modal
+            const contentDiv = context.form.closest('.content');
+            const modal = createModal(item, itemIndex, 'Lore or Legend', 'lore_or_legend');
+            contentDiv.appendChild(modal);
+        }
+    });
+}
+
 function initItemClickEvents(itemClass, actionName) {
     const items = document.querySelectorAll(`.${itemClass}`);
 

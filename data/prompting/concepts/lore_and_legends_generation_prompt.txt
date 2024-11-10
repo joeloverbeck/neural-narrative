@@ -1,0 +1,20 @@
+Using the following detailed descriptions of places, as well as the known facts if present, generate one fascinating piece of world lore or legends. It should include:
+
+- A brief account of the myth, legend, or historical event, incorporating diverse types such as creation myths, heroic legends, cautionary tales, mystical events, or ancient conflicts.
+- Its cultural significance and how it influences the current world, highlighting symbolism, recurring themes, unique cultural elements, and emotional or moral impacts.
+- Potential connections or implications for the player character, including character or entity integration, interconnectedness with places, foreshadowing future events, and potential plot hooks.
+
+Additionally, ensure the piece of lore:
+
+- Enriches the setting and offers storytelling opportunities.
+- Includes vivid descriptive and sensory details to make the lore immersive.
+- Does not repeat any provided information verbatim.
+- Presents the lore piece directly, without numbering or preamble.
+
+Provided Elements:
+{places_descriptions}
+{known_facts}
+
+Important:
+- Encourage the inclusion of mythical figures, historical personalities, and distinctive artifacts or traditions.
+- Ensure the lore piece contains elements that can lead to future quests, conflicts, or character development opportunities.

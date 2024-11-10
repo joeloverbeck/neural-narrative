@@ -206,6 +206,10 @@ class PathManager:
         return cls.CONCEPTS_DIR / "antagonists_generation_prompt.txt"
 
     @classmethod
+    def get_lore_and_legends_generation_prompt_path(cls) -> Path:
+        return cls.CONCEPTS_DIR / "lore_and_legends_generation_prompt.txt"
+
+    @classmethod
     def get_dilemmas_generation_prompt_path(cls) -> Path:
         return cls.CONCEPTS_DIR / "dilemmas_generation_prompt.txt"
 

@@ -42,3 +42,4 @@ Situations to Inspire the Utterances (feel free to be creative):
 Dialogue Formatting:
 - Do not include quotation marks around the character's speech.
 - Keep the tone informal and authentic.
+- Do not preface your response: just output the JSON code.
