@@ -1,12 +1,10 @@
 from pathlib import Path
 from typing import Optional
 
-from src.characters.factories.relevant_characters_information_factory import (
-    RelevantCharactersInformationFactory,
+from src.concepts.algorithms.get_concepts_prompt_data_algorithm import (
+    GetConceptsPromptDataAlgorithm,
 )
-from src.concepts.concepts_manager import ConceptsManager
 from src.filesystem.path_manager import PathManager
-from src.maps.providers.places_descriptions_provider import PlacesDescriptionsProvider
 from src.prompting.abstracts.abstract_factories import (
     ProduceToolResponseStrategyFactory,
 )
@@ -17,21 +15,15 @@ class BaseConceptFactory(BaseToolResponseProvider):
 
     def __init__(
         self,
-        playthrough_name: str,
+        get_concepts_prompt_data_algorithm: GetConceptsPromptDataAlgorithm,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
-        places_descriptions_factory: PlacesDescriptionsProvider,
-        player_and_followers_information_factory: RelevantCharactersInformationFactory,
         prompt_file: Path,
         user_content: str,
         path_manager: Optional[PathManager] = None,
     ):
         super().__init__(produce_tool_response_strategy_factory, path_manager)
 
-        self._playthrough_name = playthrough_name
-        self._places_descriptions_factory = places_descriptions_factory
-        self._player_and_followers_information_factory = (
-            player_and_followers_information_factory
-        )
+        self._get_concepts_prompt_data_algorithm = get_concepts_prompt_data_algorithm
         self._prompt_file = prompt_file
         self._user_content = user_content
 
@@ -42,7 +34,4 @@ class BaseConceptFactory(BaseToolResponseProvider):
         return self._prompt_file
 
     def get_prompt_kwargs(self) -> dict:
-        return ConceptsManager(self._playthrough_name).get_prompt_data(
-            self._places_descriptions_factory,
-            self._player_and_followers_information_factory,
-        )
+        return self._get_concepts_prompt_data_algorithm.do_algorithm()

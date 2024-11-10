@@ -5,6 +5,7 @@ Incorporate elements of the surroundings and character personalities as appropri
 Avoid repeating elements of the setting description, previous narration, or dialogue verbatim; use them as inspiration to create something original.
 {local_information}
 {player_and_followers_information}
+{known_facts}
 ----
 Ongoing Dialogue:
 {transcription}

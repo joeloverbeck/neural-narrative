@@ -10,7 +10,6 @@ Each plot twist should:
 Provided Elements:
 {places_descriptions}
 {player_and_followers_information}
-Known Facts:
 {known_facts}
 Important:
 - You are prohibited from repeating verbatim any of the information provided.

@@ -4,6 +4,9 @@ from src.base.validators import validate_non_empty_string
 from src.characters.factories.character_information_provider_factory import (
     CharacterInformationProviderFactory,
 )
+from src.concepts.algorithms.format_known_facts_algorithm import (
+    FormatKnownFactsAlgorithm,
+)
 from src.dialogues.factories.format_character_dialogue_purpose_algorithm_factory import (
     FormatCharacterDialoguePurposeAlgorithmFactory,
 )
@@ -50,11 +53,14 @@ class LlmSpeechDataProviderFactoryComposer:
             FormatCharacterDialoguePurposeAlgorithmFactory(self._playthrough_name)
         )
 
+        format_known_facts_algorithm = FormatKnownFactsAlgorithm(self._playthrough_name)
+
         return LlmSpeechDataProviderFactory(
             self._playthrough_name,
             self._participants,
             self._purpose,
             format_character_dialogue_purpose_algorithm_factory,
+            format_known_facts_algorithm,
             produce_tool_response_strategy_factory,
             places_descriptions_provider,
             character_information_provider_factory,

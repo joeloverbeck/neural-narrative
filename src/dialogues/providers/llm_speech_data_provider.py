@@ -5,8 +5,8 @@ from typing import Optional
 from pydantic import BaseModel
 
 from src.base.validators import validate_non_empty_string
-from src.dialogues.algorithms.format_character_dialogue_purpose_algorithm import (
-    FormatCharacterDialoguePurposeAlgorithm,
+from src.dialogues.configs.llm_speech_data_provider_algorithms_config import (
+    LlmSpeechDataProviderAlgorithmsConfig,
 )
 from src.dialogues.configs.llm_speech_data_provider_config import (
     LlmSpeechDataProviderConfig,
@@ -29,7 +29,7 @@ class LlmSpeechDataProvider(BaseToolResponseProvider):
         self,
         config: LlmSpeechDataProviderConfig,
         factories_config: LlmSpeechDataProviderFactoriesConfig,
-        format_character_dialogue_purpose_algorithm: FormatCharacterDialoguePurposeAlgorithm,
+        algorithms_config: LlmSpeechDataProviderAlgorithmsConfig,
         time_manager: Optional[TimeManager] = None,
         path_manager: Optional[PathManager] = None,
     ):
@@ -44,9 +44,7 @@ class LlmSpeechDataProvider(BaseToolResponseProvider):
 
         self._config = config
         self._factories_config = factories_config
-        self._format_character_dialogue_purpose_algorithm = (
-            format_character_dialogue_purpose_algorithm
-        )
+        self._algorithms_config = algorithms_config
 
         self._time_manager = time_manager or TimeManager(self._config.playthrough_name)
 
@@ -91,7 +89,8 @@ class LlmSpeechDataProvider(BaseToolResponseProvider):
             "character_information": self._factories_config.character_information_provider_factory.create_provider(
                 self._config.speaker_identifier
             ).get_information(),
+            "known_facts": self._algorithms_config.format_known_facts_algorithm.do_algorithm(),
             "dialogue_purpose": self._format_dialogue_purpose(),
-            "character_dialogue_purpose": self._format_character_dialogue_purpose_algorithm.do_algorithm(),
+            "character_dialogue_purpose": self._algorithms_config.format_character_dialogue_purpose_algorithm.do_algorithm(),
             "dialogue": self._config.transcription.get_prettified_transcription(),
         }

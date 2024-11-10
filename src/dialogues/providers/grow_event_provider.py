@@ -9,6 +9,9 @@ from src.base.validators import validate_non_empty_string
 from src.characters.factories.relevant_characters_information_factory import (
     RelevantCharactersInformationFactory,
 )
+from src.concepts.algorithms.format_known_facts_algorithm import (
+    FormatKnownFactsAlgorithm,
+)
 from src.dialogues.transcription import Transcription
 from src.filesystem.path_manager import PathManager
 from src.maps.factories.local_information_factory import LocalInformationFactory
@@ -25,6 +28,7 @@ class GrowEventProvider(BaseToolResponseProvider):
         self,
         suggested_event: str,
         transcription: Transcription,
+        format_known_facts_algorithm: FormatKnownFactsAlgorithm,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         local_information_factory: LocalInformationFactory,
         relevant_characters_information_factory: RelevantCharactersInformationFactory,
@@ -36,6 +40,7 @@ class GrowEventProvider(BaseToolResponseProvider):
 
         self._suggested_event = suggested_event
         self._transcription = transcription
+        self._format_known_facts_algorithm = format_known_facts_algorithm
         self._local_information_factory = local_information_factory
         self._relevant_characters_information_factory = (
             relevant_characters_information_factory
@@ -60,5 +65,6 @@ class GrowEventProvider(BaseToolResponseProvider):
         return {
             "local_information": self._local_information_factory.get_information(),
             "relevant_characters_information": self._relevant_characters_information_factory.get_information(),
+            "known_facts": self._format_known_facts_algorithm.do_algorithm(),
             "transcription": self._transcription.get_prettified_transcription(),
         }

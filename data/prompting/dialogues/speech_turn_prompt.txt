@@ -22,6 +22,7 @@ Be Engaging and Creative:
 - Introduce interesting perspectives or insights that align with {name}'s character.
 Maintain Roleplay Integrity:
 - Avoid sounding like a helpful assistant.
+{known_facts}
 {dialogue_purpose}
 {character_dialogue_purpose}
 ----

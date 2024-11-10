@@ -2,6 +2,9 @@ from src.base.validators import validate_non_empty_string
 from src.characters.factories.relevant_characters_information_factory import (
     RelevantCharactersInformationFactory,
 )
+from src.concepts.algorithms.format_known_facts_algorithm import (
+    FormatKnownFactsAlgorithm,
+)
 from src.dialogues.providers.confrontation_round_provider import (
     ConfrontationRoundProvider,
 )
@@ -17,6 +20,7 @@ class ConfrontationRoundProviderFactory:
         self,
         playthrough_name: str,
         confrontation_context: str,
+        format_known_facts_algorithm: FormatKnownFactsAlgorithm,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         local_information_factory: LocalInformationFactory,
         relevant_characters_information_factory: RelevantCharactersInformationFactory,
@@ -26,6 +30,7 @@ class ConfrontationRoundProviderFactory:
 
         self._playthrough_name = playthrough_name
         self._confrontation_context = confrontation_context
+        self._format_known_facts_algorithm = format_known_facts_algorithm
         self._produce_tool_response_strategy_factory = (
             produce_tool_response_strategy_factory
         )
@@ -41,6 +46,7 @@ class ConfrontationRoundProviderFactory:
             self._playthrough_name,
             self._confrontation_context,
             transcription,
+            self._format_known_facts_algorithm,
             self._produce_tool_response_strategy_factory,
             self._local_information_factory,
             self._relevant_characters_information_factory,

@@ -17,7 +17,6 @@ Using the following detailed descriptions of places, characters, and their memor
 Provided Elements:
 {places_descriptions}
 {player_and_followers_information}
-Known Facts:
 {known_facts}
 
 Important:

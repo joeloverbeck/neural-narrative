@@ -9,7 +9,9 @@ from src.base.validators import validate_non_empty_string
 from src.characters.factories.relevant_characters_information_factory import (
     RelevantCharactersInformationFactory,
 )
-from src.concepts.repositories.facts_repository import FactsRepository
+from src.concepts.algorithms.format_known_facts_algorithm import (
+    FormatKnownFactsAlgorithm,
+)
 from src.dialogues.transcription import Transcription
 from src.filesystem.path_manager import PathManager
 from src.maps.factories.local_information_factory import LocalInformationFactory
@@ -28,12 +30,12 @@ class ConfrontationRoundProvider(BaseToolResponseProvider):
         playthrough_name: str,
         confrontation_context: str,
         transcription: Transcription,
+        format_known_facts_algorithm: FormatKnownFactsAlgorithm,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         local_information_factory: LocalInformationFactory,
         relevant_characters_information_factory: RelevantCharactersInformationFactory,
         path_manager: Optional[PathManager] = None,
         time_manager: Optional[TimeManager] = None,
-        facts_repository: Optional[FactsRepository] = None,
     ):
         super().__init__(produce_tool_response_strategy_factory, path_manager)
 
@@ -42,13 +44,13 @@ class ConfrontationRoundProvider(BaseToolResponseProvider):
 
         self._confrontation_context = confrontation_context
         self._transcription = transcription
+        self._format_known_facts_algorithm = format_known_facts_algorithm
         self._local_information_factory = local_information_factory
         self._relevant_characters_information_factory = (
             relevant_characters_information_factory
         )
 
         self._time_manager = time_manager or TimeManager(playthrough_name)
-        self._facts_repository = facts_repository or FactsRepository(playthrough_name)
 
     def get_prompt_file(self) -> Path:
         return self._path_manager.get_confrontation_round_generation_prompt_path()
@@ -70,7 +72,7 @@ class ConfrontationRoundProvider(BaseToolResponseProvider):
             "hour": self._time_manager.get_hour(),
             "time_of_day": self._time_manager.get_time_of_the_day(),
             "local_information": self._local_information_factory.get_information(),
-            "known_facts": self._facts_repository.load_facts_file(),
+            "known_facts": self._format_known_facts_algorithm.do_algorithm(),
             "relevant_characters_information": self._relevant_characters_information_factory.get_information(),
             "transcription": self._transcription.get_prettified_transcription(),
         }

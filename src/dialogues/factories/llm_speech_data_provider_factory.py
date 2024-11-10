@@ -4,6 +4,12 @@ from src.base.validators import validate_non_empty_string
 from src.characters.factories.character_information_provider_factory import (
     CharacterInformationProviderFactory,
 )
+from src.concepts.algorithms.format_known_facts_algorithm import (
+    FormatKnownFactsAlgorithm,
+)
+from src.dialogues.configs.llm_speech_data_provider_algorithms_config import (
+    LlmSpeechDataProviderAlgorithmsConfig,
+)
 from src.dialogues.configs.llm_speech_data_provider_config import (
     LlmSpeechDataProviderConfig,
 )
@@ -30,6 +36,7 @@ class LlmSpeechDataProviderFactory:
         participants: Participants,
         purpose: Optional[str],
         format_character_dialogue_purpose_algorithm_factory: FormatCharacterDialoguePurposeAlgorithmFactory,
+        format_known_facts_algorithm: FormatKnownFactsAlgorithm,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         places_descriptions_provider: PlacesDescriptionsProvider,
         character_information_provider_factory: CharacterInformationProviderFactory,
@@ -42,6 +49,7 @@ class LlmSpeechDataProviderFactory:
         self._format_character_dialogue_purpose_algorithm_factory = (
             format_character_dialogue_purpose_algorithm_factory
         )
+        self._format_known_facts_algorithm = format_known_facts_algorithm
         self._produce_tool_response_strategy_factory = (
             produce_tool_response_strategy_factory
         )
@@ -68,7 +76,10 @@ class LlmSpeechDataProviderFactory:
                 self._places_descriptions_provider,
                 self._character_information_provider_factory,
             ),
-            self._format_character_dialogue_purpose_algorithm_factory.create_algorithm(
-                speaker_identifier, speaker_name
+            LlmSpeechDataProviderAlgorithmsConfig(
+                self._format_character_dialogue_purpose_algorithm_factory.create_algorithm(
+                    speaker_identifier, speaker_name
+                ),
+                self._format_known_facts_algorithm,
             ),
         )

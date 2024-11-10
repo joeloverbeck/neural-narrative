@@ -33,7 +33,6 @@ Carefully consider the feasibility and dynamics of the confrontation based on:
 Provided Information:
 Current Time: {hour} {time_of_day}
 {local_information}
-Known Facts:
 {known_facts}
 {relevant_characters_information}
 ----

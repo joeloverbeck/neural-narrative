@@ -10,6 +10,9 @@ from src.characters.composers.relevant_characters_information_factory_composer i
 from src.characters.strategies.followers_identifiers_strategy import (
     FollowersIdentifiersStrategy,
 )
+from src.concepts.algorithms.format_known_facts_algorithm import (
+    FormatKnownFactsAlgorithm,
+)
 from src.concepts.algorithms.generate_dilemmas_algorithm import (
     GenerateDilemmasAlgorithm,
 )
@@ -22,6 +25,9 @@ from src.concepts.algorithms.generate_plot_twists_algorithm import (
 )
 from src.concepts.algorithms.generate_scenarios_algorithm import (
     GenerateScenariosAlgorithm,
+)
+from src.concepts.algorithms.get_concepts_prompt_data_algorithm import (
+    GetConceptsPromptDataAlgorithm,
 )
 from src.concepts.enums import ConceptType
 from src.concepts.factories.antagonists_factory import AntagonistsFactory
@@ -112,16 +118,24 @@ class StoryHubView(MethodView):
 
         if action.startswith("generate_"):
             action_name = action[len("generate_") :]
+
+            format_known_facts_algorithm = FormatKnownFactsAlgorithm(playthrough_name)
+
+            get_concepts_prompt_data_algorithm = GetConceptsPromptDataAlgorithm(
+                playthrough_name,
+                format_known_facts_algorithm,
+                places_descriptions_provider,
+                player_and_followers_information_factory,
+            )
+
             generate_action_mapping = {
                 ConceptType.PLOT_BLUEPRINTS.value: {
                     "factory_class": PlotBlueprintsFactory,
                     "algorithm_class": GeneratePlotBlueprintsAlgorithm,
                     "response_key": ConceptType.PLOT_BLUEPRINTS.value,
                     "factory_args": [
-                        playthrough_name_obj,
+                        get_concepts_prompt_data_algorithm,
                         produce_tool_response_strategy_factory,
-                        places_descriptions_provider,
-                        player_and_followers_information_factory,
                     ],
                 },
                 ConceptType.SCENARIOS.value: {
@@ -129,10 +143,8 @@ class StoryHubView(MethodView):
                     "algorithm_class": GenerateScenariosAlgorithm,
                     "response_key": ConceptType.SCENARIOS.value,
                     "factory_args": [
-                        playthrough_name_obj,
+                        get_concepts_prompt_data_algorithm,
                         produce_tool_response_strategy_factory,
-                        places_descriptions_provider,
-                        player_and_followers_information_factory,
                     ],
                 },
                 ConceptType.DILEMMAS.value: {
@@ -140,10 +152,8 @@ class StoryHubView(MethodView):
                     "algorithm_class": GenerateDilemmasAlgorithm,
                     "response_key": ConceptType.DILEMMAS.value,
                     "factory_args": [
-                        playthrough_name_obj,
+                        get_concepts_prompt_data_algorithm,
                         produce_tool_response_strategy_factory,
-                        places_descriptions_provider,
-                        player_and_followers_information_factory,
                     ],
                 },
                 ConceptType.GOALS.value: {
@@ -151,10 +161,8 @@ class StoryHubView(MethodView):
                     "algorithm_class": GenerateGoalsAlgorithm,
                     "response_key": ConceptType.GOALS.value,
                     "factory_args": [
-                        playthrough_name_obj,
+                        get_concepts_prompt_data_algorithm,
                         produce_tool_response_strategy_factory,
-                        places_descriptions_provider,
-                        player_and_followers_information_factory,
                     ],
                 },
                 ConceptType.PLOT_TWISTS.value: {
@@ -162,10 +170,8 @@ class StoryHubView(MethodView):
                     "algorithm_class": GeneratePlotTwistsAlgorithm,
                     "response_key": ConceptType.PLOT_TWISTS.value,
                     "factory_args": [
-                        playthrough_name_obj,
+                        get_concepts_prompt_data_algorithm,
                         produce_tool_response_strategy_factory,
-                        places_descriptions_provider,
-                        player_and_followers_information_factory,
                     ],
                 },
                 ConceptType.ANTAGONISTS.value: {
@@ -173,10 +179,8 @@ class StoryHubView(MethodView):
                     "algorithm_class": GeneratePlotTwistsAlgorithm,
                     "response_key": ConceptType.ANTAGONISTS.value,
                     "factory_args": [
-                        playthrough_name_obj,
+                        get_concepts_prompt_data_algorithm,
                         produce_tool_response_strategy_factory,
-                        places_descriptions_provider,
-                        player_and_followers_information_factory,
                     ],
                 },
             }
