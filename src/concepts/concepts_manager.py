@@ -3,19 +3,18 @@ from typing import Dict, Optional
 from src.characters.factories.relevant_characters_information_factory import (
     RelevantCharactersInformationFactory,
 )
-from src.filesystem.file_operations import read_file
-from src.filesystem.path_manager import PathManager
+from src.concepts.repositories.facts_repository import FactsRepository
 from src.maps.providers.places_descriptions_provider import PlacesDescriptionsProvider
 
 
 class ConceptsManager:
 
     def __init__(
-        self, playthrough_name: str, path_manager: Optional[PathManager] = None
+        self,
+        playthrough_name: str,
+        facts_repository: Optional[FactsRepository] = None,
     ):
-        self._playthrough_name = playthrough_name
-
-        self._path_manager = path_manager or PathManager()
+        self._facts_repository = facts_repository or FactsRepository(playthrough_name)
 
     def get_prompt_data(
         self,
@@ -30,11 +29,6 @@ class ConceptsManager:
                 "player_and_followers_information": player_and_followers_information_factory.get_information()
             }
         )
-        prompt_data.update(
-            {
-                "known_facts": read_file(
-                    self._path_manager.get_facts_path(self._playthrough_name)
-                )
-            }
-        )
+        prompt_data.update({"known_facts": self._facts_repository.load_facts_file()})
+
         return prompt_data

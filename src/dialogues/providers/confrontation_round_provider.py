@@ -9,8 +9,8 @@ from src.base.validators import validate_non_empty_string
 from src.characters.factories.relevant_characters_information_factory import (
     RelevantCharactersInformationFactory,
 )
+from src.concepts.repositories.facts_repository import FactsRepository
 from src.dialogues.transcription import Transcription
-from src.filesystem.file_operations import read_file
 from src.filesystem.path_manager import PathManager
 from src.maps.factories.local_information_factory import LocalInformationFactory
 from src.prompting.abstracts.abstract_factories import (
@@ -33,13 +33,13 @@ class ConfrontationRoundProvider(BaseToolResponseProvider):
         relevant_characters_information_factory: RelevantCharactersInformationFactory,
         path_manager: Optional[PathManager] = None,
         time_manager: Optional[TimeManager] = None,
+        facts_repository: Optional[FactsRepository] = None,
     ):
         super().__init__(produce_tool_response_strategy_factory, path_manager)
 
         validate_non_empty_string(playthrough_name, "playthrough_name")
         validate_non_empty_string(confrontation_context, "confrontation_context")
 
-        self._playthrough_name = playthrough_name
         self._confrontation_context = confrontation_context
         self._transcription = transcription
         self._local_information_factory = local_information_factory
@@ -47,7 +47,8 @@ class ConfrontationRoundProvider(BaseToolResponseProvider):
             relevant_characters_information_factory
         )
 
-        self._time_manager = time_manager or TimeManager(self._playthrough_name)
+        self._time_manager = time_manager or TimeManager(playthrough_name)
+        self._facts_repository = facts_repository or FactsRepository(playthrough_name)
 
     def get_prompt_file(self) -> Path:
         return self._path_manager.get_confrontation_round_generation_prompt_path()
@@ -65,15 +66,11 @@ class ConfrontationRoundProvider(BaseToolResponseProvider):
         return TextProduct(response_model.confrontation_round.narration, is_valid=True)
 
     def get_prompt_kwargs(self) -> dict:
-        facts_file = read_file(
-            self._path_manager.get_facts_path(self._playthrough_name)
-        )
-
         return {
             "hour": self._time_manager.get_hour(),
             "time_of_day": self._time_manager.get_time_of_the_day(),
             "local_information": self._local_information_factory.get_information(),
-            "known_facts": facts_file,
+            "known_facts": self._facts_repository.load_facts_file(),
             "relevant_characters_information": self._relevant_characters_information_factory.get_information(),
             "transcription": self._transcription.get_prettified_transcription(),
         }

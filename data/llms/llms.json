@@ -4,26 +4,30 @@
       "name": "nousresearch/hermes-3-llama-3.1-70b",
       "temperature": 0.70,
       "top_p": 1.0,
-      "supports_tools": false
+      "supports_tools": false,
+      "price": "0.4/0.4"
     },
     "hermes_405b": {
       "name": "nousresearch/hermes-3-llama-3.1-405b",
       "temperature": 0.8,
       "top_p": 1.0,
-      "supports_tools": false
+      "supports_tools": false,
+      "price": "1.79/2.49"
     },
     "hermes_405b_free": {
       "name": "nousresearch/hermes-3-llama-3.1-405b:free",
       "temperature": 0.9,
       "top_p": 1.0,
-      "supports_tools": false
+      "supports_tools": false,
+      "price": "0/0"
     },
     "lumimaid_70b": {
       "name": "neversleep/llama-3.1-lumimaid-70b",
       "description": "Causes validation errors and empty content.",
       "temperature": 0.8,
       "top_p": 1.0,
-      "supports_tools": false
+      "supports_tools": false,
+      "price": "3.375/4.5"
     },
     "magnum_72b": {
       "name": "anthracite-org/magnum-v4-72b",
@@ -31,27 +35,31 @@
       "temperature": 0.95,
       "top_p": 1.0,
       "context": 32768,
-      "supports_tools": false
+      "supports_tools": false,
+      "price": "1.875/2.25"
     },
     "nemotron_70b": {
       "name": "nvidia/llama-3.1-nemotron-70b-instruct",
       "temperature": 0.7,
       "top_p": 1.0,
-      "supports_tools": true
+      "supports_tools": true,
+      "price": "0.35/0.4"
     },
     "ministral_8b": {
       "name": "mistralai/ministral-8b",
       "description": "Fails at following schemas.",
       "temperature": 0.6,
       "top_p": 1.0,
-      "supports_tools": false
+      "supports_tools": false,
+      "price": "0.1/0.1"
     },
     "claude_3.5_sonnet": {
       "name": "anthropic/claude-3.5-sonnet",
       "description": "Exceptional dialogue. Expensive.",
       "temperature": 1.0,
       "top_p": 1.0,
-      "supports_tools": true
+      "supports_tools": true,
+      "price": "3/15"
     },
     "eva-qwen-2.5-32b": {
       "name": "eva-unit-01/eva-qwen-2.5-32b",
@@ -61,28 +69,37 @@
       "context": 32000,
       "supports_tools": false,
       "price": "0.5/0.5"
+    },
+    "sorcererlm 8x22b": {
+      "name": "raifle/sorcererlm-8x22b",
+      "description": "",
+      "temperature": 1.0,
+      "top_p": 0.95,
+      "context": 16000,
+      "supports_tools": false,
+      "price": "4.5/4.5"
     }
   },
-  "story_universe_generation": "hermes_405b",
-  "place_generation": "claude_3.5_sonnet",
-  "place_description": "hermes_405b",
-  "travel_narration": "hermes_405b",
-  "character_generation_guidelines": "magnum_72b",
-  "base_character_data_generation": "magnum_72b",
-  "speech_patterns_generation": "claude_3.5_sonnet",
-  "character_description": "hermes_405b",
-  "self-reflection": "magnum_72b",
-  "worldview": "magnum_72b",
-  "character_connection": "magnum_72b",
-  "secrets": "magnum_72b",
-  "concept_generation": "magnum_72b",
-  "ambient_narration": "magnum_72b",
-  "narrative_beat": "magnum_72b",
-  "grow_event": "magnum_72b",
-  "confrontation_round": "hermes_405b",
-  "speech_turn_choice": "magnum_72b",
-  "speech_turn": "magnum_72b",
-  "dialogue_summary": "magnum_72b",
-  "action_resolution": "hermes_405b",
+  "story_universe_generation": "sorcererlm 8x22b",
+  "place_generation": "sorcererlm 8x22b",
+  "place_description": "sorcererlm 8x22b",
+  "travel_narration": "sorcererlm 8x22b",
+  "character_generation_guidelines": "sorcererlm 8x22b",
+  "base_character_data_generation": "sorcererlm 8x22b",
+  "speech_patterns_generation": "sorcererlm 8x22b",
+  "character_description": "sorcererlm 8x22b",
+  "self-reflection": "sorcererlm 8x22b",
+  "worldview": "sorcererlm 8x22b",
+  "character_connection": "sorcererlm 8x22b",
+  "secrets": "sorcererlm 8x22b",
+  "concept_generation": "sorcererlm 8x22b",
+  "ambient_narration": "sorcererlm 8x22b",
+  "narrative_beat": "sorcererlm 8x22b",
+  "grow_event": "sorcererlm 8x22b",
+  "confrontation_round": "sorcererlm 8x22b",
+  "speech_turn_choice": "sorcererlm 8x22b",
+  "speech_turn": "sorcererlm 8x22b",
+  "dialogue_summary": "sorcererlm 8x22b",
+  "action_resolution": "sorcererlm 8x22b",
   "writers_room": "nemotron_70b"
 }

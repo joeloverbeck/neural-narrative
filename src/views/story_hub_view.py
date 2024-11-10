@@ -34,11 +34,9 @@ from src.concepts.factories.plot_twists_factory import PlotTwistsFactory
 from src.concepts.factories.scenarios_factory import (
     ScenariosFactory,
 )
+from src.concepts.repositories.facts_repository import FactsRepository
 from src.filesystem.file_operations import (
-    read_file,
-    write_file,
     create_directories,
-    create_empty_file_if_not_exists,
     create_empty_json_file_if_not_exists,
     read_json_file,
     write_json_file,
@@ -78,13 +76,7 @@ class StoryHubView(MethodView):
 
         data = read_json_file(concepts_file_path)
 
-        facts_file_path = path_manager.get_facts_path(playthrough_name_obj)
-
-        create_empty_file_if_not_exists(facts_file_path)
-
-        facts = read_file(facts_file_path)
-
-        data["facts"] = facts if facts else ""
+        data["facts"] = FactsRepository(playthrough_name).load_facts_file()
 
         return render_template("story-hub.html", **data)
 
@@ -244,7 +236,9 @@ class StoryHubView(MethodView):
         elif action == "save_facts":
             facts = request.form.get("facts", "")
             facts = WebInterfaceManager.remove_excessive_newline_characters(facts)
-            write_file(path_manager.get_facts_path(playthrough_name_obj), facts)
+
+            FactsRepository(playthrough_name_obj).save_facts(facts)
+
             flash("Facts saved.", "success")
             return redirect(url_for("story-hub"))
         else:

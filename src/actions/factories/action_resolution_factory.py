@@ -7,7 +7,7 @@ from src.base.validators import validate_non_empty_string
 from src.characters.factories.relevant_characters_information_factory import (
     RelevantCharactersInformationFactory,
 )
-from src.filesystem.file_operations import read_file
+from src.concepts.repositories.facts_repository import FactsRepository
 from src.filesystem.path_manager import PathManager
 from src.maps.providers.places_descriptions_provider import PlacesDescriptionsProvider
 from src.prompting.abstracts.abstract_factories import (
@@ -30,13 +30,13 @@ class ActionResolutionFactory(BaseToolResponseProvider):
         prompt_file: str,
         time_manager: Optional[TimeManager] = None,
         path_manager: Optional[PathManager] = None,
+        facts_repository: Optional[FactsRepository] = None,
     ):
         validate_non_empty_string(action_name, "action_name")
         validate_non_empty_string(action_goal, "action_goal")
 
         super().__init__(produce_tool_response_strategy_factory, path_manager)
 
-        self._playthrough_name = playthrough_name
         self._action_name = action_name
         self._action_goal = action_goal
         self._places_descriptions_factory = places_descriptions_factory
@@ -45,7 +45,8 @@ class ActionResolutionFactory(BaseToolResponseProvider):
         )
         self._prompt_file = prompt_file
 
-        self._time_manager = time_manager or TimeManager(self._playthrough_name)
+        self._time_manager = time_manager or TimeManager(playthrough_name)
+        self._facts_repository = facts_repository or FactsRepository(playthrough_name)
 
     def get_prompt_file(self) -> str:
         return self._prompt_file
@@ -54,9 +55,7 @@ class ActionResolutionFactory(BaseToolResponseProvider):
         prompt_data = {
             "hour": self._time_manager.get_hour(),
             "time_of_day": self._time_manager.get_time_of_the_day(),
-            "known_facts": read_file(
-                self._path_manager.get_facts_path(self._playthrough_name)
-            ),
+            "known_facts": self._facts_repository.load_facts_file(),
         }
         prompt_data.update(
             {"places_descriptions": self._places_descriptions_factory.get_information()}
