@@ -97,9 +97,66 @@ class StoryHubView(MethodView):
 
         data = read_json_file(concepts_file_path)
 
+        concepts = [
+            {
+                "type": "plot_blueprint",
+                "type_plural": "plot_blueprints",
+                "display_name": "Plot Blueprints",
+                "icon": "fas fa-lightbulb",
+            },
+            {
+                "type": "antagonist",
+                "type_plural": "antagonists",
+                "display_name": "Antagonists",
+                "icon": "fa-solid fa-skull",
+            },
+            {
+                "type": "scenario",
+                "type_plural": "scenarios",
+                "display_name": "Scenarios",
+                "icon": "fas fa-exclamation-circle",
+            },
+            {
+                "type": "dilemma",
+                "type_plural": "dilemmas",
+                "display_name": "Dilemmas",
+                "icon": "fas fa-question-circle",
+            },
+            {
+                "type": "goal",
+                "type_plural": "goals",
+                "display_name": "Goals",
+                "icon": "fas fa-flag-checkered",
+            },
+            {
+                "type": "plot_twist",
+                "type_plural": "plot_twists",
+                "display_name": "Plot Twists",
+                "icon": "fas fa-random",
+            },
+            {
+                "type": "lore_or_legend",
+                "type_plural": "lore_and_legends",
+                "display_name": "Lore and Legends",
+                "icon": "fas fa-dragon",
+            },
+            {
+                "type": "artifact",
+                "type_plural": "artifacts",
+                "display_name": "Artifacts",
+                "icon": "fas fa-gem",
+            },
+            {
+                "type": "mystery",
+                "type_plural": "mysteries",
+                "display_name": "Mysteries",
+                "icon": "fas fa-puzzle-piece",
+            },
+        ]
+
         data["facts"] = FactsRepository(playthrough_name).load_facts_file()
 
-        return render_template("story-hub.html", **data)
+        return render_template("story-hub.html", concepts=concepts, data=data)
 
     @staticmethod
     def post():

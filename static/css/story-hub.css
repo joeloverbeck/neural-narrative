@@ -20,63 +20,64 @@ form input[type="submit"] {
 }
 
 /* Adjust margin for content */
-.content .plot-blueprints-list,
-.content .antagonists-list,
-.content .lore-and-legends-list,
-.content .artifacts-list,
-.content .mysteries-list {
+.content .items-list {
     margin-top: 15px;
 }
 
-.plot-blueprints-list,
-.antagonist-list,
-.scenarios-list,
-.dilemmas-list,
-.goals-list,
-.plot-twists-list,
-.lore-and-legends-list,
-.artifacts-list,
-.mysteries-list {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+/* Adjust items-list to use CSS Grid */
+.items-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Adjust min width as needed */
+    grid-gap: 30px;
     margin-bottom: 20px;
+    padding: 0 20px; /* Optional: Add side padding */
 }
 
-.plot-blueprint-form,
-.antagonist-form,
-.lore-or-legend-form,
-.artifact-form,
-.mystery-form {
-    display: inline-block;
-    margin: 0;
-    padding: 0;
-    border: none;
-    background: none;
-}
-
-/* Plot Blueprint item styling */
-.plot-blueprint-item,
-.antagonist-item,
-.lore-or-legend-item,
-.artifact-item,
-.mystery-item {
+/* Update the item class */
+.item {
     background-color: #fff;
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
     padding: 20px;
-    margin: 15px;
     cursor: pointer;
-    border: 1px solid #ddd;
-    transition: background-color 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s;
     text-align: left;
-    width: 90%;
+    overflow: hidden; /* Hide overflow */
+    position: relative; /* For any absolute positioning inside */
+    height: 250px; /* Fixed height for uniformity */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
-.plot-blueprint-item:hover,
-.antagonist-item:hover,
-.lore-or-legend-item:hover,
-.artifact-item:hover,
-.mystery-item:hover {
-    background-color: #f9f9f9;
+.item p {
+    flex-grow: 1;
+    font-size: 0.95em;
+    color: #555;
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+}
+
+.item:hover {
+    transform: translateY(-5px); /* Slight lift on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Enhanced shadow */
+}
+
+/* Optional: Add a 'Read More' link or icon */
+.item::after {
+    content: 'Click to open';
+    font-size: 0.85em;
+    color: #007BFF;
+    position: absolute;
+    bottom: 15px;
+    left: 20px;
+}
+
+.item:hover::after {
+    text-decoration: underline;
 }
 
 /* Modal styling */
@@ -136,4 +137,17 @@ form input[type="submit"] {
 
 .delete-button:hover {
     background-color: #d32f2f;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .items-list {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        grid-gap: 20px;
+        padding: 0 10px;
+    }
+
+    .item {
+        height: auto; /* Let height adjust for smaller screens */
+    }
 }

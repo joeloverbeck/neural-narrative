@@ -5,88 +5,61 @@ const itemTypeConfigs = {
     antagonist: {
         itemTypeName: 'Antagonist',
         itemsKey: 'antagonists',
-        itemClass: 'antagonist-item',
-        listClass: 'antagonists-list',
         actionName: 'antagonist',
         iconClass: 'fa-solid fa-skull',
         defaultSuccessMessage: 'Antagonists generated successfully.',
-        displayMode: 'modal',
     },
     plot_blueprint: {
         itemTypeName: 'Plot Blueprint',
         itemsKey: 'plot_blueprints',
-        itemClass: 'plot-blueprint-item',
-        listClass: 'plot-blueprints-list',
         actionName: 'plot_blueprint',
         iconClass: 'fas fa-lightbulb',
         defaultSuccessMessage: 'Plot blueprints generated successfully.',
-        displayMode: 'modal',
     },
     scenario: {
         itemTypeName: 'Scenario',
         itemsKey: 'scenarios',
-        listClass: 'scenarios-list',
-        itemClass: 'item-form',
         actionName: 'scenario',
         defaultSuccessMessage: 'Scenarios generated successfully.',
-        displayMode: 'form',
     },
     artifact: {
         itemTypeName: 'Artifact',
         itemsKey: 'artifacts',
-        itemClass: 'artifact-item',
-        listClass: 'artifacts-list',
         actionName: 'artifact',
         iconClass: 'fas fa-gem',
         defaultSuccessMessage: 'Artifacts generated successfully.',
-        displayMode: 'modal',
     },
     dilemma: {
         itemTypeName: 'Dilemma',
         itemsKey: 'dilemmas',
-        listClass: 'dilemmas-list',
-        itemClass: 'item-form',
         actionName: 'dilemma',
         defaultSuccessMessage: 'Dilemmas generated successfully.',
-        displayMode: 'form',
     },
     goal: {
         itemTypeName: 'Goal',
         itemsKey: 'goals',
-        listClass: 'goals-list',
-        itemClass: 'item-form',
         actionName: 'goal',
         defaultSuccessMessage: 'Goals generated successfully.',
-        displayMode: 'form',
     },
     lore_or_legend: {
         itemTypeName: 'Lore or Legend',
         itemsKey: 'lore_and_legends',
-        itemClass: 'lore-or-legend-item',
-        listClass: 'lore-and-legends-list',
         actionName: 'lore_or_legend',
         iconClass: 'fas fa-dragon',
         defaultSuccessMessage: 'Lore and legends generated successfully.',
-        displayMode: 'modal',
     },
     plot_twist: {
         itemTypeName: 'Plot Twist',
         itemsKey: 'plot_twists',
-        listClass: 'plot-twists-list',
-        itemClass: 'item-form',
         actionName: 'plot_twist',
         defaultSuccessMessage: 'Plot twists generated successfully.',
-        displayMode: 'form',
     },
     mystery: {
         itemTypeName: 'Mystery',
         itemsKey: 'mysteries',
-        itemClass: 'mystery-item',
-        listClass: 'mysteries-list',
         actionName: 'mystery',
         iconClass: 'fas fa-puzzle-piece',
         defaultSuccessMessage: 'Mysteries generated successfully.',
-        displayMode: 'modal',
     },
 };
 
@@ -103,52 +76,38 @@ function generateItemsSuccess(data, context) {
     const options = {
         defaultSuccessMessage: config.defaultSuccessMessage,
         itemsKey: config.itemsKey,
-        listSelector: `.${config.listClass}`,
-        listClass: config.listClass,
-        itemSelector: config.itemSelector || `.${config.listClass} .${config.itemClass}`,
-        itemClass: config.itemClass,
         actionName: config.actionName,
         createItemElement: function(item, index) {
-            if (config.displayMode === 'modal') {
-                return createItemElement(item, index, config.itemTypeName, config.itemClass, config.actionName);
-            } else if (config.displayMode === 'form') {
-                return createItemForm(`delete_${config.actionName}`, item, index);
-            }
+            return createItemElement(item, index, config.itemTypeName, config.actionName);
         },
-        initItemClickEvents: function(itemClass, actionName) {
-            if (config.displayMode === 'modal') {
-                initItemClickEvents(itemClass, actionName);
-            } else if (config.displayMode === 'form') {
-                initItemForms();
-            }
+        initItemClickEvents: function(actionName) {
+            initItemClickEvents(actionName);
         },
         afterItemAdded: function(item, itemIndex, context, options) {
-            if (config.displayMode === 'modal') {
-                const contentDiv = context.form.closest('.content');
-                const modal = createModal(item, itemIndex, config.itemTypeName, config.actionName);
-                contentDiv.appendChild(modal);
-            }
-            // No additional action needed for 'form' display mode
+            const contentDiv = context.form.closest('.content');
+            const modal = createModal(item, itemIndex, config.itemTypeName, config.actionName);
+            contentDiv.appendChild(modal);
         }
     };
 
     processItemsSuccess(data, context, options);
 }
 
-function processItemsSuccess(data, context, options) {
+    function processItemsSuccess(data, context, options) {
     if (data.success) {
         showToast(data.message || options.defaultSuccessMessage, 'success');
 
         if (data[options.itemsKey]) {
-            const existingItems = document.querySelectorAll(options.itemSelector);
-            const startIndex = existingItems.length;
+            let contentDiv = context.form.closest('.content');
+            let itemsList = contentDiv.querySelector('.items-list');
 
-            let itemsList = document.querySelector(options.listSelector);
-            let contentDiv = null;
+            // Determine number of items to know what modal should be opened.
+            const existingItems = itemsList ? itemsList.querySelectorAll('.item') : [];
+            const startIndex = existingItems.length;
 
             if (!itemsList) {
                 itemsList = document.createElement('div');
-                itemsList.classList.add(options.listClass);
+                itemsList.classList.add('items-list');
                 contentDiv = context.form.closest('.content');
                 const noItemsMessage = contentDiv.querySelector('p');
                 if (noItemsMessage) {
@@ -170,7 +129,7 @@ function processItemsSuccess(data, context, options) {
             });
 
             if (typeof options.initItemClickEvents === 'function') {
-                options.initItemClickEvents(options.itemClass, options.actionName);
+                options.initItemClickEvents(options.actionName);
             }
         }
     } else {
@@ -178,56 +137,13 @@ function processItemsSuccess(data, context, options) {
     }
 }
 
-function createItemForm(submitAction, item, index) {
-    // Create the form
-    const form = document.createElement('form');
-    form.action = window.location.href; // Use current URL
-    form.method = 'post';
-    form.classList.add('item-form');
 
-    // Create hidden input for submit_action
-    const inputAction = document.createElement('input');
-    inputAction.type = 'hidden';
-    inputAction.name = 'submit_action';
-    inputAction.value = submitAction;
-
-    // Create hidden input for item_index
-    const inputIndex = document.createElement('input');
-    inputIndex.type = 'hidden';
-    inputIndex.name = 'item_index';
-    inputIndex.value = index;
-
-    // Create the button
-    const button = document.createElement('button');
-    button.type = 'submit';
-    button.classList.add('post-it');
-
-    // Create the icon
-    const icon = document.createElement('i');
-    icon.classList.add('fas', 'fa-thumbtack');
-
-    // Create the paragraph
-    const p = document.createElement('p');
-    p.textContent = item;
-
-    // Append icon and paragraph to button
-    button.appendChild(icon);
-    button.appendChild(p);
-
-    // Append inputs and button to form
-    form.appendChild(inputAction);
-    form.appendChild(inputIndex);
-    form.appendChild(button);
-
-    return form;
+function openModal(index, conceptType) {
+    document.getElementById(`modal-${conceptType}-${index}`).style.display = "block";
 }
 
-function openModal(index, actionName) {
-    document.getElementById(`modal-${actionName}-${index}`).style.display = 'block';
-}
-
-function closeModal(index, actionName) {
-    document.getElementById(`modal-${actionName}-${index}`).style.display = 'none';
+function closeModal(index, conceptType) {
+    document.getElementById(`modal-${conceptType}-${index}`).style.display = "none";
 }
 
 function createModal(itemContent, index, itemType, actionName) {
@@ -244,9 +160,6 @@ function createModal(itemContent, index, itemType, actionName) {
     closeSpan.onclick = function() {
         closeModal(index, actionName);
     };
-
-    const h2 = document.createElement('h2');
-    h2.textContent = `${itemType} ${index + 1}`;
 
     const p = document.createElement('p');
     p.textContent = itemContent;
@@ -279,7 +192,6 @@ function createModal(itemContent, index, itemType, actionName) {
     form.appendChild(button);
 
     modalContent.appendChild(closeSpan);
-    modalContent.appendChild(h2);
     modalContent.appendChild(p);
     modalContent.appendChild(form);
 
@@ -288,30 +200,27 @@ function createModal(itemContent, index, itemType, actionName) {
     return modal;
 }
 
-function createItemElement(itemContent, index, itemType, itemClass, actionName) {
+function createItemElement(itemContent, index, itemType, actionName) {
     const itemElement = document.createElement('div');
-    itemElement.classList.add(itemClass);
+    itemElement.classList.add('item');
     itemElement.setAttribute('data-index', index);
+    itemElement.setAttribute('data-action-name', actionName);
 
     itemElement.onclick = function() {
         openModal(index, actionName);
     };
 
-    const header = document.createElement('h3');
-    header.textContent = `${itemType} ${index + 1}`;
-
     const paragraph = document.createElement('p');
-    const truncatedItem = itemContent.length > 250 ? `${itemContent.substring(0, 250)}...` : itemContent;
+    const truncatedItem = itemContent.length > 250 ? itemContent.substring(0, 250) + '...' : itemContent;
     paragraph.textContent = truncatedItem;
 
-    itemElement.appendChild(header);
     itemElement.appendChild(paragraph);
 
     return itemElement;
 }
 
-function initItemClickEvents(itemClass, actionName) {
-    const items = document.querySelectorAll(`.${itemClass}`);
+function initItemClickEvents(actionName) {
+    const items = document.querySelectorAll(`.item[data-action-name="${actionName}"]`);
 
     items.forEach(function(item) {
         item.onclick = function() {
@@ -331,33 +240,9 @@ window.onclick = function(event) {
     });
 }
 
-
-function initItemForms() {
-    const itemForms = document.querySelectorAll('.item-form');
-
-    itemForms.forEach(function(form) {
-        // Avoid adding multiple event listeners to the same form
-        if (!form.classList.contains('event-attached')) {
-            form.addEventListener('submit', function(event) {
-                event.preventDefault();
-                const itemButton = form.querySelector('.post-it');
-                itemButton.classList.add('fade-out');
-                setTimeout(function() {
-                    form.submit();
-                }, 500);
-            });
-            form.classList.add('event-attached');
-        }
-    });
-}
-
 function pageInit() {
     Object.values(itemTypeConfigs).forEach(config => {
-        if (config.displayMode === 'modal') {
-            initItemClickEvents(config.itemClass, config.actionName);
-        } else if (config.displayMode === 'form') {
-            initItemForms();
-        }
+        initItemClickEvents(config.actionName);
     });
 }
 

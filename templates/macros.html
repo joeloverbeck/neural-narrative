@@ -1,0 +1,52 @@
+<!-- templates/macros.html -->
+
+{% macro collapsible_section(concept, items) %}
+<div class="collapsible-section">
+    <button class="collapsible">
+        <i class="{{ concept.icon }}"></i> {{ concept.display_name }}
+    </button>
+    <div class="content">
+        {% if items %}
+        <div class="items-list">
+            {% for item in items %}
+            <div class="item" onclick="openModal({{ loop.index0 }}, '{{ concept.type }}')"
+                 data-index="{{ loop.index0 }}">
+                <p>{{ item|truncate(250) }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        <!-- Modals -->
+        {% for item in items %}
+        {{ item_modal(item, loop.index0, concept.type) }}
+        {% endfor %}
+        {% else %}
+        <p>No {{ concept.display_name|lower }} generated yet.</p>
+        {% endif %}
+
+        <!-- Generate Button -->
+        <form method="post" class="ajax-form" action="{{ url_for('story-hub') }}" data-item-type="{{ concept.type }}">
+            <input type="hidden" name="submit_action" value="generate_{{ concept.type_plural }}">
+            <button type="submit" class="action-button" id="generate-{{ concept.type_plural }}-button">
+                <i class="{{ concept.icon }}"></i> Generate {{ concept.display_name }}
+            </button>
+        </form>
+    </div>
+</div>
+{% endmacro %}
+
+
+{% macro item_modal(item, item_index, concept_type) %}
+<div id="modal-{{ concept_type }}-{{ item_index }}" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal({{ item_index }}, '{{ concept_type }}')">&times;</span>
+        <p>{{ item }}</p>
+        <form action="{{ url_for('story-hub') }}" method="post">
+            <input type="hidden" name="item_index" value="{{ item_index }}">
+            <input type="hidden" name="submit_action" value="delete_{{ concept_type }}">
+            <button type="submit" class="delete-button">
+                <i class="fas fa-trash-alt"></i> Delete
+            </button>
+        </form>
+    </div>
+</div>
+{% endmacro %}
