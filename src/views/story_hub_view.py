@@ -22,6 +22,9 @@ from src.concepts.algorithms.generate_artifacts_algorithm import (
 from src.concepts.algorithms.generate_dilemmas_algorithm import (
     GenerateDilemmasAlgorithm,
 )
+from src.concepts.algorithms.generate_foreshadowing_algorithm import (
+    GenerateForeshadowingAlgorithm,
+)
 from src.concepts.algorithms.generate_goals_algorithm import GenerateGoalsAlgorithm
 from src.concepts.algorithms.generate_lore_and_legends_algorithm import (
     GenerateLoreAndLegendsAlgorithm,
@@ -47,6 +50,7 @@ from src.concepts.factories.artifacts_factory import ArtifactsFactory
 from src.concepts.factories.dilemmas_factory import (
     DilemmasFactory,
 )
+from src.concepts.factories.foreshadowing_factory import ForeshadowingFactory
 from src.concepts.factories.goals_factory import GoalsFactory
 from src.concepts.factories.lore_and_legends_factory import LoreAndLegendsFactory
 from src.concepts.factories.mysteries_factory import MysteriesFactory
@@ -151,6 +155,12 @@ class StoryHubView(MethodView):
                 "type_plural": "mysteries",
                 "display_name": "Mysteries",
                 "icon": "fas fa-puzzle-piece",
+            },
+            {
+                "type": "foreshadowing",
+                "type_plural": "foreshadowing",
+                "display_name": "Foreshadowing",
+                "icon": "fas fa-cloud-moon",
             },
         ]
 
@@ -282,6 +292,15 @@ class StoryHubView(MethodView):
                         produce_tool_response_strategy_factory,
                     ],
                 },
+                ConceptType.FORESHADOWING.value: {
+                    "factory_class": ForeshadowingFactory,
+                    "algorithm_class": GenerateForeshadowingAlgorithm,
+                    "response_key": ConceptType.FORESHADOWING.value,
+                    "factory_args": [
+                        get_concepts_prompt_data_algorithm,
+                        produce_tool_response_strategy_factory,
+                    ],
+                },
             }
             if action_name in generate_action_mapping:
                 mapping = generate_action_mapping[action_name]
@@ -326,6 +345,7 @@ class StoryHubView(MethodView):
                 "lore_or_legend": ConceptType.LORE_AND_LEGENDS.value,
                 "artifact": ConceptType.ARTIFACTS.value,
                 "mystery": ConceptType.MYSTERIES.value,
+                "foreshadowing": ConceptType.FORESHADOWING.value,
             }
 
             key = key_correlation[action_name.lower()]

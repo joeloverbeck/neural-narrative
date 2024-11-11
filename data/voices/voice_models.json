@@ -164,7 +164,7 @@
     "NORMAL VOLUME",
     "CRISP",
     "INTENSE/DRAMATIC",
-    "HEROIC/BRAVE",
+    "ADVENTUROUS/DRIVEN",
     "NO SPECIAL EFFECTS"
   ],
   "npcmstorytimesimon": [
@@ -392,7 +392,7 @@
     "SMOOTH",
     "AUTHORITATIVE",
     "FORMAL",
-    "HEROIC/BRAVE",
+    "ADVENTUROUS/DRIVEN",
     "NO SPECIAL EFFECTS"
   ],
   "galmar": [
@@ -404,7 +404,7 @@
     "GRAVELLY/RASPY",
     "AUTHORITATIVE",
     "INTENSE/DRAMATIC",
-    "HEROIC/BRAVE",
+    "ADVENTUROUS/DRIVEN",
     "NO SPECIAL EFFECTS"
   ],
   "npcfpiper": [
@@ -1606,5 +1606,53 @@
     "CASUAL",
     "OPTIMISTIC",
     "NO SPECIAL EFFECTS"
+  ],
+  "npcmdeanvolkert": [
+    "MALE",
+    "YOUNG ADULT/ADULT",
+    "CONFIDENT/DETERMINED",
+    "SLOW",
+    "NORMAL VOLUME",
+    "GRAVELLY/RASPY",
+    "WARM",
+    "FORMAL",
+    "SULTRY",
+    "NO SPECIAL EFFECTS"
+  ],
+  "npcmvaulttecrepghoul": [
+    "MALE",
+    "MIDDLE-AGED",
+    "EXCITED",
+    "SLOW",
+    "NORMAL VOLUME",
+    "GRAVELLY/RASPY",
+    "NEUTRAL",
+    "MELODIC",
+    "ECCENTRIC",
+    "NO SPECIAL EFFECTS"
+  ],
+  "npcmhenrycooke": [
+    "MALE",
+    "YOUNG ADULT/ADULT",
+    "CALM",
+    "MODERATE",
+    "NORMAL VOLUME",
+    "SMOOTH",
+    "COLD",
+    "FORMAL",
+    "NOBLE",
+    "NO SPECIAL EFFECTS"
+  ],
+  "mq101instagentfemalevoice": [
+    "FEMALE",
+    "MIDDLE-AGED",
+    "SAD/MELANCHOLIC",
+    "SLOW",
+    "NORMAL VOLUME",
+    "WHISPERY/AIRY",
+    "NEUTRAL",
+    "CASUAL",
+    "WORLD-WEARY",
+    "GHOSTLY/ECHOED"
   ]
 }

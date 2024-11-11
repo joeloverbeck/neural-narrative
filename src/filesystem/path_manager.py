@@ -234,6 +234,10 @@ class PathManager:
         return cls.CONCEPTS_DIR / "plot_twists_generation_prompt.txt"
 
     @classmethod
+    def get_foreshadowing_generation_prompt_path(cls) -> Path:
+        return cls.CONCEPTS_DIR / "foreshadowing_generation_prompt.txt"
+
+    @classmethod
     def get_world_generation_prompt_path(cls) -> Path:
         return cls.PROMPTING_PLACES_DIR / "world_generation_prompt.txt"
 

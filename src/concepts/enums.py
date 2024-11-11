@@ -11,3 +11,4 @@ class ConceptType(Enum):
     LORE_AND_LEGENDS = "lore_and_legends"
     ARTIFACTS = "artifacts"
     MYSTERIES = "mysteries"
+    FORESHADOWING = "foreshadowing"

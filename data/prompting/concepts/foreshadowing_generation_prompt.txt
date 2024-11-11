@@ -1,0 +1,18 @@
+Based on the following detailed descriptions of places, characters, and their memories, identify an element that could serve as foreshadowing for future plot developments. The element should include:
+
+- Type of Foreshadowing: Specify whether it's an object, event, dialogue, symbol, irony, etc.
+- Description: What the foreshadowing element is.
+- Hint Mechanism: How it subtly hints at future events without revealing them outright.
+- Significance: The importance it will have when the foreshadowed event occurs, including any impact on character development or plot progression.
+
+Provided Elements:
+{places_descriptions}
+{player_and_followers_information}
+{known_facts}
+
+Important:
+- Craft the foreshadowing element to enhance the storytelling experience with subtlety and depth.
+- Ensure the element aligns with character motivations, emotional tone, and overarching themes.
+- Avoid repeating any provided information verbatim and steer clear of clichés.
+- Present the element directly, without numbering or preamble.
+- Incorporate variety in foreshadowing types and ensure contextual relevance to the current narrative.

@@ -6,6 +6,7 @@ from src.concepts.enums import ConceptType
 from src.concepts.models.antagonist import Antagonist
 from src.concepts.models.artifacts import Artifacts
 from src.concepts.models.dilemmas import Dilemmas
+from src.concepts.models.foreshadowing import Foreshadowing
 from src.concepts.models.goals import Goals
 from src.concepts.models.lore_and_legends import LoreAndLegends
 from src.concepts.models.mystery import Mystery
@@ -30,6 +31,7 @@ class BaseConceptAlgorithm(Generic[TProduct, TFactory]):
         ConceptType.LORE_AND_LEGENDS.value: LoreAndLegends,
         ConceptType.ARTIFACTS.value: Artifacts,
         ConceptType.MYSTERIES.value: Mystery,
+        ConceptType.FORESHADOWING.value: Foreshadowing,
     }
 
     def __init__(

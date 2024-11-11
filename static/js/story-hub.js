@@ -61,6 +61,13 @@ const itemTypeConfigs = {
         iconClass: 'fas fa-puzzle-piece',
         defaultSuccessMessage: 'Mysteries generated successfully.',
     },
+    foreshadowing: {
+        itemTypeName: 'Foreshadowing',
+        itemsKey: 'foreshadowing',
+        actionName: 'foreshadowing',
+        iconClass: 'fas fa-cloud-moon',
+        defaultSuccessMessage: 'Foreshadowing generated successfully.',
+    },
 };
 
 function generateItemsSuccess(data, context) {
