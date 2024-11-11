@@ -8,6 +8,7 @@ from openai.types.chat import (
     ChatCompletionSystemMessageParam,
 )
 from pydantic import BaseModel
+from pydantic.v1 import ValidationError
 
 from src.base.constants import (
     TOO_MANY_REQUESTS_ERROR_NUMBER,
@@ -69,6 +70,15 @@ class InstructorLlmClient(LlmClient):
                 temperature=model.get_temperature(),
                 top_p=model.get_top_p(),
             )
+        except ValidationError as e:
+            error = f"Validation error: {str(e)}"
+            logger.error(error)
+
+            return InstructorAiCompletionProduct(
+                None,
+                is_valid=False,
+                error=error,
+            )
         except InstructorRetryException as e:
             logger.error(
                 "Attempts: %s",
@@ -84,8 +94,13 @@ class InstructorLlmClient(LlmClient):
                 MAXIMUM_CONTENT_LENGTH_REACHED: AiCompletionErrorType.MAXIMUM_CONTENT_LENGTH_REACHED,
             }
 
+            content = "No valid content."
+
+            if hasattr(e.last_completion, "message"):
+                content = e.last_completion.message.content
+
             error = (
-                e.last_completion.message.content
+                content
                 if not hasattr(e.last_completion, "error")
                 else error_correlation.get(
                     e.last_completion.error["code"], AiCompletionErrorType.UNHANDLED

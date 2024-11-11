@@ -4,9 +4,11 @@ from typing import Generic, TypeVar, List, Optional, Dict, Type
 from src.base.validators import validate_non_empty_string
 from src.concepts.enums import ConceptType
 from src.concepts.models.antagonist import Antagonist
+from src.concepts.models.artifacts import Artifacts
 from src.concepts.models.dilemmas import Dilemmas
 from src.concepts.models.goals import Goals
 from src.concepts.models.lore_and_legends import LoreAndLegends
+from src.concepts.models.mystery import Mystery
 from src.concepts.models.plot_blueprint import PlotBlueprint
 from src.concepts.models.plot_twists import PlotTwists
 from src.concepts.models.scenarios import Scenarios
@@ -26,6 +28,8 @@ class BaseConceptAlgorithm(Generic[TProduct, TFactory]):
         ConceptType.PLOT_TWISTS.value: PlotTwists,
         ConceptType.ANTAGONISTS.value: Antagonist,
         ConceptType.LORE_AND_LEGENDS.value: LoreAndLegends,
+        ConceptType.ARTIFACTS.value: Artifacts,
+        ConceptType.MYSTERIES.value: Mystery,
     }
 
     def __init__(

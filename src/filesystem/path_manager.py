@@ -210,12 +210,20 @@ class PathManager:
         return cls.CONCEPTS_DIR / "lore_and_legends_generation_prompt.txt"
 
     @classmethod
+    def get_artifacts_generation_prompt_path(cls) -> Path:
+        return cls.CONCEPTS_DIR / "artifacts_generation_prompt.txt"
+
+    @classmethod
     def get_dilemmas_generation_prompt_path(cls) -> Path:
         return cls.CONCEPTS_DIR / "dilemmas_generation_prompt.txt"
 
     @classmethod
     def get_plot_blueprints_generation_prompt_path(cls) -> Path:
         return cls.CONCEPTS_DIR / "plot_blueprints_generation_prompt.txt"
+
+    @classmethod
+    def get_mysteries_generation_prompt_path(cls) -> Path:
+        return cls.CONCEPTS_DIR / "mysteries_generation_prompt.txt"
 
     @classmethod
     def get_goals_generation_prompt_path(cls) -> Path:

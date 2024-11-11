@@ -23,4 +23,5 @@ class AiCompletionErrorType(Enum):
     PAYMENT_REQUIRED = "payment_required"
     INVALID_SSL_CERTIFICATE = "invalid_ssl_certificate"
     MAXIMUM_CONTENT_LENGTH_REACHED = "maximum_content_length_reached"
+    VALIDATION = "validation"
     UNHANDLED = "unhandled"

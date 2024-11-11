@@ -26,7 +26,7 @@ Story Hub
                 {% for plot_blueprint in plot_blueprints %}
                 <div class="plot-blueprint-item" onclick="openModal({{ loop.index0 }})" data-index="{{ loop.index0 }}">
                     <h3>Plot Blueprint {{ loop.index }}</h3>
-                    <p>{{ plot_blueprint[:150] }}...</p>
+                    <p>{{ plot_blueprint[:250] }}...</p>
                 </div>
                 {% endfor %}
             </div>
@@ -52,8 +52,7 @@ Story Hub
             <p>No plot blueprints generated yet.</p>
             {% endif %}
 
-            <form method="post" class="ajax-form" action="{{ url_for('story-hub') }}"
-                  data-success-handler="generatePlotBlueprintsSuccess">
+            <form method="post" class="ajax-form" action="{{ url_for('story-hub') }}" data-item-type="plot_blueprint">
                 <input type="hidden" name="submit_action" value="generate_plot_blueprints">
                 <button type="submit" class="action-button" id="generate-plot-blueprints-button">
                     <i class="fas fa-lightbulb"></i> Generate Plot Blueprints
@@ -76,7 +75,7 @@ Story Hub
                 <div class="antagonist-item" onclick="openModal({{ loop.index0 }}, 'antagonist')"
                      data-index="{{ loop.index0 }}">
                     <h3>Antagonist {{ loop.index }}</h3>
-                    <p>{{ antagonist[:150] }}...</p>
+                    <p>{{ antagonist[:250] }}...</p>
                 </div>
                 {% endfor %}
             </div>
@@ -102,8 +101,7 @@ Story Hub
             <p>No antagonists generated yet.</p>
             {% endif %}
 
-            <form method="post" class="ajax-form" action="{{ url_for('story-hub') }}"
-                  data-success-handler="generateAntagonistsSuccess">
+            <form method="post" class="ajax-form" action="{{ url_for('story-hub') }}" data-item-type="antagonist">
                 <input type="hidden" name="submit_action" value="generate_antagonists">
                 <button type="submit" class="action-button" id="generate-antagonists-button">
                     <i class="fa-solid fa-skull"></i> Generate Antagonists
@@ -134,8 +132,7 @@ Story Hub
             {% else %}
             <p>No scenarios generated yet.</p>
             {% endif %}
-            <form method="post" class="ajax-form" action="{{ url_for('story-hub') }}"
-                  data-success-handler="generateScenariosSuccess">
+            <form method="post" class="ajax-form" action="{{ url_for('story-hub') }}" data-item-type="scenario">
                 <input type="hidden" name="submit_action" value="generate_scenarios">
                 <button type="submit" class="action-button" id="generate-scenarios-button">
                     <i class="fas fa-exclamation-circle"></i> Generate Scenarios
@@ -166,8 +163,7 @@ Story Hub
             {% else %}
             <p>No dilemmas generated yet.</p>
             {% endif %}
-            <form method="post" class="ajax-form" action="{{ url_for('story-hub') }}"
-                  data-success-handler="generateDilemmasSuccess">
+            <form method="post" class="ajax-form" action="{{ url_for('story-hub') }}" data-item-type="dilemma">
                 <input type="hidden" name="submit_action" value="generate_dilemmas">
                 <button type="submit" class="action-button" id="generate-dilemmas-button">
                     <i class="fas fa-question-circle"></i> Generate Dilemmas
@@ -198,8 +194,7 @@ Story Hub
             {% else %}
             <p>No goals generated yet.</p>
             {% endif %}
-            <form method="post" class="ajax-form" action="{{ url_for('story-hub') }}"
-                  data-success-handler="generateGoalsSuccess">
+            <form method="post" class="ajax-form" action="{{ url_for('story-hub') }}" data-item-type="goal">
                 <input type="hidden" name="submit_action" value="generate_goals">
                 <button type="submit" class="action-button" id="generate-goals-button">
                     <i class="fas fa-flag-checkered"></i> Generate Goals
@@ -230,8 +225,7 @@ Story Hub
             {% else %}
             <p>No plot twists generated yet.</p>
             {% endif %}
-            <form method="post" class="ajax-form" action="{{ url_for('story-hub') }}"
-                  data-success-handler="generatePlotTwistsSuccess">
+            <form method="post" class="ajax-form" action="{{ url_for('story-hub') }}" data-item-type="plot_twist">
                 <input type="hidden" name="submit_action" value="generate_plot_twists">
                 <button type="submit" class="action-button" id="generate-plot-twists-button">
                     <i class="fas fa-random"></i> Generate Plot Twists
@@ -253,7 +247,7 @@ Story Hub
                 <div class="lore-or-legend-item" onclick="openModal({{ loop.index0 }}, 'lore_or_legend')"
                      data-index="{{ loop.index0 }}">
                     <h3>Lore or Legend {{ loop.index }}</h3>
-                    <p>{{ lore_or_legend[:150] }}...</p>
+                    <p>{{ lore_or_legend[:250] }}...</p>
                 </div>
                 {% endfor %}
             </div>
@@ -279,11 +273,106 @@ Story Hub
             <p>No lore and legends generated yet.</p>
             {% endif %}
 
-            <form method="post" class="ajax-form" action="{{ url_for('story-hub') }}"
-                  data-success-handler="generateLoreAndLegendsSuccess">
+            <form method="post" class="ajax-form" action="{{ url_for('story-hub') }}" data-item-type="lore_or_legend">
                 <input type="hidden" name="submit_action" value="generate_lore_and_legends">
                 <button type="submit" class="action-button" id="generate-lore-and-legends-button">
                     <i class="fas fa-dragon"></i> Generate Lore and Legends
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Lore and Legends Section -->
+    <div class="collapsible-section">
+        <button class="collapsible">
+            <i class="fas fa-gem"></i> Artifacts
+        </button>
+        <div class="content">
+            {% if artifacts %}
+            <!-- Artifacts list -->
+            <div class="artifacts-list">
+                {% for artifact in artifacts %}
+                <div class="artifact-item" onclick="openModal({{ loop.index0 }}, 'artifact')"
+                     data-index="{{ loop.index0 }}">
+                    <h3>Artifact {{ loop.index }}</h3>
+                    <p>{{ artifact[:250] }}...</p>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Modals -->
+            {% for artifact in artifacts %}
+            <div id="modal-artifact-{{ loop.index0 }}" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeModal({{ loop.index0 }}, 'artifact')">&times;</span>
+                    <h2>Artifact {{ loop.index }}</h2>
+                    <p>{{ artifact }}</p>
+                    <form action="{{ url_for('story-hub') }}" method="post">
+                        <input type="hidden" name="item_index" value="{{ loop.index0 }}">
+                        <input type="hidden" name="submit_action" value="delete_artifact">
+                        <button type="submit" class="delete-button">
+                            <i class="fas fa-trash-alt"></i> Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <p>No artifacts generated yet.</p>
+            {% endif %}
+
+            <form method="post" class="ajax-form" action="{{ url_for('story-hub') }}" data-item-type="artifact">
+                <input type="hidden" name="submit_action" value="generate_artifacts">
+                <button type="submit" class="action-button" id="generate-artifacts-button">
+                    <i class="fas fa-gem"></i> Generate Artifacts
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Mysteries Section -->
+    <div class="collapsible-section">
+        <button class="collapsible">
+            <i class="fas fa-puzzle-piece"></i> Mysteries
+        </button>
+        <div class="content">
+            {% if mysteries %}
+            <!-- Mysteries list -->
+            <div class="mysteries-list">
+                {% for mystery in mysteries %}
+                <div class="mystery-item" onclick="openModal({{ loop.index0 }}, 'mystery')"
+                     data-index="{{ loop.index0 }}">
+                    <h3>Mystery {{ loop.index }}</h3>
+                    <p>{{ mystery[:250] }}...</p>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Modals -->
+            {% for mystery in mysteries %}
+            <div id="modal-mystery-{{ loop.index0 }}" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeModal({{ loop.index0 }}, 'mystery')">&times;</span>
+                    <h2>Mystery {{ loop.index }}</h2>
+                    <p>{{ mystery }}</p>
+                    <form action="{{ url_for('story-hub') }}" method="post">
+                        <input type="hidden" name="item_index" value="{{ loop.index0 }}">
+                        <input type="hidden" name="submit_action" value="delete_mystery">
+                        <button type="submit" class="delete-button">
+                            <i class="fas fa-trash-alt"></i> Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <p>No mysteries generated yet.</p>
+            {% endif %}
+
+            <form method="post" class="ajax-form" action="{{ url_for('story-hub') }}" data-item-type="mystery">
+                <input type="hidden" name="submit_action" value="generate_mysteries">
+                <button type="submit" class="action-button" id="generate-mysteries-button">
+                    <i class="fas fa-puzzle-piece"></i> Generate Mysteries
                 </button>
             </form>
         </div>

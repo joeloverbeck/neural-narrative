@@ -353,6 +353,16 @@ function moveCursorToEnd(element) {
     }
 }
 
+function commonInitializations(){
+    // Initialize audio playback elements on page load
+    initAudioPlayback();
+
+    // Initialize the collapsibles on page load
+    initCollapsibles();
+
+    replaceFlashes();
+}
+
 function initInputCursor() {
     const textInputs = document.querySelectorAll('input[type="text"]');
     textInputs.forEach(function(input) {
@@ -365,13 +375,7 @@ function initInputCursor() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize audio playback elements on page load
-    initAudioPlayback();
-
-    // Initialize the collapsibles on page load
-    initCollapsibles();
-
-    replaceFlashes();
+    commonInitializations();
 
     // Initialize AJAX
     const forms = document.querySelectorAll('form.ajax-form');
@@ -383,10 +387,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const errorHandlerName = form.dataset.errorHandler;
         const errorHandler = window[errorHandlerName];
 
-        handleAjaxFormSubmit(form, {
-            onSuccess: successHandler,
-            onError: errorHandler
-        });
+        if (successHandler) {
+            handleAjaxFormSubmit(form, {
+                onSuccess: successHandler,
+                onError: errorHandler
+            });
+        }
     });
 
     // Initialize input cursor positioning

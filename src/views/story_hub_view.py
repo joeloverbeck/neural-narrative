@@ -13,12 +13,21 @@ from src.characters.strategies.followers_identifiers_strategy import (
 from src.concepts.algorithms.format_known_facts_algorithm import (
     FormatKnownFactsAlgorithm,
 )
+from src.concepts.algorithms.generate_antagonists_algorithm import (
+    GenerateAntagonistsAlgorithm,
+)
+from src.concepts.algorithms.generate_artifacts_algorithm import (
+    GenerateArtifactsAlgorithm,
+)
 from src.concepts.algorithms.generate_dilemmas_algorithm import (
     GenerateDilemmasAlgorithm,
 )
 from src.concepts.algorithms.generate_goals_algorithm import GenerateGoalsAlgorithm
 from src.concepts.algorithms.generate_lore_and_legends_algorithm import (
     GenerateLoreAndLegendsAlgorithm,
+)
+from src.concepts.algorithms.generate_mysteries_algorithm import (
+    GenerateMysteriesAlgorithm,
 )
 from src.concepts.algorithms.generate_plot_blueprints_algorithm import (
     GeneratePlotBlueprintsAlgorithm,
@@ -34,11 +43,13 @@ from src.concepts.algorithms.get_concepts_prompt_data_algorithm import (
 )
 from src.concepts.enums import ConceptType
 from src.concepts.factories.antagonists_factory import AntagonistsFactory
+from src.concepts.factories.artifacts_factory import ArtifactsFactory
 from src.concepts.factories.dilemmas_factory import (
     DilemmasFactory,
 )
 from src.concepts.factories.goals_factory import GoalsFactory
 from src.concepts.factories.lore_and_legends_factory import LoreAndLegendsFactory
+from src.concepts.factories.mysteries_factory import MysteriesFactory
 from src.concepts.factories.plot_blueprints_factory import PlotBlueprintsFactory
 from src.concepts.factories.plot_twists_factory import PlotTwistsFactory
 from src.concepts.factories.scenarios_factory import (
@@ -180,7 +191,7 @@ class StoryHubView(MethodView):
                 },
                 ConceptType.ANTAGONISTS.value: {
                     "factory_class": AntagonistsFactory,
-                    "algorithm_class": GeneratePlotTwistsAlgorithm,
+                    "algorithm_class": GenerateAntagonistsAlgorithm,
                     "response_key": ConceptType.ANTAGONISTS.value,
                     "factory_args": [
                         get_concepts_prompt_data_algorithm,
@@ -191,6 +202,24 @@ class StoryHubView(MethodView):
                     "factory_class": LoreAndLegendsFactory,
                     "algorithm_class": GenerateLoreAndLegendsAlgorithm,
                     "response_key": ConceptType.LORE_AND_LEGENDS.value,
+                    "factory_args": [
+                        get_concepts_prompt_data_algorithm,
+                        produce_tool_response_strategy_factory,
+                    ],
+                },
+                ConceptType.ARTIFACTS.value: {
+                    "factory_class": ArtifactsFactory,
+                    "algorithm_class": GenerateArtifactsAlgorithm,
+                    "response_key": ConceptType.ARTIFACTS.value,
+                    "factory_args": [
+                        get_concepts_prompt_data_algorithm,
+                        produce_tool_response_strategy_factory,
+                    ],
+                },
+                ConceptType.MYSTERIES.value: {
+                    "factory_class": MysteriesFactory,
+                    "algorithm_class": GenerateMysteriesAlgorithm,
+                    "response_key": ConceptType.MYSTERIES.value,
                     "factory_args": [
                         get_concepts_prompt_data_algorithm,
                         produce_tool_response_strategy_factory,
@@ -238,6 +267,8 @@ class StoryHubView(MethodView):
                 "dilemma": ConceptType.DILEMMAS.value,
                 "goal": ConceptType.GOALS.value,
                 "lore_or_legend": ConceptType.LORE_AND_LEGENDS.value,
+                "artifact": ConceptType.ARTIFACTS.value,
+                "mystery": ConceptType.MYSTERIES.value,
             }
 
             key = key_correlation[action_name.lower()]

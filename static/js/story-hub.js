@@ -1,6 +1,141 @@
 // static/story-hub.js
 
-function generateItemsSuccess(data, context, options) {
+// Configuration object for different item types
+const itemTypeConfigs = {
+    antagonist: {
+        itemTypeName: 'Antagonist',
+        itemsKey: 'antagonists',
+        itemClass: 'antagonist-item',
+        listClass: 'antagonists-list',
+        actionName: 'antagonist',
+        iconClass: 'fa-solid fa-skull',
+        defaultSuccessMessage: 'Antagonists generated successfully.',
+        displayMode: 'modal',
+    },
+    plot_blueprint: {
+        itemTypeName: 'Plot Blueprint',
+        itemsKey: 'plot_blueprints',
+        itemClass: 'plot-blueprint-item',
+        listClass: 'plot-blueprints-list',
+        actionName: 'plot_blueprint',
+        iconClass: 'fas fa-lightbulb',
+        defaultSuccessMessage: 'Plot blueprints generated successfully.',
+        displayMode: 'modal',
+    },
+    scenario: {
+        itemTypeName: 'Scenario',
+        itemsKey: 'scenarios',
+        listClass: 'scenarios-list',
+        itemClass: 'item-form',
+        actionName: 'scenario',
+        defaultSuccessMessage: 'Scenarios generated successfully.',
+        displayMode: 'form',
+    },
+    artifact: {
+        itemTypeName: 'Artifact',
+        itemsKey: 'artifacts',
+        itemClass: 'artifact-item',
+        listClass: 'artifacts-list',
+        actionName: 'artifact',
+        iconClass: 'fas fa-gem',
+        defaultSuccessMessage: 'Artifacts generated successfully.',
+        displayMode: 'modal',
+    },
+    dilemma: {
+        itemTypeName: 'Dilemma',
+        itemsKey: 'dilemmas',
+        listClass: 'dilemmas-list',
+        itemClass: 'item-form',
+        actionName: 'dilemma',
+        defaultSuccessMessage: 'Dilemmas generated successfully.',
+        displayMode: 'form',
+    },
+    goal: {
+        itemTypeName: 'Goal',
+        itemsKey: 'goals',
+        listClass: 'goals-list',
+        itemClass: 'item-form',
+        actionName: 'goal',
+        defaultSuccessMessage: 'Goals generated successfully.',
+        displayMode: 'form',
+    },
+    lore_or_legend: {
+        itemTypeName: 'Lore or Legend',
+        itemsKey: 'lore_and_legends',
+        itemClass: 'lore-or-legend-item',
+        listClass: 'lore-and-legends-list',
+        actionName: 'lore_or_legend',
+        iconClass: 'fas fa-dragon',
+        defaultSuccessMessage: 'Lore and legends generated successfully.',
+        displayMode: 'modal',
+    },
+    plot_twist: {
+        itemTypeName: 'Plot Twist',
+        itemsKey: 'plot_twists',
+        listClass: 'plot-twists-list',
+        itemClass: 'item-form',
+        actionName: 'plot_twist',
+        defaultSuccessMessage: 'Plot twists generated successfully.',
+        displayMode: 'form',
+    },
+    mystery: {
+        itemTypeName: 'Mystery',
+        itemsKey: 'mysteries',
+        itemClass: 'mystery-item',
+        listClass: 'mysteries-list',
+        actionName: 'mystery',
+        iconClass: 'fas fa-puzzle-piece',
+        defaultSuccessMessage: 'Mysteries generated successfully.',
+        displayMode: 'modal',
+    },
+};
+
+function generateItemsSuccess(data, context) {
+    const form = context.form;
+    const itemType = form.dataset.itemType;
+    const config = itemTypeConfigs[itemType];
+
+    if (!config) {
+        console.error(`No configuration found for item type "${itemType}"`);
+        return;
+    }
+
+    const options = {
+        defaultSuccessMessage: config.defaultSuccessMessage,
+        itemsKey: config.itemsKey,
+        listSelector: `.${config.listClass}`,
+        listClass: config.listClass,
+        itemSelector: config.itemSelector || `.${config.listClass} .${config.itemClass}`,
+        itemClass: config.itemClass,
+        actionName: config.actionName,
+        createItemElement: function(item, index) {
+            if (config.displayMode === 'modal') {
+                return createItemElement(item, index, config.itemTypeName, config.itemClass, config.actionName);
+            } else if (config.displayMode === 'form') {
+                return createItemForm(`delete_${config.actionName}`, item, index);
+            }
+        },
+        initItemClickEvents: function(itemClass, actionName) {
+            if (config.displayMode === 'modal') {
+                initItemClickEvents(itemClass, actionName);
+            } else if (config.displayMode === 'form') {
+                initItemForms();
+            }
+        },
+        afterItemAdded: function(item, itemIndex, context, options) {
+            if (config.displayMode === 'modal') {
+                const contentDiv = context.form.closest('.content');
+                const modal = createModal(item, itemIndex, config.itemTypeName, config.actionName);
+                contentDiv.appendChild(modal);
+            }
+            // No additional action needed for 'form' display mode
+        }
+    };
+
+    processItemsSuccess(data, context, options);
+}
+
+function processItemsSuccess(data, context, options) {
     if (data.success) {
         showToast(data.message || options.defaultSuccessMessage, 'success');
 
@@ -19,7 +154,7 @@ function generateItemsSuccess(data, context, options) {
                 if (noItemsMessage) {
                     noItemsMessage.remove();
                 }
-                contentDiv.appendChild(itemsList);
+                contentDiv.insertBefore(itemsList, context.form);
             } else {
                 contentDiv = itemsList.parentElement;
             }
@@ -166,126 +301,13 @@ function createItemElement(itemContent, index, itemType, itemClass, actionName) 
     header.textContent = `${itemType} ${index + 1}`;
 
     const paragraph = document.createElement('p');
-    const truncatedItem = itemContent.length > 150 ? `${itemContent.substring(0, 150)}...` : itemContent;
+    const truncatedItem = itemContent.length > 250 ? `${itemContent.substring(0, 250)}...` : itemContent;
     paragraph.textContent = truncatedItem;
 
     itemElement.appendChild(header);
     itemElement.appendChild(paragraph);
 
     return itemElement;
-}
-
-function generateAntagonistsSuccess(data, context) {
-    generateItemsSuccess(data, context, {
-        defaultSuccessMessage: 'Antagonists generated successfully.',
-        itemsKey: 'antagonists',
-        listSelector: '.antagonists-list',
-        listClass: 'antagonists-list',
-        itemSelector: '.antagonists-list .antagonist-item',
-        itemClass: 'antagonist-item',
-        actionName: 'antagonist',
-        createItemElement: function(item, index) {
-            return createItemElement(item, index, 'Antagonist', 'antagonist-item', 'antagonist');
-        },
-        initItemClickEvents: initItemClickEvents,
-        afterItemAdded: function(item, itemIndex, context, options) {
-            const contentDiv = context.form.closest('.content');
-            const modal = createModal(item, itemIndex, 'Antagonist', 'antagonist');
-            contentDiv.appendChild(modal);
-        }
-    });
-}
-
-function generatePlotBlueprintsSuccess(data, context) {
-    generateItemsSuccess(data, context, {
-        defaultSuccessMessage: 'Plot blueprints generated successfully.',
-        itemsKey: 'plot_blueprints',
-        listSelector: '.plot-blueprints-list',
-        listClass: 'plot-blueprints-list',
-        itemSelector: '.plot-blueprints-list .plot-blueprint-item',
-        itemClass: 'plot-blueprint',
-        actionName: 'plot_blueprint',
-        createItemElement: function(item, index) {
-            return createItemElement(item, index, 'Plot Blueprint', 'plot-blueprint-item', 'plot_blueprint');
-        },
-        initItemClickEvents: initItemClickEvents,
-        afterItemAdded: function(item, itemIndex, context, options) {
-            // Create and append the modal
-            const contentDiv = context.form.closest('.content');
-            const modal = createModal(item, itemIndex, 'Plot Blueprint', 'plot_blueprint');
-            contentDiv.appendChild(modal);
-        }
-    });
-}
-
-function generateScenariosSuccess(data, context) {
-    generateItemsSuccess(data, context, {
-        defaultSuccessMessage: 'Scenarios generated successfully.',
-        itemsKey: 'scenarios',
-        listSelector: '.scenarios-list',
-        listClass: 'scenarios-list',
-        itemSelector: '.scenarios-list .item-form',
-        createItemElement: createItemForm.bind(null, 'delete_scenario'),
-        initItemForms: initItemForms
-    });
-}
-
-function generateDilemmasSuccess(data, context) {
-    generateItemsSuccess(data, context, {
-        defaultSuccessMessage: 'Dilemmas generated successfully.',
-        itemsKey: 'dilemmas',
-        listSelector: '.dilemmas-list',
-        listClass: 'dilemmas-list',
-        itemSelector: '.dilemmas-list .item-form',
-        createItemElement: createItemForm.bind(null, 'delete_dilemma'),
-        initItemForms: initItemForms
-    });
-}
-
-function generateGoalsSuccess(data, context) {
-    generateItemsSuccess(data, context, {
-        defaultSuccessMessage: 'Goals generated successfully.',
-        itemsKey: 'goals',
-        listSelector: '.goals-list',
-        listClass: 'goals-list',
-        itemSelector: '.goals-list .item-form',
-        createItemElement: createItemForm.bind(null, 'delete_goal'),
-        initItemForms: initItemForms
-    });
-}
-
-function generatePlotTwistsSuccess(data, context) {
-    generateItemsSuccess(data, context, {
-        defaultSuccessMessage: 'Plot twists generated successfully.',
-        itemsKey: 'plot_twists',
-        listSelector: '.plot-twists-list',
-        listClass: 'plot-twists-list',
-        itemSelector: '.plot-twists-list .item-form',
-        createItemElement: createItemForm.bind(null, 'delete_plot_twist'),
-        initItemForms: initItemForms
-    });
-}
-
-function generateLoreAndLegendsSuccess(data, context) {
-    generateItemsSuccess(data, context, {
-        defaultSuccessMessage: 'Lore and legends generated successfully.',
-        itemsKey: 'lore_and_legends',
-        listSelector: '.lore-and-legends-list',
-        listClass: 'lore-and-legends-list',
-        itemSelector: '.lore-and-legends-list .lore-or-legend-item',
-        itemClass: 'lore-or-legend',
-        actionName: 'lore_or_legend',
-        createItemElement: function(item, index) {
-            return createItemElement(item, index, 'Lore or Legend', 'lore-or-legend-item', 'lore_or_legend');
-        },
-        initItemClickEvents: initItemClickEvents,
-        afterItemAdded: function(item, itemIndex, context, options) {
-            // Create and append the modal
-            const contentDiv = context.form.closest('.content');
-            const modal = createModal(item, itemIndex, 'Lore or Legend', 'lore_or_legend');
-            contentDiv.appendChild(modal);
-        }
-    });
 }
 
 function initItemClickEvents(itemClass, actionName) {
@@ -309,16 +331,6 @@ window.onclick = function(event) {
     });
 }
 
-function initPlotBlueprintItemForms() {
-    const plotBlueprintItems = document.querySelectorAll('.plot-blueprint-item');
-
-    plotBlueprintItems.forEach(function(item) {
-        item.onclick = function() {
-            const index = parseInt(this.getAttribute('data-index'));
-            openModal(index);
-        };
-    });
-}
 
 function initItemForms() {
     const itemForms = document.querySelectorAll('.item-form');
@@ -340,12 +352,32 @@ function initItemForms() {
 }
 
 function pageInit() {
-    // Initialize event listeners for plot blueprints
-    initItemClickEvents('plot-blueprint-item', 'plot_blueprint');
-
-    // Initialize event listeners for antagonists
-    initItemClickEvents('antagonist-item', 'antagonist');
-
-    // Initialize event listeners for other item forms if needed
-    initItemForms();
+    Object.values(itemTypeConfigs).forEach(config => {
+        if (config.displayMode === 'modal') {
+            initItemClickEvents(config.itemClass, config.actionName);
+        } else if (config.displayMode === 'form') {
+            initItemForms();
+        }
+    });
 }
+
+// Initialize on DOMContentLoaded
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize item forms and modals
+    if (typeof pageInit === 'function') {
+        pageInit();
+    }
+
+    // Initialize AJAX for Story Hub forms
+    const forms = document.querySelectorAll('form.ajax-form');
+
+    forms.forEach((form) => {
+        const errorHandlerName = form.dataset.errorHandler;
+        const errorHandler = window[errorHandlerName];
+
+        handleAjaxFormSubmit(form, {
+            onSuccess: generateItemsSuccess,
+            onError: errorHandler
+        });
+    });
+});

@@ -1,0 +1,17 @@
+Based on the following detailed descriptions of places, characters, and their memories, generate a compelling mystery for the player to investigate. The mystery should include:
+
+- A Brief Overview: Describe the unexplained event or situation.
+- Clues and Leads: Provide both genuine clues and potential red herrings that the player can follow.
+- Motive and Opportunity: Explain possible reasons why the event occurred and how characters might be involved.
+- Stakes and Consequences: Detail the potential impact of solving or ignoring the mystery on the larger story or world.
+- Resolution Paths: Offer multiple ways the mystery can be resolved based on the player's actions.
+
+Provided Elements:
+{places_descriptions}
+{player_and_followers_information}
+{known_facts}
+
+Important:
+- Craft the mystery to be engaging and rewarding to solve.
+- Avoid repeating any provided information verbatim.
+- Present the mystery directly, without numbering or preamble.
