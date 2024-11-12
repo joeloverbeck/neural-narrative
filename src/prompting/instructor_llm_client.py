@@ -44,6 +44,14 @@ class InstructorLlmClient(LlmClient):
         logging.getLogger("httpx").setLevel(logging.WARNING)
 
         self._client = client
+
+        # Hook into the exceptions of the client to log them.
+
+        def log_exception(exception: Exception):
+            print(f"An exception occurred: {str(exception)}")
+
+        self._client.on("completion:error", log_exception)
+
         self._response_model = response_model
 
         self._config_loader = config_loader or ConfigLoader()
@@ -69,6 +77,8 @@ class InstructorLlmClient(LlmClient):
                 response_model=self._response_model,
                 temperature=model.get_temperature(),
                 top_p=model.get_top_p(),
+                frequency_penalty=model.get_frequency_penalty(),
+                presence_penalty=model.get_presence_penalty(),
             )
         except ValidationError as e:
             error = f"Validation error: {str(e)}"
