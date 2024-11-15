@@ -21,6 +21,9 @@ from src.maps.composers.create_map_entry_for_playthrough_command_provider_factor
 from src.maps.factories.get_available_place_types_algorithm_composer import (
     GetAvailablePlaceTypesAlgorithmComposer,
 )
+from src.maps.factories.structure_options_for_attaching_places_algorithm_factory import (
+    StructureOptionsForAttachingPlacesAlgorithmFactory,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -69,6 +72,17 @@ class AttachPlacesView(MethodView):
             .do_algorithm()
         )
 
+        available_locations = (
+            GetAvailablePlaceTypesAlgorithmComposer(
+                playthrough_name,
+                story_universe_template,
+                TemplateType.STORY_UNIVERSE,
+                TemplateType.LOCATION,
+            )
+            .compose_algorithm()
+            .do_algorithm()
+        )
+
         available_rooms = (
             GetAvailablePlaceTypesAlgorithmComposer(
                 playthrough_name,
@@ -86,6 +100,9 @@ class AttachPlacesView(MethodView):
         regions_in_map = GetAllPlaceTypesInMapAlgorithm(
             playthrough_name, TemplateType.REGION
         ).do_algorithm()
+        areas_in_map = GetAllPlaceTypesInMapAlgorithm(
+            playthrough_name, TemplateType.AREA
+        ).do_algorithm()
         locations_in_map = GetAllPlaceTypesInMapAlgorithm(
             playthrough_name, TemplateType.LOCATION
         ).do_algorithm()
@@ -93,13 +110,33 @@ class AttachPlacesView(MethodView):
         # Prepare data for template
         return render_template(
             "attach-places.html",
-            available_worlds=available_worlds,
-            worlds_in_map=worlds_in_map,
-            available_regions=available_regions,
-            regions_in_map=regions_in_map,
-            available_areas=available_areas,
-            locations_in_map=locations_in_map,
-            available_rooms=available_rooms,
+            available_worlds=StructureOptionsForAttachingPlacesAlgorithmFactory.create_algorithm(
+                available_worlds, "name", "name"
+            ).do_algorithm(),
+            worlds_in_map=StructureOptionsForAttachingPlacesAlgorithmFactory.create_algorithm(
+                worlds_in_map, "identifier", "place_template"
+            ).do_algorithm(),
+            available_regions=StructureOptionsForAttachingPlacesAlgorithmFactory.create_algorithm(
+                available_regions, "name", "name"
+            ).do_algorithm(),
+            regions_in_map=StructureOptionsForAttachingPlacesAlgorithmFactory.create_algorithm(
+                regions_in_map, "identifier", "place_template"
+            ).do_algorithm(),
+            available_areas=StructureOptionsForAttachingPlacesAlgorithmFactory.create_algorithm(
+                available_areas, "name", "name"
+            ).do_algorithm(),
+            areas_in_map=StructureOptionsForAttachingPlacesAlgorithmFactory.create_algorithm(
+                areas_in_map, "identifier", "place_template"
+            ).do_algorithm(),
+            available_locations=StructureOptionsForAttachingPlacesAlgorithmFactory.create_algorithm(
+                available_locations
+            ).do_algorithm(),
+            locations_in_map=StructureOptionsForAttachingPlacesAlgorithmFactory.create_algorithm(
+                locations_in_map, "identifier", "place_template"
+            ).do_algorithm(),
+            available_rooms=StructureOptionsForAttachingPlacesAlgorithmFactory.create_algorithm(
+                available_rooms
+            ).do_algorithm(),  # No 'name' attributes
         )
 
     def post(self):
@@ -116,6 +153,8 @@ class AttachPlacesView(MethodView):
             return self.handle_attach_region(playthrough_name)
         elif action == "Attach Area":
             return self.handle_attach_area(playthrough_name)
+        elif action == "Attach Location":
+            return self.handle_attach_location(playthrough_name)
         elif action == "Attach Room":
             return self.handle_attach_room(playthrough_name)
         else:
@@ -185,6 +224,31 @@ class AttachPlacesView(MethodView):
         except Exception as e:
             logger.exception("Error attaching area.")
             flash(f"Error attaching area: {str(e)}", "error")
+        return redirect(url_for("attach-places"))
+
+    @staticmethod
+    def handle_attach_location(playthrough_name):
+        area_identifier = request.form.get("area_identifier")
+        location_template = request.form.get("location_template")
+        if not area_identifier or not location_template:
+            flash("Area or location not selected.", "error")
+            return redirect(url_for("attach-places"))
+
+        try:
+            CreateMapEntryForPlaythroughCommandProviderFactoryComposer(
+                playthrough_name
+            ).create_factory().create_provider(
+                area_identifier, TemplateType.LOCATION
+            ).create_command(
+                location_template
+            ).execute()
+            flash(
+                f"Location '{location_template}' attached to area successfully.",
+                "success",
+            )
+        except Exception as e:
+            logger.exception("Error attaching location.")
+            flash(f"Error attaching location: {str(e)}", "error")
         return redirect(url_for("attach-places"))
 
     @staticmethod

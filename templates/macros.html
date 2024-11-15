@@ -50,3 +50,43 @@
     </div>
 </div>
 {% endmacro %}
+
+<!-- New Macro for Attach Sections -->
+{% macro attach_section(icon, label, submit_action, fields) %}
+<div class="collapsible-section">
+    <button class="collapsible">
+        <i class="{{ icon }}"></i> {{ label }}
+    </button>
+    <div class="content">
+        <form method="post">
+            <input type="hidden" name="submit_action" value="{{ submit_action }}">
+            {% for field in fields %}
+            <label for="{{ field.id }}">{{ field.label }}</label>
+            <select name="{{ field.name }}" id="{{ field.id }}">
+                {% if field.options %}
+                {% for option in field.options %}
+                <option value="{{ option.value }}">{{ option.display }}</option>
+                {% endfor %}
+                {% else %}
+                <option value="">No options available</option>
+                {% endif %}
+            </select>
+            {% endfor %}
+            <button type="submit" class="action-button">
+                <i class="fa-solid fa-link"></i> Attach
+            </button>
+        </form>
+    </div>
+</div>
+{% endmacro %}
+
+<!-- New Macro for Navigation Buttons -->
+{% macro navigation_buttons(buttons) %}
+<div class="buttons">
+    {% for button in buttons %}
+    <a href="{{ button.url }}" class="button">
+        <i class="{{ button.icon }}"></i> {{ button.label }}
+    </a>
+    {% endfor %}
+</div>
+{% endmacro %}
