@@ -36,9 +36,13 @@ class PartyDataForPromptFactory:
             playthrough_name
         )
 
-    def get_party_data_for_prompt(self) -> dict:
+    def get_party_data_for_prompt(self, query_text: str) -> dict:
+        validate_non_empty_string(query_text, "query_text")
+
         player_data_for_prompt = (
-            self._player_data_for_prompt_factory.create_player_data_for_prompt()
+            self._player_data_for_prompt_factory.create_player_data_for_prompt(
+                query_text
+            )
         )
 
         other_characters_ids = self._other_characters_identifiers_strategy.get_data()
@@ -58,7 +62,9 @@ class PartyDataForPromptFactory:
                 "other_characters_information": (
                     other_characters_info if other_characters_info else ""
                 ),
-                "combined_memories": self._prettified_memories_factory.create_prettified_memories(),
+                "combined_memories": self._prettified_memories_factory.create_prettified_memories(
+                    query_text
+                ),
             }
         )
         return data_for_prompt

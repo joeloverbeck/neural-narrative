@@ -5,6 +5,7 @@ from typing import Optional
 from openai import BaseModel
 
 from src.base.products.text_product import TextProduct
+from src.base.tools import join_with_newline
 from src.characters.factories.relevant_characters_information_factory import (
     RelevantCharactersInformationFactory,
 )
@@ -57,9 +58,23 @@ class NarrativeBeatProvider(BaseToolResponseProvider):
         return TextProduct(response_model.narrative_beat.narrative_beat, is_valid=True)
 
     def get_prompt_kwargs(self) -> dict:
+        local_information = self._local_information_factory.get_information()
+
+        transcription = self._transcription.get_prettified_transcription()
+
+        known_facts = self._format_known_facts_algorithm.do_algorithm(
+            join_with_newline(local_information, transcription)
+        )
+
+        player_and_followers_information = (
+            self._relevant_characters_information_factory.get_information(
+                join_with_newline(local_information, transcription, known_facts)
+            )
+        )
+
         return {
-            "local_information": self._local_information_factory.get_information(),
-            "player_and_followers_information": self._relevant_characters_information_factory.get_information(),
-            "known_facts": self._format_known_facts_algorithm.do_algorithm(),
-            "transcription": self._transcription.get_prettified_transcription(),
+            "local_information": local_information,
+            "player_and_followers_information": player_and_followers_information,
+            "known_facts": known_facts,
+            "transcription": transcription,
         }

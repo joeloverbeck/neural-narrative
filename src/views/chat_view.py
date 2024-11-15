@@ -67,7 +67,7 @@ class ChatView(MethodView):
         # Retrieve essential session information
         playthrough_name, dialogue_participants, purpose = (
             session.get("playthrough_name"),
-            session.get("participants"),
+            session.get("participants", []),
             session.get("purpose"),
         )
 

@@ -20,26 +20,11 @@ Story Hub
     {{ macros.collapsible_section(concept, items) }}
     {% endfor %}
 
-    <!-- Facts Section -->
-    <div class="collapsible-section">
-        <button class="collapsible">
-            <i class="fas fa-info-circle"></i> Facts
-        </button>
-        <div class="content">
-            <form method="post" class="edit-facts-form">
-                <input name="submit_action" type="hidden" value="save_facts">
-                <label for="facts">Facts:</label>
-                <textarea id="facts" name="facts"
-                          rows="20">{{ data.facts }}</textarea>
-                <button type="submit" class="action-button">
-                    <i class="fas fa-save"></i> Save Facts
-                </button>
-            </form>
-        </div>
-    </div>
-
     <!-- Writers' Room Button -->
     <div class="action-buttons">
+        <a href="{{ url_for('facts') }}" class="action-button-unique">
+            <i class="fas fa-info-circle"></i> Facts
+        </a>
         <a href="{{ url_for('writers-room') }}" class="action-button-unique">
             <i class="fas fa-users-cog"></i> Writers' Room
         </a>

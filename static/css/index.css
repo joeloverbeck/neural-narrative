@@ -1,4 +1,4 @@
-/* index.css */
+/* static/css/index.css */
 
 /* General styles */
 .index-container {
@@ -50,6 +50,105 @@
     color: #333;
     border-bottom: 1px solid #ccc;
     padding-bottom: 10px;
+}
+
+/* Container for Cards */
+.llms-cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+/* Individual Card */
+.llm-card {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    width: 250px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.llm-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 12px rgba(0,0,0,0.2);
+}
+
+/* Card Header */
+.llm-card-header {
+    display: flex;
+    align-items: center;
+    background-color: #3f51b5;
+    color: #fff;
+    padding: 10px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.llm-card-header h3 {
+    margin: 0;
+    font-size: 1.0em;
+}
+
+/* Color Coding Based on Action Type */
+.llm-card-header.places {
+    background-color: #4CAF50; /* Green for Story */
+}
+
+.llm-card-header.characters {
+    background-color: #2196F3; /* Blue for Characters */
+}
+
+/* Orange for Concepts */
+.llm-card-header.concepts {
+    background-color: #FF9800; /* Orange */
+}
+
+/* Purple for Dialogues */
+.llm-card-header.dialogues {
+    background-color: #9C27B0; /* Purple */
+}
+
+/* Red for Actions */
+.llm-card-header.actions {
+    background-color: #F44336; /* Red */
+}
+
+/* Card Body */
+.llm-card-body {
+    padding: 15px;
+}
+
+/* Animated Dropdown */
+.llm-select {
+    position: relative;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    appearance: none;
+    background-color: #fff;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%23333" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px 16px;
+}
+
+.llm-select:hover {
+    border-color: #3f51b5;
+}
+
+.llm-select:focus {
+    border-color: #3f51b5;
+    box-shadow: 0 0 5px rgba(63, 81, 181, 0.5);
+    outline: none;
+}
+
+.llm-select.selected {
+    border-color: #28a745;
+    box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 /* Responsive adjustments */

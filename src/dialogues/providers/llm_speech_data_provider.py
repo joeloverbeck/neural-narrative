@@ -4,6 +4,7 @@ from typing import Optional
 
 from pydantic import BaseModel
 
+from src.base.tools import join_with_newline
 from src.base.validators import validate_non_empty_string
 from src.dialogues.configs.llm_speech_data_provider_algorithms_config import (
     LlmSpeechDataProviderAlgorithmsConfig,
@@ -39,7 +40,6 @@ class LlmSpeechDataProvider(BaseToolResponseProvider):
         )
 
         validate_non_empty_string(config.playthrough_name, "playthrough_name")
-        validate_non_empty_string(config.speaker_identifier, "speaker_identifier")
         validate_non_empty_string(config.speaker_name, "speaker_name")
 
         self._config = config
@@ -78,19 +78,50 @@ class LlmSpeechDataProvider(BaseToolResponseProvider):
         return ConcreteSpeechDataProduct(speech_data, is_valid=True)
 
     def get_prompt_kwargs(self) -> dict:
+        places_descriptions = (
+            self._factories_config.places_descriptions_provider.get_information()
+        )
+
         participant_details = self._format_participant_details()
 
+        dialogue_purpose = self._format_dialogue_purpose()
+
+        character_dialogue_purpose = (
+            self._algorithms_config.format_character_dialogue_purpose_algorithm.do_algorithm()
+        )
+
+        transcription = self._config.transcription.get_prettified_transcription()
+
+        known_facts = self._algorithms_config.format_known_facts_algorithm.do_algorithm(
+            join_with_newline(
+                places_descriptions,
+                participant_details,
+                dialogue_purpose,
+                character_dialogue_purpose,
+                transcription,
+            )
+        )
+
+        character_information = self._factories_config.character_information_provider_factory.create_provider(
+            join_with_newline(
+                places_descriptions,
+                participant_details,
+                dialogue_purpose,
+                character_dialogue_purpose,
+                transcription,
+                known_facts,
+            )
+        ).get_information()
+
         return {
-            "places_descriptions": self._factories_config.places_descriptions_provider.get_information(),
+            "places_descriptions": places_descriptions,
             "hour": self._time_manager.get_hour(),
             "time_group": self._time_manager.get_time_of_the_day(),
             "name": self._config.speaker_name,
             "participant_details": participant_details,
-            "character_information": self._factories_config.character_information_provider_factory.create_provider(
-                self._config.speaker_identifier
-            ).get_information(),
-            "known_facts": self._algorithms_config.format_known_facts_algorithm.do_algorithm(),
-            "dialogue_purpose": self._format_dialogue_purpose(),
-            "character_dialogue_purpose": self._algorithms_config.format_character_dialogue_purpose_algorithm.do_algorithm(),
-            "dialogue": self._config.transcription.get_prettified_transcription(),
+            "character_information": character_information,
+            "known_facts": known_facts,
+            "dialogue_purpose": dialogue_purpose,
+            "character_dialogue_purpose": character_dialogue_purpose,
+            "dialogue": transcription,
         }

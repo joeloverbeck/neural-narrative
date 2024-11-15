@@ -13,6 +13,6 @@ class SelfReflection(BaseModel):
     self_reflection: Reflection = Field(
         ...,
         description=(
-            "The meaningful and compelling self-reflection in the third-person perspective of the character. Follow the provided instructions."
+            "The meaningful and compelling self-reflection in the third-person perspective of the character about the user-provided subject. Follow the provided instructions."
         ),
     )

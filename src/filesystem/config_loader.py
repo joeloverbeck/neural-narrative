@@ -26,9 +26,7 @@ class ConfigLoader:
 
     def _crash_if_config_key_missing(self, key: str):
         if not key in self._config:
-            raise KeyError(
-                f"The config file didn't contain an entry for 'default_voice_model'."
-            )
+            raise KeyError(f"The config file didn't contain an entry for '{key}'.")
 
     def _get_config_key(self, key: str):
         self._crash_if_config_key_missing(key)
@@ -57,22 +55,16 @@ class ConfigLoader:
         return self._get_config_key("max_retries")
 
     def get_narrator_voice_model(self) -> str:
-        key = "narrator_voice_model"
-
-        if not key in self._config:
-            raise KeyError(
-                f"The config file didn't contain an entry for 'narrator_voice_model'."
-            )
-
-        return self._config[key]
+        return self._get_config_key("narrator_voice_model")
 
     def get_default_weather_icon(self) -> str:
-        key = "default_weather_icon"
+        return self._get_config_key("default_weather_icon")
 
-        if not key in self._config:
-            raise KeyError(f"The config file didn't contain an entry for '{key}'.")
+    def get_facts_to_retrieve_from_database(self) -> int:
+        return self._get_config_key("facts_to_retrieve_from_database")
 
-        return self._config[key]
+    def get_memories_to_retrieve_from_database(self) -> int:
+        return self._get_config_key("memories_to_retrieve_from_database")
 
     def load_openai_project_key(self) -> str:
         return self._load_secret_key(self._path_manager.get_openai_project_key_path())

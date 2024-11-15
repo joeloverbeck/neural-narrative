@@ -1,20 +1,30 @@
 from typing import Optional
 
-from src.concepts.repositories.facts_repository import FactsRepository
+from src.databases.abstracts.database import Database
+from src.filesystem.config_loader import ConfigLoader
 
 
 class FormatKnownFactsAlgorithm:
     def __init__(
-        self, playthrough_name: str, facts_repository: Optional[FactsRepository] = None
+        self, database: Database, config_loader: Optional[ConfigLoader] = None
     ):
+        if isinstance(database, str):
+            raise TypeError(
+                "The database should have been compatible with the Protocol Database, but was a string."
+            )
 
-        self._facts_repository = facts_repository or FactsRepository(playthrough_name)
+        self._database = database
 
-    def do_algorithm(self) -> str:
-        facts_file = self._facts_repository.load_facts_file()
+        self._config_loader = config_loader or ConfigLoader()
+
+    def do_algorithm(self, query_text: str) -> str:
+        facts = self._database.retrieve_facts(
+            query_text, self._config_loader.get_facts_to_retrieve_from_database()
+        )
 
         known_facts = ""
-        if facts_file:
-            known_facts = "Known Facts:\n" + facts_file
+
+        if facts:
+            known_facts = "Known Facts:\n" + "\n".join(facts)
 
         return known_facts

@@ -20,6 +20,7 @@ from src.views.character_voice_view import CharacterVoiceView
 from src.views.characters_hub_view import CharactersHubView
 from src.views.chat_view import ChatView
 from src.views.connections_view import ConnectionsView
+from src.views.facts_view import FactsView
 from src.views.index_view import IndexView
 from src.views.location_hub_view import LocationHubView
 from src.views.participants_view import ParticipantsView
@@ -54,6 +55,7 @@ logger = logging.getLogger(__name__)
 app.add_url_rule("/", view_func=IndexView.as_view("index"))
 app.add_url_rule("/places", view_func=PlacesView.as_view("places"))
 app.add_url_rule("/story-hub", view_func=StoryHubView.as_view("story-hub"))
+app.add_url_rule("/facts", view_func=FactsView.as_view("facts"))
 app.add_url_rule("/writers-room", view_func=WritersRoomView.as_view("writers-room"))
 app.add_url_rule(
     "/characters-hub", view_func=CharactersHubView.as_view("characters-hub")

@@ -28,6 +28,10 @@ from src.characters.participants_manager import ParticipantsManager
 from src.characters.strategies.followers_identifiers_strategy import (
     FollowersIdentifiersStrategy,
 )
+from src.concepts.composers.format_known_facts_algorithm_composer import (
+    FormatKnownFactsAlgorithmComposer,
+)
+from src.databases.chroma_db_database import ChromaDbDatabase
 from src.maps.composers.places_descriptions_provider_composer import (
     PlacesDescriptionsProviderComposer,
 )
@@ -100,10 +104,15 @@ def action_view(action_name, action_icon, action_endpoint, prompt_file):
                 ).compose_factory()
             )
 
+            format_known_facts_algorithm = FormatKnownFactsAlgorithmComposer(
+                playthrough_name
+            ).compose_algorithm()
+
             action_resolution_factory = ActionResolutionFactory(
                 playthrough_name=playthrough_name,
                 action_name=action_name,
                 action_goal=action_goal,
+                format_known_facts_algorithm=format_known_facts_algorithm,
                 produce_tool_response_strategy_factory=produce_tool_response_strategy_factory,
                 places_descriptions_factory=PlacesDescriptionsProviderComposer(
                     playthrough_name
@@ -111,8 +120,11 @@ def action_view(action_name, action_icon, action_endpoint, prompt_file):
                 players_and_followers_information_factory=players_and_followers_information_factory,
                 prompt_file=prompt_file,
             )
+
+            database = ChromaDbDatabase(playthrough_name)
+
             store_character_memory_command_factory = StoreCharacterMemoryCommandFactory(
-                playthrough_name
+                playthrough_name, database
             )
             participants = ParticipantsManager(
                 playthrough_name

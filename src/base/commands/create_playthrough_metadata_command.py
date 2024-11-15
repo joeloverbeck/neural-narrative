@@ -12,7 +12,6 @@ from src.base.constants import (
 from src.base.enums import TemplateType
 from src.base.exceptions import (
     StoryUniverseTemplateNotFoundError,
-    PlaythroughAlreadyExistsError,
 )
 from src.base.validators import validate_non_empty_string
 from src.filesystem.file_operations import (
@@ -58,14 +57,16 @@ class CreatePlaythroughMetadataCommand(Command):
         )
 
         if playthrough_exists:
-            raise PlaythroughAlreadyExistsError(
+            # We can no longer crash if the playthrough exists, because ChromaDbDatabase creates the directory
+            # upon instantiation.
+            logger.warning(
                 f"A playthrough with the name '{self._playthrough_name}' already exists."
             )
-        else:
-            # if it doesn't exist, we must create it.
-            create_directories(
-                self._path_manager.get_playthrough_path(self._playthrough_name)
-            )
+
+        # if it doesn't exist, we must create it.
+        create_directories(
+            self._path_manager.get_playthrough_path(self._playthrough_name)
+        )
 
     def _validate_story_universe_template_exists(self) -> None:
         story_universe_templates = self._templates_repository.load_templates(

@@ -1,7 +1,9 @@
 from typing import Optional, Dict
 
+from src.base.validators import validate_non_empty_string
 from src.concepts.enums import ConceptType
-from src.concepts.repositories.facts_repository import FactsRepository
+from src.databases.abstracts.database import Database
+from src.filesystem.config_loader import ConfigLoader
 from src.filesystem.file_operations import read_file, read_json_file
 from src.filesystem.path_manager import PathManager
 from src.maps.composers.places_descriptions_provider_composer import (
@@ -12,14 +14,21 @@ from src.maps.composers.places_descriptions_provider_composer import (
 class ContextLoader:
     def __init__(
         self,
-        playthrough_name,
+        playthrough_name: str,
+        user_message: str,
+        database: Database,
         path_manager: Optional[PathManager] = None,
-        facts_repository: Optional[FactsRepository] = None,
+        config_loader: Optional[ConfigLoader] = None,
     ):
+        validate_non_empty_string(playthrough_name, "playthrough_name")
+        validate_non_empty_string(user_message, "user_message")
+
         self._playthrough_name = playthrough_name
+        self._user_message = user_message
+        self._database = database
 
         self._path_manager = path_manager or PathManager()
-        self._facts_repository = facts_repository or FactsRepository(playthrough_name)
+        self._config_loader = config_loader or ConfigLoader()
 
     def load_context_variables(self) -> Dict[str, str]:
         context_file = read_file(
@@ -68,7 +77,10 @@ class ContextLoader:
 
         context_variables = {
             "context": context_file,
-            "facts": self._facts_repository.load_facts_file(),
+            "facts": self._database.retrieve_facts(
+                self._user_message + "\n" + context_file + "\n" + places_descriptions,
+                self._config_loader.get_facts_to_retrieve_from_database(),
+            ),
             "characters": characters_file,
             "places_descriptions": places_descriptions,
             ConceptType.PLOT_BLUEPRINTS.value: plot_blueprints,

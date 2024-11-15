@@ -1,6 +1,7 @@
 import json
 import logging
 import traceback
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -16,3 +17,28 @@ def generate_tool_prompt(tool: dict, tool_instructions_template: str) -> str:
 def capture_traceback():
     tb = traceback.format_exc()
     logger.error(f"{tb}")
+
+
+def join_with_newline(*args: Any) -> str:
+    """
+    Joins an arbitrary number of arguments with a newline character.
+
+    Args:
+        *args: Any number of arguments of any type.
+
+    Returns:
+        A single string with each argument separated by a newline.
+
+    Raises:
+        ValueError: If no arguments are provided.
+    """
+    if not args:
+        raise ValueError("At least one argument is required to join.")
+
+    string_args = []
+    for arg in args:
+        if not isinstance(arg, str):
+            raise TypeError(f"All arguments must be strings. Invalid argument: {arg}")
+        string_args.append(arg)
+
+    return "\n".join(string_args)

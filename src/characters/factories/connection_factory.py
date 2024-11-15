@@ -2,10 +2,10 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-from src.characters.factories.character_factory import CharacterFactory
-from src.characters.factories.character_information_provider_factory import (
-    CharacterInformationProviderFactory,
+from src.characters.composers.character_information_provider_factory_composer import (
+    CharacterInformationProviderFactoryComposer,
 )
+from src.characters.factories.character_factory import CharacterFactory
 from src.characters.products.connection_product import ConnectionProduct
 from src.filesystem.path_manager import PathManager
 from src.prompting.abstracts.abstract_factories import (
@@ -21,7 +21,7 @@ class ConnectionFactory(BaseToolResponseProvider):
         character_a_identifier: str,
         character_b_identifier: str,
         character_factory: CharacterFactory,
-        character_information_provider_factory: CharacterInformationProviderFactory,
+        character_information_provider_factory_composer: CharacterInformationProviderFactoryComposer,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         path_manager: Optional[PathManager] = None,
     ):
@@ -30,8 +30,8 @@ class ConnectionFactory(BaseToolResponseProvider):
         self._character_a_identifier = character_a_identifier
         self._character_b_identifier = character_b_identifier
         self._character_factory = character_factory
-        self._character_information_provider_factory = (
-            character_information_provider_factory
+        self._character_information_provider_factory_composer = (
+            character_information_provider_factory_composer
         )
 
     def get_user_content(self) -> str:
@@ -44,23 +44,27 @@ class ConnectionFactory(BaseToolResponseProvider):
         return self._path_manager.get_connection_generation_prompt_path()
 
     def get_prompt_kwargs(self) -> dict:
-        character_a_information = (
-            self._character_information_provider_factory.create_provider(
-                self._character_a_identifier
-            ).get_information()
-        )
-        character_b_information = (
-            self._character_information_provider_factory.create_provider(
-                self._character_b_identifier
-            ).get_information()
-        )
-
         name_a = self._character_factory.create_character(
             self._character_a_identifier
         ).name
         name_b = self._character_factory.create_character(
             self._character_b_identifier
         ).name
+
+        character_a_information = (
+            self._character_information_provider_factory_composer.compose_factory(
+                self._character_a_identifier
+            )
+            .create_provider(name_b)
+            .get_information()
+        )
+        character_b_information = (
+            self._character_information_provider_factory_composer.compose_factory(
+                self._character_b_identifier
+            )
+            .create_provider(name_a)
+            .get_information()
+        )
 
         return {
             "character_a_information": character_a_information,

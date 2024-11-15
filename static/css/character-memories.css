@@ -40,14 +40,8 @@ input[type="submit"] {
     line-height: 1.6;
     text-align: left;
     color: #333;
-    cursor: pointer;
     transition: background-color 0.3s ease;
     position: relative;
-}
-
-.self-reflection-container:hover,
-.worldview-container:hover {
-    background-color: #f0f0f0;
 }
 
 .token-count {

@@ -4,6 +4,7 @@ from src.base.validators import validate_non_empty_string, validate_list_of_str
 from src.characters.factories.store_character_memory_command_factory import (
     StoreCharacterMemoryCommandFactory,
 )
+from src.databases.chroma_db_database import ChromaDbDatabase
 from src.dialogues.factories.dialogue_summary_provider_factory import (
     DialogueSummaryProviderFactory,
 )
@@ -36,8 +37,10 @@ class SummarizeDialogueCommandFactoryComposer:
             produce_tool_response_strategy_factory
         )
 
+        database = ChromaDbDatabase(self._playthrough_name)
+
         store_character_memory_command_factory = StoreCharacterMemoryCommandFactory(
-            self._playthrough_name
+            self._playthrough_name, database
         )
 
         return SummarizeDialogueCommandFactory(

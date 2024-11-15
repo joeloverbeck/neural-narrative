@@ -1,4 +1,4 @@
-Based on the following character information and memories of {name}, write a third-person text that articulates {name}'s worldview, including their philosophical beliefs and moral standings.
+Based on the following character information and memories of {name}, write a third-person text that articulates {name}'s worldview, including their philosophical beliefs and moral standings, about the user-provided subject.
 The narrative should be meaningful and compelling, exploring {name}'s core beliefs, values, and perspectives on life.
 Consider how {name}'s experiences have shaped their understanding of reality, ethics, human nature, and society.
 Reflect on how they perceive themselves and the world, and how they reason through complex topics.

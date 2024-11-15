@@ -5,7 +5,6 @@ from src.base.products.text_product import TextProduct
 from src.characters.character import Character
 from src.characters.factories.self_reflection_factory import SelfReflectionFactory
 from src.characters.models.self_reflection import SelfReflection
-from src.filesystem.file_operations import append_to_file
 from src.filesystem.path_manager import PathManager
 
 logger = logging.getLogger(__name__)
@@ -36,13 +35,6 @@ class ProduceSelfReflectionAlgorithm:
             raise ValueError(
                 f"Failed to generate the self-reflection. Error: {product.get_error()}"
             )
-
-        append_to_file(
-            self._path_manager.get_memories_path(
-                self._playthrough_name, self._character.identifier, self._character.name
-            ),
-            "\n" + product.get(),
-        )
 
         logger.info("Generated the self-reflection.")
 

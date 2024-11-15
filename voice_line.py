@@ -40,9 +40,9 @@ def main():
     generate_voice_line(
         "20241025140017-Elias Blackwood-molagbal",
         "20241025140059-Gideon Harrow-dbspectrallachance.wav",
-        "narrator",
-        "Elias, his hands trembling, cuts a morsel of the morphing, pulsating mass of dead Emilia's cheek, the raises the morsel slowly toward his open mouth.",
-        "tulius",
+        "Kael",
+        "The Echoflora has its secrets, just like us. The initiation chamber... it's designed to test your inner strength, your resolve. What you experienced there, the visions, the sensations - they're a reflection of your own mind. The stronger your will, the more you'll gain from the experience. But remember, not everything is as it seems. The sanctuary's teachings are a double-edged sword; they can empower you or consume you, depending on how you wield them.",
+        "npcfmarleneglass",
     )
 
 

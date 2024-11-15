@@ -3,6 +3,7 @@ from typing import Optional
 from pydantic import BaseModel
 
 from src.base.playthrough_manager import PlaythroughManager
+from src.base.tools import join_with_newline
 from src.filesystem.path_manager import PathManager
 from src.movements.configs.travel_narration_factory_config import (
     TravelNarrationFactoryConfig,
@@ -51,6 +52,7 @@ class TravelNarrationFactory(BaseToolResponseProvider):
         current_place_data = self._factories_config.get_place_full_data_algorithm_factory.create_algorithm(
             current_place_identifier
         ).do_algorithm()
+
         destination_place_data = self._factories_config.get_place_full_data_algorithm_factory.create_algorithm(
             self._config.destination_identifier
         ).do_algorithm()
@@ -59,16 +61,25 @@ class TravelNarrationFactory(BaseToolResponseProvider):
             self._playthrough_manager.get_player_identifier()
         ).name
 
+        origin_area_description = current_place_data["area_data"]["description"]
+        destination_area_description = destination_place_data["area_data"][
+            "description"
+        ]
+
         prompt_data = {
             "travel_context": self._config.travel_context,
             "time_of_day": self._time_manager.get_time_of_the_day(),
             "origin_area_template": self._factories_config.map_manager_factory.create_map_manager().get_current_place_template(),
-            "origin_area_description": current_place_data["area_data"]["description"],
+            "origin_area_description": origin_area_description,
             "destination_area_template": destination_place_data["area_data"]["name"],
-            "destination_area_description": destination_place_data["area_data"][
-                "description"
-            ],
-            "player_and_followers_information": self._factories_config.player_and_followers_information_factory.get_information(),
+            "destination_area_description": destination_area_description,
+            "player_and_followers_information": self._factories_config.player_and_followers_information_factory.get_information(
+                join_with_newline(
+                    self._config.travel_context,
+                    origin_area_description,
+                    destination_area_description,
+                )
+            ),
             "player_name": player_name,
         }
 

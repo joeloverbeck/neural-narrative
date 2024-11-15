@@ -2,6 +2,7 @@ from typing import Optional
 
 from pydantic import BaseModel
 
+from src.base.tools import join_with_newline
 from src.filesystem.path_manager import PathManager
 from src.maps.configs.filtered_place_description_generation_factory_algorithms_config import (
     FilteredPlaceDescriptionGenerationFactoryAlgorithmsConfig,
@@ -52,19 +53,25 @@ class ConcreteFilteredPlaceDescriptionGenerationFactory(BaseToolResponseProvider
             self._algorithms_config.get_place_full_data_algorithm.do_algorithm()
         )
         place_data = place_full_data[f"{place_type.value}_data"]
+
+        weather = self._factories_config.weathers_manager.get_weather_description(
+            self._algorithms_config.get_current_weather_identifier_algorithm.do_algorithm()
+        )
+        place_description = place_data["description"]
+
         data_for_prompt = {
             "hour": self._time_manager.get_hour(),
             "time_of_the_day": self._time_manager.get_time_of_the_day(),
-            "weather": self._factories_config.weathers_manager.get_weather_description(
-                self._algorithms_config.get_current_weather_identifier_algorithm.do_algorithm()
-            ),
+            "weather": weather,
             "place_type": place_type.value,
             "place_template": place_data["name"],
-            "place_description": place_data["description"],
+            "place_description": place_description,
         }
         data_for_prompt.update(
             {
-                "character_information": self._factories_config.character_information_factory.get_information()
+                "character_information": self._factories_config.character_information_provider_factory.create_provider(
+                    join_with_newline(weather, place_description)
+                ).get_information()
             }
         )
         return data_for_prompt

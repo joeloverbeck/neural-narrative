@@ -1,11 +1,11 @@
 from typing import Optional
 
 from src.base.validators import validate_non_empty_string
-from src.characters.factories.character_information_provider_factory import (
-    CharacterInformationProviderFactory,
+from src.characters.composers.character_information_provider_factory_composer import (
+    CharacterInformationProviderFactoryComposer,
 )
-from src.concepts.algorithms.format_known_facts_algorithm import (
-    FormatKnownFactsAlgorithm,
+from src.concepts.composers.format_known_facts_algorithm_composer import (
+    FormatKnownFactsAlgorithmComposer,
 )
 from src.dialogues.factories.format_character_dialogue_purpose_algorithm_factory import (
     FormatCharacterDialoguePurposeAlgorithmFactory,
@@ -45,15 +45,19 @@ class LlmSpeechDataProviderFactoryComposer:
             self._playthrough_name
         ).compose_provider()
 
-        character_information_provider_factory = CharacterInformationProviderFactory(
-            self._playthrough_name
+        character_information_provider_factory_composer = (
+            CharacterInformationProviderFactoryComposer(
+                self._playthrough_name,
+            )
         )
 
         format_character_dialogue_purpose_algorithm_factory = (
             FormatCharacterDialoguePurposeAlgorithmFactory(self._playthrough_name)
         )
 
-        format_known_facts_algorithm = FormatKnownFactsAlgorithm(self._playthrough_name)
+        format_known_facts_algorithm = FormatKnownFactsAlgorithmComposer(
+            self._playthrough_name
+        ).compose_algorithm()
 
         return LlmSpeechDataProviderFactory(
             self._playthrough_name,
@@ -63,5 +67,5 @@ class LlmSpeechDataProviderFactoryComposer:
             format_known_facts_algorithm,
             produce_tool_response_strategy_factory,
             places_descriptions_provider,
-            character_information_provider_factory,
+            character_information_provider_factory_composer,
         )

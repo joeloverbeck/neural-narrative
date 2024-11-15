@@ -6,6 +6,7 @@ from openai import OpenAI
 from swarm import Swarm
 
 from src.base.constants import OPENROUTER_API_URL
+from src.databases.chroma_db_database import ChromaDbDatabase
 from src.filesystem.config_loader import ConfigLoader
 from src.filesystem.file_operations import (
     remove_file,
@@ -108,9 +109,11 @@ class WritersRoomView(MethodView):
         # Try to recover the context variables from the repository.
         context_variables = writers_room_session_repository.get_context_variables()
 
+        database = ChromaDbDatabase(playthrough_name)
+
         if not context_variables:
             # Prepare context variables using ContextLoader
-            context_loader = ContextLoader(playthrough_name)
+            context_loader = ContextLoader(playthrough_name, user_message, database)
             context_variables = context_loader.load_context_variables()
 
         # Get agent key

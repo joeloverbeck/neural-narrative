@@ -7,7 +7,19 @@ from src.characters.characters_manager import CharactersManager
 from src.characters.commands.generate_character_secrets_command import (
     GenerateCharacterSecretsCommand,
 )
+from src.characters.configs.secrets_factory_config import SecretsFactoryConfig
+from src.characters.configs.secrets_factory_factories_config import (
+    SecretsFactoryFactoriesConfig,
+)
+from src.characters.factories.character_factory import CharacterFactory
+from src.characters.factories.retrieve_memories_algorithm_factory import (
+    RetrieveMemoriesAlgorithmFactory,
+)
 from src.characters.factories.secrets_factory import SecretsFactory
+from src.concepts.composers.format_known_facts_algorithm_composer import (
+    FormatKnownFactsAlgorithmComposer,
+)
+from src.databases.chroma_db_database import ChromaDbDatabase
 from src.maps.composers.places_descriptions_provider_composer import (
     PlacesDescriptionsProviderComposer,
 )
@@ -61,17 +73,36 @@ class CharacterSecretsView(MethodView):
                         Llms().for_secrets_generation(),
                     ).compose_factory()
                 )
+
+                database = ChromaDbDatabase(playthrough_name)
+
+                format_known_facts_algorithm = FormatKnownFactsAlgorithmComposer(
+                    playthrough_name
+                ).compose_algorithm()
+
+                retrieve_memories_algorithm_factory = RetrieveMemoriesAlgorithmFactory(
+                    database
+                )
+
+                character_factory = CharacterFactory(playthrough_name)
+
                 secrets_factory = SecretsFactory(
-                    playthrough_name,
-                    character_identifier,
-                    produce_tool_response_strategy_factory,
+                    SecretsFactoryConfig(playthrough_name, character_identifier),
+                    format_known_facts_algorithm,
                     PlacesDescriptionsProviderComposer(
                         playthrough_name
                     ).compose_provider(),
+                    SecretsFactoryFactoriesConfig(
+                        produce_tool_response_strategy_factory,
+                        retrieve_memories_algorithm_factory,
+                        character_factory,
+                    ),
                 )
+
                 command = GenerateCharacterSecretsCommand(
                     playthrough_name, character_identifier, secrets_factory
                 )
+
                 try:
                     command.execute()
                     session["secrets_generated_message"] = (

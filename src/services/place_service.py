@@ -5,8 +5,8 @@ from src.base.enums import TemplateType
 from src.base.playthrough_manager import PlaythroughManager
 from src.base.validators import validate_non_empty_string
 from src.characters.character import Character
-from src.characters.factories.character_information_provider import (
-    CharacterInformationProvider,
+from src.characters.composers.character_information_provider_factory_composer import (
+    CharacterInformationProviderFactoryComposer,
 )
 from src.maps.abstracts.factory_products import (
     CardinalConnectionCreationProduct,
@@ -111,9 +111,6 @@ class PlaceService:
 
     def describe_place(self, playthrough_name: str):
         playthrough_manager = PlaythroughManager(playthrough_name)
-        character_information_factory = CharacterInformationProvider(
-            playthrough_name, playthrough_manager.get_player_identifier()
-        )
 
         current_place_identifier = playthrough_manager.get_current_place_identifier()
 
@@ -128,9 +125,16 @@ class PlaceService:
         )
         place_manager_factory = PlaceManagerFactory(playthrough_name)
         weathers_manager = WeathersManager()
+
+        character_information_provider_factory = (
+            CharacterInformationProviderFactoryComposer(
+                playthrough_name
+            ).compose_factory(playthrough_manager.get_player_identifier())
+        )
+
         factories_config = FilteredPlaceDescriptionGenerationFactoryFactoriesConfig(
             produce_tool_response_strategy_factory,
-            character_information_factory,
+            character_information_provider_factory,
             place_manager_factory,
             weathers_manager,
         )

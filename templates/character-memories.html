@@ -1,3 +1,4 @@
+<!-- templates/character-memories.html -->
 {% extends "base.html" %}
 
 {% block title %}Character Memories{% endblock %}
@@ -32,21 +33,42 @@
     </div>
 
     {% if selected_character %}
-    <!-- Edit Memories Section -->
+    <!-- Insert Memory Section -->
     <div class="collapsible-section">
         <button class="collapsible">
-            <i class="fas fa-book"></i> Memories of {{ selected_character.name }}
+            <i class="fas fa-book"></i> Insert Memory
         </button>
         <div class="content">
-            <form method="post" class="edit-memories-form">
+            <form method="post" class="ajax-form" data-success-handler="insertMemorySuccessHandler">
                 <input name="character_identifier" type="hidden" value="{{ selected_character.identifier }}">
-                <input name="submit_action" type="hidden" value="save_memories">
-                <label for="character_memories">Memories:</label>
-                <textarea id="character_memories" name="character_memories"
-                          rows="20">{{ character_memories }}</textarea>
-                <p class="token-count">{{ token_count }} tokens</p>
+                <input name="submit_action" type="hidden" value="insert_memory">
+                <label for="character_memory">Memory:</label>
+                <textarea id="character_memory" name="character_memory" rows="5"></textarea>
                 <button type="submit" class="action-button">
-                    <i class="fas fa-save"></i> Save Memories
+                    <i class="fas fa-circle-plus"></i> Insert Memory
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Query Memories Section -->
+    <div class="collapsible-section">
+        <button class="collapsible">
+            <i class="fas fa-search"></i> Query Memories
+        </button>
+        <div class="content">
+            <!-- Placeholder for displaying the results -->
+            <div id="query-results"></div>
+
+            <form method="post" class="ajax-form" data-success-handler="queryDatabaseSuccessHandler">
+                <input name="character_identifier" type="hidden" value="{{ selected_character.identifier }}">
+                <input name="submit_action" type="hidden" value="query_memories">
+                <label for="query">Enter your query:</label>
+                <textarea id="query" name="query" rows="3"></textarea>
+                <label for="top_k">Number of results:</label>
+                <input type="number" id="top_k" name="top_k" value="5" min="1" max="20">
+                <button type="submit" class="action-button">
+                    <i class="fas fa-search"></i> Search
                 </button>
             </form>
         </div>
@@ -71,6 +93,8 @@
                   data-success-handler="resolveSelfReflectionSuccess">
                 <input name="character_identifier" type="hidden" value="{{ selected_character.identifier }}">
                 <input name="submit_action" type="hidden" value="produce_self_reflection">
+                <label for="self_reflection_subject">Enter the subject to self-reflect about:</label>
+                <textarea id="self_reflection_subject" name="self_reflection_subject" rows="3"></textarea>
                 <button type="submit" class="action-button">
                     <i class="fas fa-sync-alt"></i> Produce Self-Reflection
                 </button>
@@ -97,6 +121,8 @@
                   data-success-handler="resolveWorldviewSuccess">
                 <input name="character_identifier" type="hidden" value="{{ selected_character.identifier }}">
                 <input name="submit_action" type="hidden" value="produce_worldview">
+                <label for="worldview_subject">Enter the subject to produce a worldview about:</label>
+                <textarea id="worldview_subject" name="worldview_subject" rows="3"></textarea>
                 <button type="submit" class="action-button">
                     <i class="fas fa-sync-alt"></i> Produce Worldview
                 </button>

@@ -1,6 +1,9 @@
 from src.characters.factories.character_generation_guidelines_provider_factory import (
     CharacterGenerationGuidelinesProviderFactory,
 )
+from src.concepts.composers.format_known_facts_algorithm_composer import (
+    FormatKnownFactsAlgorithmComposer,
+)
 from src.maps.composers.get_current_weather_identifier_algorithm_composer import (
     GetCurrentWeatherIdentifierAlgorithmComposer,
 )
@@ -63,8 +66,13 @@ class CharacterGenerationGuidelinesProviderFactoryComposer:
         )
         place_manager_factory = PlaceManagerFactory(self._playthrough_name)
 
+        format_known_facts_algorithm = FormatKnownFactsAlgorithmComposer(
+            self._playthrough_name
+        ).compose_algorithm()
+
         return CharacterGenerationGuidelinesProviderFactory(
             self._playthrough_name,
+            format_known_facts_algorithm,
             produce_tool_response_strategy_factory,
             places_description_provider,
             place_manager_factory,

@@ -2,10 +2,8 @@ import logging
 from typing import cast, Optional
 
 from src.base.products.text_product import TextProduct
-from src.characters.character import Character
 from src.characters.factories.worldview_factory import WorldviewFactory
 from src.characters.models.worldview import Worldview
-from src.filesystem.file_operations import append_to_file
 from src.filesystem.path_manager import PathManager
 
 logger = logging.getLogger(__name__)
@@ -36,15 +34,6 @@ class ProduceWorldviewAlgorithm:
             raise ValueError(
                 f"Failed to generate the worldview. Error: {product.get_error()}"
             )
-
-        character = Character(self._playthrough_name, self._character_identifier)
-
-        append_to_file(
-            self._path_manager.get_memories_path(
-                self._playthrough_name, character.identifier, character.name
-            ),
-            "\n" + product.get(),
-        )
 
         logger.info("Generated the worldview.")
 

@@ -442,6 +442,63 @@ h1.page-title i {
     text-align: left;
 }
 
+/* Styles for database query results */
+.query-list li {
+    display: flex;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.6s forwards;
+    animation-delay: calc(0.3s * var(--i));
+    align-items: center;
+    background-color: #f9f9f9;
+    margin-bottom: 10px;
+    padding: 15px;
+    border-radius: 8px;
+    line-height: 1.6;
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.query-list li i {
+    font-size: 24px;
+    color: #3f51b5;
+}
+
+/* Big info message */
+.big-info-message {
+    font-size: 18px;
+    color: #666;
+    text-align: center;
+    margin: 20px 0;
+}
+
+.big-info-message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f0f4f8, #d9e2ec);
+    border: 2px dashed #3f51b5;
+    border-radius: 15px;
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 600px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    font-size: 18px;
+    color: #333;
+    position: relative;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+
+.big-info-message:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
 /* Responsive adjustments */
 @media (max-width: 600px) {
     .button {

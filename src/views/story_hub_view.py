@@ -1,6 +1,6 @@
 import logging
 
-from flask import session, redirect, url_for, render_template, request, jsonify, flash
+from flask import session, redirect, url_for, render_template, request, jsonify
 from flask.views import MethodView
 
 from src.base.tools import capture_traceback
@@ -9,9 +9,6 @@ from src.characters.composers.relevant_characters_information_factory_composer i
 )
 from src.characters.strategies.followers_identifiers_strategy import (
     FollowersIdentifiersStrategy,
-)
-from src.concepts.algorithms.format_known_facts_algorithm import (
-    FormatKnownFactsAlgorithm,
 )
 from src.concepts.algorithms.generate_antagonists_algorithm import (
     GenerateAntagonistsAlgorithm,
@@ -44,6 +41,9 @@ from src.concepts.algorithms.generate_scenarios_algorithm import (
 from src.concepts.algorithms.get_concepts_prompt_data_algorithm import (
     GetConceptsPromptDataAlgorithm,
 )
+from src.concepts.composers.format_known_facts_algorithm_composer import (
+    FormatKnownFactsAlgorithmComposer,
+)
 from src.concepts.enums import ConceptType
 from src.concepts.factories.antagonists_factory import AntagonistsFactory
 from src.concepts.factories.artifacts_factory import ArtifactsFactory
@@ -59,7 +59,6 @@ from src.concepts.factories.plot_twists_factory import PlotTwistsFactory
 from src.concepts.factories.scenarios_factory import (
     ScenariosFactory,
 )
-from src.concepts.repositories.facts_repository import FactsRepository
 from src.filesystem.file_operations import (
     create_directories,
     create_empty_json_file_if_not_exists,
@@ -67,7 +66,6 @@ from src.filesystem.file_operations import (
     write_json_file,
 )
 from src.filesystem.path_manager import PathManager
-from src.interfaces.web_interface_manager import WebInterfaceManager
 from src.maps.composers.places_descriptions_provider_composer import (
     PlacesDescriptionsProviderComposer,
 )
@@ -164,8 +162,6 @@ class StoryHubView(MethodView):
             },
         ]
 
-        data["facts"] = FactsRepository(playthrough_name).load_facts_file()
-
         return render_template("story-hub.html", concepts=concepts, data=data)
 
     @staticmethod
@@ -201,7 +197,9 @@ class StoryHubView(MethodView):
         if action.startswith("generate_"):
             action_name = action[len("generate_") :]
 
-            format_known_facts_algorithm = FormatKnownFactsAlgorithm(playthrough_name)
+            format_known_facts_algorithm = FormatKnownFactsAlgorithmComposer(
+                playthrough_name
+            ).compose_algorithm()
 
             get_concepts_prompt_data_algorithm = GetConceptsPromptDataAlgorithm(
                 playthrough_name,
@@ -358,14 +356,6 @@ class StoryHubView(MethodView):
             else:
                 logger.warning("'%s' wasn't in the concepts file!", action_name.lower())
 
-            return redirect(url_for("story-hub"))
-        elif action == "save_facts":
-            facts = request.form.get("facts", "")
-            facts = WebInterfaceManager.remove_excessive_newline_characters(facts)
-
-            FactsRepository(playthrough_name_obj).save_facts(facts)
-
-            flash("Facts saved.", "success")
             return redirect(url_for("story-hub"))
         else:
             return redirect(url_for("story-hub"))

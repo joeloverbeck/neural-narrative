@@ -311,6 +311,10 @@ class PathManager:
         return cls.PLAYTHROUGHS_DIR / f"{playthrough_name}"
 
     @classmethod
+    def get_database_path(cls, playthrough_name: str) -> Path:
+        return cls.get_playthrough_path(playthrough_name) / "database"
+
+    @classmethod
     def get_static_playthrough_path(cls, playthrough_name: str) -> Path:
         return cls.STATIC_PLAYTHROUGHS_DIR / f"{playthrough_name}"
 
@@ -369,17 +373,6 @@ class PathManager:
         )
 
     @classmethod
-    def get_memories_path(
-        cls, playthrough_name: str, character_identifier: str, character_name: str
-    ):
-        return (
-            cls.get_character_path(
-                playthrough_name, character_identifier, character_name
-            )
-            / "memories.txt"
-        )
-
-    @classmethod
     def get_purpose_path(
         cls, playthrough_name: str, character_identifier: str, character_name: str
     ):
@@ -412,10 +405,6 @@ class PathManager:
     @classmethod
     def get_concepts_file_path(cls, playthrough_name: str):
         return cls.get_concepts_path(playthrough_name) / "concepts.json"
-
-    @classmethod
-    def get_facts_path(cls, playthrough_name: str) -> Path:
-        return cls.get_playthrough_path(playthrough_name) / "facts.txt"
 
     @classmethod
     def get_ongoing_dialogue_path(cls, playthrough_name: str) -> Path:

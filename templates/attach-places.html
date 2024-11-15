@@ -91,6 +91,35 @@
         </div>
     </div>
 
+    <!-- Attach Room Section -->
+    <div class="collapsible-section">
+        <button class="collapsible">
+            <i class="fa-solid fa-person-shelter"></i> Attach Room
+        </button>
+        <div class="content">
+            <form method="post">
+                <input type="hidden" name="submit_action" value="Attach Room">
+                <!-- Select Location -->
+                <label for="location_identifier">Choose a location:</label>
+                <select name="location_identifier" id="location_identifier">
+                    {% for location in locations_in_map %}
+                    <option value="{{ location.identifier }}">{{ location.place_template }}</option>
+                    {% endfor %}
+                </select>
+                <!-- Select Room -->
+                <label for="room_template">Choose a room to attach:</label>
+                <select name="room_template" id="room_template">
+                    {% for room in available_rooms %}
+                    <option value="{{ room }}">{{ room }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="action-button">
+                    <i class="fa-solid fa-link"></i> Attach to Location
+                </button>
+            </form>
+        </div>
+    </div>
+
     <!-- Navigation Buttons -->
     <div class="buttons">
         <a href="{{ url_for('location-hub') }}" class="button">

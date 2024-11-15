@@ -69,11 +69,25 @@ class AttachPlacesView(MethodView):
             .do_algorithm()
         )
 
+        available_rooms = (
+            GetAvailablePlaceTypesAlgorithmComposer(
+                playthrough_name,
+                story_universe_template,
+                TemplateType.STORY_UNIVERSE,
+                TemplateType.ROOM,
+            )
+            .compose_algorithm()
+            .do_algorithm()
+        )
+
         worlds_in_map = GetAllPlaceTypesInMapAlgorithm(
             playthrough_name, TemplateType.WORLD
         ).do_algorithm()
         regions_in_map = GetAllPlaceTypesInMapAlgorithm(
             playthrough_name, TemplateType.REGION
+        ).do_algorithm()
+        locations_in_map = GetAllPlaceTypesInMapAlgorithm(
+            playthrough_name, TemplateType.LOCATION
         ).do_algorithm()
 
         # Prepare data for template
@@ -84,6 +98,8 @@ class AttachPlacesView(MethodView):
             available_regions=available_regions,
             regions_in_map=regions_in_map,
             available_areas=available_areas,
+            locations_in_map=locations_in_map,
+            available_rooms=available_rooms,
         )
 
     def post(self):
@@ -100,6 +116,8 @@ class AttachPlacesView(MethodView):
             return self.handle_attach_region(playthrough_name)
         elif action == "Attach Area":
             return self.handle_attach_area(playthrough_name)
+        elif action == "Attach Room":
+            return self.handle_attach_room(playthrough_name)
         else:
             logger.warning(f"Unknown action '{action}' in PlacesView.")
             return redirect(url_for("attach-places"))
@@ -167,4 +185,29 @@ class AttachPlacesView(MethodView):
         except Exception as e:
             logger.exception("Error attaching area.")
             flash(f"Error attaching area: {str(e)}", "error")
+        return redirect(url_for("attach-places"))
+
+    @staticmethod
+    def handle_attach_room(playthrough_name):
+        location_identifier = request.form.get("location_identifier")
+        room_template = request.form.get("room_template")
+
+        if not location_identifier or not room_template:
+            flash("Location or room not selected.", "error")
+            return redirect(url_for("attach-places"))
+
+        try:
+            CreateMapEntryForPlaythroughCommandProviderFactoryComposer(
+                playthrough_name
+            ).create_factory().create_provider(
+                location_identifier, TemplateType.ROOM
+            ).create_command(
+                room_template
+            ).execute()
+            flash(
+                f"Room '{room_template}' attached to location successfully.", "success"
+            )
+        except Exception as e:
+            logger.exception("Error attaching room.")
+            flash(f"Error attaching room: {str(e)}", "error")
         return redirect(url_for("attach-places"))

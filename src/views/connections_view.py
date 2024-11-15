@@ -5,14 +5,15 @@ from src.characters.characters_manager import CharactersManager
 from src.characters.commands.generate_connection_command import (
     GenerateConnectionCommand,
 )
-from src.characters.factories.character_factory import CharacterFactory
-from src.characters.factories.character_information_provider_factory import (
-    CharacterInformationProviderFactory,
+from src.characters.composers.character_information_provider_factory_composer import (
+    CharacterInformationProviderFactoryComposer,
 )
+from src.characters.factories.character_factory import CharacterFactory
 from src.characters.factories.connection_factory import ConnectionFactory
 from src.characters.factories.store_character_memory_command_factory import (
     StoreCharacterMemoryCommandFactory,
 )
+from src.databases.chroma_db_database import ChromaDbDatabase
 from src.prompting.composers.produce_tool_response_strategy_factory_composer import (
     ProduceToolResponseStrategyFactoryComposer,
 )
@@ -49,14 +50,14 @@ class ConnectionsView(MethodView):
                 {"success": False, "error": "Please select two different characters."}
             )
         try:
-
             produce_tool_response_strategy_factory = (
                 ProduceToolResponseStrategyFactoryComposer(
                     Llms().for_character_connection(),
                 ).compose_factory()
             )
-            character_information_provider_factory = (
-                CharacterInformationProviderFactory(playthrough_name)
+
+            character_information_provider_factory_composer = (
+                CharacterInformationProviderFactoryComposer(playthrough_name)
             )
 
             character_factory = CharacterFactory(playthrough_name)
@@ -65,11 +66,14 @@ class ConnectionsView(MethodView):
                 character_a_identifier,
                 character_b_identifier,
                 character_factory,
-                character_information_provider_factory,
+                character_information_provider_factory_composer,
                 produce_tool_response_strategy_factory,
             )
+
+            database = ChromaDbDatabase(playthrough_name)
+
             store_character_memory_command_factory = StoreCharacterMemoryCommandFactory(
-                playthrough_name
+                playthrough_name, database
             )
             command = GenerateConnectionCommand(
                 character_a_identifier,

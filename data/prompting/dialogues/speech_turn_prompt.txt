@@ -29,4 +29,6 @@ Maintain Roleplay Integrity:
 ----
 Ongoing Dialogue:
 {dialogue}
-Important: don't repeat verbatim lines of the dialogue provided.
+Important:
+- Don't repeat verbatim lines of the dialogue provided.
+- Don't mark regular speech with asterisks.

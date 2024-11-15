@@ -1,5 +1,10 @@
 /* static/css/chat.css */
 
+/* Need this to center the images for adding or removing participants */
+.content label {
+    text-align: center;
+}
+
 .chat-window {
     border: 1px solid #ccc;
     padding: 15px;

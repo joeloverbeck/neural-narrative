@@ -5,6 +5,7 @@ from typing import Optional
 from pydantic import BaseModel
 
 from src.base.products.text_product import TextProduct
+from src.base.tools import join_with_newline
 from src.base.validators import validate_non_empty_string
 from src.characters.factories.relevant_characters_information_factory import (
     RelevantCharactersInformationFactory,
@@ -68,11 +69,29 @@ class ConfrontationRoundProvider(BaseToolResponseProvider):
         return TextProduct(response_model.confrontation_round.narration, is_valid=True)
 
     def get_prompt_kwargs(self) -> dict:
+        local_information = self._local_information_factory.get_information()
+
+        transcription = self._transcription.get_prettified_transcription()
+
+        known_facts = self._format_known_facts_algorithm.do_algorithm(
+            join_with_newline(
+                self._confrontation_context,
+                local_information,
+                transcription,
+            )
+        )
+
+        relevant_characters_information = (
+            self._relevant_characters_information_factory.get_information(
+                join_with_newline(local_information, transcription, known_facts)
+            )
+        )
+
         return {
             "hour": self._time_manager.get_hour(),
             "time_of_day": self._time_manager.get_time_of_the_day(),
-            "local_information": self._local_information_factory.get_information(),
-            "known_facts": self._format_known_facts_algorithm.do_algorithm(),
-            "relevant_characters_information": self._relevant_characters_information_factory.get_information(),
-            "transcription": self._transcription.get_prettified_transcription(),
+            "local_information": local_information,
+            "known_facts": known_facts,
+            "relevant_characters_information": relevant_characters_information,
+            "transcription": transcription,
         }

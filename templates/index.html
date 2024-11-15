@@ -89,6 +89,40 @@ Neural Narrative
         </div>
     </div>
 
+    <!-- LLMs Section -->
+    <div class="collapsible-section">
+        <button class="collapsible">
+            <i class="fas fa-robot"></i> LLMs
+        </button>
+        <div class="content">
+            <form action="/" method="post" class="ajax-form" data-success-handler="updateLlmsSuccess">
+                <input type="hidden" name="submit_action" value="update_llms">
+                <div class="llms-cards-container">
+                    {% for action_type in action_types %}
+                    <div class="llm-card">
+                        <div class="llm-card-header {{ llms_repository.get_action_type_category(action_type) }}">
+                            <h3>{{ action_type.replace("_", " ") }}</h3>
+                        </div>
+                        <div class="llm-card-body">
+                            <select name="llms_mapping[{{ action_type }}]" class="llm-select">
+                                {% for llm_name in models.keys() %}
+                                <option value="{{ llm_name }}" {% if
+                                        llms_repository.has_llm_assigned(action_type,llm_name) %}selected{% endif %}>
+                                    {{ llm_name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <button type="submit" class="action-button">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+            </form>
+        </div>
+    </div>
+
     <!-- Navigation Buttons -->
     <div class="buttons">
         <a href="{{ url_for('places') }}" class="button">

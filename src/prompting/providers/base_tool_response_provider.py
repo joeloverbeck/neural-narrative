@@ -10,6 +10,7 @@ from src.filesystem.path_manager import PathManager
 from src.prompting.abstracts.abstract_factories import (
     ProduceToolResponseStrategyFactory,
 )
+from src.prompting.algorithms.tokenize_algorithm import TokenizeAlgorithm
 
 logger = logging.getLogger(__name__)
 
@@ -47,7 +48,12 @@ class BaseToolResponseProvider:
     @staticmethod
     def _generate_system_content(prompt: str, tool_prompt: str) -> str:
         """Generates the system content by combining the prompt and tool prompt."""
-        return f"{prompt}\n{tool_prompt}"
+        system_content = f"{prompt}\n{tool_prompt}"
+        logger.info(
+            "System content token amount: %s tokens.",
+            TokenizeAlgorithm(system_content).do_algorithm(),
+        )
+        return system_content
 
     def _produce_tool_response(
         self, system_content: str, user_content: str, response_model: Type[BaseModel]

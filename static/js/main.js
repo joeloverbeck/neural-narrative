@@ -95,6 +95,46 @@ function createWaveformDiv(){
     return waveformDiv;
 }
 
+/* Handling results of a query to the database */
+function queryDatabaseSuccessHandler(data, context) {
+    if (data.success) {
+        showToast(data.message || 'Query successful', 'success');
+
+        const resultsDiv = document.getElementById('query-results');
+        if (resultsDiv) {
+            // Clear previous results
+            resultsDiv.innerHTML = '';
+
+            // Check if data.results is an array
+            if (Array.isArray(data.results) && data.results.length > 0) {
+                const ul = document.createElement('ul');
+                ul.className = 'query-list';
+
+                data.results.forEach((result, index) => {
+                    const li = document.createElement('li');
+                    li.style.setProperty('--i', index);
+
+                    const icon = document.createElement('i');
+                    icon.className = 'fas fa-book-open'; // Choose an appropriate icon
+                    icon.style.marginRight = '15px';
+
+                    const text = document.createElement('span');
+                    text.textContent = result;
+
+                    li.appendChild(icon);
+                    li.appendChild(text);
+                    ul.appendChild(li);
+                });
+                resultsDiv.appendChild(ul);
+            } else {
+                resultsDiv.textContent = 'No results found.';
+            }
+        }
+    } else {
+        showToast(data.error || 'An error occurred', 'error');
+    }
+}
+
 function updateGrid(containerSelector, items, createItemElement) {
     var grid = document.querySelector(containerSelector);
     if (!grid) return;

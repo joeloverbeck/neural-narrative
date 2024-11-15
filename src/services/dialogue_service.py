@@ -11,8 +11,8 @@ from src.characters.composers.local_information_factory_composer import (
 from src.characters.composers.relevant_characters_information_factory_composer import (
     RelevantCharactersInformationFactoryComposer,
 )
-from src.concepts.algorithms.format_known_facts_algorithm import (
-    FormatKnownFactsAlgorithm,
+from src.concepts.composers.format_known_facts_algorithm_composer import (
+    FormatKnownFactsAlgorithmComposer,
 )
 from src.dialogues.abstracts.strategies import NarrationForDialogueStrategy
 from src.dialogues.composers.produce_dialogue_command_composer import (
@@ -154,7 +154,9 @@ class DialogueService:
             ).compose_factory()
         )
 
-        format_known_facts_algorithm = FormatKnownFactsAlgorithm(self._playthrough_name)
+        format_known_facts_algorithm = FormatKnownFactsAlgorithmComposer(
+            self._playthrough_name
+        ).compose_algorithm()
 
         narrative_beat_provider_factory = NarrativeBeatProviderFactory(
             format_known_facts_algorithm,
@@ -204,7 +206,9 @@ class DialogueService:
             ).compose_factory()
         )
 
-        format_known_facts_algorithm = FormatKnownFactsAlgorithm(self._playthrough_name)
+        format_known_facts_algorithm = FormatKnownFactsAlgorithmComposer(
+            self._playthrough_name
+        ).compose_algorithm()
 
         confrontation_round_provider_factory = ConfrontationRoundProviderFactory(
             self._playthrough_name,
@@ -274,7 +278,9 @@ class DialogueService:
             ).compose_factory()
         )
 
-        format_known_facts_algorithm = FormatKnownFactsAlgorithm(self._playthrough_name)
+        format_known_facts_algorithm = FormatKnownFactsAlgorithmComposer(
+            self._playthrough_name
+        ).compose_algorithm()
 
         grow_event_provider_factory = GrowEventProviderFactory(
             event_text,

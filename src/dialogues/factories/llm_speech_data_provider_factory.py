@@ -1,8 +1,8 @@
 from typing import Optional
 
 from src.base.validators import validate_non_empty_string
-from src.characters.factories.character_information_provider_factory import (
-    CharacterInformationProviderFactory,
+from src.characters.composers.character_information_provider_factory_composer import (
+    CharacterInformationProviderFactoryComposer,
 )
 from src.concepts.algorithms.format_known_facts_algorithm import (
     FormatKnownFactsAlgorithm,
@@ -39,7 +39,7 @@ class LlmSpeechDataProviderFactory:
         format_known_facts_algorithm: FormatKnownFactsAlgorithm,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         places_descriptions_provider: PlacesDescriptionsProvider,
-        character_information_provider_factory: CharacterInformationProviderFactory,
+        character_information_provider_factory_composer: CharacterInformationProviderFactoryComposer,
     ):
         validate_non_empty_string(playthrough_name, "playthrough_name")
 
@@ -54,8 +54,8 @@ class LlmSpeechDataProviderFactory:
             produce_tool_response_strategy_factory
         )
         self._places_descriptions_provider = places_descriptions_provider
-        self._character_information_provider_factory = (
-            character_information_provider_factory
+        self._character_information_provider_factory_composer = (
+            character_information_provider_factory_composer
         )
 
     def create_llm_speech_data_provider(
@@ -65,7 +65,6 @@ class LlmSpeechDataProviderFactory:
         return LlmSpeechDataProvider(
             LlmSpeechDataProviderConfig(
                 self._playthrough_name,
-                speaker_identifier,
                 speaker_name,
                 self._participants,
                 self._purpose,
@@ -74,7 +73,9 @@ class LlmSpeechDataProviderFactory:
             LlmSpeechDataProviderFactoriesConfig(
                 self._produce_tool_response_strategy_factory,
                 self._places_descriptions_provider,
-                self._character_information_provider_factory,
+                self._character_information_provider_factory_composer.compose_factory(
+                    speaker_identifier
+                ),
             ),
             LlmSpeechDataProviderAlgorithmsConfig(
                 self._format_character_dialogue_purpose_algorithm_factory.create_algorithm(

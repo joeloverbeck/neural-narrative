@@ -11,7 +11,9 @@ from src.base.exceptions import NoEligibleWorldsError
 from src.base.factories.story_universe_factory import StoryUniverseFactory
 from src.base.playthrough_manager import PlaythroughManager
 from src.base.tools import capture_traceback
-from src.filesystem.file_operations import create_directories
+from src.filesystem.file_operations import (
+    create_directories,
+)
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.filesystem.path_manager import PathManager
 from src.maps.templates_repository import TemplatesRepository
@@ -19,6 +21,7 @@ from src.prompting.composers.produce_tool_response_strategy_factory_composer imp
     ProduceToolResponseStrategyFactoryComposer,
 )
 from src.prompting.llms import Llms
+from src.prompting.repositories.llms_repository import LlmsRepository
 from src.services.playthrough_service import PlaythroughService
 
 logger = logging.getLogger(__name__)
@@ -37,10 +40,21 @@ class IndexView(MethodView):
             TemplateType.STORY_UNIVERSE
         )
 
+        llms_repository = LlmsRepository()
+
+        # Get the list of action types (keys in llms_data excluding 'models')
+        action_types = llms_repository.get_action_types()
+
+        # Get the models
+        models = llms_repository.get_models()
+
         return render_template(
             "index.html",
             playthrough_names=playthrough_names,
             story_universes=story_universes,
+            action_types=action_types,
+            models=models,
+            llms_repository=llms_repository,
         )
 
     @staticmethod
@@ -104,6 +118,39 @@ class IndexView(MethodView):
                 response = {
                     "success": False,
                     "error": f"Failed to generate story universe. Error: {str(e)}",
+                }
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return jsonify(response)
+            else:
+                return redirect(url_for("index"))
+        elif action == "update_llms":
+            try:
+                llms_repository = LlmsRepository()
+
+                # Update llms_data with the new mappings from the form
+                for key in request.form:
+                    if key.startswith("llms_mapping["):
+                        action_type = key[
+                            len("llms_mapping[") : -1
+                        ]  # Extract action_type
+                        llm_name = request.form[key]
+                        # Validate the selected LLM
+                        if llm_name in llms_repository.get_models():
+                            llms_repository.assign_llm(action_type, llm_name)
+                        else:
+                            raise ValueError(
+                                f"Invalid LLM selected for action '{action_type}': '{llm_name}'"
+                            )
+
+                response = {
+                    "success": True,
+                    "message": "LLM mappings updated successfully.",
+                }
+
+            except Exception as e:
+                response = {
+                    "success": False,
+                    "error": f"Failed to update LLM mappings. Error: {str(e)}",
                 }
             if request.headers.get("X-Requested-With") == "XMLHttpRequest":
                 return jsonify(response)

@@ -1,5 +1,6 @@
 from typing import Dict
 
+from src.base.tools import join_with_newline
 from src.base.validators import validate_non_empty_string
 from src.characters.factories.relevant_characters_information_factory import (
     RelevantCharactersInformationFactory,
@@ -27,16 +28,22 @@ class GetConceptsPromptDataAlgorithm:
         )
 
     def do_algorithm(self) -> Dict[str, str]:
-        prompt_data = {
-            "places_descriptions": self._places_descriptions_factory.get_information()
-        }
-        prompt_data.update(
-            {
-                "player_and_followers_information": self._player_and_followers_information_factory.get_information()
-            }
+        places_descriptions = self._places_descriptions_factory.get_information()
+
+        known_facts = self._format_known_facts_algorithm.do_algorithm(
+            places_descriptions
         )
-        prompt_data.update(
-            {"known_facts": self._format_known_facts_algorithm.do_algorithm()}
+
+        player_and_followers_information = (
+            self._player_and_followers_information_factory.get_information(
+                join_with_newline(places_descriptions, known_facts)
+            )
         )
+
+        prompt_data = {"places_descriptions": places_descriptions}
+        prompt_data.update(
+            {"player_and_followers_information": player_and_followers_information}
+        )
+        prompt_data.update({"known_facts": known_facts})
 
         return prompt_data
