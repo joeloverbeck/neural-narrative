@@ -13,11 +13,20 @@ function insertMemorySuccessHandler(data, context) {
             if (textarea) {
                 textarea.value = '';
             }
+
+            // Select the input with the name "memory_id" within the form
+            const input = context.form.querySelector('input[name="memory_id"]');
         } else {
             // Fallback: Select the textarea by its ID if context is not available
             const textarea = document.getElementById('character_memory');
             if (textarea) {
                 textarea.value = '';
+            }
+
+            // Fallback: Select the input by its ID if context is not available
+            const input = document.getElementById('memory_id');
+            if (input){
+                input.value = '';
             }
         }
     } else {

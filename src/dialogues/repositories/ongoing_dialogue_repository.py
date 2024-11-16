@@ -80,9 +80,9 @@ class OngoingDialogueRepository:
             in ongoing_dialogue_file
             or not self.OngoingDialogueEntryType.PURPOSE.value in ongoing_dialogue_file
         ):
-            raise ValueError(
-                f"Malformed ongoing dialogue file: {ongoing_dialogue_file}"
-            )
+            logger.error(f"Malformed ongoing dialogue file: %s", ongoing_dialogue_file)
+            # If it's malformed, we can do nothing with its information. Better remove the file.
+            remove_file(self._ongoing_dialogue_path)
 
     def has_participants(self) -> bool:
         return (

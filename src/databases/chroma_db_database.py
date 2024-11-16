@@ -1,3 +1,4 @@
+import logging
 from enum import Enum
 from typing import List, Optional, Dict, Any
 
@@ -9,6 +10,8 @@ from chromadb.utils import embedding_functions
 from src.base.validators import validate_non_empty_string
 from src.databases.abstracts.database import Database
 from src.filesystem.path_manager import PathManager
+
+logger = logging.getLogger(__name__)
 
 
 class ChromaDbDatabase(Database):
@@ -54,9 +57,15 @@ class ChromaDbDatabase(Database):
         return where_clause
 
     def _insert_data(
-        self, text: str, data_type: str, character_identifier: Optional[str] = None
+        self,
+        text: str,
+        data_type: str,
+        character_identifier: Optional[str] = None,
+        data_id: Optional[str] = None,
     ):
-        data_id = str(self._collection.count())
+        if not data_id:
+            data_id = str(self._collection.count())
+
         metadata = {"type": data_type}
         if character_identifier:
             metadata[self.DataType.CHARACTER_IDENTIFIER.value] = character_identifier
@@ -77,7 +86,7 @@ class ChromaDbDatabase(Database):
         data_type: str,
         character_identifier: Optional[str] = None,
         top_k: int = 5,
-    ) -> List[str]:
+    ) -> List[Dict[str, str]]:
         results = self._collection.query(
             query_embeddings=self._embedding_function([query_text]),
             n_results=top_k,
@@ -85,26 +94,45 @@ class ChromaDbDatabase(Database):
             include=[IncludeEnum.documents],
         )
 
-        return results["documents"][0] if results["documents"] else []
+        # Safely extract ids and documents, defaulting to empty lists if not present
+        ids_nested = results.get("ids", [])
+        documents_nested = results.get("documents", [])
+
+        if not ids_nested or not documents_nested:
+            return []
+
+        # Assuming a single query, access the first sublist
+        ids = ids_nested[0]
+        documents = documents_nested[0]
+
+        # Pair each id with its corresponding document
+        paired_results = [
+            {"id": id_, "document": doc} for id_, doc in zip(ids, documents)
+        ]
+
+        return paired_results
 
     def insert_fact(self, fact: str) -> None:
         self._insert_data(fact, data_type=self.DataType.FACT.value)
 
-    def insert_memory(self, character_identifier: str, memory: str) -> None:
+    def insert_memory(
+        self, character_identifier: str, memory: str, data_id: Optional[str] = None
+    ) -> None:
         self._insert_data(
             memory,
             data_type=self.DataType.MEMORY.value,
             character_identifier=character_identifier,
+            data_id=data_id,
         )
 
-    def retrieve_facts(self, query_text: str, top_k: int = 5) -> List[str]:
+    def retrieve_facts(self, query_text: str, top_k: int = 5) -> List[Dict[str, str]]:
         return self._retrieve_data(
             query_text, data_type=self.DataType.FACT.value, top_k=top_k
         )
 
     def retrieve_memories(
         self, character_identifier: str, query_text: str, top_k: int = 5
-    ) -> List[str]:
+    ) -> List[Dict[str, str]]:
         return self._retrieve_data(
             query_text,
             data_type=self.DataType.MEMORY.value,

@@ -42,3 +42,11 @@ def join_with_newline(*args: Any) -> str:
         string_args.append(arg)
 
     return "\n".join(string_args)
+
+
+def is_convertible_to_int(s):
+    try:
+        int_value = int(s)
+        return True, int_value
+    except ValueError:
+        return False, None

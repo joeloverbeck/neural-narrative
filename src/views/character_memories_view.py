@@ -3,7 +3,7 @@ import logging
 from flask import session, redirect, url_for, render_template, request, jsonify
 from flask.views import MethodView
 
-from src.base.tools import capture_traceback
+from src.base.tools import capture_traceback, is_convertible_to_int
 from src.characters.algorithms.produce_self_reflection_algorithm import (
     ProduceSelfReflectionAlgorithm,
 )
@@ -74,6 +74,8 @@ class CharacterMemoriesView(MethodView):
         character_identifier = request.form.get("character_identifier")
         if action == "insert_memory" and character_identifier:
             new_memory = request.form.get("character_memory", "")
+            memory_id = request.form.get("memory_id", None)
+
             new_memory = WebInterfaceManager.remove_excessive_newline_characters(
                 new_memory
             )
@@ -89,13 +91,28 @@ class CharacterMemoriesView(MethodView):
                     return jsonify(response)
                 else:
                     return redirect(url_for("story-hub"))
+
+            # At this point there is a memory to add.
+            if memory_id:
+                is_integer, _ = is_convertible_to_int(memory_id)
+
+                if not is_integer:
+                    response = {
+                        "success": False,
+                        "error": f"Memory ID should be an integer, but was '{memory_id}'.",
+                    }
+                    if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                        return jsonify(response)
+                    else:
+                        return redirect(url_for("story-hub"))
+
             try:
                 database = ChromaDbDatabase(playthrough_name)
 
                 logger.info("Memories to add: %s", new_memories)
 
                 [
-                    database.insert_memory(character_identifier, memory)
+                    database.insert_memory(character_identifier, memory, memory_id)
                     for memory in new_memories
                     if memory
                 ]
@@ -133,6 +150,7 @@ class CharacterMemoriesView(MethodView):
 
             try:
                 database = ChromaDbDatabase(playthrough_name)
+
                 memories = database.retrieve_memories(
                     character_identifier, query_text, top_k=top_k
                 )

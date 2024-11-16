@@ -43,7 +43,7 @@
             "temperature": 0.92,
             "top_p": 0.85,
             "frequency_penalty": 0.1,
-            "presence_penalty": 0.15,
+            "presence_penalty": 0.2,
             "context": 32768,
             "supports_tools": false,
             "price": "1.875/2.25"
@@ -92,7 +92,7 @@
         },
         "mn-inferor-12b": {
             "name": "infermatic/mn-inferor-12b",
-            "description": "",
+            "description": "Fails to follow schemas.",
             "temperature": 1.0,
             "top_p": 1.0,
             "frequency_penalty": 0.1,

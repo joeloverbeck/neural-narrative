@@ -1,10 +1,13 @@
-Based on the information provided, write three or four sentences of ambient narration, in the present tense, that enhances the scene without interfering with the ongoing dialogue.
-The narration should incorporate elements of the surroundings to ground the dialogue and add verisimilitude. That can include elements of the physical setting, what people are doing there, or a mix of both.
-The narration should be dynamic, instead of still descriptions of the surroundings. If the description of the setting offers details of the outside and the inside, use your judgement when assuming whether the characters are inside or outside.
-Avoid repeating elements of the setting description verbatim: just use them as inspiration to do something original.
-Avoid repeating previous lines of narration present in the transcription. Provide variety.
+Based on the information provided, write 3-4 sentences of ambient narration in the present tense that enhance the scene without interfering with the ongoing dialogue.
+**Instructions**:
+- Incorporate elements of the surroundings to ground the dialogue and add realism.
+- Use dynamic descriptions with action, movement, and sensory details.
+- Decide whether the characters are inside or outside based on the setting details.
+- Reinterpret and expand on the setting information creatively; do not copy any text verbatim.
+- Provide fresh and varied narration without repeating any previous descriptions.
+- Do **not** include any of the ongoing dialogue in your narration.
+**Context**:
 {local_information}
 Player Personality: {personality}
 Ongoing Dialogue:
 {transcription}
-Important: you are prohibited from repeating the ongoing dialogue in your response.

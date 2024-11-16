@@ -24,8 +24,10 @@ class RetrieveMemoriesAlgorithm:
         self._config_loader = config_loader or ConfigLoader()
 
     def do_algorithm(self) -> List[str]:
-        return self._database.retrieve_memories(
+        results = self._database.retrieve_memories(
             self._character_identifier,
             self._query_text,
             self._config_loader.get_memories_to_retrieve_from_database(),
         )
+
+        return [entry["document"] for entry in results]

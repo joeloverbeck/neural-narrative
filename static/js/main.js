@@ -119,7 +119,7 @@ function queryDatabaseSuccessHandler(data, context) {
                     icon.style.marginRight = '15px';
 
                     const text = document.createElement('span');
-                    text.textContent = result;
+                    text.textContent = 'ID(' + result['id']  + '): ' + result['document'];
 
                     li.appendChild(icon);
                     li.appendChild(text);
