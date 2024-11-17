@@ -33,7 +33,7 @@ Provided Information:
 
 Current Time: {hour} {time_of_day}
 {places_descriptions}
-Known Facts: {known_facts}
+{known_facts}
 {player_and_followers_information}
 
 Example Format:

@@ -13,6 +13,9 @@ from src.characters.factories.connection_factory import ConnectionFactory
 from src.characters.factories.store_character_memory_command_factory import (
     StoreCharacterMemoryCommandFactory,
 )
+from src.concepts.composers.format_known_facts_algorithm_composer import (
+    FormatKnownFactsAlgorithmComposer,
+)
 from src.databases.chroma_db_database import ChromaDbDatabase
 from src.prompting.composers.produce_tool_response_strategy_factory_composer import (
     ProduceToolResponseStrategyFactoryComposer,
@@ -62,11 +65,16 @@ class ConnectionsView(MethodView):
 
             character_factory = CharacterFactory(playthrough_name)
 
+            format_known_facts_algorithm = FormatKnownFactsAlgorithmComposer(
+                playthrough_name
+            ).compose_algorithm()
+
             connection_factory = ConnectionFactory(
                 character_a_identifier,
                 character_b_identifier,
                 character_factory,
                 character_information_provider_factory_composer,
+                format_known_facts_algorithm,
                 produce_tool_response_strategy_factory,
             )
 

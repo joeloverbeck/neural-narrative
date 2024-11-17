@@ -2,11 +2,15 @@ from typing import Optional
 
 from pydantic import BaseModel
 
+from src.base.tools import join_with_newline
 from src.characters.composers.character_information_provider_factory_composer import (
     CharacterInformationProviderFactoryComposer,
 )
 from src.characters.factories.character_factory import CharacterFactory
 from src.characters.products.connection_product import ConnectionProduct
+from src.concepts.algorithms.format_known_facts_algorithm import (
+    FormatKnownFactsAlgorithm,
+)
 from src.filesystem.path_manager import PathManager
 from src.prompting.abstracts.abstract_factories import (
     ProduceToolResponseStrategyFactory,
@@ -22,6 +26,7 @@ class ConnectionFactory(BaseToolResponseProvider):
         character_b_identifier: str,
         character_factory: CharacterFactory,
         character_information_provider_factory_composer: CharacterInformationProviderFactoryComposer,
+        format_known_facts_algorithm: FormatKnownFactsAlgorithm,
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         path_manager: Optional[PathManager] = None,
     ):
@@ -33,6 +38,7 @@ class ConnectionFactory(BaseToolResponseProvider):
         self._character_information_provider_factory_composer = (
             character_information_provider_factory_composer
         )
+        self._format_known_facts_algorithm = format_known_facts_algorithm
 
     def get_user_content(self) -> str:
         return "Generate a meaningful and compelling connection between the two provided characters. Follow the instructions."
@@ -71,4 +77,7 @@ class ConnectionFactory(BaseToolResponseProvider):
             "character_b_information": character_b_information,
             "name_a": name_a,
             "name_b": name_b,
+            "known_facts": self._format_known_facts_algorithm.do_algorithm(
+                join_with_newline(character_a_information, character_b_information)
+            ),
         }
