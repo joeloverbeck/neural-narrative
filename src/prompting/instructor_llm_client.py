@@ -90,7 +90,7 @@ class InstructorLlmClient(LlmClient):
                 error=error,
             )
         except InstructorRetryException as e:
-            logger.error("InstructorRetryException raised.")
+            logger.error("InstructorRetryException raised. Error: %s", str(e))
             logger.error(
                 "Attempts: %s",
                 e.n_attempts,

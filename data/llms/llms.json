@@ -42,7 +42,7 @@
             "description": "Very good dialogue. Good summary. Very short context",
             "temperature": 0.92,
             "top_p": 0.85,
-            "frequency_penalty": 0.1,
+            "frequency_penalty": 0.15,
             "presence_penalty": 0.2,
             "context": 32768,
             "supports_tools": false,
@@ -121,7 +121,7 @@
     "grow_event": "magnum_72b",
     "confrontation_round": "magnum_72b",
     "speech_turn_choice": "eva-qwen-2.5-32b",
-    "speech_turn": "claude_3.5_sonnet",
+    "speech_turn": "magnum_72b",
     "dialogue_summary": "magnum_72b",
     "action_resolution": "magnum_72b"
 }

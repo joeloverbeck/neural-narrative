@@ -49,9 +49,4 @@ class GetPlacesInPlaceAlgorithm:
 
                 contained_places.append(location_info)
 
-        if not contained_places:
-            logger.warning(
-                f"No contained place type '{self._contained_place_type.value}' found in {self._containing_place_type.value} '{self._containing_place_identifier}'."
-            )
-
         return contained_places

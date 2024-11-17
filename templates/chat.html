@@ -100,47 +100,79 @@
         {% endfor %}
     </div>
 
-    <!-- Select Characters Section -->
+    <!-- Chat Section -->
     <div class="collapsible-section">
         <button class="collapsible active">
-            <i class="fas fa-paper-plane"></i> Chat
+            <i class="fas fa-comments"></i> Chat
         </button>
         <div class="content">
-            <!-- Chat Form -->
-            <form method="post" class="chat-form ajax-form" action="{{ url_for('chat') }}"
-                  data-success-handler="chatSuccessHandler" data-error-handler="chatErrorHandler">
-                <input id="user-input" name="user_input" placeholder="Type your speech, or write 'silent'" type="text">
-                <div class="form-buttons">
-                    <button type="submit" name="submit_action" value="Send" class="icon-button" id="send-message-button"
-                            title="Send Message">
-                        <i class="fas fa-paper-plane"></i>
-                    </button>
-                    <button type="submit" name="submit_action" value="Ambient narration" class="icon-button"
-                            id="ambient-narration-button" title="Ambient Narration">
-                        <i class="fa-solid fa-tree-city"></i>
-                    </button>
-                    <button type="submit" name="submit_action" value="Narrative beat" class="icon-button"
-                            id="narrative-beat-button" title="Narrative Beat">
-                        <i class="fa-solid fa-person-walking-arrow-right"></i>
-                    </button>
-                </div>
-            </form>
 
-            <!-- Event Form -->
-            <form method="post" class="event-form ajax-form" action="{{ url_for('chat') }}"
-                  data-success-handler="chatSuccessHandler" data-error-handler="chatErrorHandler">
-                <input id="event-input" name="event_input" placeholder="Describe an event" type="text">
-                <div class="form-buttons">
-                    <button type="submit" name="submit_action" value="Event" class="icon-button"
-                            id="event-button" title="Event">
-                        <i class="fa-solid fa-person-circle-exclamation"></i>
-                    </button>
-                    <button type="submit" name="submit_action" value="Grow event" class="icon-button"
-                            id="grow-event-button" title="Grow Event">
-                        <i class="fa-solid fa-wheat-awn"></i>
-                    </button>
+            <!-- Send a Message -->
+            <fieldset>
+                <legend><i class="fas fa-paper-plane"></i> Send a Message</legend>
+                <form method="post" class="chat-form ajax-form" action="{{ url_for('chat') }}"
+                      data-success-handler="chatSuccessHandler" data-error-handler="chatErrorHandler">
+                    <div class="input-group">
+                        <input id="user-input" name="user_input" placeholder="Type your character's speech"
+                               type="text">
+                        <div class="form-buttons">
+                            <button type="submit" name="submit_action" value="Send" class="icon-button"
+                                    id="send-message-button"
+                                    title="Send Message">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                            <button type="submit" name="submit_action" value="Stay Silent" class="icon-button"
+                                    id="stay-silent-button"
+                                    title="Stay Silent">
+                                <i class="fas fa-comment-slash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </fieldset>
+
+            <!-- Narration Buttons -->
+            <fieldset>
+                <legend><i class="fas fa-feather-alt"></i> Narration</legend>
+                <div class="button-group">
+                    <form method="post" class="ambient-narration-form ajax-form" action="{{ url_for('chat') }}"
+                          data-success-handler="chatSuccessHandler" data-error-handler="chatErrorHandler">
+                        <button type="submit" name="submit_action" value="Ambient narration" class="action-button"
+                                id="ambient-narration-button" title="Ambient Narration">
+                            <i class="fa-solid fa-tree-city"></i> Ambient Narration
+                        </button>
+                    </form>
+                    <form method="post" class="narrative-beat-form ajax-form" action="{{ url_for('chat') }}"
+                          data-success-handler="chatSuccessHandler" data-error-handler="chatErrorHandler">
+                        <button type="submit" name="submit_action" value="Narrative beat" class="action-button"
+                                id="narrative-beat-button" title="Narrative Beat">
+                            <i class="fa-solid fa-person-walking-arrow-right"></i> Narrative Beat
+                        </button>
+                    </form>
                 </div>
-            </form>
+            </fieldset>
+
+            <!-- Event Section -->
+            <fieldset>
+                <legend><i class="fa-solid fa-calendar-alt"></i> Events</legend>
+                <form method="post" class="event-form ajax-form" action="{{ url_for('chat') }}"
+                      data-success-handler="chatSuccessHandler" data-error-handler="chatErrorHandler">
+                    <div class="input-group">
+                        <input id="event-input" name="event_input" placeholder="Describe an event" type="text">
+                        <div class="form-buttons">
+                            <button type="submit" name="submit_action" value="Event" class="icon-button"
+                                    id="event-button" title="Event">
+                                <i class="fa-solid fa-person-circle-exclamation"></i>
+                            </button>
+                            <button type="submit" name="submit_action" value="Grow event" class="icon-button"
+                                    id="grow-event-button" title="Grow Event">
+                                <i class="fa-solid fa-wheat-awn"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </fieldset>
+
         </div>
     </div>
 

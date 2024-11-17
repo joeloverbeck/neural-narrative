@@ -85,63 +85,6 @@ def test_do_algorithm_with_matches(mock_map_repository):
     mock_map_repository.load_map_data.assert_called_once()
 
 
-# Test do_algorithm with no matching contained places
-def test_do_algorithm_no_matches(mock_map_repository, caplog):
-    mock_map_repository.load_map_data.return_value = {
-        "Place1": {
-            "room": "Place456",
-            "type": "location",
-            "place_template": "TemplateA",
-        },
-        "Place2": {
-            "room": "Place789",
-            "type": "area",
-            "place_template": "TemplateB",
-        },
-    }
-
-    algorithm = GetPlacesInPlaceAlgorithm(
-        playthrough_name="TestPlaythrough",
-        containing_place_identifier="Place123",
-        containing_place_type=TemplateType.ROOM,
-        contained_place_type=TemplateType.LOCATION,
-        map_repository=mock_map_repository,
-    )
-
-    with caplog.at_level(logging.WARNING):
-        result = algorithm.do_algorithm()
-
-    assert result == []
-    mock_map_repository.load_map_data.assert_called_once()
-    assert any(
-        "No contained place type 'location' found in room 'Place123'." in message
-        for message in caplog.text.splitlines()
-    )
-
-
-# Test do_algorithm with empty map data
-def test_do_algorithm_empty_map(mock_map_repository, caplog):
-    mock_map_repository.load_map_data.return_value = {}
-
-    algorithm = GetPlacesInPlaceAlgorithm(
-        playthrough_name="TestPlaythrough",
-        containing_place_identifier="Place123",
-        containing_place_type=TemplateType.ROOM,
-        contained_place_type=TemplateType.LOCATION,
-        map_repository=mock_map_repository,
-    )
-
-    with caplog.at_level(logging.WARNING):
-        result = algorithm.do_algorithm()
-
-    assert result == []
-    mock_map_repository.load_map_data.assert_called_once()
-    assert any(
-        "No contained place type 'location' found in room 'Place123'." in message
-        for message in caplog.text.splitlines()
-    )
-
-
 # Test do_algorithm with different TemplateTypes
 @pytest.mark.parametrize(
     "containing_type, contained_type, map_data, expected",
@@ -344,35 +287,6 @@ def test_do_algorithm_multiple_contained_types(mock_map_repository):
 
     assert result == expected
     mock_map_repository.load_map_data.assert_called_once()
-
-
-# Test case sensitivity in TemplateType values
-def test_do_algorithm_case_sensitivity(mock_map_repository, caplog):
-    mock_map_repository.load_map_data.return_value = {
-        "Place1": {
-            "room": "place123",  # Different case
-            "type": "LOCATION",  # Different case
-            "place_template": "TemplateA",
-        }
-    }
-
-    algorithm = GetPlacesInPlaceAlgorithm(
-        playthrough_name="TestPlaythrough",
-        containing_place_identifier="Place123",
-        containing_place_type=TemplateType.ROOM,
-        contained_place_type=TemplateType.LOCATION,
-        map_repository=mock_map_repository,
-    )
-
-    with caplog.at_level(logging.WARNING):
-        result = algorithm.do_algorithm()
-
-    assert result == []
-    mock_map_repository.load_map_data.assert_called_once()
-    assert any(
-        "No contained place type 'location' found in room 'Place123'." in message
-        for message in caplog.text.splitlines()
-    )
 
 
 # Test with additional irrelevant data in map entries

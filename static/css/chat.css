@@ -312,8 +312,7 @@ input[type="text"] {
 .chat-form input[type="text"],
 .event-form input[type="text"],
 .actions-form input[type="text"] {
-    width: 80%;
-    max-width: 600px;
+    max-width: 100%;
     padding: 15px;
     font-size: 16px;
     border-radius: 30px;
@@ -331,10 +330,9 @@ input[type="text"] {
 
 .form-buttons {
     display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin-top: 10px;
+    gap: 10px;
 }
+
 
 /* Icon-only Button */
 .icon-button {
@@ -372,6 +370,59 @@ input[type="text"] {
 
 .icon-button:focus {
     outline: none;
+}
+
+/* Adjust fieldsets */
+.collapsible-section .content fieldset {
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+}
+
+/* Style legends */
+.collapsible-section .content fieldset legend {
+    font-size: 18px;
+    font-weight: bold;
+    padding: 0 10px;
+}
+
+/* Increase spacing between input fields and buttons */
+.input-group {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.input-group input[type="text"] {
+    flex: 1;
+    margin-right: 10px;
+}
+
+/* Style button groups */
+.button-group {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.form-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+/* Style action buttons */
+.action-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+/* Optional: Add horizontal line separators */
+.collapsible-section .content hr {
+    margin: 20px 0;
+    border: none;
+    border-top: 1px solid #ddd;
 }
 
 /* Responsive Adjustments */
