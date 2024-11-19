@@ -178,6 +178,10 @@ class ChatView(MethodView):
             return ChatView.handle_send(
                 playthrough_name, dialogue_service, "silent", dialogue_participants
             )
+        elif action == "Goodbye":
+            return ChatView.handle_send(
+                playthrough_name, dialogue_service, "goodbye", dialogue_participants
+            )
         elif action == "Ambient narration":
             return ChatView.handle_ambient_narration(
                 playthrough_name, dialogue_service, dialogue_participants
