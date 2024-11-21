@@ -1,5 +1,5 @@
 {
-  "produce_voice_lines": true,
+  "produce_voice_lines": false,
   "default_voice_model": "malewarlock",
   "narrator_voice_model": "tulius",
   "default_weather_icon": "fas fa-cloud-sun",
@@ -9,5 +9,6 @@
   "time_advanced_due_to_searching_for_location": 2,
   "max_retries": 1,
   "facts_to_retrieve_from_database": 15,
-  "memories_to_retrieve_from_database": 15
+  "memories_to_retrieve_from_database": 15,
+  "number_of_characters_to_retrieve_from_transcription": 5000
 }

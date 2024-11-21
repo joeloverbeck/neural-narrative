@@ -22,6 +22,7 @@ from src.views.chat_view import ChatView
 from src.views.connections_view import ConnectionsView
 from src.views.facts_view import FactsView
 from src.views.index_view import IndexView
+from src.views.interview_view import InterviewView
 from src.views.location_hub_view import LocationHubView
 from src.views.participants_view import ParticipantsView
 from src.views.places_view import PlacesView
@@ -95,6 +96,7 @@ app.add_url_rule(
 )
 app.add_url_rule("/actions", view_func=ActionsView.as_view("actions"))
 app.add_url_rule("/connections", view_func=ConnectionsView.as_view("connections"))
+app.add_url_rule("/interview", view_func=InterviewView.as_view("interview"))
 
 
 @app.route("/research", methods=["GET", "POST"])

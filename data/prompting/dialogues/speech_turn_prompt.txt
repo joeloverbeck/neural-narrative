@@ -27,8 +27,10 @@ Maintain Roleplay Integrity:
 {dialogue_purpose}
 {character_dialogue_purpose}
 ----
-Ongoing Dialogue:
-{dialogue}
+Summary Notes:
+{summary_notes}
+Most Recent Excerpt From Dialogue:
+{transcription_excerpt}
 Important:
 - Don't repeat verbatim lines of the dialogue provided.
 - Don't mark regular speech with asterisks.

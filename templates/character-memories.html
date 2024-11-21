@@ -1,5 +1,6 @@
 <!-- templates/character-memories.html -->
 {% extends "base.html" %}
+{% import 'macros.html' as macros %}
 
 {% block title %}Character Memories{% endblock %}
 
@@ -12,25 +13,8 @@
 <div class="character-memories-container">
     <h1 class="page-title"><i class="fas fa-brain"></i> Character Memories</h1>
 
-    <!-- Select Character Section -->
-    <div class="collapsible-section">
-        <button class="collapsible active">
-            <i class="fas fa-user"></i> Select a Character
-        </button>
-        <div class="content">
-            <form action="{{ url_for('character-memories') }}" method="get" class="select-character-form">
-                <label for="character_selector">Select a character:</label>
-                <select id="character_selector" name="character_identifier" onchange="this.form.submit()">
-                    <option value="">-- Select a character --</option>
-                    {% for character in all_characters %}
-                    <option value="{{ character.identifier }}" {% if character.selected %}selected{% endif %}>
-                        {{ character.name }}
-                    </option>
-                    {% endfor %}
-                </select>
-            </form>
-        </div>
-    </div>
+    {{ macros.select_character_section('character-memories', all_characters, selected_character.identifier if
+    selected_character else None) }}
 
     {% if selected_character %}
     <!-- Insert Memory Section -->

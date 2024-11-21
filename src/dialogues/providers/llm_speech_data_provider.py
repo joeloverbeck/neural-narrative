@@ -123,5 +123,6 @@ class LlmSpeechDataProvider(BaseToolResponseProvider):
             "known_facts": known_facts,
             "dialogue_purpose": dialogue_purpose,
             "character_dialogue_purpose": character_dialogue_purpose,
-            "dialogue": transcription,
+            "summary_notes": self._config.summary_notes,
+            "transcription_excerpt": self._config.transcription.get_transcription_excerpt(),
         }

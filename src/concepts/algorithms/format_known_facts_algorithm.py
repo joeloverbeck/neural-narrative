@@ -24,7 +24,11 @@ class FormatKnownFactsAlgorithm:
 
         known_facts = ""
 
+        # Note that "facts" contains both the identifiers of the facts as well as the facts.
+
         if facts:
-            known_facts = "Known Facts:\n" + "\n".join(facts)
+            known_facts = "Known Facts:\n" + "\n".join(
+                [fact["document"] for fact in facts]
+            )
 
         return known_facts

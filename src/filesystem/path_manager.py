@@ -27,6 +27,7 @@ class PathManager:
     GUIDELINES_DIR = DATA_DIR / "guidelines"
     WEATHERS_DIR = DATA_DIR / "weathers"
     LLMS_DIR = DATA_DIR / "llms"
+    INTERVIEWS_DIR = DATA_DIR / "interviews"
 
     PROMPTING_DIR = DATA_DIR / "prompting"
     PROMPTING_IMAGES_DIR = PROMPTING_DIR / "images"
@@ -88,6 +89,10 @@ class PathManager:
         return cls.LLMS_DIR / "llms.json"
 
     @classmethod
+    def get_questions(cls) -> Path:
+        return cls.INTERVIEWS_DIR / "questions.txt"
+
+    @classmethod
     def get_temp_voice_lines_path(cls, timestamp: str) -> Path:
         return cls.BASE_DIR / "temp_voice_lines" / f"{timestamp}"
 
@@ -146,6 +151,10 @@ class PathManager:
     @classmethod
     def get_summarize_dialogue_prompt_path(cls) -> Path:
         return cls.DIALOGUES_DIR / "summarize_dialogue_prompt.txt"
+
+    @classmethod
+    def get_summary_note_generation_prompt_path(cls) -> Path:
+        return cls.DIALOGUES_DIR / "summary_note_generation_prompt.txt"
 
     @classmethod
     def get_ambient_narration_generation_prompt_path(cls) -> Path:
@@ -370,6 +379,39 @@ class PathManager:
         return (
             cls.get_characters_path(playthrough_name)
             / f"{character_name} - {character_identifier}"
+        )
+
+    @classmethod
+    def get_interview_path(
+        cls, playthrough_name: str, character_identifier: str, character_name: str
+    ) -> Path:
+        return (
+            cls.get_character_path(
+                playthrough_name, character_identifier, character_name
+            )
+            / "interview"
+        )
+
+    @classmethod
+    def get_interview_file_path(
+        cls, playthrough_name: str, character_identifier: str, character_name: str
+    ) -> Path:
+        return (
+            cls.get_interview_path(
+                playthrough_name, character_identifier, character_name
+            )
+            / "interview.txt"
+        )
+
+    @classmethod
+    def get_ongoing_interview_path(
+        cls, playthrough_name: str, character_identifier: str, character_name: str
+    ) -> Path:
+        return (
+            cls.get_interview_path(
+                playthrough_name, character_identifier, character_name
+            )
+            / "ongoing_interview.json"
         )
 
     @classmethod

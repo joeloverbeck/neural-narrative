@@ -3,7 +3,6 @@ from typing import Optional, List
 from src.base.abstracts.observer import Observer
 from src.base.playthrough_manager import PlaythroughManager
 from src.base.validators import validate_non_empty_string
-from src.characters.factories.character_factory import CharacterFactory
 from src.dialogues.abstracts.abstract_factories import (
     DialogueTurnFactorySubject,
     PlayerInputFactory,
@@ -36,7 +35,16 @@ from src.dialogues.factories.create_speech_turn_data_command_factory import (
 from src.dialogues.factories.introduce_player_input_into_dialogue_command_factory import (
     IntroducePlayerInputIntoDialogueCommandFactory,
 )
+from src.dialogues.factories.summary_note_provider_factory import (
+    SummaryNoteProviderFactory,
+)
+from src.dialogues.factories.update_summary_notes_algorithm_factory import (
+    UpdateSummaryNotesAlgorithmFactory,
+)
 from src.dialogues.participants import Participants
+from src.dialogues.repositories.ongoing_dialogue_repository import (
+    OngoingDialogueRepository,
+)
 from src.dialogues.strategies.concrete_involve_player_in_dialogue_strategy import (
     ConcreteInvolvePlayerInDialogueStrategy,
 )
@@ -47,6 +55,10 @@ from src.dialogues.strategies.web_message_data_producer_for_speech_turn_strategy
     WebMessageDataProducerForSpeechTurnStrategy,
 )
 from src.dialogues.transcription import Transcription
+from src.prompting.composers.produce_tool_response_strategy_factory_composer import (
+    ProduceToolResponseStrategyFactoryComposer,
+)
+from src.prompting.llms import Llms
 
 
 class DialogueTurnFactoryComposer:
@@ -135,7 +147,15 @@ class DialogueTurnFactoryComposer:
             speech_turn_choice_tool_response_provider_factory,
         )
 
-        character_factory = CharacterFactory(self._playthrough_name)
+        produce_tool_response_strategy_factory = (
+            ProduceToolResponseStrategyFactoryComposer(
+                Llms().for_summary_note(),
+            ).compose_factory()
+        )
+
+        summary_note_provider_factory = SummaryNoteProviderFactory(
+            produce_tool_response_strategy_factory
+        )
 
         create_speech_turn_data_command_factory = CreateSpeechTurnDataCommandFactory(
             transcription,
@@ -143,17 +163,24 @@ class DialogueTurnFactoryComposer:
             message_data_producer_for_speech_turn_strategy,
         )
 
+        summary_notes = OngoingDialogueRepository(
+            self._playthrough_name
+        ).get_summary_notes()
+
+        update_summary_notes_algorithm_factory = UpdateSummaryNotesAlgorithmFactory(
+            summary_notes
+        )
+
         dialogue_turn_factory = ConcreteDialogueTurnFactory(
             DialogueTurnFactoryConfig(
                 self._playthrough_name,
-                player_identifier,
-                self._participants,
+                summary_notes,
                 transcription,
             ),
             DialogueTurnFactoryFactoriesConfig(
-                character_factory,
-                speech_turn_choice_tool_response_provider_factory,
+                summary_note_provider_factory,
                 create_speech_turn_data_command_factory,
+                update_summary_notes_algorithm_factory,
             ),
             DialogueTurnFactoryStrategiesConfig(
                 involve_player_in_dialogue_strategy,

@@ -1,0 +1,113 @@
+<!-- templates/interview.html -->
+{% extends "base.html" %}
+{% import 'macros.html' as macros %}
+
+{% block title %}Interview{% endblock %}
+
+{% block styles %}
+{{ super() }}
+<link href="{{ url_for('static', filename='css/interview.css') }}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block content %}
+<div class="interview-container">
+    <h1 class="page-title"><i class="fas fa-comments"></i> Interview</h1>
+
+    {{ macros.select_character_section('interview', all_characters, selected_character.identifier if selected_character
+    else None) }}
+
+    {% if selected_character %}
+    <!-- Interview Section -->
+    <div class="collapsible-section">
+        <button class="collapsible">
+            <i class="fas fa-microphone"></i> Interview
+        </button>
+        <div class="content">
+            <!-- Messages Container -->
+            <div class="messages-container">
+                {% for message in messages %}
+                <div class="message {{ message.role }}">
+                    <div class="message-header">
+                        <span class="message-sender">
+                            {{ message.sender }}
+                        </span>
+                    </div>
+                    <div class="message-content">
+                        {{ message.content | safe }}
+                    </div>
+                </div>
+                {% endfor %}
+
+
+                {% if last_message_role == 'interviewee' %}
+                <!-- Interviewer Message with Generate Question Button -->
+                <div class="message interviewer">
+                    <div class="message-header">
+                        <span class="message-sender">Interviewer</span>
+                    </div>
+                    <div class="message-content">
+                        <button type="button" class="generate-question-button action-button">
+                            <i class="fas fa-question-circle"></i> Generate Next Question
+                        </button>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if last_message_role == 'interviewer' %}
+                <!-- Interviewee Input Form -->
+                <div class="message interviewee">
+                    <div class="message-header">
+                        <span class="message-sender">{{ selected_character.name }}</span>
+                    </div>
+                    <div class="message-content">
+                        <form method="post" class="ajax-form" data-success-handler="sendIntervieweeResponseSuccess">
+                            <input type="hidden" name="character_identifier"
+                                   value="{{ selected_character.identifier }}">
+                            <input name="submit_action" type="hidden" value="send_interviewee_response">
+                            <textarea name="interviewee_response" rows="3"
+                                      placeholder="Enter your response..."></textarea>
+                            <button type="submit" class="action-button">
+                                <i class="fas fa-paper-plane"></i> Send Response
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Navigation Buttons -->
+    <div class="buttons">
+        <a href="{{ url_for('characters-hub') }}" class="button">
+            <i class="fas fa-users"></i> Characters Hub
+        </a>
+        <a href="{{ url_for('index') }}" class="button">
+            <i class="fa-solid fa-dungeon"></i> Home
+        </a>
+        <a href="{{ url_for('places') }}" class="button">
+            <i class="fas fa-map"></i> Places
+        </a>
+        <a href="{{ url_for('story-hub') }}" class="button">
+            <i class="fas fa-feather-alt"></i> Story Hub
+        </a>
+        <a href="{{ url_for('location-hub') }}" class="button">
+            <i class="fas fa-map-marker-alt"></i> Location Hub
+        </a>
+        <a href="{{ url_for('participants') }}" class="button">
+            <i class="fas fa-comments"></i> Chat
+        </a>
+        <a href="{{ url_for('actions') }}" class="button">
+            <i class="fas fa-bolt"></i> Actions
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="{{ url_for('static', filename='js/jquery-3.7.1.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script src="{{ url_for('static', filename='js/interview.js') }}"></script>
+{% endblock %}

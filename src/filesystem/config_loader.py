@@ -66,6 +66,11 @@ class ConfigLoader:
     def get_memories_to_retrieve_from_database(self) -> int:
         return self._get_config_key("memories_to_retrieve_from_database")
 
+    def get_number_of_characters_to_retrieve_from_transcription(self) -> int:
+        return self._get_config_key(
+            "number_of_characters_to_retrieve_from_transcription"
+        )
+
     def load_openai_project_key(self) -> str:
         return self._load_secret_key(self._path_manager.get_openai_project_key_path())
 

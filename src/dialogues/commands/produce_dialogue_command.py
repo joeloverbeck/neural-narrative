@@ -39,5 +39,6 @@ class ProduceDialogueCommand(Command):
             ).execute()
         else:
             self._store_temporary_dialogue_command_factory.create_command(
-                dialogue_product.get_transcription()
+                dialogue_product.get_transcription(),
+                dialogue_product.get_summary_notes(),
             ).execute()

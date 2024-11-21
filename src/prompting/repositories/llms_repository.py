@@ -44,6 +44,7 @@ class LlmsRepository:
             "grow_event": "dialogues",
             "confrontation_round": "dialogues",
             "speech_turn_choice": "dialogues",
+            "summary_note": "dialogues",
             "speech_turn": "dialogues",
             "dialogue_summary": "dialogues",
             "action_resolution": "actions",

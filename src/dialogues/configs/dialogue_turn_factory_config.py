@@ -1,13 +1,11 @@
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, Dict
 
-from src.dialogues.participants import Participants
 from src.dialogues.transcription import Transcription
 
 
 @dataclass
 class DialogueTurnFactoryConfig:
     playthrough_name: str
-    player_identifier: str
-    participants: Participants
+    summary_notes: Dict[str, Dict[str, Dict[str, str]]]
     transcription: Optional[Transcription] = None

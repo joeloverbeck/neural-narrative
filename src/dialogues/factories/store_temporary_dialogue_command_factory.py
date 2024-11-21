@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Dict
 
 from src.base.validators import validate_non_empty_string
 from src.dialogues.commands.store_temporary_dialogue_command import (
@@ -23,7 +23,15 @@ class StoreTemporaryDialogueCommandFactory:
         self._participants = participants
         self._purpose = purpose
 
-    def create_command(self, transcription: Transcription):
+    def create_command(
+        self,
+        transcription: Transcription,
+        summary_notes: Dict[str, Dict[str, Dict[str, str]]],
+    ):
         return StoreTemporaryDialogueCommand(
-            self._playthrough_name, self._participants, self._purpose, transcription
+            self._playthrough_name,
+            self._participants,
+            self._purpose,
+            transcription,
+            summary_notes,
         )

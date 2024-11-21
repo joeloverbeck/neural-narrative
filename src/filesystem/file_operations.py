@@ -63,6 +63,11 @@ def read_file(file_path: Path) -> str:
         return file.read().strip()
 
 
+def read_lines(file_path: Path) -> List[str]:
+    with file_path.open("r", encoding="utf-8") as file:
+        return file.readlines()
+
+
 def write_file(file_path: Path, contents: str) -> None:
     with file_path.open("w", encoding="utf-8") as file:
         file.write(contents)

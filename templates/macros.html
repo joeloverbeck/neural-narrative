@@ -90,3 +90,25 @@
     {% endfor %}
 </div>
 {% endmacro %}
+
+{% macro select_character_section(action_endpoint, all_characters, selected_character_identifier) %}
+<div class="collapsible-section">
+    <button class="collapsible active">
+        <i class="fas fa-user"></i> Select a Character
+    </button>
+    <div class="content">
+        <form action="{{ url_for(action_endpoint) }}" method="get" class="select-character-form">
+            <label for="character_selector">Select a character:</label>
+            <select id="character_selector" name="character_identifier" onchange="this.form.submit()">
+                <option value="">-- Select a character --</option>
+                {% for character in all_characters %}
+                <option value="{{ character.identifier }}" {% if character.identifier== selected_character_identifier
+                        %}selected{% endif %}>
+                    {{ character.name }}
+                </option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
+</div>
+{% endmacro %}
