@@ -1,0 +1,13 @@
+Place Description:
+{place_description}
+-----
+Your Task:
+Succinctly summarize the facts about the place based on the description above -- again, think short, concise bullet points.
+Important:
+Make sure to capture the meaningful details.
+Example:
+{{
+"geography": "Pyrenees Mountains to the east and Bay of Biscay to the north",
+"climate": "Oceanic, with mild temperatures and abundant rainfall",
+"culture": "Basque people with distinct language (Euskara), traditions, and strong sense of identity"
+}}

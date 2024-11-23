@@ -1,6 +1,9 @@
 from src.maps.composers.get_current_weather_identifier_algorithm_composer import (
     GetCurrentWeatherIdentifierAlgorithmComposer,
 )
+from src.maps.composers.get_place_facts_provider_factory_composer import (
+    GetPlaceFactsProviderFactoryComposer,
+)
 from src.maps.factories.get_place_full_data_algorithm_factory import (
     GetPlaceFullDataAlgorithmFactory,
 )
@@ -37,11 +40,17 @@ class PlacesDescriptionsProviderComposer:
             place_manager_factory, hierarchy_manager_factory
         )
 
+        get_place_facts_provider_factory = (
+            GetPlaceFactsProviderFactoryComposer().compose_factory()
+        )
+
         place_descriptions_for_prompt_factory = PlaceDescriptionsForPromptFactory(
             self._playthrough_name,
             get_place_full_data_algorithm_factory,
             get_current_weather_identifier_algorithm,
+            get_place_facts_provider_factory,
             map_manager_factory,
             weathers_manager,
         )
+
         return PlacesDescriptionsProvider(place_descriptions_for_prompt_factory)

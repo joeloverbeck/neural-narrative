@@ -88,3 +88,6 @@ class Llms:
 
     def for_interviewee_response(self) -> Llm:
         return Llm(self._models[self._llms_file["interviewee_response"]])
+
+    def for_place_facts(self) -> Llm:
+        return Llm(self._models[self._llms_file["place_facts"]])

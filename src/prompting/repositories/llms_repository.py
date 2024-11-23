@@ -29,6 +29,7 @@ class LlmsRepository:
             "place_generation": "places",
             "place_description": "places",
             "travel_narration": "places",
+            "place_facts": "places",
             "character_generation_guidelines": "characters",
             "base_character_data_generation": "characters",
             "speech_patterns_generation": "characters",

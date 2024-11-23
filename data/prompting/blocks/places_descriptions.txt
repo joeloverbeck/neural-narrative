@@ -1,7 +1,11 @@
-Story Universe Description: {story_universe_description}
-World Description: {world_description}
-Region Description: {region_description}
-Area Description: {area_description}
+Story Universe Facts:
+{story_universe_description}
+World Facts:
+{world_description}
+Region Facts:
+{region_description}
+Area Facts:
+{area_description}
 Weather: {weather}
 {location_description}
 {room_description}

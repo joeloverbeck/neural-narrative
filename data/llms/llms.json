@@ -128,6 +128,7 @@
   "place_generation": "eva-qwen-2.5-72b",
   "place_description": "magnum_72b",
   "travel_narration": "magnum_72b",
+  "place_facts": "eva-qwen-2.5-72b",
   "character_generation_guidelines": "eva-qwen-2.5-72b",
   "base_character_data_generation": "eva-qwen-2.5-72b",
   "speech_patterns_generation": "eva-qwen-2.5-72b",

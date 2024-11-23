@@ -114,6 +114,30 @@ class PathManager:
         return cls.PLACES_DIR / "room_types.txt"
 
     @classmethod
+    def get_story_universes_facts_path(cls) -> Path:
+        return cls.PLACES_DIR / "story_universes_facts.json"
+
+    @classmethod
+    def get_worlds_facts_path(cls) -> Path:
+        return cls.PLACES_DIR / "worlds_facts.json"
+
+    @classmethod
+    def get_regions_facts_path(cls) -> Path:
+        return cls.PLACES_DIR / "regions_facts.json"
+
+    @classmethod
+    def get_areas_facts_path(cls) -> Path:
+        return cls.PLACES_DIR / "areas_facts.json"
+
+    @classmethod
+    def get_locations_facts_path(cls) -> Path:
+        return cls.PLACES_DIR / "locations_facts.json"
+
+    @classmethod
+    def get_rooms_facts_path(cls) -> Path:
+        return cls.PLACES_DIR / "rooms_facts.json"
+
+    @classmethod
     def get_tool_instructions_for_instructor_path(cls) -> Path:
         return cls.PROMPTING_DIR / "tool_instructions_for_instructor.txt"
 
@@ -276,6 +300,10 @@ class PathManager:
     @classmethod
     def get_travel_narration_prompt_path(cls) -> Path:
         return cls.PROMPTING_PLACES_DIR / "travel_narration_prompt.txt"
+
+    @classmethod
+    def get_place_facts_generation_prompt(cls) -> Path:
+        return cls.PROMPTING_PLACES_DIR / "place_facts_generation_prompt.txt"
 
     @classmethod
     def get_image_generation_prompt_path(cls) -> Path:
