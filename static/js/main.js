@@ -169,6 +169,19 @@ $('form.ajax-form button[type=submit]').click(function() {
   submitActionValue = $(this).val();
 });
 
+function disable_button_and_add_spinner(button) {
+    button.disabled = true;
+
+    // Check if the button has the 'icon-button' class
+    if (button.classList.contains('icon-button')) {
+        // For icon buttons, show only the spinner icon
+        button.innerHTML = '<i class="fa-solid fa-arrows-rotate fa-spin"></i>';
+    } else {
+        // For other buttons, show the spinner icon with "Processing..." text
+        button.innerHTML = '<i class="fa-solid fa-arrows-rotate fa-spin"></i> Processing...';
+    }
+}
+
 // Main function to handle AJAX form submissions
 function handleAjaxFormSubmit(form, options = {}) {
     const submitButtons = form.querySelectorAll('button[type="submit"], input[type="submit"]');
@@ -191,16 +204,7 @@ function handleAjaxFormSubmit(form, options = {}) {
 
         submitButtons.forEach((button, index) => {
             originalButtonHTMLs[index] = button.innerHTML;
-            button.disabled = true;
-
-            // Check if the button has the 'icon-button' class
-            if (button.classList.contains('icon-button')) {
-                // For icon buttons, show only the spinner icon
-                button.innerHTML = '<i class="fa-solid fa-arrows-rotate fa-spin"></i>';
-            } else {
-                // For other buttons, show the spinner icon with "Processing..." text
-                button.innerHTML = '<i class="fa-solid fa-arrows-rotate fa-spin"></i> Processing...';
-            }
+            disable_button_and_add_spinner(button);
         });
 
         const formData = new FormData(form);
