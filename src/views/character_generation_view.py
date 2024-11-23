@@ -67,6 +67,7 @@ class CharacterGenerationView(MethodView):
                 ).compose_factory(),
                 hierarchy_manager_factory,
             ).do_algorithm()
+
         guidelines = character_guidelines_manager.load_guidelines(
             playthrough_manager.get_story_universe_template(),
             world_template,
@@ -74,7 +75,9 @@ class CharacterGenerationView(MethodView):
             area_template,
             location_template,
         )
+
         character_generation_message = session.pop("character_generation_message", None)
+
         return render_template(
             "character-generation.html",
             guidelines=[guideline for guideline in guidelines],
