@@ -27,6 +27,7 @@ class CharacterInformationProviderFactoryComposer:
         character_factory = CharacterFactory(self._playthrough_name)
 
         return CharacterInformationProviderFactory(
+            self._playthrough_name,
             character_identifier,
             retrieve_memories_algorithm_factory,
             character_factory,
