@@ -110,7 +110,8 @@ class LlmSpeechDataProvider(BaseToolResponseProvider):
                 character_dialogue_purpose,
                 transcription,
                 known_facts,
-            )
+            ),
+            use_interview=True,
         ).get_information()
 
         return {

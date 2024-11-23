@@ -18,6 +18,7 @@ class CharacterInformationProvider:
         character_identifier: str,
         query_text: str,
         retrieve_memories_algorithm_factory: RetrieveMemoriesAlgorithmFactory,
+        use_interview: bool,
         character_factory: CharacterFactory,
         path_manager: Optional[PathManager] = None,
         interview_repository: Optional[InterviewRepository] = None,
@@ -28,6 +29,7 @@ class CharacterInformationProvider:
         self._character_identifier = character_identifier
         self._query_text = query_text
         self._retrieve_memories_algorithm_factory = retrieve_memories_algorithm_factory
+        self._use_interview = use_interview
         self._character_factory = character_factory
 
         self._character = self._character_factory.create_character(
@@ -43,7 +45,7 @@ class CharacterInformationProvider:
         # If the character has an interview, just return the interview.
         interview = self._interview_repository.get_interview()
 
-        if interview:
+        if self._use_interview and interview:
             return f"Interview With {self._character.name}:\n{interview}"
 
         character_information = read_file(

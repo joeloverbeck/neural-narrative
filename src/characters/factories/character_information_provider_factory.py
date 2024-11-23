@@ -25,11 +25,12 @@ class CharacterInformationProviderFactory:
         self._retrieve_memories_algorithm_factory = retrieve_memories_algorithm_factory
         self._character_factory = character_factory
 
-    def create_provider(self, query_text: str):
+    def create_provider(self, query_text: str, use_interview: bool = False):
         return CharacterInformationProvider(
             self._playthrough_name,
             self._character_identifier,
             query_text,
             self._retrieve_memories_algorithm_factory,
+            use_interview,
             self._character_factory,
         )
