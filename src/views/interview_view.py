@@ -3,23 +3,65 @@ import logging
 from flask import request, session, redirect, url_for, render_template, jsonify
 from flask.views import MethodView
 
+from src.base.validators import validate_non_empty_string
 from src.characters.character import Character
 from src.characters.characters_manager import CharactersManager
+from src.characters.composers.character_information_provider_factory_composer import (
+    CharacterInformationProviderFactoryComposer,
+)
 from src.interviews.commands.determine_next_interview_question_command import (
     DetermineNextInterviewQuestionCommand,
 )
+from src.interviews.commands.skip_interview_question_command import (
+    SkipInterviewQuestionCommand,
+)
 from src.interviews.factories.move_to_next_base_question_command_factory import (
     MoveToNextBaseQuestionCommandFactory,
+)
+from src.interviews.models.interviewee_response import IntervieweeResponse
+from src.interviews.providers.interviewee_response_provider import (
+    IntervieweeResponseProvider,
 )
 from src.interviews.repositories.interview_repository import InterviewRepository
 from src.interviews.repositories.ongoing_interview_repository import (
     OngoingInterviewRepository,
 )
+from src.prompting.composers.produce_tool_response_strategy_factory_composer import (
+    ProduceToolResponseStrategyFactoryComposer,
+)
+from src.prompting.llms import Llms
 
 logger = logging.getLogger(__name__)
 
 
 class InterviewView(MethodView):
+
+    @staticmethod
+    def _add_interviewee_response(
+        playthrough_name: str,
+        character_identifier: str,
+        character_name: str,
+        interviewee_response: str,
+    ):
+        validate_non_empty_string(playthrough_name, "playthrough_name")
+        validate_non_empty_string(character_name, "character_name")
+        validate_non_empty_string(interviewee_response, "interviewee_response")
+
+        ongoing_interview_repository = OngoingInterviewRepository(
+            playthrough_name,
+            character_identifier,
+            character_name,
+        )
+
+        # Add interviewee message
+        ongoing_interview_repository.add_interviewee_message(interviewee_response)
+
+        # Add the interviewee response to the interview file.
+        interview_repository = InterviewRepository(
+            playthrough_name, character_identifier, character_name
+        )
+
+        interview_repository.add_line(character_name, interviewee_response)
 
     @staticmethod
     def get():
@@ -86,8 +128,7 @@ class InterviewView(MethodView):
             last_message_role=last_message_role,
         )
 
-    @staticmethod
-    def post():
+    def post(self):
         playthrough_name = session.get("playthrough_name")
         if not playthrough_name:
             return redirect(url_for("index"))
@@ -154,18 +195,11 @@ class InterviewView(MethodView):
                         {"success": False, "error": "Response cannot be empty"}
                     )
 
-                # Add interviewee message
-                ongoing_interview_repository.add_interviewee_message(
-                    interviewee_response
-                )
-
-                # Add the interviewee response to the interview file.
-                interview_repository = InterviewRepository(
-                    playthrough_name, character_identifier, selected_character.name
-                )
-
-                interview_repository.add_line(
-                    selected_character.name, interviewee_response
+                self._add_interviewee_response(
+                    playthrough_name,
+                    character_identifier,
+                    selected_character.name,
+                    interviewee_response,
                 )
 
                 response = {
@@ -175,6 +209,69 @@ class InterviewView(MethodView):
                         "role": "interviewee",
                         "sender": selected_character.name,
                         "content": interviewee_response,
+                    },
+                }
+
+                return jsonify(response)
+
+            elif action == "generate_interviewee_response":
+                character_information_provider_factory = (
+                    CharacterInformationProviderFactoryComposer(
+                        playthrough_name
+                    ).compose_factory(character_identifier)
+                )
+
+                produce_tool_response_strategy_factory = (
+                    ProduceToolResponseStrategyFactoryComposer(
+                        Llms().for_interviewee_response()
+                    ).compose_factory()
+                )
+
+                product = IntervieweeResponseProvider(
+                    playthrough_name,
+                    character_identifier,
+                    selected_character.name,
+                    character_information_provider_factory,
+                    produce_tool_response_strategy_factory,
+                ).generate_product(IntervieweeResponse)
+
+                interviewee_response = product.get()
+
+                self._add_interviewee_response(
+                    playthrough_name,
+                    character_identifier,
+                    selected_character.name,
+                    interviewee_response,
+                )
+
+                response = {
+                    "success": True,
+                    "message": f"{selected_character.name}'s response generated.",
+                    "new_message": {
+                        "role": "interviewee",
+                        "sender": selected_character.name,
+                        "content": interviewee_response,
+                    },
+                }
+
+                return jsonify(response)
+
+            elif action == "skip_question":
+                SkipInterviewQuestionCommand(
+                    playthrough_name, character_identifier, selected_character.name
+                ).execute()
+
+                current_interview_question = (
+                    ongoing_interview_repository.get_interview_question()
+                )
+
+                response = {
+                    "success": True,
+                    "message": "Question skipped.",
+                    "new_message": {
+                        "role": "interviewer",
+                        "sender": "Interviewer",
+                        "content": current_interview_question,
                     },
                 }
 

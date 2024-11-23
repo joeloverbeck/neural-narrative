@@ -85,3 +85,6 @@ class Llms:
 
     def for_writers_room(self) -> Llm:
         return Llm(self._models[self._llms_file["writers_room"]])
+
+    def for_interviewee_response(self) -> Llm:
+        return Llm(self._models[self._llms_file["interviewee_response"]])

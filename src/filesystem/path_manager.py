@@ -38,6 +38,7 @@ class PathManager:
     DIALOGUES_DIR = PROMPTING_DIR / "dialogues"
     PROMPTING_CHARACTERS_DIR = PROMPTING_DIR / "characters"
     CONCEPTS_DIR = PROMPTING_DIR / "concepts"
+    PROMPTING_INTERVIEWS_DIR = PROMPTING_DIR / "interviews"
 
     STATIC_DIR = BASE_DIR / "static"
     IMAGES_DIR = STATIC_DIR / "images"
@@ -90,7 +91,7 @@ class PathManager:
 
     @classmethod
     def get_questions(cls) -> Path:
-        return cls.INTERVIEWS_DIR / "questions.txt"
+        return cls.INTERVIEWS_DIR / "questions.json"
 
     @classmethod
     def get_temp_voice_lines_path(cls, timestamp: str) -> Path:
@@ -241,6 +242,12 @@ class PathManager:
     @classmethod
     def get_foreshadowing_generation_prompt_path(cls) -> Path:
         return cls.CONCEPTS_DIR / "foreshadowing_generation_prompt.txt"
+
+    @classmethod
+    def get_interviewee_response_generation_prompt_path(cls) -> Path:
+        return (
+            cls.PROMPTING_INTERVIEWS_DIR / "interviewee_response_generation_prompt.txt"
+        )
 
     @classmethod
     def get_world_generation_prompt_path(cls) -> Path:

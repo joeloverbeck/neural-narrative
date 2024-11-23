@@ -63,11 +63,15 @@
                         <form method="post" class="ajax-form" data-success-handler="sendIntervieweeResponseSuccess">
                             <input type="hidden" name="character_identifier"
                                    value="{{ selected_character.identifier }}">
-                            <input name="submit_action" type="hidden" value="send_interviewee_response">
                             <textarea name="interviewee_response" rows="3"
                                       placeholder="Enter your response..."></textarea>
-                            <button type="submit" class="action-button">
+                            <button type="submit" name="submit_action" value="send_interviewee_response"
+                                    class="action-button">
                                 <i class="fas fa-paper-plane"></i> Send Response
+                            </button>
+                            <button type="submit" name="submit_action" value="generate_interviewee_response"
+                                    class="action-button">
+                                <i class="fas fa-magic"></i> Generate Response
                             </button>
                         </form>
                     </div>

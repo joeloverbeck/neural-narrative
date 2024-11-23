@@ -87,3 +87,21 @@ class OngoingInterviewRepository:
         self._add_message(
             {"name": self._character_name, "message": interviewee_response}
         )
+
+    def does_last_entry_belong_to_interviewer(self) -> bool:
+        messages = self.get_messages()
+        if not messages:
+            return False
+        last_message = messages[-1]
+        return last_message.get("name") == "interviewer"
+
+    def remove_latest_interviewer_question(self):
+        if not self.does_last_entry_belong_to_interviewer():
+            raise Exception(
+                "Cannot remove interviewer question: last message does not belong to the interviewer."
+            )
+        messages = self.get_messages()
+        messages.pop()
+        ongoing_interview = self._load_ongoing_interview()
+        ongoing_interview["messages"] = messages
+        self._save_ongoing_interview(ongoing_interview)

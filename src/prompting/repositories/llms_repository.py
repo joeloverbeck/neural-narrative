@@ -47,6 +47,7 @@ class LlmsRepository:
             "speech_turn": "dialogues",
             "dialogue_summary": "dialogues",
             "action_resolution": "actions",
+            "interviewee_response": "interviews",
         }
 
         return action_type_categories.get(action_type, "characters")

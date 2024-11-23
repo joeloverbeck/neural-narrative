@@ -48,3 +48,29 @@ class InterviewRepository:
         interview += f"{name}: {line}\n"
 
         write_file(self._interview_file_path, interview)
+
+    def does_last_entry_belong_to_interviewer(self) -> bool:
+        interview = self.get_interview()
+        lines = interview.rstrip("\n").split("\n")
+        # Remove any empty lines at the end
+        while lines and lines[-1] == "":
+            lines.pop()
+        if not lines:
+            return False
+        last_line = lines[-1]
+        return last_line.startswith("Interviewer:")
+
+    def remove_latest_interviewer_question(self):
+        if not self.does_last_entry_belong_to_interviewer():
+            raise Exception(
+                "Cannot remove interviewer question: last line does not belong to the interviewer."
+            )
+        interview = self.get_interview()
+        lines = interview.rstrip("\n").split("\n")
+        # Remove any empty lines at the end
+        while lines and lines[-1] == "":
+            lines.pop()
+        # Remove the last line (interviewer's question)
+        lines.pop()
+        new_interview = "\n".join(lines) + "\n" if lines else ""
+        write_file(self._interview_file_path, new_interview)

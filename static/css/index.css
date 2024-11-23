@@ -115,6 +115,11 @@
     background-color: #F44336; /* Red */
 }
 
+/* Yellow for Intervies */
+.llm-card-header.interviews {
+    background-color: #00FFFF;
+}
+
 /* Card Body */
 .llm-card-body {
     padding: 15px;
