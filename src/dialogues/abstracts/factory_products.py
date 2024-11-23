@@ -8,9 +8,6 @@ class DialogueProduct(Protocol):
     def get_transcription(self) -> Transcription:
         pass
 
-    def get_summary_notes(self) -> Dict[str, Dict[str, Dict[str, str]]]:
-        pass
-
     def has_ended(self) -> bool:
         pass
 

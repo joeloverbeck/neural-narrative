@@ -1,5 +1,5 @@
 import logging
-from typing import Optional, Dict
+from typing import Optional
 
 from src.base.abstracts.command import Command
 from src.dialogues.participants import Participants
@@ -19,14 +19,11 @@ class StoreTemporaryDialogueCommand(Command):
         participants: Participants,
         purpose: Optional[str],
         transcription: Transcription,
-        summary_notes: Optional[Dict[str, Dict[str, Dict[str, str]]]] = None,
         ongoing_dialogue_repository: Optional[OngoingDialogueRepository] = None,
     ):
         self._participants = participants
         self._purpose = purpose
         self._transcription = transcription
-        self._summary_notes = summary_notes
-
         self._ongoing_dialogue_repository = (
             ongoing_dialogue_repository or OngoingDialogueRepository(playthrough_name)
         )
@@ -41,6 +38,3 @@ class StoreTemporaryDialogueCommand(Command):
         self._ongoing_dialogue_repository.set_participants(self._participants.get())
         self._ongoing_dialogue_repository.set_purpose(self._purpose)
         self._ongoing_dialogue_repository.set_transcription(self._transcription.get())
-
-        if self._summary_notes:
-            self._ongoing_dialogue_repository.set_summary_notes(self._summary_notes)

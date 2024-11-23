@@ -132,7 +132,6 @@
   "grow_event": "mistral_large",
   "confrontation_round": "magnum_72b",
   "speech_turn_choice": "eva-qwen-2.5-32b",
-  "summary_note": "mistral_large",
   "speech_turn": "mistral_large",
   "dialogue_summary": "mistral_large",
   "action_resolution": "magnum_72b"

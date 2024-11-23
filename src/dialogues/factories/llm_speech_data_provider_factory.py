@@ -1,4 +1,4 @@
-from typing import Optional, Dict
+from typing import Optional
 
 from src.base.validators import validate_non_empty_string
 from src.characters.composers.character_information_provider_factory_composer import (
@@ -63,7 +63,6 @@ class LlmSpeechDataProviderFactory:
         speaker_identifier: str,
         speaker_name: str,
         transcription: Transcription,
-        summary_notes: Dict[str, Dict[str, str]],
     ) -> LlmSpeechDataProvider:
         validate_non_empty_string(speaker_name, "speaker_name")
         return LlmSpeechDataProvider(
@@ -73,7 +72,6 @@ class LlmSpeechDataProviderFactory:
                 self._participants,
                 self._purpose,
                 transcription,
-                summary_notes,
             ),
             LlmSpeechDataProviderFactoriesConfig(
                 self._produce_tool_response_strategy_factory,

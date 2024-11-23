@@ -153,10 +153,6 @@ class PathManager:
         return cls.DIALOGUES_DIR / "summarize_dialogue_prompt.txt"
 
     @classmethod
-    def get_summary_note_generation_prompt_path(cls) -> Path:
-        return cls.DIALOGUES_DIR / "summary_note_generation_prompt.txt"
-
-    @classmethod
     def get_ambient_narration_generation_prompt_path(cls) -> Path:
         return cls.DIALOGUES_DIR / "ambient_narration_generation_prompt.txt"
 

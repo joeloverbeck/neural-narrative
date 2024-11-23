@@ -1,9 +1,8 @@
 import logging
-from typing import List, Optional, Dict
+from typing import List, Optional
 
 from src.base.abstracts.observer import Observer
 from src.base.playthrough_manager import PlaythroughManager
-from src.base.products.dict_product import DictProduct
 from src.base.tools import capture_traceback
 from src.dialogues.abstracts.abstract_factories import DialogueTurnFactorySubject
 from src.dialogues.abstracts.factory_products import DialogueProduct, PlayerInputProduct
@@ -15,7 +14,6 @@ from src.dialogues.configs.dialogue_turn_factory_strategies_config import (
     DialogueTurnFactoryStrategiesConfig,
 )
 from src.dialogues.exceptions import DialogueProcessingError
-from src.dialogues.models.summary_note import get_custom_summary_note_class
 from src.dialogues.products.concrete_dialogue_product import ConcreteDialogueProduct
 from src.prompting.abstracts.factory_products import LlmToolResponseProduct
 
@@ -61,14 +59,13 @@ class ConcreteDialogueTurnFactory(DialogueTurnFactorySubject):
     def _process_speech_turn(
         self,
         speech_turn_choice_response: LlmToolResponseProduct,
-        summary_notes: dict[str, dict[str, str]],
     ):
         """Process the speech turn for the given speaker."""
         if "voice_model" not in speech_turn_choice_response.get():
             raise ValueError("voice_model can't be empty.")
 
         command = self._factories_config.create_speech_turn_data_command_factory.create_command(
-            speech_turn_choice_response, summary_notes
+            speech_turn_choice_response
         )
 
         for observer in self._observers:
@@ -79,16 +76,10 @@ class ConcreteDialogueTurnFactory(DialogueTurnFactorySubject):
     def _create_dialogue_product(
         self,
         has_ended: bool,
-        summary_notes: Optional[Dict[str, Dict[str, Dict[str, str]]]] = None,
     ) -> DialogueProduct:
         """Create a dialogue product indicating whether the dialogue has ended."""
-        summary_notes_to_return = (
-            summary_notes if summary_notes else self._config.summary_notes
-        )
-
         return ConcreteDialogueProduct(
             self._config.transcription,
-            summary_notes_to_return,
             has_ended=has_ended,
         )
 
@@ -100,26 +91,6 @@ class ConcreteDialogueTurnFactory(DialogueTurnFactorySubject):
 
         return None
 
-    def _create_summary_note(self, speaker_name: str) -> DictProduct:
-        summary_note_provider = (
-            self._factories_config.summary_note_provider_factory.create_provider(
-                self._config.transcription, speaker_name
-            )
-        )
-
-        return summary_note_provider.generate_product(
-            get_custom_summary_note_class(speaker_name)
-        )
-
-    def _update_summary_notes(
-        self, speaker_identifier: str, summary_note: Dict[str, Dict[str, str]]
-    ) -> Dict[str, Dict[str, Dict[str, str]]]:
-        update_algorithm = self._factories_config.update_summary_notes_algorithm_factory.create_algorithm(
-            speaker_identifier,
-            summary_note,
-        )
-        return update_algorithm.do_algorithm()
-
     def process_turn_of_dialogue(self) -> DialogueProduct:
         try:
             dialogue_product = self._handle_player_input()
@@ -130,23 +101,11 @@ class ConcreteDialogueTurnFactory(DialogueTurnFactorySubject):
                 self._strategies_config.determine_next_speaker_algorithm.do_algorithm()
             )
 
-            # Must delegate creating the summary note.
-            speaker_name = speech_turn_choice_response.get()["name"]
-
-            summary_note_product = self._create_summary_note(speaker_name)
-
             # Note that the product is a DictProduct, not a TextsProduct as usual.
-            self._process_speech_turn(
-                speech_turn_choice_response, summary_note_product.get()
-            )
-
-            updated_summary_notes = self._update_summary_notes(
-                speech_turn_choice_response.get()["identifier"],
-                summary_note_product.get(),
-            )
+            self._process_speech_turn(speech_turn_choice_response)
 
             return self._create_dialogue_product(
-                has_ended=False, summary_notes=updated_summary_notes
+                has_ended=False,
             )
         except DialogueProcessingError as e:
             logger.error("Error processing dialogue turn: %s", e)

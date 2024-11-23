@@ -1,5 +1,5 @@
 import logging
-from typing import List, Dict
+from typing import List
 
 from src.base.abstracts.command import Command
 from src.base.abstracts.observer import Observer
@@ -23,13 +23,11 @@ class CreateSpeechTurnDataCommand(Command, Subject):
         self,
         transcription: Transcription,
         speech_turn_choice_response: LlmToolResponseProduct,
-        summary_notes: Dict[str, Dict[str, str]],
         llm_speech_data_provider_factory: LlmSpeechDataProviderFactory,
         message_data_producer_for_speech_turn_strategy: MessageDataProducerForSpeechTurnStrategy,
     ):
         self._transcription = transcription
         self._speech_turn_choice_response = speech_turn_choice_response
-        self._summary_notes = summary_notes
         self._llm_speech_data_provider_factory = llm_speech_data_provider_factory
         self._message_data_producer_for_speech_turn_strategy = (
             message_data_producer_for_speech_turn_strategy
@@ -52,7 +50,6 @@ class CreateSpeechTurnDataCommand(Command, Subject):
                 self._speech_turn_choice_response.get()["identifier"],
                 self._speech_turn_choice_response.get()["name"],
                 self._transcription,
-                self._summary_notes,
             ).generate_product(
                 get_custom_speech_turn_class(
                     self._speech_turn_choice_response.get()["name"]

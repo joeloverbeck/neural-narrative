@@ -1,7 +1,3 @@
-class PlaythroughAlreadyExistsError(Exception):
-    pass
-
-
 class StoryUniverseTemplateNotFoundError(Exception):
     pass
 

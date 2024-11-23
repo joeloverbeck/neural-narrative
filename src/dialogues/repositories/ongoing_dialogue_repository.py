@@ -21,7 +21,6 @@ class OngoingDialogueRepository:
         PARTICIPANTS = "participants"
         PURPOSE = "purpose"
         TRANSCRIPTION = "transcription"
-        SUMMARY_NOTES = "summary_notes"
 
     def __init__(
         self, playthrough_name: str, path_manager: Optional[PathManager] = None
@@ -137,24 +136,6 @@ class OngoingDialogueRepository:
 
         ongoing_dialogue_file[self.OngoingDialogueEntryType.TRANSCRIPTION.value] = (
             transcription
-        )
-
-        self._save_ongoing_dialogue_data(ongoing_dialogue_file)
-
-    def get_summary_notes(self) -> Dict[str, Dict[str, Dict[str, str]]]:
-        return self._load_ongoing_dialogue_data().get(
-            self.OngoingDialogueEntryType.SUMMARY_NOTES.value, {}
-        )
-
-    def set_summary_notes(self, summary_notes: Dict[str, Dict[str, Dict[str, str]]]):
-        ongoing_dialogue_file = self._load_ongoing_dialogue_data()
-
-        existing_summary_notes = self.get_summary_notes()
-
-        existing_summary_notes.update(summary_notes)
-
-        ongoing_dialogue_file[self.OngoingDialogueEntryType.SUMMARY_NOTES.value] = (
-            existing_summary_notes
         )
 
         self._save_ongoing_dialogue_data(ongoing_dialogue_file)

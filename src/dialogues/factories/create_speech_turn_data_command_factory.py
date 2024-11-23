@@ -1,5 +1,3 @@
-from typing import Dict
-
 from src.dialogues.abstracts.strategies import MessageDataProducerForSpeechTurnStrategy
 from src.dialogues.commands.create_speech_turn_data_command import (
     CreateSpeechTurnDataCommand,
@@ -28,7 +26,6 @@ class CreateSpeechTurnDataCommandFactory:
     def create_command(
         self,
         speech_turn_choice_response: LlmToolResponseProduct,
-        summary_notes: Dict[str, Dict[str, str]],
     ) -> CreateSpeechTurnDataCommand:
         if "voice_model" not in speech_turn_choice_response.get():
             raise ValueError("voice_model can't be empty.")
@@ -36,7 +33,6 @@ class CreateSpeechTurnDataCommandFactory:
         return CreateSpeechTurnDataCommand(
             self._transcription,
             speech_turn_choice_response,
-            summary_notes,
             self._llm_speech_data_provider_factory,
             self._message_data_producer_for_speech_turn_strategy,
         )

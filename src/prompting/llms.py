@@ -62,9 +62,6 @@ class Llms:
     def for_speech_turn_choice(self) -> Llm:
         return Llm(self._models[self._llms_file["speech_turn_choice"]])
 
-    def for_summary_note(self) -> Llm:
-        return Llm(self._models[self._llms_file["summary_note"]])
-
     def for_speech_turn(self) -> Llm:
         return Llm(self._models[self._llms_file["speech_turn"]])
 
