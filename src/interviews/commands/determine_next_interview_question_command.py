@@ -49,7 +49,8 @@ class DetermineNextInterviewQuestionCommand(Command):
 
             return
 
-        # At this point, there is an interview question. It could be a base question (one existing in the questions file)
+        # At this point, there is an interview question. It could be a base question (one existing in the questions file),
+        # but it could also have been sent by the user.
         current_interview_question = (
             self._ongoing_interview_repository.get_interview_question()
         )
@@ -62,7 +63,14 @@ class DetermineNextInterviewQuestionCommand(Command):
 
             return
 
-        raise NotImplementedError(
-            "Case for when the question isn't a base question is not implemented.\nThe question is: %s",
-            current_interview_question,
-        )
+        # The current question isn't a base question.
+        last_base_question = self._ongoing_interview_repository.get_last_base_question()
+
+        if not last_base_question:
+            raise ValueError(
+                "The current interview question wasn't a base question, but there is no last base question set!"
+            )
+
+        self._move_to_next_base_question_command_factory.create_command(
+            last_base_question
+        ).execute()

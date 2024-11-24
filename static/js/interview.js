@@ -106,16 +106,58 @@ function createInterviewerGenerateButtonMessage() {
     const contentDiv = document.createElement('div');
     contentDiv.classList.add('message-content');
 
-    const button = document.createElement('button');
-    button.classList.add('generate-question-button', 'action-button');
-    button.innerHTML = '<i class="fas fa-question-circle"></i> Generate Next Question';
+    // Create the form
+    const form = document.createElement('form');
+    form.method = 'post';
+    form.classList.add('ajax-form');
+    form.dataset.successHandler = 'sendQuestionSuccess';
+
+    const characterIdentifierInput = document.createElement('input');
+    characterIdentifierInput.type = 'hidden';
+    characterIdentifierInput.name = 'character_identifier';
+    characterIdentifierInput.value = document.querySelector('#character_selector').value;
+
+    const inputField = document.createElement('input');
+    inputField.type = 'text';
+    inputField.name = 'user_question';
+    inputField.placeholder = 'Enter your question...';
+
+    const sendButton = document.createElement('button');
+    sendButton.type = 'submit';
+    sendButton.name = 'submit_action';
+    sendButton.value = 'send_next_question';
+    sendButton.classList.add('action-button');
+    sendButton.innerHTML = '<i class="fas fa-paper-plane"></i> Send Question';
+
+    const generateButton = document.createElement('button');
+    generateButton.type = 'button';
+    generateButton.classList.add('generate-question-button', 'action-button');
+    generateButton.innerHTML = '<i class="fas fa-question-circle"></i> Generate Next Question';
 
     // Set data-character-identifier attribute
-    button.setAttribute('data-character-identifier', document.querySelector('#character_selector').value);
+    generateButton.setAttribute('data-character-identifier', document.querySelector('#character_selector').value);
 
-    button.addEventListener('click', generateNextQuestion);
+    generateButton.addEventListener('click', generateNextQuestion);
 
-    contentDiv.appendChild(button);
+    // Create a container for buttons to apply flex properties
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.display = 'flex';
+    buttonContainer.style.gap = '10px'; // Adjust the gap as needed
+    buttonContainer.style.justifyContent = 'center';
+
+    buttonContainer.appendChild(sendButton);
+    buttonContainer.appendChild(generateButton);
+
+    form.appendChild(characterIdentifierInput);
+    form.appendChild(inputField);
+    form.appendChild(buttonContainer);
+
+    // Initialize AJAX form submission
+    handleAjaxFormSubmit(form, {
+        onSuccess: sendQuestionSuccess,
+    });
+
+    contentDiv.appendChild(form);
 
     messageDiv.appendChild(headerDiv);
     messageDiv.appendChild(contentDiv);
@@ -187,6 +229,44 @@ function skipQuestion(messageDiv) {
         console.error('Error:', error);
         showToast('An unexpected error occurred.', 'error');
     });
+}
+
+function sendQuestionSuccess(data, context) {
+    if (data.success) {
+        showToast(data.message || 'Question sent successfully', 'success');
+
+        const messagesContainer = document.querySelector('.messages-container');
+        if (messagesContainer) {
+            // Remove the form message
+            const formMessage = context.form.closest('.message');
+            if (formMessage) {
+                formMessage.remove();
+            }
+
+            // Add the new interviewer message
+            const messageElement = createMessageElement(data.new_message);
+            messagesContainer.appendChild(messageElement);
+
+            // Remove existing Skip Question button messages
+            const existingSkipButtonMessages = document.querySelectorAll('.message.system .skip-question-button');
+            existingSkipButtonMessages.forEach(button => {
+                button.closest('.message').remove();
+            });
+
+            // Add the Skip Question button message
+            const skipButtonMessage = createSkipQuestionButtonMessage();
+            messagesContainer.appendChild(skipButtonMessage);
+
+            // Scroll to the bottom
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            // Add the interviewee input form
+            const intervieweeMessage = createIntervieweeInputMessage();
+            messagesContainer.appendChild(intervieweeMessage);
+        }
+    } else {
+        showToast(data.error || 'An error occurred', 'error');
+    }
 }
 
 function generateNextQuestion() {

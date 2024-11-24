@@ -105,3 +105,17 @@ class OngoingInterviewRepository:
         ongoing_interview = self._load_ongoing_interview()
         ongoing_interview["messages"] = messages
         self._save_ongoing_interview(ongoing_interview)
+
+    def set_last_base_question(self, interview_question: str):
+        validate_non_empty_string(interview_question, "interview_question")
+
+        ongoing_interview = self._load_ongoing_interview()
+
+        ongoing_interview["last_interview_question"] = interview_question
+
+        self._save_ongoing_interview(ongoing_interview)
+
+    def get_last_base_question(self) -> Optional[str]:
+        ongoing_interview = self._load_ongoing_interview()
+
+        return ongoing_interview.get("last_interview_question", None)

@@ -26,6 +26,7 @@ from src.interviews.repositories.interview_repository import InterviewRepository
 from src.interviews.repositories.ongoing_interview_repository import (
     OngoingInterviewRepository,
 )
+from src.interviews.repositories.questions_repository import QuestionsRepository
 from src.prompting.composers.produce_tool_response_strategy_factory_composer import (
     ProduceToolResponseStrategyFactoryComposer,
 )
@@ -62,6 +63,27 @@ class InterviewView(MethodView):
         )
 
         interview_repository.add_line(character_name, interviewee_response)
+
+    @staticmethod
+    def _add_interviewer_question(
+        playthrough_name: str,
+        character_identifier: str,
+        character_name: str,
+        interviewer_question: str,
+    ):
+        ongoing_interview_repository = OngoingInterviewRepository(
+            playthrough_name, character_identifier, character_name
+        )
+
+        # Add interviewer message
+        ongoing_interview_repository.add_interviewer_message(interviewer_question)
+
+        # Add the line to the interview.
+        interview_repository = InterviewRepository(
+            playthrough_name, character_identifier, character_name
+        )
+
+        interview_repository.add_line("Interviewer", interviewer_question)
 
     @staticmethod
     def get():
@@ -147,6 +169,51 @@ class InterviewView(MethodView):
                 selected_character.name,
             )
 
+            if action == "send_next_question":
+                # In this action, the user must have sent the next interviewer question, instead of
+                # letting the system generate it.
+                user_question = request.form.get("user_question")
+                if not user_question:
+                    return jsonify(
+                        {"success": False, "error": "User question cannot be empty"}
+                    )
+
+                # We have the user question, so we must set it as the current question of the ongoing interview.
+                # However, we must store the existing current question as the last base question, assuming it was
+                # actually a base question.
+                questions_repository = QuestionsRepository()
+
+                current_interview_question = (
+                    ongoing_interview_repository.get_interview_question()
+                )
+
+                if questions_repository.is_base_question(current_interview_question):
+                    ongoing_interview_repository.set_last_base_question(
+                        current_interview_question
+                    )
+
+                # Now set the passed question as the current question.
+                ongoing_interview_repository.set_interview_question(user_question)
+
+                self._add_interviewer_question(
+                    playthrough_name,
+                    character_identifier,
+                    selected_character.name,
+                    user_question,
+                )
+
+                response = {
+                    "success": True,
+                    "message": "User question processed.",
+                    "new_message": {
+                        "role": "interviewer",
+                        "sender": "Interviewer",
+                        "content": user_question,
+                    },
+                }
+
+                return jsonify(response)
+
             if action == "generate_next_question":
                 # Determine the next interview question
                 move_to_next_base_question_command_factory = (
@@ -166,15 +233,12 @@ class InterviewView(MethodView):
 
                 new_question = ongoing_interview_repository.get_interview_question()
 
-                # Add interviewer message
-                ongoing_interview_repository.add_interviewer_message(new_question)
-
-                # Add the line to the interview.
-                interview_repository = InterviewRepository(
-                    playthrough_name, character_identifier, selected_character.name
+                self._add_interviewer_question(
+                    playthrough_name,
+                    character_identifier,
+                    selected_character.name,
+                    new_question,
                 )
-
-                interview_repository.add_line("Interviewer", new_question)
 
                 response = {
                     "success": True,

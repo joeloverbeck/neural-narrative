@@ -74,3 +74,23 @@
 .message.system .action-button {
     margin: 0 auto;
 }
+
+/* Adjust the message-content to display flex items inline */
+.message-content form {
+    align-items: center;
+    gap: 10px;
+}
+
+/* Style the input field */
+.message-content input[type="text"] {
+    flex: 1;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+/* Ensure buttons are appropriately sized */
+.message-content .action-button {
+    padding: 8px 12px;
+    font-size: 14px;
+}

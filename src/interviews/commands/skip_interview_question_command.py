@@ -52,9 +52,21 @@ class SkipInterviewQuestionCommand(Command):
             self._ongoing_interview_repository.get_interview_question()
         )
 
-        next_interview_question = self._questions_repository.get_next_question(
-            current_interview_question
-        )
+        # Note: the current interview question may not be a base question.
+
+        if self._questions_repository.is_base_question(current_interview_question):
+            next_interview_question = self._questions_repository.get_next_question(
+                current_interview_question
+            )
+        else:
+            # The current question is a user question.
+            last_base_question = (
+                self._ongoing_interview_repository.get_last_base_question()
+            )
+
+            next_interview_question = self._questions_repository.get_next_question(
+                last_base_question
+            )
 
         self._ongoing_interview_repository.set_interview_question(
             next_interview_question

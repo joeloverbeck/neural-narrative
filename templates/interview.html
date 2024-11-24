@@ -40,15 +40,23 @@
 
 
                 {% if last_message_role == 'interviewee' %}
-                <!-- Interviewer Message with Generate Question Button -->
+                <!-- Interviewer Message with Input and Buttons -->
                 <div class="message interviewer">
                     <div class="message-header">
                         <span class="message-sender">Interviewer</span>
                     </div>
                     <div class="message-content">
-                        <button type="button" class="generate-question-button action-button">
-                            <i class="fas fa-question-circle"></i> Generate Next Question
-                        </button>
+                        <form method="post" class="ajax-form" data-success-handler="sendQuestionSuccess">
+                            <input type="hidden" name="character_identifier"
+                                   value="{{ selected_character.identifier }}">
+                            <input type="text" name="user_question" placeholder="Enter your question..."/>
+                            <button type="submit" name="submit_action" value="send_next_question" class="action-button">
+                                <i class="fas fa-paper-plane"></i> Send Question
+                            </button>
+                            <button type="button" class="generate-question-button action-button">
+                                <i class="fas fa-question-circle"></i> Generate Next Question
+                            </button>
+                        </form>
                     </div>
                 </div>
                 {% endif %}
