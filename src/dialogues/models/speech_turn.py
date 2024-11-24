@@ -17,7 +17,7 @@ def get_custom_speech_turn_class(speaker_name: str) -> Type[BaseModel]:
         )
         speech: str = Field(
             ...,
-            description=f"{speaker_name}'s generated speech. Pay attention to {speaker_name}'s speech patterns to determine the character's unique voice. Produce original speech. Try to vary the structure of the speech so that it contrasts with the character's previous utterances, and doesn't sound repetitive.",
+            description=f"{speaker_name}'s generated speech that continues the provided dialogue. Pay attention to {speaker_name}'s speech patterns to determine the character's unique voice. Produce original speech. Try to vary the structure of the speech so that it contrasts with the character's previous utterances, and doesn't sound repetitive.",
         )
 
     return SpeechTurn

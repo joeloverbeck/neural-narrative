@@ -52,7 +52,7 @@ class PlaceDescriptionsForPromptFactory:
             place_full_data["location_data"]
             and place_full_data["location_data"]["description"]
         ):
-            location_facts = not self._get_place_facts_provider_factory.create_provider(
+            location_facts = self._get_place_facts_provider_factory.create_provider(
                 place_full_data["location_data"]["name"],
                 place_full_data["location_data"]["description"],
                 TemplateType.LOCATION,
@@ -68,7 +68,7 @@ class PlaceDescriptionsForPromptFactory:
         room_description = ""
 
         if place_full_data["room_data"] and place_full_data["room_data"]["description"]:
-            room_facts = not self._get_place_facts_provider_factory.create_provider(
+            room_facts = self._get_place_facts_provider_factory.create_provider(
                 place_full_data["room_data"]["name"],
                 place_full_data["room_data"]["description"],
                 TemplateType.ROOM,
