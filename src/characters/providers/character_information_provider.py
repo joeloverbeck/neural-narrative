@@ -45,17 +45,17 @@ class CharacterInformationProvider:
         # If the character has an interview, just return the interview.
         interview = self._interview_repository.get_interview()
 
-        if self._use_interview and interview:
-            return f"Interview With {self._character.name}:\n{interview}"
-
-        character_information = read_file(
-            self._path_manager.get_character_information_path()
-        )
-
         memories = "\n".join(
             self._retrieve_memories_algorithm_factory.create_algorithm(
                 self._character.identifier, self._query_text
             ).do_algorithm()
+        )
+
+        if self._use_interview and interview:
+            return f"Relevant Memories:\n{memories}\n-----\nInterview With {self._character.name}:\n{interview}"
+
+        character_information = read_file(
+            self._path_manager.get_character_information_path()
         )
 
         character_information = character_information.format(
