@@ -65,10 +65,12 @@ class BaseCharacterDataGenerationToolResponseProvider(
         user_content_product = (
             self._user_content_for_character_generation_factory.create_user_content_for_character_generation()
         )
+
         if not user_content_product.is_valid():
             raise ValueError(
                 f"Unable to create user content for character generation: {user_content_product.get_error()}"
             )
+
         return user_content_product.get()
 
     def create_product_from_base_model(self, response_model: BaseModel):
@@ -85,17 +87,8 @@ class BaseCharacterDataGenerationToolResponseProvider(
             "secrets": response_model.secrets,
             "health": response_model.health,
             "equipment": response_model.equipment,
-            "voice_gender": response_model.voice_gender,
-            "voice_age": response_model.voice_age,
-            "voice_emotion": response_model.voice_emotion,
-            "voice_tempo": response_model.voice_tempo,
-            "voice_volume": response_model.voice_volume,
-            "voice_texture": response_model.voice_texture,
-            "voice_tone": response_model.voice_tone,
-            "voice_style": response_model.voice_style,
-            "voice_personality": response_model.voice_personality,
-            "voice_special_effects": response_model.voice_special_effects,
         }
+
         return ConcreteLlmToolResponseProduct(arguments, is_valid=True)
 
     def create_llm_response(self) -> LlmToolResponseProduct:
@@ -126,6 +119,7 @@ class BaseCharacterDataGenerationToolResponseProvider(
         character_generation_instructions = read_file(
             self._path_manager.get_base_character_data_generation_prompt_path()
         )
+
         return {
             "playthrough_metadata": playthrough_metadata,
             "worlds_templates": worlds_templates,

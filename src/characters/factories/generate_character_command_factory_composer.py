@@ -14,6 +14,12 @@ from src.characters.factories.character_factory import CharacterFactory
 from src.characters.factories.generate_character_command_factory import (
     GenerateCharacterCommandFactory,
 )
+from src.characters.factories.process_generated_character_data_command_factory import (
+    ProcessGeneratedCharacterDataCommandFactory,
+)
+from src.characters.factories.produce_speech_patterns_algorithm_factory import (
+    ProduceSpeechPatternsAlgorithmFactory,
+)
 from src.characters.factories.speech_patterns_provider_factory import (
     SpeechPatternsProviderFactory,
 )
@@ -43,6 +49,12 @@ from src.prompting.llms import Llms
 from src.requests.factories.ConcreteUrlContentFactory import ConcreteUrlContentFactory
 from src.voices.algorithms.match_voice_data_to_voice_model_algorithm import (
     MatchVoiceDataToVoiceModelAlgorithm,
+)
+from src.voices.factories.produce_voice_attributes_algorithm_factory import (
+    ProduceVoiceAttributesAlgorithmFactory,
+)
+from src.voices.factories.voice_attributes_provider_factory import (
+    VoiceAttributesProviderFactory,
 )
 
 logger = logging.getLogger(__name__)
@@ -130,12 +142,38 @@ class GenerateCharacterCommandFactoryComposer:
             self._playthrough_name
         )
 
+        produce_tool_response_strategy_factory = (
+            ProduceToolResponseStrategyFactoryComposer(
+                Llms().for_base_character_data_generation()
+            ).compose_factory()
+        )
+
+        voice_attributes_provider_factory = VoiceAttributesProviderFactory(
+            produce_tool_response_strategy_factory
+        )
+
+        produce_voice_attributes_algorithm_factory = (
+            ProduceVoiceAttributesAlgorithmFactory(voice_attributes_provider_factory)
+        )
+
+        produce_speech_patterns_algorithm_factory = (
+            ProduceSpeechPatternsAlgorithmFactory(speech_patterns_provider_factory)
+        )
+
+        process_generated_character_data_command_factory = (
+            ProcessGeneratedCharacterDataCommandFactory(
+                self._playthrough_name,
+                store_generate_character_command_factory,
+                generate_character_image_command_factory,
+                place_character_at_place_command_factory,
+            )
+        )
+
         return GenerateCharacterCommandFactory(
             self._playthrough_name,
             character_generation_instructions_formatter_factory,
             base_character_data_produce_tool_response_strategy_factory,
-            speech_patterns_provider_factory,
-            store_generate_character_command_factory,
-            generate_character_image_command_factory,
-            place_character_at_place_command_factory,
+            produce_voice_attributes_algorithm_factory,
+            produce_speech_patterns_algorithm_factory,
+            process_generated_character_data_command_factory,
         )

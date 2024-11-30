@@ -39,6 +39,7 @@ class PathManager:
     PROMPTING_CHARACTERS_DIR = PROMPTING_DIR / "characters"
     CONCEPTS_DIR = PROMPTING_DIR / "concepts"
     PROMPTING_INTERVIEWS_DIR = PROMPTING_DIR / "interviews"
+    PROMPTING_VOICES_DIR = PROMPTING_DIR / "voices"
 
     STATIC_DIR = BASE_DIR / "static"
     IMAGES_DIR = STATIC_DIR / "images"
@@ -226,6 +227,10 @@ class PathManager:
     @classmethod
     def get_connection_generation_prompt_path(cls) -> Path:
         return cls.PROMPTING_CHARACTERS_DIR / "connection_generation_prompt.txt"
+
+    @classmethod
+    def get_voice_attributes_generation_prompt_path(cls) -> Path:
+        return cls.PROMPTING_VOICES_DIR / "voice_attributes_generation_prompt.txt"
 
     @classmethod
     def get_scenarios_generation_prompt_path(cls) -> Path:

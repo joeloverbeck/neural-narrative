@@ -18,8 +18,8 @@ Voice Tone: {voice_tone}
 Voice Style: {voice_style}
 Voice Personality: {voice_personality}
 Voice Special Effects: {voice_special_effects}
-Using the provided character attributes, generate 10 unique and compelling speech patterns that reflect the character's distinct narrative voice. The speech patterns should:
-Reflect the Character's Attributes: Incorporate elements from the character's name, description, personality, profile, likes, dislikes, secrets, health, equipment, and voice attributes (such as age, gender, texture, style, etc.) into their speech.
+-----
+Based on the provided character attributes, generate 10 unique and compelling quotes to define {name}'s distinct narrative voice. The quotes should:
 Embody Unique Expressions: Use character-specific idioms, language quirks, phrases, or catchphrases that mirror their background, culture, and experiences. Subtly hint at their secrets and showcase their emotions and motivations through their words.
 Utilize Coping Mechanisms: Let the character's coping mechanisms influence their speech, revealing how they deal with stress, joy, or challenges.
 Integrate Likes and Dislikes: Reference the character's likes and dislikes naturally within their speech.
@@ -32,13 +32,6 @@ Speech Style:
 - Avoid formal or archaic language.
 Sample Utterances:
 - Provide 10 examples of things the character might say, reflecting their personality, coping mechanisms, and the above elements.
-- Do not include quotation marks around the character's speech.
-Situations to Inspire the Utterances (feel free to be creative):
-- Expressing moderate hunger and casually seeking food.
-- Commenting on fatigue from a long or challenging journey.
-- Reflecting on a deep, personal question (e.g., "What does friendship mean to me?").
-- Answering a quirky question, such as "Which bothers you most: being tickled, papercuts, nails on slate, or silence?" Begin by referencing the question.
-- Sharing a humorous anecdote appropriate to their background and coping mechanisms.
 Dialogue Formatting:
 - Do not include quotation marks around the character's speech.
 - Keep the tone informal and authentic.

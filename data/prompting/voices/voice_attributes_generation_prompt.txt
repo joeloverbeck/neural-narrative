@@ -1,0 +1,14 @@
+Task Instruction: Determine Fitting Voice Attributes for Character Data
+{name}'s Info:
+Description: {description}
+Personality: {personality}
+Profile: {profile}
+Likes: {likes}
+Dislikes: {dislikes}
+Secrets: {secrets}
+Health: {health}
+Equipment: {equipment}
+-----
+Your Task:
+Based on the provided character information, you should pick the most fitting voice attributes in each category, only among the provided options.
+Focus on choosing options that fit the character.

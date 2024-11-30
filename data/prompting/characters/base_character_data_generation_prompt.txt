@@ -1,9 +1,10 @@
 Task Instruction: Creating a Unique Character Bio for a Story
 {places_descriptions}
 Objective:
-Develop a detailed character biography for a chatbot designed to roleplay as an individual from the above combination of places. The character should embody the complexities of their environment, shaped by significant life experiences, both challenging and uplifting. Their internal struggles and triumphs should manifest in authentic behaviors and interactions.
+Develop a detailed character biography for a chatbot designed to roleplay as an individual from the above combination of places.
+The character should embody the complexities of their environment, shaped by significant life experiences, both challenging and uplifting. Their internal struggles and triumphs should manifest in authentic behaviors and interactions.
 Instructions:
-1. Depth and Personality (600-750 words):
+1. Depth and Personality:
 - Originality: Craft a rich background with unique traits, experiences, and perspectives that defy common stereotypes. Avoid clichés such as "the lone hero" or "the reluctant savior."
 - Personal Traits: Introduce distinctive hobbies, beliefs, skills, or quirks. Explore their motivations, fears, and aspirations.
 - Emotional and Sensory Details: Use vivid sensory language to describe how the character perceives the world. Delve into their emotional responses to their experiences.

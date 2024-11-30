@@ -28,6 +28,6 @@ class CharacterService:
         GenerateCharacterCommandFactoryComposer(
             playthrough_name
         ).compose_factory().create_generate_character_command(
-            place_character_at_current_place=True,
+            is_player=False,
             user_content=guideline,
         ).execute()

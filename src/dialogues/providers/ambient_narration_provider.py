@@ -51,5 +51,5 @@ class AmbientNarrationProvider(BaseToolResponseProvider):
         return {
             "local_information": self._local_information_factory.get_information(),
             "personality": personality,
-            "transcription": self._transcription.get_prettified_transcription(),
+            "transcription": self._transcription.get_transcription_excerpt(),
         }

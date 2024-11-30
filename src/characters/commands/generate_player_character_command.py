@@ -30,7 +30,7 @@ class GeneratePlayerCharacterCommand(Command):
 
     def execute(self) -> None:
         self._generate_character_command_factory.create_generate_character_command(
-            place_character_at_current_place=False,
+            is_player=True,
             user_content=self._user_content,
         ).execute()
         self._playthrough_manager.update_player_identifier(

@@ -24,7 +24,7 @@ class SpeechPatternsProvider(BaseToolResponseProvider):
         self._base_character_data = base_character_data
 
     def get_user_content(self) -> str:
-        return "Generate 10 unique and compelling speech patterns that reflect the character's distinct narrative voice. Follow the provided instructions."
+        return "Generate 10 unique and compelling quotes to define the character's distinct narrative voice. Follow the provided instructions."
 
     def create_product_from_base_model(self, response_model: BaseModel):
         return SpeechPatternsProduct(
