@@ -78,6 +78,39 @@ function formatMessageTexts() {
     });
 }
 
+function brainstormEventsSuccessHandler(response) {
+    if (response.success) {
+        const container = document.getElementById('brainstormed-events-container');
+        if (container) {
+            if (response.brainstormed_events.length === 0) {
+                container.innerHTML = '<p>No events were brainstormed.</p>';
+            } else {
+                // Clear previous events
+                container.innerHTML = '';
+
+                // Create a header for the brainstormed events
+                const header = document.createElement('h3');
+                header.textContent = 'Brainstormed Events';
+                container.appendChild(header);
+
+                // Create a list to display events
+                const eventsList = document.createElement('ul');
+                eventsList.classList.add('brainstormed-events-list');
+
+                response.brainstormed_events.forEach((eventText, index) => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = eventText;
+                    eventsList.appendChild(listItem);
+                });
+
+                container.appendChild(eventsList);
+            }
+        }
+    } else {
+        showToast(response.error || 'An error occurred while brainstorming events.', 'error');
+    }
+}
+
 // Function to handle AJAX success for both chat and event forms
 function chatSuccessHandler(response) {
     if (response.goodbye){

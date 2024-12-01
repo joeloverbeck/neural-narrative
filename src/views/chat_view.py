@@ -328,6 +328,38 @@ class ChatView(MethodView):
 
         if action:
             try:
+                # There are two types of actions: one that produce one or more messages for the chat,
+                # Or actions that don't produce messages in the chat.
+                if action == "Brainstorm events":
+                    # The user wants to delegate brainstorming events to show them under the chat window.
+                    product = DialogueService().process_brainstorm_events(
+                        dialogue_participants
+                    )
+
+                    if not product.is_valid():
+                        if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                            return (
+                                jsonify(
+                                    {
+                                        "success": False,
+                                        "error": f"Failed to brainstorm events. Error: {product.get_error()}",
+                                    }
+                                ),
+                                200,
+                            )
+                        return redirect(url_for("chat"))
+
+                    # The product is valid.
+                    if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                        return (
+                            jsonify(
+                                {"success": True, "brainstormed_events": product.get()}
+                            ),
+                            200,
+                        )
+                    else:
+                        return redirect(url_for("chat"))
+
                 messages, is_goodbye = ChatView.process_action(
                     playthrough_name,
                     action,

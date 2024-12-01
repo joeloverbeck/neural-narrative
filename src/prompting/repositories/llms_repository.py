@@ -43,6 +43,7 @@ class LlmsRepository:
             "ambient_narration": "dialogues",
             "narrative_beat": "dialogues",
             "grow_event": "dialogues",
+            "brainstorm_events": "dialogues",
             "confrontation_round": "dialogues",
             "speech_turn_choice": "dialogues",
             "speech_turn": "dialogues",

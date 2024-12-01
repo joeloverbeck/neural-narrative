@@ -4,6 +4,7 @@ from typing import List, Dict, Optional
 from flask import session, url_for
 
 from src.base.playthrough_manager import PlaythroughManager
+from src.base.products.texts_product import TextsProduct
 from src.base.validators import validate_non_empty_string
 from src.characters.composers.local_information_factory_composer import (
     LocalInformationFactoryComposer,
@@ -36,11 +37,13 @@ from src.dialogues.factories.narrative_beat_provider_factory import (
     NarrativeBeatProviderFactory,
 )
 from src.dialogues.factories.web_player_input_factory import WebPlayerInputFactory
+from src.dialogues.models.brainstormed_events import BrainstormedEvents
 from src.dialogues.observers.web_dialogue_observer import WebDialogueObserver
 from src.dialogues.observers.web_narration_observer import (
     WebNarrationObserver,
 )
 from src.dialogues.participants import Participants
+from src.dialogues.providers.brainstorm_events_provider import BrainstormEventsProvider
 from src.dialogues.repositories.ongoing_dialogue_repository import (
     OngoingDialogueRepository,
 )
@@ -304,6 +307,44 @@ class DialogueService:
             grow_event_narration_for_dialogue_strategy,
             web_narration_observer,
         )
+
+    def process_brainstorm_events(
+        self,
+        other_characters_identifiers: List[str],
+    ) -> TextsProduct:
+        transcription = DialogueManager(self._playthrough_name).load_transcription()
+
+        format_known_facts_algorithm = FormatKnownFactsAlgorithmComposer(
+            self._playthrough_name
+        ).compose_algorithm()
+
+        produce_tool_response_strategy_factory = (
+            ProduceToolResponseStrategyFactoryComposer(
+                Llms().for_brainstorm_events()
+            ).compose_factory()
+        )
+
+        local_information_factory = LocalInformationFactoryComposer(
+            self._playthrough_name
+        ).compose_factory()
+
+        relevant_characters_information_factory = (
+            RelevantCharactersInformationFactoryComposer(
+                self._playthrough_name,
+                "Participant",
+                ParticipantsIdentifiersStrategy(other_characters_identifiers),
+            ).compose_factory()
+        )
+
+        product = BrainstormEventsProvider(
+            transcription,
+            format_known_facts_algorithm,
+            produce_tool_response_strategy_factory,
+            local_information_factory,
+            relevant_characters_information_factory,
+        ).generate_product(BrainstormedEvents)
+
+        return product
 
     def process_user_input(
         self, user_input, other_characters_identifiers: List[str]

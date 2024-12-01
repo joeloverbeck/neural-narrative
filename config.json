@@ -7,7 +7,7 @@
   "time_advanced_due_to_exiting_location": 1,
   "time_advanced_due_to_traveling": 10,
   "time_advanced_due_to_searching_for_location": 2,
-  "max_retries": 2,
+  "max_retries": 1,
   "facts_to_retrieve_from_database": 15,
   "memories_to_retrieve_from_database": 15,
   "number_of_characters_to_retrieve_from_transcription": 5000

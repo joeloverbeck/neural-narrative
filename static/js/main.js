@@ -172,7 +172,6 @@ $('form.ajax-form button[type=submit]').click(function() {
 function disable_button_and_add_spinner(button) {
     button.disabled = true;
 
-    // Check if the button has the 'icon-button' class
     if (button.classList.contains('icon-button')) {
         // For icon buttons, show only the spinner icon
         button.innerHTML = '<i class="fa-solid fa-arrows-rotate fa-spin"></i>';

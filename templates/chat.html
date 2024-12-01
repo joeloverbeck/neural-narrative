@@ -178,6 +178,22 @@
                 </form>
             </fieldset>
 
+            <!-- Brainstorm Events Section -->
+            <fieldset>
+                <legend><i class="fa-solid fa-lightbulb"></i> Brainstorm Events</legend>
+                <!-- Brainstorm Events Form -->
+                <form method="post" class="brainstorm-events-form ajax-form" action="{{ url_for('chat') }}"
+                      data-success-handler="brainstormEventsSuccessHandler" data-error-handler="chatErrorHandler">
+                    <div class="form-buttons" id="brainstorm-events-button-container">
+                        <button type="submit" name="submit_action" value="Brainstorm events" class="action-button">
+                            <i class="fa-solid fa-lightbulb"></i> Brainstorm Events
+                        </button>
+                    </div>
+                </form>
+                <!-- Container for displaying brainstormed events -->
+                <div id="brainstormed-events-container"><p>No events have been brainstormed.</p></div>
+            </fieldset>
+
         </div>
     </div>
 

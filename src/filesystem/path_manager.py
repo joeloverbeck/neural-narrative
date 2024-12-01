@@ -171,6 +171,10 @@ class PathManager:
         return cls.DIALOGUES_DIR / "grow_event_prompt.txt"
 
     @classmethod
+    def get_brainstorm_events_prompt_path(cls) -> Path:
+        return cls.DIALOGUES_DIR / "brainstorm_events_prompt.txt"
+
+    @classmethod
     def get_speech_turn_prompt_path(cls) -> Path:
         return cls.DIALOGUES_DIR / "speech_turn_prompt.txt"
 

@@ -77,7 +77,7 @@
             "presence_penalty": 0.3,
             "context": 32000,
             "supports_tools": false,
-            "price": "2.0/2.0"
+            "price": "4.0/4.0"
         },
         "sorcererlm 8x22b": {
             "name": "raifle/sorcererlm-8x22b",
@@ -114,7 +114,7 @@
         }
     },
     "story_universe_generation": "magnum_72b",
-    "place_generation": "eva-qwen-2.5-72b",
+    "place_generation": "magnum_72b",
     "place_description": "eva-qwen-2.5-72b",
     "travel_narration": "magnum_72b",
     "place_facts": "mistral_large",
@@ -131,8 +131,9 @@
     "ambient_narration": "eva-qwen-2.5-72b",
     "narrative_beat": "eva-qwen-2.5-72b",
     "grow_event": "eva-qwen-2.5-72b",
+    "brainstorm_events": "eva-qwen-2.5-72b",
     "confrontation_round": "eva-qwen-2.5-72b",
-    "speech_turn_choice": "hermes_405b",
+    "speech_turn_choice": "eva-qwen-2.5-72b",
     "speech_turn": "eva-qwen-2.5-72b",
     "dialogue_summary": "eva-qwen-2.5-72b",
     "action_resolution": "magnum_72b",

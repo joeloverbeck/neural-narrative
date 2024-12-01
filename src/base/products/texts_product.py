@@ -14,5 +14,5 @@ class TextsProduct:
     def is_valid(self) -> bool:
         return self._is_valid
 
-    def error(self) -> str:
+    def get_error(self) -> str:
         return self._error

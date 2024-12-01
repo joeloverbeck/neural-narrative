@@ -1,0 +1,21 @@
+Most Recent Excerpt From Dialogue:
+{transcription}
+-----
+{local_information}
+{relevant_characters_information}
+{known_facts}
+-----
+Based on the information provided, brainstorm possible, distinct events that would naturally follow from the ongoing dialogue and context.
+Each event should be 1-2 sentences long, written in the present tense.
+Each event should follow the ongoing dialogue and context, not other brainstormed events. Each event should be a hint of what direction the narrative could go.
+Focus on events that enhance the scene by introducing actions, emotions, or reactions of the characters involved, aligning with the established setting and character personalities.
+The events should contribute meaningfully to the development of the story, revealing character traits, emotions, or conflicts, while maintaining the rhythm of the scene.
+Incorporate elements of the surroundings and character dynamics as appropriate to enrich the scene and add depth.
+Avoid repeating elements of the setting description, previous narration, or dialogue verbatim; use them as inspiration to create original events.
+Examples:
+- The boy wraps an arm around the girl, hoping that she will accept his advances.
+- The character offers his colleague to drink at a bar after work.
+- A call interrupts the dialogue, the phone buzzing insistently in the character's pocket.
+Important:
+- You are prohibited from including any dialogue in your response.
+- You are prohibited from repeating verbatim any narration in the dialogue.

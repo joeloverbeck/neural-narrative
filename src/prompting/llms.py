@@ -53,6 +53,9 @@ class Llms:
     def for_grow_event(self) -> Llm:
         return Llm(self._models[self._llms_file["grow_event"]])
 
+    def for_brainstorm_events(self) -> Llm:
+        return Llm(self._models[self._llms_file["brainstorm_events"]])
+
     def for_character_description(self) -> Llm:
         return Llm(self._models[self._llms_file["character_description"]])
 

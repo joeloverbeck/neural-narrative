@@ -1,13 +1,14 @@
-Based on the information provided, expand the user's suggested event into a third-person narrative text of four or five sentences, written in the present tense, that seamlessly integrates into the ongoing story.
+Ongoing Dialogue:
+{transcription}
+-----
+{local_information}
+{relevant_characters_information}
+{known_facts}
+-----
+Based on the information provided, expand the user's suggested event into a third-person narrative text of 4-5 sentences, written in the present tense, that seamlessly integrates into the ongoing story.
 Your narrative should enhance the scene by vividly describing the event, focusing on the actions, emotions, and reactions of the characters involved.
 Use rich, descriptive language to bring the event to life, ensuring it aligns with the established setting and character personalities.
 The event should contribute meaningfully to the development of the story, revealing character traits, emotions, or conflicts, while maintaining the rhythm of the scene without compressing time.
 Incorporate elements of the surroundings and character dynamics as appropriate to enrich the scene and add depth.
 Avoid repeating elements of the setting description, previous narration, or dialogue verbatim; use them as inspiration to create something original.
-Do not include any dialogue in your response.
-{local_information}
-{relevant_characters_information}
-{known_facts}
-Ongoing Dialogue:
-{transcription}
 Important: you are prohibited from including any dialogue in your response. You are prohibited from repeating verbatim the user's suggested event.
