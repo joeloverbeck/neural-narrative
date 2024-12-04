@@ -26,7 +26,10 @@ class CharacterEditView(MethodView):
             )
             character_data = {
                 "description": selected_character.description,
+                "personality": selected_character.personality,
                 "profile": selected_character.profile,
+                "likes": selected_character.likes,
+                "dislikes": selected_character.dislikes,
                 "speech_patterns": selected_character.speech_patterns,
                 "health": selected_character.health,
                 "equipment": selected_character.equipment,
@@ -57,7 +60,10 @@ class CharacterEditView(MethodView):
         if character_identifier:
             selected_character = Character(playthrough_name, character_identifier)
             description = request.form.get("description", "")
+            personality = request.form.get("personality", "")
             profile = request.form.get("profile", "")
+            likes = request.form.get("likes", "")
+            dislikes = request.form.get("dislikes", "")
             speech_patterns = request.form.get("speech_patterns", "")
             health = request.form.get("health", "")
             equipment = request.form.get("equipment", "")
@@ -65,7 +71,10 @@ class CharacterEditView(MethodView):
             selected_character.update_data(
                 {
                     "description": description,
+                    "personality": personality,
                     "profile": profile,
+                    "likes": likes,
+                    "dislikes": dislikes,
                     "speech_patterns": speech_patterns,
                     "health": health,
                     "equipment": equipment,

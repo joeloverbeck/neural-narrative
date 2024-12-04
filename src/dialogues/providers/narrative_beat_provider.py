@@ -60,7 +60,7 @@ class NarrativeBeatProvider(BaseToolResponseProvider):
     def get_prompt_kwargs(self) -> dict:
         local_information = self._local_information_factory.get_information()
 
-        transcription = self._transcription.get_prettified_transcription()
+        transcription = self._transcription.get_transcription_excerpt()
 
         known_facts = self._format_known_facts_algorithm.do_algorithm(
             join_with_newline(local_information, transcription)

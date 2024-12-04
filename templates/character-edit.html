@@ -46,8 +46,17 @@
                 <label for="description">Description:</label>
                 <textarea id="description" name="description" rows="5">{{ character_data.description }}</textarea>
 
+                <label for="personality">Personality:</label>
+                <input type="text" id="personality" name="personality" value="{{ character_data.personality }}">
+
                 <label for="profile">Profile:</label>
                 <textarea id="profile" name="profile" rows="10">{{ character_data.profile }}</textarea>
+
+                <label for="likes">Likes:</label>
+                <input type="text" id="likes" name="likes" value="{{ character_data.likes }}">
+
+                <label for="dislikes">Dislikes:</label>
+                <input type="text" id="dislikes" name="dislikes" value="{{ character_data.dislikes }}">
 
                 <label for="speech_patterns">Speech Patterns:</label>
                 <textarea id="speech_patterns" name="speech_patterns"
