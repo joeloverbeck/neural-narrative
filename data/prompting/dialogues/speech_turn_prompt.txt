@@ -35,3 +35,5 @@ Most Recent Excerpt From Dialogue:
 {transcription_excerpt}
 -----
 {character_dialogue_purpose}
+-----
+IMPORTANT: The entire response must be a single, well-formed JSON object that strictly follows the schema. Do not include any text before or after the JSON object. Do not include extra commas or quotes.

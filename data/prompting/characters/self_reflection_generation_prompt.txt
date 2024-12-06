@@ -1,9 +1,11 @@
-Based on the following character information and memories of {name}, write a third-person self-reflection from {name}'s perspective about the user-provided subject.
+Character Information and Memories:
+{character_information}
+-----
+Your Task:
+Based on the above character information and memories of {name}, write a third-person self-reflection from {name}'s perspective about the user-provided subject.
 The reflection should be meaningful and compelling, exploring {name}'s thoughts, feelings, and insights about their experiences.
 Refer to the character by their full name, because this self-reflection will get mixed with other memories.
 Consider how these events have affected {name}, the lessons learned, how {name}'s relationships have evolved, and how {name} now perceives themselves and the world.
 The reflection should be introspective and deepen the understanding of {name}'s character.
-Character Information and Memories:
-{character_information}
 Important: the self-reflection should be at the most three paragraphs long. It should be written in the third-person, referring to the character by their full name.
 You are prohibited from repeating verbatim the character information you have been provided for this task.

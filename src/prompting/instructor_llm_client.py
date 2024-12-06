@@ -95,34 +95,48 @@ class InstructorLlmClient(LlmClient):
                 "Attempts: %s",
                 e.n_attempts,
             )
-            logger.error("Last completion:\n%s", e.last_completion)
 
-            error_correlation = {
-                TOO_MANY_REQUESTS_ERROR_NUMBER: AiCompletionErrorType.TOO_MANY_REQUESTS,
-                UNAUTHORIZED_ERROR_NUMBER: AiCompletionErrorType.UNAUTHORIZED,
-                PAYMENT_REQUIRED: AiCompletionErrorType.PAYMENT_REQUIRED,
-                INVALID_SSL_CERTIFICATE: AiCompletionErrorType.INVALID_SSL_CERTIFICATE,
-                MAXIMUM_CONTENT_LENGTH_REACHED: AiCompletionErrorType.MAXIMUM_CONTENT_LENGTH_REACHED,
-            }
+            message = e.last_completion.choices[0].message
 
-            content = "No valid content."
+            content = message.content or "No valid content."
 
-            if hasattr(e.last_completion, "message"):
-                content = e.last_completion.message.content
+            logger.error("Last content:\n%s", content)
 
-            error = (
-                content
-                if not hasattr(e.last_completion, "error")
-                else error_correlation.get(
-                    e.last_completion.error["code"], AiCompletionErrorType.UNHANDLED
+            try:
+                # If the content doesn't end with a closing brace, append one.
+                if not content.endswith("}"):
+                    content += "}"
+
+                # Attempt to validate the JSON content against the response model.
+                parsed_result = self._response_model.model_validate_json(content)
+
+                # If successful, return a valid product early.
+                return InstructorAiCompletionProduct(parsed_result, is_valid=True)
+            except ValueError as parse_error:
+                logger.error("Parsing corrected content failed: %s", str(parse_error))
+                # If parsing still fails, continue with the existing error handling below.
+
+                error_correlation = {
+                    TOO_MANY_REQUESTS_ERROR_NUMBER: AiCompletionErrorType.TOO_MANY_REQUESTS,
+                    UNAUTHORIZED_ERROR_NUMBER: AiCompletionErrorType.UNAUTHORIZED,
+                    PAYMENT_REQUIRED: AiCompletionErrorType.PAYMENT_REQUIRED,
+                    INVALID_SSL_CERTIFICATE: AiCompletionErrorType.INVALID_SSL_CERTIFICATE,
+                    MAXIMUM_CONTENT_LENGTH_REACHED: AiCompletionErrorType.MAXIMUM_CONTENT_LENGTH_REACHED,
+                }
+
+                error = (
+                    content
+                    if not hasattr(e.last_completion, "error")
+                    else error_correlation.get(
+                        e.last_completion.error["code"], AiCompletionErrorType.UNHANDLED
+                    )
                 )
-            )
 
-            return InstructorAiCompletionProduct(
-                None,
-                is_valid=False,
-                error=error,
-            )
+                return InstructorAiCompletionProduct(
+                    None,
+                    is_valid=False,
+                    error=error,
+                )
 
         return InstructorAiCompletionProduct(model_result, is_valid=True)
 

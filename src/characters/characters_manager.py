@@ -80,6 +80,7 @@ class CharactersManager:
 
     def get_all_characters(self) -> List[dict]:
         characters_file = self._load_characters_file()
+
         return [
             {"identifier": identifier, "name": data.get("name", "Unknown")}
             for identifier, data in characters_file.items()

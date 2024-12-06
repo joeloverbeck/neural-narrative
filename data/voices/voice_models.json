@@ -1966,5 +1966,17 @@
     "INTENSE/DRAMATIC",
     "ADVENTUROUS/DRIVEN",
     "NO SPECIAL EFFECTS"
+  ],
+  "npcmjohn": [
+    "MALE",
+    "YOUNG ADULT/ADULT",
+    "EXCITED",
+    "MODERATE",
+    "NORMAL VOLUME",
+    "NASAL",
+    "WARM",
+    "INTENSE/DRAMATIC",
+    "PASSIONATE",
+    "NO SPECIAL EFFECTS"
   ]
 }
