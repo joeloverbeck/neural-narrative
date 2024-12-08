@@ -26,11 +26,27 @@ class CharacterDataForStorage:
     voice_special_effects: str
 
     def __post_init__(self):
-        required_fields = ['name', 'description', 'personality', 'profile',
-                           'likes', 'dislikes', 'secrets', 'speech_patterns', 'health',
-                           'equipment', 'voice_gender', 'voice_age', 'voice_emotion',
-                           'voice_tempo', 'voice_volume', 'voice_texture', 'voice_tone',
-                           'voice_style', 'voice_personality', 'voice_special_effects']
+        required_fields = [
+            "name",
+            "description",
+            "personality",
+            "profile",
+            "likes",
+            "dislikes",
+            "secrets",
+            "speech_patterns",
+            "health",
+            "voice_gender",
+            "voice_age",
+            "voice_emotion",
+            "voice_tempo",
+            "voice_volume",
+            "voice_texture",
+            "voice_tone",
+            "voice_style",
+            "voice_personality",
+            "voice_special_effects",
+        ]
         for field_name in required_fields:
             value = getattr(self, field_name)
             if not value:
