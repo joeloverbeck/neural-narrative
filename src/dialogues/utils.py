@@ -3,6 +3,8 @@ from typing import Optional
 
 def format_speech(narration: Optional[str], speech: str) -> str:
     if narration and narration.strip().lower() != "none":
-        return f"*{narration}* {speech}"
+        speech_message = f"*{narration}* {speech}"
     else:
-        return f"{speech}"
+        speech_message = f"{speech}"
+
+    return speech_message

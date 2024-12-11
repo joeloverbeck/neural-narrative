@@ -27,12 +27,19 @@ class WebDialogueObserver(Observer):
         if file_name:
             file_url = WebService.get_file_url(Path("voice_lines"), file_name)
 
+        desired_action = message.get("desired_action", "")
+
+        desired_action = (
+            f"\n\nDesired action: {desired_action}" if desired_action else ""
+        )
+
         self._messages.append(
             {
                 "alignment": message["alignment"],
                 "sender_name": message["sender_name"],
                 "sender_photo_url": message["sender_photo_url"],
                 "message_text": message["message_text"],
+                "desired_action": desired_action,
                 "file_url": file_url,
             }
         )

@@ -1,8 +1,12 @@
+import logging
+
 from src.dialogues.abstracts.factory_products import SpeechDataProduct
 from src.dialogues.abstracts.strategies import MessageDataProducerForSpeechTurnStrategy
 from src.dialogues.utils import format_speech
 from src.filesystem.filesystem_manager import FilesystemManager
 from src.prompting.abstracts.factory_products import LlmToolResponseProduct
+
+logger = logging.getLogger(__name__)
 
 
 class WebMessageDataProducerForSpeechTurnStrategy(
@@ -44,6 +48,7 @@ class WebMessageDataProducerForSpeechTurnStrategy(
         name = speech_data_product.get()["name"]
         narration_text = speech_data_product.get()["narration_text"]
         voice_model = speech_turn_choice_tool_response_product.get()["voice_model"]
+        desired_action = speech_data_product.get()["desired_action"]
 
         return {
             "alignment": alignment,
@@ -52,5 +57,6 @@ class WebMessageDataProducerForSpeechTurnStrategy(
             "message_text": format_speech(
                 narration_text, speech_data_product.get()["speech"]
             ),
+            "desired_action": desired_action,
             "voice_model": voice_model,
         }

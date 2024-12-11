@@ -73,6 +73,7 @@ class LlmSpeechDataProvider(BaseToolResponseProvider):
             "name": response_model.name,
             "narration_text": response_model.narration_text,
             "speech": response_model.speech,
+            "desired_action": response_model.desired_action,
         }
 
         return ConcreteSpeechDataProduct(speech_data, is_valid=True)

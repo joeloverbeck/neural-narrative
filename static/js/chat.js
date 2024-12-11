@@ -50,7 +50,7 @@ function appendMessages(messages) {
                 <img alt="${message.sender_name}" class="avatar" src="${message.sender_photo_url}">
                 <div class="message-content">
                     <div class="sender-label">${message.sender_name}</div>
-                    <div class="message-text">${message.message_text}</div>
+                    <div class="message-text">${message.message_text} ${message.desired_action}</div>
                 </div>
                 <i class="fas fa-play play-icon"></i>
                 <div class="waveform">

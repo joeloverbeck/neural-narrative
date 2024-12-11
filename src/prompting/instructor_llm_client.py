@@ -98,7 +98,7 @@ class InstructorLlmClient(LlmClient):
 
             message = e.last_completion.choices[0].message
 
-            content = message.content or "No valid content."
+            content = message.content or f"No valid content. Message\n{message}"
 
             logger.error("Last content:\n%s", content)
 

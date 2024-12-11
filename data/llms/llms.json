@@ -62,7 +62,17 @@
         "claude_3.5_sonnet": {
             "name": "anthropic/claude-3.5-sonnet",
             "description": "Exceptional dialogue. Very expensive.",
-            "temperature": 1.0,
+            "temperature": 0.92,
+            "top_p": 1.0,
+            "frequency_penalty": 0.0,
+            "presence_penalty": 0.1,
+            "supports_tools": true,
+            "price": "3.0/15.0"
+        },
+        "claude-3.5-sonnet:beta": {
+            "name": "anthropic/claude-3.5-sonnet:beta",
+            "description": "Exceptional dialogue. Very expensive.",
+            "temperature": 0.92,
             "top_p": 1.0,
             "frequency_penalty": 0.0,
             "presence_penalty": 0.1,
@@ -167,6 +177,17 @@
             "context": 300000,
             "supports_tools": true,
             "price": "0.8/3.2"
+        },
+        "llama-3.3-70b-instruct": {
+            "name": "meta-llama/llama-3.3-70b-instruct",
+            "description": "Fails following JSON schemas.",
+            "temperature": 0.8,
+            "top_p": 1.0,
+            "frequency_penalty": 0.0,
+            "presence_penalty": 0.0,
+            "context": 131072,
+            "supports_tools": false,
+            "price": "0.13/0.4"
         }
     },
     "story_universe_generation": "magnum_72b",
@@ -184,14 +205,14 @@
     "secrets": "magnum_72b",
     "concept_generation": "magnum_72b",
     "writers_room": "nemotron_70b",
-    "ambient_narration": "nova-pro_v1",
+    "ambient_narration": "eva-qwen-2.5-72b",
     "narrative_beat": "eva-qwen-2.5-72b",
     "grow_event": "eva-qwen-2.5-72b",
     "brainstorm_events": "eva-qwen-2.5-72b",
     "confrontation_round": "magnum_72b",
     "speech_turn_choice": "hermes_405b",
-    "speech_turn": "claude_3.5_sonnet",
+    "speech_turn": "claude-3.5-sonnet:beta",
     "dialogue_summary": "claude_3.5_sonnet",
     "action_resolution": "magnum_72b",
-    "interviewee_response": "claude_3.5_sonnet"
+    "interviewee_response": "claude-3.5-sonnet:beta"
 }
