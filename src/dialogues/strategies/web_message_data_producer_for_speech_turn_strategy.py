@@ -48,6 +48,7 @@ class WebMessageDataProducerForSpeechTurnStrategy(
         name = speech_data_product.get()["name"]
         narration_text = speech_data_product.get()["narration_text"]
         voice_model = speech_turn_choice_tool_response_product.get()["voice_model"]
+        thoughts = speech_data_product.get()["thoughts"]
         desired_action = speech_data_product.get()["desired_action"]
 
         return {
@@ -57,6 +58,7 @@ class WebMessageDataProducerForSpeechTurnStrategy(
             "message_text": format_speech(
                 narration_text, speech_data_product.get()["speech"]
             ),
+            "thoughts": thoughts,
             "desired_action": desired_action,
             "voice_model": voice_model,
         }

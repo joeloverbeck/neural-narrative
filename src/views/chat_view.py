@@ -137,6 +137,7 @@ class ChatView(MethodView):
                 {
                     "alignment": msg["alignment"],
                     "message_text": msg["message_text"],
+                    "thoughts": msg.get("thoughts", ""),
                     "desired_action": msg.get("desired_action", ""),
                     "message_type": msg.get("message_type", ""),
                     "sender_name": msg.get("sender_name", ""),

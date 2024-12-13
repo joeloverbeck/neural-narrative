@@ -45,12 +45,19 @@ function appendMessages(messages) {
                 </div>`;
             }
         } else {
+        const thoughtsHtml = message.thoughts ?
+    `<div class="thoughts"><i class="fas fa-brain"></i> ${message.thoughts}</div>` : '';
+const actionHtml = message.desired_action ?
+    `<div class="desired-action"><i class="fas fa-bolt"></i> ${message.desired_action}</div>` : '';
+
             messageHtml = `
             <div class="chat-bubble ${message.alignment}" data-file-url="${message.file_url}">
                 <img alt="${message.sender_name}" class="avatar" src="${message.sender_photo_url}">
                 <div class="message-content">
                     <div class="sender-label">${message.sender_name}</div>
-                    <div class="message-text">${message.message_text} ${message.desired_action}</div>
+                    <div class="message-text">${message.message_text}</div>
+                        ${thoughtsHtml}
+                        ${actionHtml}
                 </div>
                 <i class="fas fa-play play-icon"></i>
                 <div class="waveform">

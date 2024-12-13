@@ -214,5 +214,5 @@
     "speech_turn": "claude-3.5-sonnet:beta",
     "dialogue_summary": "claude_3.5_sonnet",
     "action_resolution": "magnum_72b",
-    "interviewee_response": "claude-3.5-sonnet:beta"
+    "interviewee_response": "claude_3.5_sonnet"
 }

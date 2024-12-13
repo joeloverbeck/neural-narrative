@@ -27,6 +27,10 @@ class WebDialogueObserver(Observer):
         if file_name:
             file_url = WebService.get_file_url(Path("voice_lines"), file_name)
 
+        thoughts = message.get("thoughts", "")
+
+        thoughts = f"\n\nThoughts: {thoughts}" if thoughts else ""
+
         desired_action = message.get("desired_action", "")
 
         desired_action = (
@@ -39,6 +43,7 @@ class WebDialogueObserver(Observer):
                 "sender_name": message["sender_name"],
                 "sender_photo_url": message["sender_photo_url"],
                 "message_text": message["message_text"],
+                "thoughts": thoughts,
                 "desired_action": desired_action,
                 "file_url": file_url,
             }

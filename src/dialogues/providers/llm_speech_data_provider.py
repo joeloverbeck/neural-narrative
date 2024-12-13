@@ -73,6 +73,7 @@ class LlmSpeechDataProvider(BaseToolResponseProvider):
             "name": response_model.name,
             "narration_text": response_model.narration_text,
             "speech": response_model.speech,
+            "thoughts": response_model.thoughts,
             "desired_action": response_model.desired_action,
         }
 
