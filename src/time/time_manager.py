@@ -1,4 +1,5 @@
 from src.base.playthrough_manager import PlaythroughManager
+from src.time.exceptions import IncorrectHourError
 
 
 class TimeManager:
@@ -24,6 +25,14 @@ class TimeManager:
 
     def get_hour(self) -> int:
         return int(self._playthrough_manager.get_hour())
+
+    def set_hour(self, new_hour: int):
+        if new_hour < 0 or new_hour >= 24:
+            raise IncorrectHourError(
+                f"Attempted to set new hour as '{new_hour}', which is not a valid hour."
+            )
+
+        self._playthrough_manager.update_hour(new_hour)
 
     def advance_time(self, hours: int) -> None:
         hour = self._playthrough_manager.get_hour()

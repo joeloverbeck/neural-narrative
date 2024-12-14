@@ -1,5 +1,6 @@
 {
-  "produce_voice_lines": false,
+  "produce_voice_lines": true,
+  "produce_player_voice_lines": false,
   "default_voice_model": "malewarlock",
   "narrator_voice_model": "tulius",
   "default_weather_icon": "fas fa-cloud-sun",

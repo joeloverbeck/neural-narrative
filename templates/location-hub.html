@@ -269,12 +269,12 @@
             <i class="fas fa-globe"></i> General Actions
         </button>
         <div class="content">
-            <form method="post" class="advance-time-form">
-                <input name="submit_action" type="hidden" value="Advance Time">
-                <label for="hours_to_advance">Enter number of hours to advance:</label>
-                <input type="number" name="hours_to_advance" id="hours_to_advance" min="1" required>
+            <form method="post">
+                <input name="submit_action" type="hidden" value="Set Time">
+                <label for="new_hour">Enter the new hour (0-23):</label>
+                <input type="number" name="new_hour" id="new_hour" min="0" required value="{{ current_hour }}">
                 <button type="submit" class="action-button">
-                    <i class="fas fa-clock"></i> Advance Time
+                    <i class="fas fa-clock"></i> Set Hour
                 </button>
             </form>
         </div>

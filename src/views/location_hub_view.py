@@ -290,17 +290,18 @@ class LocationHubView(MethodView):
         return redirect(url_for("location-hub"))
 
     @staticmethod
-    def handle_advance_time(playthrough_name):
-        hours_to_advance = request.form.get("hours_to_advance")
+    def handle_set_time(playthrough_name):
+        new_hour = request.form.get("new_hour")
+
         try:
-            hours_to_advance = int(hours_to_advance)
-            if hours_to_advance <= 0:
-                flash("Please enter a positive number of hours.", "error")
+            new_hour = int(new_hour)
+            if new_hour < 0 or new_hour >= 24:
+                flash("Please enter a correct hour (0-23).", "error")
             else:
-                TimeManager(playthrough_name).advance_time(hours_to_advance)
-                flash(f"Time advanced by {hours_to_advance} hour(s).", "success")
+                TimeManager(playthrough_name).set_hour(new_hour)
+                flash(f"Current hour set as {new_hour}.", "success")
         except (ValueError, TypeError):
-            flash("Invalid number of hours.", "error")
+            flash("Invalid hour.", "error")
         return redirect(url_for("location-hub"))
 
     @staticmethod
