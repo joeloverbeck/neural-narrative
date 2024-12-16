@@ -188,6 +188,17 @@
             "context": 131072,
             "supports_tools": false,
             "price": "0.13/0.4"
+        },
+        "grok-2-1212": {
+            "name": "x-ai/grok-2-1212",
+            "description": "",
+            "temperature": 0.8,
+            "top_p": 1.0,
+            "frequency_penalty": 0.0,
+            "presence_penalty": 0.0,
+            "context": 131072,
+            "supports_tools": true,
+            "price": "2.0/10.0"
         }
     },
     "story_universe_generation": "magnum_72b",
@@ -207,12 +218,12 @@
     "writers_room": "nemotron_70b",
     "ambient_narration": "eva-qwen-2.5-72b",
     "narrative_beat": "eva-qwen-2.5-72b",
-    "grow_event": "eva-qwen-2.5-72b",
+    "grow_event": "grok-2-1212",
     "brainstorm_events": "eva-qwen-2.5-72b",
     "confrontation_round": "magnum_72b",
     "speech_turn_choice": "hermes_405b",
-    "speech_turn": "claude-3.5-sonnet:beta",
+    "speech_turn": "grok-2-1212",
     "dialogue_summary": "claude_3.5_sonnet",
     "action_resolution": "magnum_72b",
-    "interviewee_response": "magnum_72b"
+    "interviewee_response": "grok-2-1212"
 }

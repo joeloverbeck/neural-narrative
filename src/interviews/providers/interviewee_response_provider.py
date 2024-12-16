@@ -70,7 +70,7 @@ class IntervieweeResponseProvider(BaseToolResponseProvider):
 
         character_information = (
             self._character_information_provider_factory.create_provider(
-                interview
+                interview, use_interview=False, use_memories=False
             ).get_information()
         )
 

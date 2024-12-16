@@ -1978,5 +1978,52 @@
     "INTENSE/DRAMATIC",
     "PASSIONATE",
     "NO SPECIAL EFFECTS"
+  ],
+  "herikavoice": [
+    "FEMALE",
+    "YOUNG ADULT/ADULT",
+    "PLAYFUL",
+    "MODERATE",
+    "NORMAL VOLUME",
+    "CRISP",
+    "NEUTRAL",
+    "FORMAL",
+    "CHARMING/WITTY",
+    "NO SPECIAL EFFECTS"
+  ],
+  "maleyoungeager": [
+    "MALE",
+    "YOUNG ADULT/ADULT",
+    "CONFIDENT/DETERMINED",
+    "FAST",
+    "NORMAL VOLUME",
+    "SMOOTH",
+    "NEUTRAL",
+    "FORMAL",
+    "NOBLE",
+    "NO SPECIAL EFFECTS"
+  ],
+  "femalecommoner": [
+    "FEMALE",
+    "MIDDLE-AGED",
+    "CALM",
+    "MODERATE",
+    "NORMAL VOLUME",
+    "SMOOTH",
+    "NEUTRAL",
+    "FORMAL",
+    "STOIC",
+    "NO SPECIAL EFFECTS"
+  ],
+  "npcfbosknightastlin": [
+    "FEMALE",
+    "TEENAGE",
+    "ANXIOUS/FRIGHTENED",
+    "MODERATE",
+    "NORMAL VOLUME",
+    "WHISPERY/AIRY",
+    "NEUTRAL",
+    "INTENSE/DRAMATIC",
+    "SKEPTICAL"
   ]
 }

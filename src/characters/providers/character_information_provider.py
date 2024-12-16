@@ -19,6 +19,7 @@ class CharacterInformationProvider:
         query_text: str,
         retrieve_memories_algorithm_factory: RetrieveMemoriesAlgorithmFactory,
         use_interview: bool,
+        use_memories: bool,
         character_factory: CharacterFactory,
         path_manager: Optional[PathManager] = None,
         interview_repository: Optional[InterviewRepository] = None,
@@ -30,6 +31,7 @@ class CharacterInformationProvider:
         self._query_text = query_text
         self._retrieve_memories_algorithm_factory = retrieve_memories_algorithm_factory
         self._use_interview = use_interview
+        self._use_memories = use_memories
         self._character_factory = character_factory
 
         self._character = self._character_factory.create_character(
@@ -41,18 +43,36 @@ class CharacterInformationProvider:
             playthrough_name, character_identifier, self._character.name
         )
 
+    def _format_memories_output(self):
+        memories = ""
+
+        if self._use_memories:
+            memories = "\n".join(
+                self._retrieve_memories_algorithm_factory.create_algorithm(
+                    self._character.identifier, self._query_text
+                ).do_algorithm()
+            )
+
+        return memories
+
+    def _format_interview_output(self, interview: str, memories: str):
+        output = ""
+
+        if self._use_memories:
+            output = f"Relevant Memories:\n{memories}\n-----\n"
+
+        output += f"Interview With {self._character.name}:\n{interview}"
+
+        return output
+
     def get_information(self) -> str:
         # If the character has an interview, just return the interview.
         interview = self._interview_repository.get_interview()
 
-        memories = "\n".join(
-            self._retrieve_memories_algorithm_factory.create_algorithm(
-                self._character.identifier, self._query_text
-            ).do_algorithm()
-        )
+        memories = self._format_memories_output()
 
         if self._use_interview and interview:
-            return f"Relevant Memories:\n{memories}\n-----\nInterview With {self._character.name}:\n{interview}"
+            return self._format_interview_output(interview, memories)
 
         character_information = read_file(
             self._path_manager.get_character_information_path()
