@@ -62,6 +62,7 @@ class WebDialogueObserver(Observer):
         self._messages.append(
             {
                 "alignment": message["alignment"],
+                "sender_identifier": message.get("sender_identifier", ""),
                 "sender_name": message["sender_name"],
                 "sender_photo_url": message["sender_photo_url"],
                 "message_text": message["message_text"],

@@ -21,6 +21,8 @@ class OngoingDialogueRepository:
         PARTICIPANTS = "participants"
         PURPOSE = "purpose"
         TRANSCRIPTION = "transcription"
+        LATEST_THOUGHTS = "latest_thoughts"
+        LATEST_DESIRED_ACTIONS = "latest_desired_actions"
 
     def __init__(
         self, playthrough_name: str, path_manager: Optional[PathManager] = None
@@ -137,6 +139,70 @@ class OngoingDialogueRepository:
         ongoing_dialogue_file[self.OngoingDialogueEntryType.TRANSCRIPTION.value] = (
             transcription
         )
+
+        self._save_ongoing_dialogue_data(ongoing_dialogue_file)
+
+    def get_latest_thoughts(self, character_identifier: str) -> Optional[str]:
+        validate_non_empty_string(character_identifier, "character_identifier")
+
+        ongoing_dialogue_file = self._load_ongoing_dialogue_data()
+        latest_thoughts = ongoing_dialogue_file.get(
+            self.OngoingDialogueEntryType.LATEST_THOUGHTS.value
+        )
+
+        if not latest_thoughts:
+            return None
+
+        return latest_thoughts.get(character_identifier)
+
+    def set_latest_thoughts(self, character_identifier: str, thoughts: str) -> None:
+        validate_non_empty_string(character_identifier, "character_identifier")
+
+        ongoing_dialogue_file = self._load_ongoing_dialogue_data()
+
+        if (
+            self.OngoingDialogueEntryType.LATEST_THOUGHTS.value
+            not in ongoing_dialogue_file
+        ):
+            ongoing_dialogue_file[
+                self.OngoingDialogueEntryType.LATEST_THOUGHTS.value
+            ] = {}
+
+        ongoing_dialogue_file[self.OngoingDialogueEntryType.LATEST_THOUGHTS.value][
+            character_identifier
+        ] = thoughts
+
+        self._save_ongoing_dialogue_data(ongoing_dialogue_file)
+
+    def get_latest_desired_action(self, character_identifier: str) -> Optional[str]:
+        validate_non_empty_string(character_identifier, "character_identifier")
+
+        ongoing_dialogue_file = self._load_ongoing_dialogue_data()
+        latest_desired_action = ongoing_dialogue_file.get(
+            self.OngoingDialogueEntryType.LATEST_DESIRED_ACTIONS.value
+        )
+
+        if not latest_desired_action:
+            return None
+
+        return latest_desired_action.get(character_identifier)
+
+    def set_latest_desired_action(self, character_identifier: str, action: str) -> None:
+        validate_non_empty_string(character_identifier, "character_identifier")
+
+        ongoing_dialogue_file = self._load_ongoing_dialogue_data()
+
+        if (
+            self.OngoingDialogueEntryType.LATEST_DESIRED_ACTIONS.value
+            not in ongoing_dialogue_file
+        ):
+            ongoing_dialogue_file[
+                self.OngoingDialogueEntryType.LATEST_DESIRED_ACTIONS.value
+            ] = {}
+
+        ongoing_dialogue_file[
+            self.OngoingDialogueEntryType.LATEST_DESIRED_ACTIONS.value
+        ][character_identifier] = action
 
         self._save_ongoing_dialogue_data(ongoing_dialogue_file)
 

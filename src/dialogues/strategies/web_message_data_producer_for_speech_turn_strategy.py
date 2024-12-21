@@ -33,9 +33,13 @@ class WebMessageDataProducerForSpeechTurnStrategy(
                 "voice_model should be in the speech turn choice response."
             )
 
+        speaker_identifier = speech_turn_choice_tool_response_product.get()[
+            "identifier"
+        ]
+
         image_url = self._filesystem_manager.get_file_path_to_character_image_for_web(
             self._playthrough_name,
-            speech_turn_choice_tool_response_product.get()["identifier"],
+            speaker_identifier,
         )
         alignment = "left"
         speaker_identifier = speech_turn_choice_tool_response_product.get()[
@@ -53,6 +57,7 @@ class WebMessageDataProducerForSpeechTurnStrategy(
 
         return {
             "alignment": alignment,
+            "sender_identifier": speaker_identifier,
             "sender_name": name,
             "sender_photo_url": image_url,
             "message_text": format_speech(

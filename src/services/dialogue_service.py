@@ -391,11 +391,13 @@ class DialogueService:
     @staticmethod
     def prepare_messages(web_dialogue_observer: WebDialogueObserver) -> List[Dict]:
         messages = []
+
         for message in web_dialogue_observer.get_messages():
             message["sender_photo_url"] = url_for(
                 "static", filename=message["sender_photo_url"]
             )
             messages.append(message)
+
         return messages
 
     @staticmethod

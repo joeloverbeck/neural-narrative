@@ -233,7 +233,26 @@ class ChatView(MethodView):
         )
 
         if not is_goodbye:
-            OngoingDialogueRepository(playthrough_name).add_messages(messages)
+            ongoing_dialogue_repository = OngoingDialogueRepository(playthrough_name)
+
+            ongoing_dialogue_repository.add_messages(messages)
+
+            # Store latest thoughts and desired action
+            for message in messages:
+                sender_identifier = message.get("sender_identifier")
+
+                # It could be that there's no sender identifier, as in the case of player dialogue,
+                # because that data would only be used for storing thoughts and desired action,
+                # which aren't produced by the user.
+                if not sender_identifier:
+                    continue
+
+                ongoing_dialogue_repository.set_latest_thoughts(
+                    sender_identifier, message["thoughts"]
+                )
+                ongoing_dialogue_repository.set_latest_desired_action(
+                    sender_identifier, message["desired_action"]
+                )
 
         return messages, is_goodbye
 

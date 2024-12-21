@@ -62,6 +62,16 @@ class LlmSpeechDataProvider(BaseToolResponseProvider):
             return f"General Purpose of the Dialogue: {self._config.purpose}"
         return ""
 
+    def _format_latest_thoughts(self) -> str:
+        if self._config.latest_thoughts:
+            return f"Latest thoughts: {self._config.latest_thoughts}"
+        return ""
+
+    def _format_latest_desired_actions(self) -> str:
+        if self._config.latest_desired_actions:
+            return f"Latest desired actions: {self._config.latest_desired_actions}"
+        return ""
+
     def get_prompt_file(self) -> Path:
         return self._path_manager.get_speech_turn_prompt_path()
 
@@ -116,6 +126,10 @@ class LlmSpeechDataProvider(BaseToolResponseProvider):
             use_interview=True,
         ).get_information()
 
+        # Format latest thoughts:
+        latest_thoughts = self._format_latest_thoughts()
+        latest_desired_actions = self._format_latest_desired_actions()
+
         return {
             "places_descriptions": places_descriptions,
             "hour": self._time_manager.get_hour(),
@@ -125,6 +139,8 @@ class LlmSpeechDataProvider(BaseToolResponseProvider):
             "character_information": character_information,
             "known_facts": known_facts,
             "dialogue_purpose": dialogue_purpose,
+            "latest_thoughts": latest_thoughts,
+            "latest_desired_actions": latest_desired_actions,
             "character_dialogue_purpose": character_dialogue_purpose,
             "transcription_excerpt": self._config.transcription.get_transcription_excerpt(),
         }

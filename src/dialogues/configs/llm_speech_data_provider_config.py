@@ -12,3 +12,5 @@ class LlmSpeechDataProviderConfig:
     participants: Participants
     purpose: Optional[str]
     transcription: Transcription
+    latest_thoughts: Optional[str]
+    latest_desired_actions: Optional[str]

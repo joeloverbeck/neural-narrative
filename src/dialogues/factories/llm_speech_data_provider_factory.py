@@ -21,6 +21,9 @@ from src.dialogues.factories.format_character_dialogue_purpose_algorithm_factory
 )
 from src.dialogues.participants import Participants
 from src.dialogues.providers.llm_speech_data_provider import LlmSpeechDataProvider
+from src.dialogues.repositories.ongoing_dialogue_repository import (
+    OngoingDialogueRepository,
+)
 from src.dialogues.transcription import Transcription
 from src.maps.providers.places_descriptions_provider import PlacesDescriptionsProvider
 from src.prompting.abstracts.abstract_factories import (
@@ -40,6 +43,7 @@ class LlmSpeechDataProviderFactory:
         produce_tool_response_strategy_factory: ProduceToolResponseStrategyFactory,
         places_descriptions_provider: PlacesDescriptionsProvider,
         character_information_provider_factory_composer: CharacterInformationProviderFactoryComposer,
+        ongoing_dialogue_repository: Optional[OngoingDialogueRepository] = None,
     ):
         validate_non_empty_string(playthrough_name, "playthrough_name")
 
@@ -58,6 +62,10 @@ class LlmSpeechDataProviderFactory:
             character_information_provider_factory_composer
         )
 
+        self._ongoing_dialogue_repository = (
+            ongoing_dialogue_repository or OngoingDialogueRepository(playthrough_name)
+        )
+
     def create_llm_speech_data_provider(
         self,
         speaker_identifier: str,
@@ -65,6 +73,17 @@ class LlmSpeechDataProviderFactory:
         transcription: Transcription,
     ) -> LlmSpeechDataProvider:
         validate_non_empty_string(speaker_name, "speaker_name")
+
+        # Retrieve the latest thoughts and desired actions.
+        latest_thoughts = self._ongoing_dialogue_repository.get_latest_thoughts(
+            speaker_identifier
+        )
+        latest_desired_actions = (
+            self._ongoing_dialogue_repository.get_latest_desired_action(
+                speaker_identifier
+            )
+        )
+
         return LlmSpeechDataProvider(
             LlmSpeechDataProviderConfig(
                 self._playthrough_name,
@@ -72,6 +91,8 @@ class LlmSpeechDataProviderFactory:
                 self._participants,
                 self._purpose,
                 transcription,
+                latest_thoughts,
+                latest_desired_actions,
             ),
             LlmSpeechDataProviderFactoriesConfig(
                 self._produce_tool_response_strategy_factory,

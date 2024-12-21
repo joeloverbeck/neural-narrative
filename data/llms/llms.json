@@ -84,8 +84,8 @@
             "description": "Results similar to magnum, but causes more validation errors.",
             "temperature": 0.8,
             "top_p": 1.0,
-            "frequency_penalty": 0.3,
-            "presence_penalty": 0.35,
+            "frequency_penalty": 0.1,
+            "presence_penalty": 0.1,
             "context": 32000,
             "supports_tools": false,
             "price": "4.0/4.0"
@@ -192,17 +192,39 @@
         "grok-2-1212": {
             "name": "x-ai/grok-2-1212",
             "description": "",
-            "temperature": 0.8,
+            "temperature": 1.0,
             "top_p": 1.0,
             "frequency_penalty": 0.0,
             "presence_penalty": 0.0,
             "context": 131072,
             "supports_tools": true,
             "price": "2.0/10.0"
+        },
+        "eva-llama-3.33-70b": {
+            "name": "eva-unit-01/eva-llama-3.33-70b",
+            "description": "Doesn't follow schemas.",
+            "temperature": 1.0,
+            "top_p": 1.0,
+            "frequency_penalty": 0.0,
+            "presence_penalty": 0.0,
+            "context": 16384,
+            "supports_tools": false,
+            "price": "4.0/6.0"
+        },
+        "l3.3-euryale-70b": {
+            "name": "sao10k/l3.3-euryale-70b",
+            "description": "Terrible context length. Outputs gibberish.",
+            "temperature": 1.0,
+            "top_p": 1.0,
+            "frequency_penalty": 0.0,
+            "presence_penalty": 0.0,
+            "context": 8000,
+            "supports_tools": false,
+            "price": "1.5/1.5"
         }
     },
     "story_universe_generation": "magnum_72b",
-    "place_generation": "nova-pro_v1",
+    "place_generation": "grok-2-1212",
     "place_description": "magnum_72b",
     "travel_narration": "magnum_72b",
     "place_facts": "eva-qwen-2.5-72b",
@@ -218,12 +240,12 @@
     "writers_room": "nemotron_70b",
     "ambient_narration": "eva-qwen-2.5-72b",
     "narrative_beat": "eva-qwen-2.5-72b",
-    "grow_event": "grok-2-1212",
+    "grow_event": "magnum_72b",
     "brainstorm_events": "eva-qwen-2.5-72b",
     "confrontation_round": "magnum_72b",
     "speech_turn_choice": "hermes_405b",
-    "speech_turn": "grok-2-1212",
-    "dialogue_summary": "claude_3.5_sonnet",
+    "speech_turn": "claude-3.5-sonnet:beta",
+    "dialogue_summary": "claude-3.5-sonnet:beta",
     "action_resolution": "magnum_72b",
-    "interviewee_response": "grok-2-1212"
+    "interviewee_response": "claude-3.5-sonnet:beta"
 }

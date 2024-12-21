@@ -2025,5 +2025,29 @@
     "NEUTRAL",
     "INTENSE/DRAMATIC",
     "SKEPTICAL"
+  ],
+  "npcmfinn": [
+    "MALE",
+    "ELDERLY",
+    "EXCITED",
+    "MODERATE",
+    "NORMAL VOLUME",
+    "GRAVELLY/RASPY",
+    "WARM",
+    "INTENSE/DRAMATIC",
+    "ECCENTRIC",
+    "NO SPECIAL EFFECTS"
+  ],
+  "ulfric": [
+    "MALE",
+    "YOUNG ADULT/ADULT",
+    "SAD/MELANCHOLIC",
+    "MODERATE",
+    "NORMAL VOLUME",
+    "GUTTURAL",
+    "COLD",
+    "FORMAL",
+    "WORLD-WEARY/PESSIMISTIC",
+    "NO SPECIAL EFFECTS"
   ]
 }

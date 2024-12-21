@@ -9,6 +9,7 @@ from src.characters.character_guidelines_manager import CharacterGuidelinesManag
 from src.characters.factories.generate_character_generation_guidelines_algorithm_factory import (
     GenerateCharacterGenerationGuidelinesAlgorithmFactory,
 )
+from src.filesystem.config_loader import ConfigLoader
 from src.maps.factories.hierarchy_manager_factory import HierarchyManagerFactory
 from src.maps.factories.place_manager_factory import PlaceManagerFactory
 
@@ -25,6 +26,7 @@ class ProcessFirstVisitToPlaceCommand(Command):
         place_manager_factory: PlaceManagerFactory,
         playthrough_manager: Optional[PlaythroughManager] = None,
         character_guidelines_manager: Optional[CharacterGuidelinesManager] = None,
+        config_loader: Optional[ConfigLoader] = None,
     ):
         validate_non_empty_string(playthrough_name, "playthrough_name")
         validate_non_empty_string(map_entry_identifier, "map_entry_identifier")
@@ -42,6 +44,7 @@ class ProcessFirstVisitToPlaceCommand(Command):
         self._character_guidelines_manager = (
             character_guidelines_manager or CharacterGuidelinesManager()
         )
+        self._config_loader = config_loader or ConfigLoader()
 
     def execute(self) -> None:
         place_manager = self._place_manager_factory.create_place_manager()
@@ -59,12 +62,15 @@ class ProcessFirstVisitToPlaceCommand(Command):
 
         story_universe_name = self._playthrough_manager.get_story_universe_template()
 
-        if not self._character_guidelines_manager.guidelines_exist(
-            story_universe_name,
-            places_templates_parameter.get_world_template(),
-            places_templates_parameter.get_region_template(),
-            places_templates_parameter.get_area_template(),
-            places_templates_parameter.get_location_template(),
+        if (
+            not self._character_guidelines_manager.guidelines_exist(
+                story_universe_name,
+                places_templates_parameter.get_world_template(),
+                places_templates_parameter.get_region_template(),
+                places_templates_parameter.get_area_template(),
+                places_templates_parameter.get_location_template(),
+            )
+            and self._config_loader.get_generate_character_guidelines_on_first_visit()
         ):
             self._generate_character_generation_guidelines_algorithm_factory.create_algorithm(
                 self._map_entry_identifier

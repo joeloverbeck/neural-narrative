@@ -39,6 +39,9 @@ class ConfigLoader:
     def get_produce_player_voice_lines(self) -> bool:
         return self._get_config_key("produce_player_voice_lines")
 
+    def get_generate_character_guidelines_on_first_visit(self) -> bool:
+        return self._get_config_key("generate_character_guidelines_on_first_visit")
+
     def get_default_voice_model(self) -> str:
         return self._get_config_key("default_voice_model")
 
