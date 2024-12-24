@@ -1,5 +1,5 @@
 {
-  "produce_voice_lines": false,
+  "produce_voice_lines": true,
   "produce_player_voice_lines": false,
   "generate_character_guidelines_on_first_visit": false,
   "default_voice_model": "malewarlock",
@@ -12,5 +12,6 @@
   "max_retries": 1,
   "facts_to_retrieve_from_database": 10,
   "memories_to_retrieve_from_database": 10,
-  "number_of_characters_to_retrieve_from_transcription": 7000
+  "number_of_characters_to_retrieve_from_transcription": 7000,
+  "number_of_characters_to_retrieve_from_interview": 70000
 }

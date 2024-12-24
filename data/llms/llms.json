@@ -247,5 +247,5 @@
     "speech_turn": "claude-3.5-sonnet:beta",
     "dialogue_summary": "claude-3.5-sonnet:beta",
     "action_resolution": "magnum_72b",
-    "interviewee_response": "claude-3.5-sonnet:beta"
+    "interviewee_response": "magnum_72b"
 }

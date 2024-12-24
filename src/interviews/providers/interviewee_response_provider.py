@@ -7,6 +7,7 @@ from src.base.validators import validate_non_empty_string
 from src.characters.factories.character_information_provider_factory import (
     CharacterInformationProviderFactory,
 )
+from src.filesystem.config_loader import ConfigLoader
 from src.filesystem.path_manager import PathManager
 from src.interviews.repositories.interview_repository import InterviewRepository
 from src.interviews.repositories.ongoing_interview_repository import (
@@ -30,6 +31,7 @@ class IntervieweeResponseProvider(BaseToolResponseProvider):
         path_manager: Optional[PathManager] = None,
         interview_repository: Optional[InterviewRepository] = None,
         ongoing_interview_repository: Optional[OngoingInterviewRepository] = None,
+        config_loader: Optional[ConfigLoader] = None,
     ):
         super().__init__(produce_tool_response_strategy_factory, path_manager)
 
@@ -51,6 +53,7 @@ class IntervieweeResponseProvider(BaseToolResponseProvider):
                 playthrough_name, character_identifier, character_name
             )
         )
+        self._config_loader = config_loader or ConfigLoader()
 
     def get_prompt_file(self) -> str:
         return self._path_manager.get_interviewee_response_generation_prompt_path()
@@ -77,7 +80,9 @@ class IntervieweeResponseProvider(BaseToolResponseProvider):
         interview_question = self._ongoing_interview_repository.get_interview_question()
 
         return {
-            "interview": interview,
+            "interview": interview[
+                -self._config_loader.get_number_of_characters_to_retrieve_from_interview() :
+            ],
             "name": self._character_name,
             "character_information": character_information,
             "interview_question": interview_question,

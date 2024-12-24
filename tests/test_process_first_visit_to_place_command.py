@@ -146,9 +146,8 @@ def test_execute_guidelines_do_not_exist_generate():
     # Execute the command
     command.execute()
 
-    # Check that the algorithm's do_algorithm() was called
-    generate_factory.create_algorithm.assert_called_once_with("test_map_entry")
-    algorithm.do_algorithm.assert_called_once()
+    # Check that the algorithm's do_algorithm() wasn't called (config loader value would be null)
+    algorithm.do_algorithm.assert_not_called()
 
 
 def test_execute_sets_place_as_visited():

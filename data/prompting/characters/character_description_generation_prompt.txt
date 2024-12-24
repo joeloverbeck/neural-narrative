@@ -1,10 +1,10 @@
-Using the character data provided below, craft a detailed and vivid description of the character's appearance suitable for an image-generating AI. Your description should seamlessly integrate the character's name, bio, personality traits, and equipment into their physical portrayal. Focus on how the character's expression and attire reflect their identity and essence.
 Character Data:
 Name: {name}
 Description: {description}
 Personality: {personality}
 Health: {health}
 Equipment: {equipment}
+Using the character data provided above, craft a detailed and vivid description of the character's appearance suitable for an image-generating AI. Your description should seamlessly integrate the character's name, bio, personality traits, and equipment into their physical portrayal. Focus on how the character's expression and attire reflect their identity and essence.
 Guidelines:
 Integrate Attributes Naturally: Weave the character's traits and equipment into the description in a way that feels organic and true to their identity.
 Focus on Expression and Attire: Highlight how the character's facial expressions and clothing convey their personality and background.

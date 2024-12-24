@@ -1,6 +1,7 @@
 import sys
 from pathlib import Path
 
+from src.augmentation.augment_text import augment_text
 from src.filesystem.file_operations import write_binary_file
 from src.images.factories.openai_generated_image_factory import (
     OpenAIGeneratedImageFactory,
@@ -12,24 +13,41 @@ from src.requests.factories.ConcreteUrlContentFactory import ConcreteUrlContentF
 
 def main():
     interface_manager = ConsoleInterfaceManager()
-    prompt = "Create a close-up portrait, as it could appear in a painting or a photo ID, of the following: "
-    prompt += interface_manager.prompt_for_input(
+    original_prompt = "Create a close-up portrait, as it could appear in a painting or a photo ID, of the following: "
+    input_text = interface_manager.prompt_for_input(
         "Enter your notion of what the portrait should show: "
     )
+    prompt = original_prompt + input_text
+
     generated_image_product = OpenAIGeneratedImageFactory(
         OpenAILlmClientFactory().create_llm_client()
     ).generate_image(prompt)
-    if not generated_image_product.is_valid():
+
+    while not generated_image_product.is_valid():
         print(f"Was unable to generate image: {generated_image_product.get_error()}")
-        sys.exit()
+
+        [augmented_text, _] = augment_text(input_text, 0.01, 1, True, True, True)
+
+        print(f"New text: {augmented_text}")
+
+        input_text = augmented_text
+
+        prompt = original_prompt + input_text
+
+        generated_image_product = OpenAIGeneratedImageFactory(
+            OpenAILlmClientFactory().create_llm_client()
+        ).generate_image(prompt)
+
     url_content_product = ConcreteUrlContentFactory().get_url(
         generated_image_product.get()
     )
+
     if not url_content_product.is_valid():
         print(
             f"Was unable to get the content of the url: {url_content_product.get_error()}"
         )
         sys.exit()
+
     image_name = interface_manager.prompt_for_input(
         "What should be the name of the image?: "
     )
