@@ -42,6 +42,12 @@ class ConfigLoader:
     def get_generate_character_guidelines_on_first_visit(self) -> bool:
         return self._get_config_key("generate_character_guidelines_on_first_visit")
 
+    def get_augment_context_for_speech(self) -> str:
+        return self._get_config_key("augment_context_for_speech")
+
+    def get_augmentation_sigma(self) -> int:
+        return self._get_config_key("augmentation_sigma")
+
     def get_default_voice_model(self) -> str:
         return self._get_config_key("default_voice_model")
 

@@ -1,9 +1,9 @@
-Most Recent Excerpt From Dialogue:
-{transcription}
------
 {local_information}
 {relevant_characters_information}
 {known_facts}
+-----
+Most Recent Excerpt From Dialogue:
+{transcription}
 -----
 Based on the information provided, brainstorm possible, distinct events that would naturally follow from the ongoing dialogue and context.
 Each event should be 1-2 sentences long, written in the present tense.

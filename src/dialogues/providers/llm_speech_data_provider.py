@@ -4,6 +4,7 @@ from typing import Optional
 
 from pydantic import BaseModel
 
+from src.augmentation.augment_text import augment_text
 from src.base.tools import join_with_newline
 from src.base.validators import validate_non_empty_string
 from src.dialogues.configs.llm_speech_data_provider_algorithms_config import (
@@ -18,6 +19,7 @@ from src.dialogues.configs.llm_speech_data_provider_factories_config import (
 from src.dialogues.products.concrete_speech_data_product import (
     ConcreteSpeechDataProduct,
 )
+from src.filesystem.config_loader import ConfigLoader
 from src.filesystem.path_manager import PathManager
 from src.prompting.providers.base_tool_response_provider import BaseToolResponseProvider
 from src.time.time_manager import TimeManager
@@ -33,6 +35,7 @@ class LlmSpeechDataProvider(BaseToolResponseProvider):
         algorithms_config: LlmSpeechDataProviderAlgorithmsConfig,
         time_manager: Optional[TimeManager] = None,
         path_manager: Optional[PathManager] = None,
+        config_loader: Optional[ConfigLoader] = None,
     ):
         super().__init__(
             factories_config.produce_tool_response_strategy_factory,
@@ -47,6 +50,7 @@ class LlmSpeechDataProvider(BaseToolResponseProvider):
         self._algorithms_config = algorithms_config
 
         self._time_manager = time_manager or TimeManager(self._config.playthrough_name)
+        self._config_loader = config_loader or ConfigLoader()
 
     def _format_participant_details(self) -> str:
         return "\n".join(
@@ -130,6 +134,18 @@ class LlmSpeechDataProvider(BaseToolResponseProvider):
         latest_thoughts = self._format_latest_thoughts()
         latest_desired_actions = self._format_latest_desired_actions()
 
+        transcription_excerpt = self._config.transcription.get_transcription_excerpt()
+
+        if self._config_loader.get_augment_context_for_speech():
+            [transcription_excerpt, _] = augment_text(
+                transcription_excerpt,
+                self._config_loader.get_augmentation_sigma(),
+                1,
+                True,
+                True,
+                True,
+            )
+
         return {
             "places_descriptions": places_descriptions,
             "hour": self._time_manager.get_hour(),
@@ -142,5 +158,5 @@ class LlmSpeechDataProvider(BaseToolResponseProvider):
             "latest_thoughts": latest_thoughts,
             "latest_desired_actions": latest_desired_actions,
             "character_dialogue_purpose": character_dialogue_purpose,
-            "transcription_excerpt": self._config.transcription.get_transcription_excerpt(),
+            "transcription_excerpt": transcription_excerpt,
         }

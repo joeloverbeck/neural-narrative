@@ -2,6 +2,8 @@
   "produce_voice_lines": true,
   "produce_player_voice_lines": false,
   "generate_character_guidelines_on_first_visit": false,
+  "augment_context_for_speech": false,
+  "augmentation_sigma": 0.01,
   "default_voice_model": "malewarlock",
   "narrator_voice_model": "tulius",
   "default_weather_icon": "fas fa-cloud-sun",
