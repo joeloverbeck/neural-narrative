@@ -1,5 +1,11 @@
 {
-  "To start, I would like to begin with a big question: tell me the story of your life. Start from the beginning -- from your childhood, to education, to family and relationships, and to any major life events you may have had.": {
+  "What country were you born?": {
+    "learning_objective": "the interviewee's country of birth."
+  },
+  "What city and state were you born in?": {
+    "learning_objective": "the interviewee's city and region of birth."
+  },
+  "Tell me the story of your life. Start from the beginning -- from your childhood, to education, to family and relationships, and to any major life events you may have had.": {
     "learning_objective": "an overview of the interviewee's life."
   },
   "Can you share a memorable experience from your childhood that still impacts you today?": {
@@ -14,8 +20,14 @@
   "Do you think another person or an organization could have lent a helping hand during moments like this?": {
     "learning_objective": "whether the interviewee thinks another person or an organization could have helped them overcome their significant challenge."
   },
-  "If you could change one thing about your past, what would it be and why?": {
-    "learning_objective": "something in the interviewee's past that they would have liked to change."
+  "Where do you turn for support when you’re feeling down or facing a challenge? Are there specific groups, organizations, or individuals who play a big role in your support system?": {
+    "learning_objective": "where the interviewee turns for support."
+  },
+  "What species are you?": {
+    "learning_objective": "the interviewee's species."
+  },
+  "What would you change if you could change anything?": {
+    "learning_objective": "if the interviee would like to change anything in general."
   },
   "Moving to present time, tell me more about family who are important to you. Do you have a partner, or children?": {
     "learning_objective": "information about the interviewee's family members who are important to them."
@@ -25,6 +37,9 @@
   },
   "Tell me about anyone else in your life we haven’t discussed (like friends or romantic partners). Are there people outside of your family who are important to you?": {
     "learning_objective": "important people outside of the interviewee's family."
+  },
+  "Are you now married, widowed, divorced, separated, or have you never been married? If you are not currently married, are you currently living with a romantic partner?": {
+    "learning_objective": "the interviewee's relationship status."
   },
   "Now let’s talk about your current neighborhood. Tell me all about the neighborhood and area in which you are living now.": {
     "learning_objective": "the neighborhood and area in which the interviewee is living now."
@@ -44,11 +59,14 @@
   "Right now, across a typical week, how do your days vary?": {
     "learning_objective": "the interviewee's usual routine any given week."
   },
-  "At what kind of job or jobs do you work, and when do you work?": {
-    "learning_objective": "the interviewee's working situation."
+  "If you have children, tell me about a typical weekday during the school year for your children. What is their daily routine? And what are after school activities your children participate in?": {
+    "learning_objective": "if the interviewee has children, what are their daily routines."
   },
   "What are some of your favorite hobbies or activities that you enjoy in your free time?": {
     "learning_objective": "the interviewee's favorite hobbies or activities."
+  },
+  "What do you get up to when no one’s looking?": {
+    "learning_objective": "the interviewee's preferred actions in private."
   },
   "What does your ideal day look like?": {
     "learning_objective": "the ideal day for the interviewee."
@@ -59,11 +77,41 @@
   "Tell me about any recent changes to your daily routine.": {
     "learning_objective": "recent changes to the interviewee's daily routine."
   },
-  "If you have children, tell me about a typical weekday during the school year for your children. What is their daily routine? And what are after school activities your children participate in?": {
-    "learning_objective": "if the interviewee has children, what are their daily routines."
+  "What is or was your occupation? What kind of work do you do now and what are your main duties? Have you had more than one job recently (part-time, etc.)?": {
+    "learning_objective": "concrete information about the interviewee's occupation."
   },
-  "Some people we’ve talked to tell us about experiences with law enforcement. How about for you?": {
-    "learning_objective": "the interviewee's experiences with law enforcement."
+  "Tell me more about your workplace. How long have you been at your current job? How would you describe the benefits that come with your job? (This could include things like health benefits, paid time off, vacation, and sick time.)": {
+    "learning_objective": "the interviewee's level of satisfaction with their current job."
+  },
+  "How would you describe your relationships at work? (How is your relationship with your manager or boss? How are your relationships with your coworkers?)": {
+    "learning_objective": "how the interviewee gets along with their coworkers."
+  },
+  "Tell me about times over the last year when your income was especially low. And tell me about all the things you did to make ends meet during that time.": {
+    "learning_objective": "what does the interviewee do to make ends meet when their income is especially low."
+  },
+  "Now we’d like to talk about how you make ends meet and what the monthly budget looks like for you and your family. What were your biggest expenses last month?": {
+    "learning_objective": "the interviewee's biggest expenses last month."
+  },
+  "Tell me all about how you coped with any extra expenses in the past months.": {
+    "learning_objective": "how the interviewee has coped with any extra expenses in the past months."
+  },
+  "Some people have a savings account, some people save in a different way, and some people say they don’t save. How about you?": {
+    "learning_objective": "the interviewee's saving habits."
+  },
+  "Some people save for big things, like a home, while others save for a rainy day. How about for you (in the last year)?": {
+    "learning_objective": "what is the interviewee saving for."
+  },
+  "Tell me about any time during the past year that you haven’t had enough money to buy something that you needed or pay a bill that was due.": {
+    "learning_objective": "if the interviewee has had money issues in the past year."
+  },
+  "What would it be like for you if you had to spend $400 for an emergency? Would you have the money, and if not, how would you get it?": {
+    "learning_objective": "the interviewee's ability to expend a significant amount of money for an emergency."
+  },
+  "Overall, how do you feel about your financial situation?": {
+    "learning_objective": "the interviewee's feelings about their financial situation."
+  },
+  "Who shares the responsibility for the rent, mortgage, or other household expenses?": {
+    "learning_objective": "who shares the responsibility for the rent, mortgage, or other household expenses in the interviewee's home."
   },
   "Some people say they vote in every election, some tell us they don’t vote at all. How about you? How would you describe your political views?": {
     "learning_objective": "the interviewee's general political views."
@@ -74,8 +122,17 @@
   "What do you think about current social issues? Are there any causes you're passionate about?": {
     "learning_objective": "what current social issues the interviewee cares about."
   },
+  "What do you think of people? Just in general.": {
+    "learning_objective": "the interviewee's general opinion on humanity."
+  },
+  "Some people we’ve talked to tell us about experiences with law enforcement. How about for you?": {
+    "learning_objective": "the interviewee's experiences with law enforcement."
+  },
   "Now we’d like to learn more about your health. First, tell me all about your health.": {
     "learning_objective": "the interviewee's health."
+  },
+  "Do you have any disabilities or conditions that affect how you navigate daily life? If so, how do you manage them?": {
+    "learning_objective": "if the interviewee has disabilities or conditions that affect how they navigate daily life."
   },
   "For you, what makes it easy or hard to stay healthy?": {
     "learning_objective": "whether the interviewee has an easy or hard time staying healthy."
@@ -110,16 +167,25 @@
   "What are some of your biggest fears or anxieties? How do you cope with them?": {
     "learning_objective": "the interviewee's biggest fears or anxieties."
   },
+  "Do you spend a lot of time thinking about death?": {
+    "learning_objective": "if the interviewee contemplates their death."
+  },
   "How do you handle conflict or difficult situations? Can you provide an example?": {
     "learning_objective": "how the interviewee handles conflict or difficult situations."
   },
   "What is something people often misunderstand about you?": {
     "learning_objective": "if the interviewee feels misunderstood about something."
   },
+  "Has someone been critical of your appearance?": {
+    "learning_objective": "if anyone has been critical of the interviewee's appearance."
+  },
   "Tell me about a time when you had to adapt to a significant change. How did you handle it?": {
     "learning_objective": "if the interviewee had to adapt to a significant change."
   },
-  "Some people say that religion or spirituality is important in their lives, for others not so much. How about you?": {
+  "Tell me about any recent changes in your level of stress, worry, and your emotional coping strategies.": {
+    "learning_objective": "recent changes in the interviewee's level of stress, worry, and emotional coping strategies."
+  },
+  "Is religion or spirituality important in your life? If so, do you identify with a particular faith or practice?": {
     "learning_objective": "whether religion or spirituality is important for the interviewee."
   },
   "Are there any cultural or family traditions that are important to you?": {
@@ -131,68 +197,26 @@
   "What is your philosophy on life? Do you follow any particular beliefs or ideologies?": {
     "learning_objective": "the interviewee's philosophy on life."
   },
+  "If you had to say something definitive about the world in a single sentence, what would that sentence be?": {
+    "learning_objective": "the interviewee's main opinion about the world."
+  },
   "What is your approach to personal growth and self-improvement?": {
     "learning_objective": "the interviewee's approach to personal growth and self-improvement."
+  },
+  "What do you consider your greatest strengths, and what challenges do you continue to work on about yourself?": {
+    "learning_objective": "the interviewee's greatest strengths."
   },
   "What do you do when you need inspiration or motivation?": {
     "learning_objective": "how the interviewee seeks inspiration or motivation."
   },
-  "Tell me about any recent changes in your level of stress, worry, and your emotional coping strategies.": {
-    "learning_objective": "recent changes in the interviewee's level of stress, worry, and emotional coping strategies."
-  },
-  "Who shares the responsibility for the rent, mortgage, or other household expenses?": {
-    "learning_objective": "who shares the responsibility for the rent, mortgage, or other household expenses in the interviewee's home."
-  },
-  "Now we’d like to talk about how you make ends meet and what the monthly budget looks like for you and your family. What were your biggest expenses last month?": {
-    "learning_objective": "the interviewee's biggest expenses last month."
-  },
-  "Tell me all about how you coped with any extra expenses in the past months.": {
-    "learning_objective": "how the interviewee has coped with any extra expenses in the past months."
-  },
-  "Some people have a savings account, some people save in a different way, and some people say they don’t save. How about you?": {
-    "learning_objective": "the interviewee's saving habits."
-  },
-  "Some people save for big things, like a home, while others save for a rainy day. How about for you (in the last year)?": {
-    "learning_objective": "what is the interviewee saving for."
-  },
-  "Tell me about any time during the past year that you haven’t had enough money to buy something that you needed or pay a bill that was due.": {
-    "learning_objective": "if the interviewee has had money issues in the past year."
-  },
-  "What is or was your occupation? In this occupation, what kind of work do you do and what are the most important activities or duties?": {
-    "learning_objective": "concrete information about the interviewee's occupation."
-  },
-  "Did you have more than one job or business, including part time, evening, or weekend work?": {
-    "learning_objective": "if the interviewee had more than one job or business in the last year."
-  },
-  "Tell me more about your workplace. How long have you been at your current job? How would you describe the benefits that come with your job? (This could include things like health benefits, paid time off, vacation, and sick time.)": {
-    "learning_objective": "the interviewee's level of satisfaction with their current job."
-  },
-  "How would you describe your relationships at work? (How is your relationship with your manager or boss? How are your relationships with your coworkers?)": {
-    "learning_objective": "how the interviewee gets along with their coworkers."
-  },
-  "Tell me about times over the last year when your income was especially low. And tell me about all the things you did to make ends meet during that time.": {
-    "learning_objective": "what does the interviewee do to make ends meet when their income is especially low."
-  },
-  "What would it be like for you if you had to spend $400 for an emergency? Would you have the money, and if not, how would you get it?": {
-    "learning_objective": "the interviewee's ability to expend a significant amount of money for an emergency."
-  },
-  "Overall, how do you feel about your financial situation?": {
-    "learning_objective": "the interviewee's feelings about their financial situation."
-  },
-  "Are you now married, widowed, divorced, separated, or have you never been married? If you are not currently married, are you currently living with a romantic partner?": {
-    "learning_objective": "the interviewee's relationship status."
-  },
-  "What country were you born?": {
-    "learning_objective": "the interviewee's country of birth."
-  },
-  "What city and state were you born in?": {
-    "learning_objective": "the interviewee's city and region of birth."
-  },
-  "What species are you?": {
-    "learning_objective": "the interviewee's species."
-  },
   "What race or races do you identify with?": {
     "learning_objective": "the interviewee's race."
+  },
+  "Are there aspects of your identity (including sexual orientation) that are important for you to share?": {
+    "learning_objective": "important aspects of the interviewee's identity."
+  },
+  "Have you ever felt discriminated against, or treated unfairly due to who you are? Can you tell me about that experience?": {
+    "learning_objective": "if the interviewee has felt discriminated against due to who they are."
   },
   "What is the highest degree or grade you’ve completed?": {
     "learning_objective": "the interviewee's highest degree or grade completed."
@@ -202,9 +226,6 @@
   },
   "Have you ever served on active duty in the army?": {
     "learning_objective": "if the interviewee has served on active duty in the army."
-  },
-  "What religion do you identify with, if any?": {
-    "learning_objective": "if the interviewee identifies with any religion."
   },
   "What was your mother's job while you were growing up? What kind of work did she do? What were her most important activities or duties?": {
     "learning_objective": "the interviewee's mother's job while the interviewee was growing up."
@@ -217,6 +238,12 @@
   },
   "How do you define success, and do you feel you have achieved it?": {
     "learning_objective": "if the interviewee feels successful."
+  },
+  "What accomplishment are you most proud of in your life, and why does it stand out to you?": {
+    "learning_objective": "the accomplishments that the interviewee is most proud of."
+  },
+  "Is there anything in your life you regret or wish you could do over? What have you learned from that experience?": {
+    "learning_objective": "if the interviewee has life-long regrets."
   },
   "Are there any skills or talents you wish to develop or improve?": {
     "learning_objective": "if the interviewee wants to develop or improve any skills or talents."

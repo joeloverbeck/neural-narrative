@@ -19,11 +19,11 @@ def get_custom_speech_turn_class(speaker_name: str) -> Type[BaseModel]:
         )
         thoughts: str = Field(
             ...,
-            description=f"{speaker_name}'s thoughts related to this part of the dialogue.",
+            description=f"{speaker_name}'s thoughts related to this part of the dialogue. Adapt recent thoughts to the most recent part of the dialogue.",
         )
         desired_action: str = Field(
             ...,
-            description=f"The action that {speaker_name} would like to take now, based on last stretch of the ongoing conversation.",
+            description=f"The action that {speaker_name} would like to take now, based on last stretch of the ongoing conversation. Adapt recent desired actions to the most recent part of the dialogue.",
         )
 
     return SpeechTurn

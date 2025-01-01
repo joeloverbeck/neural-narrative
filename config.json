@@ -15,5 +15,5 @@
   "facts_to_retrieve_from_database": 10,
   "memories_to_retrieve_from_database": 10,
   "number_of_characters_to_retrieve_from_transcription": 7000,
-  "number_of_characters_to_retrieve_from_interview": 70000
+  "number_of_characters_to_retrieve_from_interview": 50000
 }
