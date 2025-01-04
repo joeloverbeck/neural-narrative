@@ -2024,7 +2024,8 @@
     "WHISPERY/AIRY",
     "NEUTRAL",
     "INTENSE/DRAMATIC",
-    "SKEPTICAL"
+    "SKEPTICAL",
+    "NO SPECIAL EFFECTS"
   ],
   "npcmfinn": [
     "MALE",
@@ -2072,6 +2073,114 @@
     "NEUTRAL",
     "INTENSE/DRAMATIC",
     "PARANOID",
+    "NO SPECIAL EFFECTS"
+  ],
+  "holotapecitstudentvoice02": [
+    "MALE",
+    "TEENAGE",
+    "CONFIDENT/DETERMINED",
+    "MODERATE",
+    "NORMAL VOLUME",
+    "SMOOTH",
+    "NEUTRAL",
+    "FORMAL",
+    "NOBLE",
+    "NO SPECIAL EFFECTS"
+  ],
+  "npcmvaulttecscientist02": [
+    "MALE",
+    "YOUNG ADULT/ADULT",
+    "CONFIDENT/DETERMINED",
+    "SLOW",
+    "NORMAL VOLUME",
+    "SMOOTH",
+    "WARM",
+    "FLIRTATIOUS",
+    "SULTRY",
+    "NO SPECIAL EFFECTS"
+  ],
+  "npcmsturges": [
+    "FEMALE",
+    "MIDDLE-AGED",
+    "PLAYFUL",
+    "SLOW",
+    "NORMAL VOLUME",
+    "GRAVELLY/RASPY",
+    "WARM",
+    "FLIRTATIOUS",
+    "SULTRY",
+    "NO SPECIAL EFFECTS"
+  ],
+  "npcfninarodriguez": [
+    "FEMALE",
+    "TEENAGE",
+    "HOPEFUL",
+    "MODERATE",
+    "SOFT-SPOKEN/QUIET",
+    "WHISPERY/AIRY",
+    "NEUTRAL",
+    "FORMAL",
+    "OPTIMISTIC",
+    "NO SPECIAL EFFECTS"
+  ],
+  "npcfcurie": [
+    "FEMALE",
+    "YOUNG ADULT/ADULT",
+    "HOPEFUL",
+    "MODERATE",
+    "NORMAL VOLUME",
+    "WHISPERY/AIRY",
+    "WARM",
+    "MELODIC",
+    "PASSIONATE",
+    "NO SPECIAL EFFECTS"
+  ],
+  "fura": [
+    "FEMALE",
+    "CHILDLIKE",
+    "SERIOUS/FIRM",
+    "MODERATE",
+    "NORMAL VOLUME",
+    "GRAVELLY/RASPY",
+    "COLD",
+    "FORMAL",
+    "ADVENTUROUS/DRIVEN",
+    "NO SPECIAL EFFECTS"
+  ],
+  "kodlakwhitemane": [
+    "MALE",
+    "ELDERLY",
+    "CONFIDENT/DETERMINED",
+    "SLOW",
+    "NORMAL VOLUME",
+    "GUTTURAL",
+    "NEUTRAL",
+    "INTENSE/DRAMATIC",
+    "ADVENTUROUS/DRIVEN",
+    "NO SPECIAL EFFECTS"
+  ],
+  "gunnersfemalems05pvthart": [
+    "FEMALE",
+    "YOUNG ADULT/ADULT",
+    "EXCITED",
+    "MODERATE",
+    "NORMAL VOLUME",
+    "GRAVELLY/RASPY",
+    "WARM",
+    "INTENSE/DRAMATIC",
+    "ADVENTUROUS/DRIVEN",
+    "NO SPECIAL EFFECTS"
+  ],
+  "maledarkelfcommoner": [
+    "MALE",
+    "MIDDLE-AGED",
+    "SERIOUS/FIRM",
+    "MODERATE",
+    "NORMAL VOLUME",
+    "GUTTURAL",
+    "NEUTRAL",
+    "INTENSE/DRAMATIC",
+    "VILLAINOUS",
     "NO SPECIAL EFFECTS"
   ]
 }

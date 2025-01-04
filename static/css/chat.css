@@ -55,9 +55,6 @@
 }
 
 /* Participant messages */
-.chat-bubble.left .message-content {
-    background-color: #f8d7da; /* Light red */
-}
 
 /* Make chat bubbles and ambient messages clickable */
 .message-content {
@@ -81,14 +78,14 @@
 
 /* Player Messages */
 .chat-bubble.right .message-content {
-    background: linear-gradient(to bottom right, #D0E8FF, #A0C8FF); /* Blue Gradient */
-    color: #000000; /* Black Text */
+    background: linear-gradient(to bottom right, #d4f1f9, #ace7ef);
+    color: #000000; /* Keep text black for legibility */
 }
 
 /* Other Characters */
 .chat-bubble.left .message-content {
-    background: linear-gradient(to bottom right, #DFFFD0, #B8FF98); /* Green Gradient */
-    color: #000000; /* Black Text */
+    background: linear-gradient(to bottom right, #e0f5dd, #98f7ad); /* Emerald & Mint */
+    color: #000000;
 }
 
 /* Ambient Narration */

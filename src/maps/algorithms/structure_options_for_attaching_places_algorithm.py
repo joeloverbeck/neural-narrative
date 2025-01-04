@@ -30,11 +30,9 @@ class StructureOptionsForAttachingPlacesAlgorithm:
                     if self._display_attr
                     else item.get("display", "")
                 )
-                logger.info(f"Dict item - Value: {value}, Display: {display}")
             else:
                 # Assume the item is a string
                 value = item
                 display = item
-                logger.info(f"String item - Value: {value}, Display: {display}")
             structured.append({"value": value, "display": display})
         return structured
