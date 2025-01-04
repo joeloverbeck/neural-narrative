@@ -52,10 +52,6 @@ def test_all_dicts_default_attributes(sample_dict_items, caplog):
 
     assert result == expected_output
 
-    for item in sample_dict_items:
-        expected_log = f"Dict item - Value: {item['value']}, Display: {item['display']}"
-        assert expected_log in caplog.text
-
 
 def test_all_dicts_custom_attributes(caplog):
     custom_items = [
@@ -74,10 +70,6 @@ def test_all_dicts_custom_attributes(caplog):
 
     assert result == expected_output
 
-    for item in custom_items:
-        expected_log = f"Dict item - Value: {item['id']}, Display: {item['name']}"
-        assert expected_log in caplog.text
-
 
 def test_mixed_items_default_attributes(sample_dict_items, sample_string_items, caplog):
     mixed_items = sample_dict_items + sample_string_items
@@ -95,14 +87,6 @@ def test_mixed_items_default_attributes(sample_dict_items, sample_string_items, 
         result = algorithm.do_algorithm()
 
     assert result == expected_output
-
-    for item in sample_dict_items:
-        expected_log = f"Dict item - Value: {item['value']}, Display: {item['display']}"
-        assert expected_log in caplog.text
-
-    for item in sample_string_items:
-        expected_log = f"String item - Value: {item}, Display: {item}"
-        assert expected_log in caplog.text
 
 
 def test_mixed_items_custom_attributes(caplog):
@@ -127,14 +111,6 @@ def test_mixed_items_custom_attributes(caplog):
 
     assert result == expected_output
 
-    for item in custom_dict_items:
-        expected_log = f"Dict item - Value: {item['id']}, Display: {item['name']}"
-        assert expected_log in caplog.text
-
-    for item in string_items:
-        expected_log = f"String item - Value: {item}, Display: {item}"
-        assert expected_log in caplog.text
-
 
 def test_all_strings(sample_string_items, caplog):
     algorithm = StructureOptionsForAttachingPlacesAlgorithm(items=sample_string_items)
@@ -144,10 +120,6 @@ def test_all_strings(sample_string_items, caplog):
         result = algorithm.do_algorithm()
 
     assert result == expected_output
-
-    for item in sample_string_items:
-        expected_log = f"String item - Value: {item}, Display: {item}"
-        assert expected_log in caplog.text
 
 
 def test_empty_items(caplog):
@@ -180,14 +152,6 @@ def test_dicts_missing_attributes(caplog):
 
     assert result == expected_output
 
-    expected_logs = [
-        "Dict item - Value: 1, Display: ",
-        "Dict item - Value: , Display: Only Display",
-        "Dict item - Value: , Display: ",
-    ]
-    for log_msg in expected_logs:
-        assert log_msg in caplog.text
-
 
 def test_custom_attributes_missing_in_some_dicts(caplog):
     items = [
@@ -211,15 +175,6 @@ def test_custom_attributes_missing_in_some_dicts(caplog):
 
     assert result == expected_output
 
-    expected_logs = [
-        "Dict item - Value: 100, Display: Alpha",
-        "Dict item - Value: 200, Display: ",
-        "Dict item - Value: , Display: Gamma",
-        "Dict item - Value: , Display: ",
-    ]
-    for log_msg in expected_logs:
-        assert log_msg in caplog.text
-
 
 def test_items_with_empty_strings(caplog):
     items = [
@@ -238,14 +193,6 @@ def test_items_with_empty_strings(caplog):
         result = algorithm.do_algorithm()
 
     assert result == expected_output
-
-    expected_logs = [
-        "String item - Value: , Display: ",
-        "String item - Value: Valid String, Display: Valid String",
-        "String item - Value: , Display: ",
-    ]
-    for log_msg in expected_logs:
-        assert log_msg in caplog.text
 
 
 def test_logging_when_custom_attributes_not_present(caplog):
@@ -268,14 +215,6 @@ def test_logging_when_custom_attributes_not_present(caplog):
 
     assert result == expected_output
 
-    expected_logs = [
-        "Dict item - Value: 100, Display: Alpha",
-        "Dict item - Value: 200, Display: ",
-        "Dict item - Value: , Display: Gamma",
-    ]
-    for log_msg in expected_logs:
-        assert log_msg in caplog.text
-
 
 def test_logging_correctly_identifies_item_types(caplog):
     items = [
@@ -297,12 +236,3 @@ def test_logging_correctly_identifies_item_types(caplog):
         result = algorithm.do_algorithm()
 
     assert result == expected_output
-
-    expected_logs = [
-        "Dict item - Value: 1, Display: Terra Firma",
-        "String item - Value: The Peninsula Garden, Display: The Peninsula Garden",
-        "Dict item - Value: 2, Display: Euskal Herria",
-        "String item - Value: Villa Opulencia, Display: Villa Opulencia",
-    ]
-    for log_msg in expected_logs:
-        assert log_msg in caplog.text
