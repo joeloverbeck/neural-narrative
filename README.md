@@ -1,5 +1,7 @@
 # Neural Narrative
 
+Archived experimental prototype. This repository explored stateful multi-character LLM roleplay with private character memories and automatic voice casting. Development ended in January 2025. It is preserved for historical and research purposes, is unmaintained, may depend on discontinued external models or services, and should not be considered production-ready.
+
 Create immersive story universes powered by AI
 
 ## Table of Contents
